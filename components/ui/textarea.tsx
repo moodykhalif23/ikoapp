@@ -12,6 +12,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     borderRadius: '6px',
     minHeight: '64px',
     alignItems: 'flex-start',
+    backgroundColor: 'transparent',
     '& fieldset': {
       borderColor: theme.palette.divider,
     },
@@ -20,7 +21,8 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
     '&.Mui-focused fieldset': {
       borderColor: theme.palette.primary.main,
-      borderWidth: '2px',
+      borderWidth: '1px',
+      boxShadow: 'none',
     },
     '&.Mui-error fieldset': {
       borderColor: theme.palette.error.main,
@@ -28,9 +30,14 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
   '& .MuiOutlinedInput-input': {
     padding: '8px 12px',
+    backgroundColor: 'transparent',
     '&::placeholder': {
       color: theme.palette.text.disabled,
       opacity: 1,
+    },
+    '&:focus': {
+      backgroundColor: 'transparent',
+      boxShadow: 'none',
     },
   },
   '& .MuiInputLabel-root': {
@@ -38,6 +45,10 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     '&.Mui-focused': {
       color: theme.palette.primary.main,
     },
+  },
+  // Remove any focus ring or overlay
+  '&:focus-within': {
+    boxShadow: 'none',
   },
 }))
 

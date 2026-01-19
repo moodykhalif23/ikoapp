@@ -68,6 +68,21 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             fontSize: '0.875rem',
+            '&.Mui-focused': {
+              boxShadow: 'none',
+            },
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused': {
+            boxShadow: 'none',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            boxShadow: 'none',
           },
         },
       },

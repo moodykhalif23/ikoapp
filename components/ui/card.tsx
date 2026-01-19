@@ -30,9 +30,11 @@ const StyledCardContent = styled(MuiCardContent)({
   },
 })
 
-function Card({ className, ...props }: CardProps) {
+function Card({ className, children, ...props }: CardProps) {
   return (
-    <StyledCard className={className} {...props} />
+    <StyledCard className={className} {...props}>
+      {children}
+    </StyledCard>
   )
 }
 
