@@ -349,6 +349,28 @@
     display: block;
   }
 
+  /* Prevent vertical scrolling on tab containers */
+  .tab-container {
+    overflow-y: hidden !important;
+    overflow-x: auto;
+    max-height: fit-content;
+  }
+
+  .tab-list {
+    overflow-y: hidden !important;
+    overflow-x: auto;
+    height: 2.5rem; /* Fixed height to prevent vertical expansion */
+    min-height: 2.5rem;
+    max-height: 2.5rem;
+  }
+
+  .tab-trigger {
+    height: 2rem !important;
+    min-height: 2rem !important;
+    max-height: 2rem !important;
+    overflow: hidden;
+  }
+
   /* Ensure tabs are properly sized on mobile */
   @media (max-width: 640px) {
     .MuiTabs-flexContainer {

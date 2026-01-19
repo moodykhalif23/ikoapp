@@ -67,14 +67,14 @@ function SimpleTabs({
 function SimpleTabsList({ children, className }: TabsListProps) {
   return (
     <div className={cn(
-      "inline-flex h-10 items-center rounded-md bg-muted p-1 text-muted-foreground w-full overflow-x-auto",
+      "inline-flex h-10 items-center rounded-md bg-muted p-1 text-muted-foreground w-full overflow-x-auto overflow-y-hidden",
       // Hide scrollbar but keep functionality
       "scrollbar-hide",
       // Center content when it fits, left-align when scrolling needed
       "justify-center",
       className
     )}>
-      <div className="flex items-center gap-1 min-w-max">
+      <div className="flex items-center gap-1 min-w-max h-full">
         {children}
       </div>
     </div>
@@ -91,7 +91,7 @@ function SimpleTabsTrigger({ value, children, disabled, className }: TabsTrigger
       disabled={disabled}
       onClick={() => onValueChange(value)}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 py-1.5 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 flex-shrink-0",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 py-1.5 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 flex-shrink-0 h-8",
         isActive 
           ? "bg-background text-foreground shadow-sm" 
           : "hover:bg-background/50 hover:text-foreground",

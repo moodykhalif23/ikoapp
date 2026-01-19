@@ -314,14 +314,14 @@ ${new Date().toLocaleString()}
 
         {/* Main Tabs */}
         <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="w-full">
-          <TabsList className="w-full bg-muted text-xs mb-6">
-            <TabsTrigger value="reports" className="text-xs flex-shrink-0 min-w-fit">
+          <TabsList className="w-full bg-muted text-xs mb-6 overflow-y-hidden">
+            <TabsTrigger value="reports" className="text-xs flex-shrink-0 min-w-fit h-8">
               Reports
             </TabsTrigger>
-            <TabsTrigger value="employees" className="text-xs flex-shrink-0 min-w-fit">
+            <TabsTrigger value="employees" className="text-xs flex-shrink-0 min-w-fit h-8">
               Employees
             </TabsTrigger>
-            <TabsTrigger value="machines" className="text-xs flex-shrink-0 min-w-fit">
+            <TabsTrigger value="machines" className="text-xs flex-shrink-0 min-w-fit h-8">
               Machines
             </TabsTrigger>
           </TabsList>
@@ -378,23 +378,23 @@ ${new Date().toLocaleString()}
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Tabs value={activeReportTab} onValueChange={setActiveReportTab} className="w-full">
-                      <TabsList className="w-full bg-muted text-xs overflow-x-auto">
-                        <TabsTrigger value="summary" className="text-xs flex-shrink-0 min-w-fit">
+                      <TabsList className="w-full bg-muted text-xs overflow-x-auto overflow-y-hidden">
+                        <TabsTrigger value="summary" className="text-xs flex-shrink-0 min-w-fit h-8">
                           Summary
                         </TabsTrigger>
-                        <TabsTrigger value="power" className="text-xs flex-shrink-0 min-w-fit">
+                        <TabsTrigger value="power" className="text-xs flex-shrink-0 min-w-fit h-8">
                           Power
                         </TabsTrigger>
-                        <TabsTrigger value="production" className="text-xs flex-shrink-0 min-w-fit">
+                        <TabsTrigger value="production" className="text-xs flex-shrink-0 min-w-fit h-8">
                           Production
                         </TabsTrigger>
-                        <TabsTrigger value="incident" className="text-xs flex-shrink-0 min-w-fit">
+                        <TabsTrigger value="incident" className="text-xs flex-shrink-0 min-w-fit h-8">
                           Incident
                         </TabsTrigger>
-                        <TabsTrigger value="visuals" className="text-xs flex-shrink-0 min-w-fit">
+                        <TabsTrigger value="visuals" className="text-xs flex-shrink-0 min-w-fit h-8">
                           Visuals
                         </TabsTrigger>
-                        <TabsTrigger value="comments" className="text-xs flex-shrink-0 min-w-fit">
+                        <TabsTrigger value="comments" className="text-xs flex-shrink-0 min-w-fit h-8">
                           Comments
                         </TabsTrigger>
                       </TabsList>
