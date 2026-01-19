@@ -119,7 +119,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
-                  className="bg-input border-border text-base"
+                  className="border-border text-base"
                 />
               </div>
 
