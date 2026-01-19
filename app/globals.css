@@ -330,6 +330,25 @@
     display: none;
   }
 
+  /* Scrollbar utilities */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-default {
+    scrollbar-width: auto;
+    -ms-overflow-style: auto;
+  }
+
+  .scrollbar-default::-webkit-scrollbar {
+    display: block;
+  }
+
   /* Ensure tabs are properly sized on mobile */
   @media (max-width: 640px) {
     .MuiTabs-flexContainer {

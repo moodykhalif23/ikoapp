@@ -315,13 +315,13 @@ ${new Date().toLocaleString()}
         {/* Main Tabs */}
         <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="w-full">
           <TabsList className="w-full bg-muted text-xs mb-6">
-            <TabsTrigger value="reports" className="text-xs">
+            <TabsTrigger value="reports" className="text-xs flex-shrink-0 min-w-fit">
               Reports
             </TabsTrigger>
-            <TabsTrigger value="employees" className="text-xs">
+            <TabsTrigger value="employees" className="text-xs flex-shrink-0 min-w-fit">
               Employees
             </TabsTrigger>
-            <TabsTrigger value="machines" className="text-xs">
+            <TabsTrigger value="machines" className="text-xs flex-shrink-0 min-w-fit">
               Machines
             </TabsTrigger>
           </TabsList>
