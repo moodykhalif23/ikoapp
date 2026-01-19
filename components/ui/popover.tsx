@@ -1,48 +1,142 @@
 'use client'
 
 import * as React from 'react'
-import * as PopoverPrimitive from '@radix-ui/react-popover'
+import { Popover as MuiPopover, PopoverProps as MuiPopoverProps } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-import { cn } from '@/lib/utils'
-
-function Popover({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />
+interface PopoverProps extends Omit<MuiPopoverProps, 'open'> {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-function PopoverTrigger({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
+interface PopoverTriggerProps {
+  children: React.ReactNode
+  asChild?: boolean
 }
 
-function PopoverContent({
-  className,
-  align = 'center',
-  sideOffset = 4,
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+interface PopoverContentProps {
+  children: React.ReactNode
+  className?: string
+  align?: 'start' | 'center' | 'end'
+  sideOffset?: number
+}
+
+const StyledPopover = styled(MuiPopover)(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: '6px',
+    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    border: `1px solid ${theme.palette.divider}`,
+    padding: '16px',
+    minWidth: '288px',
+    maxWidth: 'calc(100vw - 32px)',
+  },
+}))
+
+const PopoverContext = React.createContext<{
+  open: boolean
+  setOpen: (open: boolean) => void
+  anchorEl: HTMLElement | null
+  setAnchorEl: (el: HTMLElement | null) => void
+}>({
+  open: false,
+  setOpen: () => {},
+  anchorEl: null,
+  setAnchorEl: () => {},
+})
+
+function Popover({ open, onOpenChange, children, ...props }: PopoverProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+  
+  const isOpen = open !== undefined ? open : internalOpen
+  
+  const setOpen = React.useCallback((newOpen: boolean) => {
+    if (open === undefined) {
+      setInternalOpen(newOpen)
+    }
+    onOpenChange?.(newOpen)
+    if (!newOpen) {
+      setAnchorEl(null)
+    }
+  }, [open, onOpenChange])
+
   return (
-    <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Content
-        data-slot="popover-content"
-        align={align}
-        sideOffset={sideOffset}
-        className={cn(
-          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden',
-          className,
-        )}
-        {...props}
-      />
-    </PopoverPrimitive.Portal>
+    <PopoverContext.Provider value={{ open: isOpen, setOpen, anchorEl, setAnchorEl }}>
+      {children}
+    </PopoverContext.Provider>
   )
 }
 
-function PopoverAnchor({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
+function PopoverTrigger({ children, asChild }: PopoverTriggerProps) {
+  const { setOpen, setAnchorEl } = React.useContext(PopoverContext)
+  
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+    setOpen(true)
+  }
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      onClick: handleClick,
+      ...children.props,
+    })
+  }
+
+  return (
+    <div onClick={handleClick}>
+      {children}
+    </div>
+  )
+}
+
+function PopoverContent({ 
+  children, 
+  className, 
+  align = 'center',
+  sideOffset = 4,
+  ...props 
+}: PopoverContentProps) {
+  const { open, setOpen, anchorEl } = React.useContext(PopoverContext)
+
+  const getAnchorOrigin = () => {
+    switch (align) {
+      case 'start':
+        return { vertical: 'bottom' as const, horizontal: 'left' as const }
+      case 'end':
+        return { vertical: 'bottom' as const, horizontal: 'right' as const }
+      default:
+        return { vertical: 'bottom' as const, horizontal: 'center' as const }
+    }
+  }
+
+  const getTransformOrigin = () => {
+    switch (align) {
+      case 'start':
+        return { vertical: 'top' as const, horizontal: 'left' as const }
+      case 'end':
+        return { vertical: 'top' as const, horizontal: 'right' as const }
+      default:
+        return { vertical: 'top' as const, horizontal: 'center' as const }
+    }
+  }
+
+  return (
+    <StyledPopover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={() => setOpen(false)}
+      anchorOrigin={getAnchorOrigin()}
+      transformOrigin={getTransformOrigin()}
+      className={className}
+      {...props}
+    >
+      {children}
+    </StyledPopover>
+  )
+}
+
+function PopoverAnchor({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
 }
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
