@@ -1,32 +1,72 @@
 'use client'
 
 import * as React from 'react'
-import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import { CheckIcon } from 'lucide-react'
+import { Checkbox as MuiCheckbox, FormControlLabel, CheckboxProps as MuiCheckboxProps } from '@mui/material'
+import { styled } from '@mui/material/styles'
+import { Check } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
+interface CheckboxProps extends Omit<MuiCheckboxProps, 'icon' | 'checkedIcon'> {
+  label?: string
+}
 
-function Checkbox({
-  className,
-  ...props
-}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
-  return (
-    <CheckboxPrimitive.Root
-      data-slot="checkbox"
-      className={cn(
-        'peer border-input dark:bg-input/30 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
-        className,
-      )}
+const StyledCheckbox = styled(MuiCheckbox)(({ theme }) => ({
+  padding: 0,
+  width: '16px',
+  height: '16px',
+  borderRadius: '4px',
+  '&.Mui-checked': {
+    color: theme.palette.primary.main,
+  },
+  '&.Mui-focusVisible': {
+    outline: `3px solid ${theme.palette.primary.main}20`,
+  },
+  '& .MuiSvgIcon-root': {
+    fontSize: '16px',
+  },
+}))
+
+const CheckIcon = styled(Check)(({ theme }) => ({
+  width: '14px',
+  height: '14px',
+  color: theme.palette.primary.contrastText,
+}))
+
+function Checkbox({ label, ...props }: CheckboxProps) {
+  const checkbox = (
+    <StyledCheckbox
+      icon={<div style={{ 
+        width: 16, 
+        height: 16, 
+        border: '1px solid #d1d5db', 
+        borderRadius: '4px',
+        backgroundColor: 'transparent'
+      }} />}
+      checkedIcon={<div style={{ 
+        width: 16, 
+        height: 16, 
+        backgroundColor: 'currentColor', 
+        borderRadius: '4px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <CheckIcon />
+      </div>}
       {...props}
-    >
-      <CheckboxPrimitive.Indicator
-        data-slot="checkbox-indicator"
-        className="flex items-center justify-center text-current transition-none"
-      >
-        <CheckIcon className="size-3.5" />
-      </CheckboxPrimitive.Indicator>
-    </CheckboxPrimitive.Root>
+    />
   )
+
+  if (label) {
+    return (
+      <FormControlLabel
+        control={checkbox}
+        label={label}
+        sx={{ margin: 0, alignItems: 'flex-start' }}
+      />
+    )
+  }
+
+  return checkbox
 }
 
 export { Checkbox }

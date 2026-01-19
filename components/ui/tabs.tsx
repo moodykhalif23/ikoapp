@@ -1,65 +1,142 @@
 'use client'
 
 import * as React from 'react'
-import * as TabsPrimitive from '@radix-ui/react-tabs'
+import { Tabs as MuiTabs, Tab, TabProps, TabsProps as MuiTabsProps } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-import { cn } from '@/lib/utils'
+interface TabsProps extends Omit<MuiTabsProps, 'value' | 'onChange'> {
+  value?: string
+  onValueChange?: (value: string) => void
+  defaultValue?: string
+  orientation?: 'horizontal' | 'vertical'
+}
 
-function Tabs({
+interface TabsListProps {
+  children: React.ReactNode
+  className?: string
+}
+
+interface TabsTriggerProps {
+  value: string
+  children: React.ReactNode
+  disabled?: boolean
+  className?: string
+}
+
+interface TabsContentProps {
+  value: string
+  children: React.ReactNode
+  className?: string
+}
+
+const StyledTabs = styled(MuiTabs)(({ theme }) => ({
+  '& .MuiTabs-indicator': {
+    backgroundColor: theme.palette.primary.main,
+    height: '2px',
+  },
+  '& .MuiTabs-flexContainer': {
+    gap: '4px',
+  },
+}))
+
+const StyledTab = styled(Tab)(({ theme }) => ({
+  textTransform: 'none',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  padding: '8px 12px',
+  minHeight: '36px',
+  borderRadius: '6px',
+  color: theme.palette.text.secondary,
+  '&.Mui-selected': {
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+  },
+  '&:hover': {
+    color: theme.palette.text.primary,
+  },
+}))
+
+const TabsContext = React.createContext<{
+  value: string
+  onValueChange: (value: string) => void
+}>({
+  value: '',
+  onValueChange: () => {},
+})
+
+function Tabs({ 
+  value, 
+  onValueChange, 
+  defaultValue, 
+  orientation = 'horizontal',
+  children, 
   className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Root>) {
+  ...props 
+}: TabsProps) {
+  const [internalValue, setInternalValue] = React.useState(defaultValue || '')
+  const currentValue = value !== undefined ? value : internalValue
+  
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    if (value === undefined) {
+      setInternalValue(newValue)
+    }
+    onValueChange?.(newValue)
+  }
+
   return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn('flex flex-col gap-2', className)}
-      {...props}
+    <TabsContext.Provider value={{ value: currentValue, onValueChange: handleChange }}>
+      <div className={className} {...props}>
+        {children}
+      </div>
+    </TabsContext.Provider>
+  )
+}
+
+function TabsList({ children, className }: TabsListProps) {
+  const { value, onValueChange } = React.useContext(TabsContext)
+  
+  return (
+    <StyledTabs
+      value={value}
+      onChange={onValueChange}
+      sx={{
+        backgroundColor: '#f3f4f6',
+        borderRadius: '8px',
+        padding: '3px',
+        minHeight: '42px',
+        '& .MuiTabs-flexContainer': {
+          minHeight: '36px',
+        },
+      }}
+    >
+      {children}
+    </StyledTabs>
+  )
+}
+
+function TabsTrigger({ value, children, disabled, className }: TabsTriggerProps) {
+  return (
+    <StyledTab 
+      value={value} 
+      label={children} 
+      disabled={disabled}
+      className={className}
     />
   )
 }
 
-function TabsList({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.List>) {
+function TabsContent({ value, children, className }: TabsContentProps) {
+  const { value: currentValue } = React.useContext(TabsContext)
+  
+  if (currentValue !== value) {
+    return null
+  }
+  
   return (
-    <TabsPrimitive.List
-      data-slot="tabs-list"
-      className={cn(
-        'bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]',
-        className,
-      )}
-      {...props}
-    />
-  )
-}
-
-function TabsTrigger({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
-  return (
-    <TabsPrimitive.Trigger
-      data-slot="tabs-trigger"
-      className={cn(
-        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className,
-      )}
-      {...props}
-    />
-  )
-}
-
-function TabsContent({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Content>) {
-  return (
-    <TabsPrimitive.Content
-      data-slot="tabs-content"
-      className={cn('flex-1 outline-none', className)}
-      {...props}
-    />
+    <div className={className} style={{ marginTop: '8px' }}>
+      {children}
+    </div>
   )
 }
 

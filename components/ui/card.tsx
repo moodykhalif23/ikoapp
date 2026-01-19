@@ -1,61 +1,105 @@
 import * as React from 'react'
+import { 
+  Card as MuiCard, 
+  CardContent as MuiCardContent,
+  CardActions as MuiCardActions,
+  Typography,
+  CardProps as MuiCardProps
+} from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-import { cn } from '@/lib/utils'
+interface CardProps extends MuiCardProps {
+  className?: string
+}
 
-function Card({ className, ...props }: React.ComponentProps<'div'>) {
+const StyledCard = styled(MuiCard)(({ theme }) => ({
+  borderRadius: '12px',
+  boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+  border: `1px solid ${theme.palette.divider}`,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '24px',
+  padding: '24px',
+}))
+
+const StyledCardContent = styled(MuiCardContent)({
+  padding: 0,
+  '&:last-child': {
+    paddingBottom: 0,
+  },
+})
+
+function Card({ className, ...props }: CardProps) {
   return (
-    <div
-      data-slot="card"
-      className={cn(
-        'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm',
-        className,
-      )}
-      {...props}
-    />
+    <StyledCard className={className} {...props} />
   )
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function CardHeader({ className, children, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
-      data-slot="card-header"
-      className={cn(
-        '@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6',
-        className,
-      )}
+      className={className}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr auto',
+        alignItems: 'start',
+        gap: '8px',
+        marginBottom: '16px',
+      }}
       {...props}
-    />
+    >
+      {children}
+    </div>
   )
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
+function CardTitle({ className, children, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="card-title"
-      className={cn('leading-none font-semibold', className)}
+    <Typography 
+      variant="h6" 
+      component="div"
+      sx={{ 
+        fontSize: '1rem',
+        fontWeight: 600,
+        lineHeight: 1,
+        margin: 0,
+      }}
+      className={className}
       {...props}
-    />
+    >
+      {children}
+    </Typography>
   )
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
+function CardDescription({ className, children, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="card-description"
-      className={cn('text-muted-foreground text-sm', className)}
+    <Typography 
+      variant="body2" 
+      color="text.secondary"
+      sx={{ 
+        fontSize: '0.875rem',
+        margin: 0,
+        marginTop: '8px',
+      }}
+      className={className}
       {...props}
-    />
+    >
+      {children}
+    </Typography>
   )
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
-      data-slot="card-action"
-      className={cn(
-        'col-start-2 row-span-2 row-start-1 self-start justify-self-end',
-        className,
-      )}
+      className={className}
+      style={{
+        gridColumn: '2',
+        gridRow: '1 / span 2',
+        justifySelf: 'end',
+        alignSelf: 'start',
+      }}
       {...props}
     />
   )
@@ -63,20 +107,22 @@ function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
 
 function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="card-content"
-      className={cn('px-6', className)}
-      {...props}
-    />
+    <StyledCardContent className={className} {...props} />
   )
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="card-footer"
-      className={cn('flex items-center px-6 [.border-t]:pt-6', className)}
-      {...props}
+    <MuiCardActions 
+      sx={{ 
+        padding: 0, 
+        marginTop: '16px',
+        borderTop: '1px solid',
+        borderColor: 'divider',
+        paddingTop: '16px',
+      }}
+      className={className} 
+      {...props} 
     />
   )
 }

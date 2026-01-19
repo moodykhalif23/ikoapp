@@ -1,53 +1,79 @@
 'use client'
 
 import * as React from 'react'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Tooltip as MuiTooltip, TooltipProps as MuiTooltipProps } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-import { cn } from '@/lib/utils'
+interface TooltipProps extends Omit<MuiTooltipProps, 'title'> {
+  content?: React.ReactNode
+  delayDuration?: number
+  sideOffset?: number
+}
 
-function TooltipProvider({
-  delayDuration = 0,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+interface TooltipProviderProps {
+  delayDuration?: number
+  children: React.ReactNode
+}
+
+interface TooltipTriggerProps {
+  children: React.ReactNode
+  asChild?: boolean
+}
+
+interface TooltipContentProps {
+  children: React.ReactNode
+  className?: string
+  sideOffset?: number
+}
+
+const StyledTooltip = styled(MuiTooltip)(({ theme }) => ({
+  '& .MuiTooltip-tooltip': {
+    backgroundColor: theme.palette.text.primary,
+    color: theme.palette.background.paper,
+    fontSize: '0.75rem',
+    borderRadius: '6px',
+    padding: '6px 12px',
+    maxWidth: 'fit-content',
+  },
+  '& .MuiTooltip-arrow': {
+    color: theme.palette.text.primary,
+  },
+}))
+
+function TooltipProvider({ children, delayDuration = 0 }: TooltipProviderProps) {
+  return <>{children}</>
+}
+
+function Tooltip({ 
+  content, 
+  delayDuration = 0, 
+  children, 
+  ...props 
+}: TooltipProps) {
   return (
-    <TooltipPrimitive.Provider
-      data-slot="tooltip-provider"
-      delayDuration={delayDuration}
+    <StyledTooltip
+      title={content || ''}
+      enterDelay={delayDuration}
+      arrow
       {...props}
-    />
+    >
+      {children}
+    </StyledTooltip>
   )
 }
 
-function Tooltip({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
-  return (
-    <TooltipProvider>
-      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
-    </TooltipProvider>
-  )
+function TooltipTrigger({ children, asChild }: TooltipTriggerProps) {
+  if (asChild && React.isValidElement(children)) {
+    return children
+  }
+  return <span>{children}</span>
 }
 
-function TooltipTrigger({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+function TooltipContent({ children, className, sideOffset }: TooltipContentProps) {
+  return <>{children}</>
 }
 
-function TooltipContent({
-  className,
-  sideOffset = 0,
-  children,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
-  return (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
-        sideOffset={sideOffset}
-        className={cn(
-          'bg-foreground text-background animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance',
-          className,
+export { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent }
         )}
         {...props}
       >

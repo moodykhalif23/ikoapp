@@ -1,66 +1,173 @@
 'use client'
 
 import * as React from 'react'
-import * as AccordionPrimitive from '@radix-ui/react-accordion'
-import { ChevronDownIcon } from 'lucide-react'
+import { 
+  Accordion as MuiAccordion,
+  AccordionSummary,
+  AccordionDetails,
+  AccordionProps as MuiAccordionProps
+} from '@mui/material'
+import { styled } from '@mui/material/styles'
+import { ChevronDown } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
-
-function Accordion({
-  ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Root>) {
-  return <AccordionPrimitive.Root data-slot="accordion" {...props} />
+interface AccordionProps extends Omit<MuiAccordionProps, 'children'> {
+  type?: 'single' | 'multiple'
+  collapsible?: boolean
+  value?: string | string[]
+  onValueChange?: (value: string | string[]) => void
+  children: React.ReactNode
 }
 
-function AccordionItem({
-  className,
-  ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Item>) {
-  return (
-    <AccordionPrimitive.Item
-      data-slot="accordion-item"
-      className={cn('border-b last:border-b-0', className)}
-      {...props}
-    />
-  )
+interface AccordionItemProps {
+  value: string
+  children: React.ReactNode
+  className?: string
 }
 
-function AccordionTrigger({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+interface AccordionTriggerProps {
+  children: React.ReactNode
+  className?: string
+}
+
+interface AccordionContentProps {
+  children: React.ReactNode
+  className?: string
+}
+
+const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
+  boxShadow: 'none',
+  border: 'none',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  '&:last-child': {
+    borderBottom: 'none',
+  },
+  '&:before': {
+    display: 'none',
+  },
+  '& .MuiAccordionSummary-root': {
+    padding: '16px 0',
+    minHeight: 'auto',
+    '&.Mui-expanded': {
+      minHeight: 'auto',
+    },
+  },
+  '& .MuiAccordionSummary-content': {
+    margin: 0,
+    '&.Mui-expanded': {
+      margin: 0,
+    },
+  },
+  '& .MuiAccordionDetails-root': {
+    padding: '0 0 16px 0',
+  },
+}))
+
+const AccordionContext = React.createContext<{
+  expandedItems: Set<string>
+  toggleItem: (value: string) => void
+  type: 'single' | 'multiple'
+}>({
+  expandedItems: new Set(),
+  toggleItem: () => {},
+  type: 'single',
+})
+
+function Accordion({ 
+  type = 'single', 
+  value, 
+  onValueChange, 
+  children, 
+  ...props 
+}: AccordionProps) {
+  const [expandedItems, setExpandedItems] = React.useState<Set<string>>(new Set())
+
+  const toggleItem = React.useCallback((itemValue: string) => {
+    setExpandedItems(prev => {
+      const newSet = new Set(prev)
+      if (type === 'single') {
+        newSet.clear()
+        if (!prev.has(itemValue)) {
+          newSet.add(itemValue)
+        }
+      } else {
+        if (newSet.has(itemValue)) {
+          newSet.delete(itemValue)
+        } else {
+          newSet.add(itemValue)
+        }
+      }
+      
+      const newValue = type === 'single' 
+        ? (newSet.size > 0 ? Array.from(newSet)[0] : '')
+        : Array.from(newSet)
+      
+      onValueChange?.(newValue)
+      return newSet
+    })
+  }, [type, onValueChange])
+
+  React.useEffect(() => {
+    if (value !== undefined) {
+      const valueArray = Array.isArray(value) ? value : [value].filter(Boolean)
+      setExpandedItems(new Set(valueArray))
+    }
+  }, [value])
+
   return (
-    <AccordionPrimitive.Header className="flex">
-      <AccordionPrimitive.Trigger
-        data-slot="accordion-trigger"
-        className={cn(
-          'focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180',
-          className,
-        )}
-        {...props}
-      >
+    <AccordionContext.Provider value={{ expandedItems, toggleItem, type }}>
+      <div {...props}>
         {children}
-        <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200" />
-      </AccordionPrimitive.Trigger>
-    </AccordionPrimitive.Header>
+      </div>
+    </AccordionContext.Provider>
   )
 }
 
-function AccordionContent({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Content>) {
+function AccordionItem({ value, children, className }: AccordionItemProps) {
+  const { expandedItems, toggleItem } = React.useContext(AccordionContext)
+  const isExpanded = expandedItems.has(value)
+
   return (
-    <AccordionPrimitive.Content
-      data-slot="accordion-content"
-      className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm"
-      {...props}
+    <StyledAccordion 
+      expanded={isExpanded}
+      onChange={() => toggleItem(value)}
+      className={className}
     >
-      <div className={cn('pt-0 pb-4', className)}>{children}</div>
-    </AccordionPrimitive.Content>
+      {children}
+    </StyledAccordion>
   )
 }
+
+function AccordionTrigger({ children, className }: AccordionTriggerProps) {
+  return (
+    <AccordionSummary
+      expandIcon={<ChevronDown size={16} />}
+      className={className}
+      sx={{
+        '& .MuiAccordionSummary-expandIconWrapper': {
+          transition: 'transform 0.2s',
+        },
+        '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+          transform: 'rotate(180deg)',
+        },
+      }}
+    >
+      <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>
+        {children}
+      </div>
+    </AccordionSummary>
+  )
+}
+
+function AccordionContent({ children, className }: AccordionContentProps) {
+  return (
+    <AccordionDetails className={className}>
+      <div style={{ fontSize: '0.875rem' }}>
+        {children}
+      </div>
+    </AccordionDetails>
+  )
+}
+
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }

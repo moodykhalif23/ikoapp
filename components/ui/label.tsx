@@ -1,23 +1,34 @@
 'use client'
 
 import * as React from 'react'
-import * as LabelPrimitive from '@radix-ui/react-label'
+import { FormLabel, FormLabelProps } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-import { cn } from '@/lib/utils'
+interface LabelProps extends FormLabelProps {
+  className?: string
+}
 
-function Label({
-  className,
-  ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+const StyledLabel = styled(FormLabel)(({ theme }) => ({
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  lineHeight: 1,
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  userSelect: 'none',
+  color: theme.palette.text.primary,
+  '&.Mui-disabled': {
+    opacity: 0.5,
+    pointerEvents: 'none',
+  },
+  '&.Mui-error': {
+    color: theme.palette.error.main,
+  },
+}))
+
+function Label({ className, ...props }: LabelProps) {
   return (
-    <LabelPrimitive.Root
-      data-slot="label"
-      className={cn(
-        'flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
-        className,
-      )}
-      {...props}
-    />
+    <StyledLabel className={className} {...props} />
   )
 }
 

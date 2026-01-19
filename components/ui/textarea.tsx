@@ -1,16 +1,55 @@
 import * as React from 'react'
+import { TextField, TextFieldProps } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-import { cn } from '@/lib/utils'
+interface TextareaProps extends Omit<TextFieldProps, 'variant' | 'multiline'> {
+  className?: string
+}
 
-function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    fontSize: '0.875rem',
+    borderRadius: '6px',
+    minHeight: '64px',
+    alignItems: 'flex-start',
+    '& fieldset': {
+      borderColor: theme.palette.divider,
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.action.hover,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+      borderWidth: '2px',
+    },
+    '&.Mui-error fieldset': {
+      borderColor: theme.palette.error.main,
+    },
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: '8px 12px',
+    '&::placeholder': {
+      color: theme.palette.text.disabled,
+      opacity: 1,
+    },
+  },
+  '& .MuiInputLabel-root': {
+    fontSize: '0.875rem',
+    '&.Mui-focused': {
+      color: theme.palette.primary.main,
+    },
+  },
+}))
+
+function Textarea({ className, ...props }: TextareaProps) {
   return (
-    <textarea
-      data-slot="textarea"
-      className={cn(
-        'border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-        className,
-      )}
+    <StyledTextField
+      variant="outlined"
+      multiline
+      minRows={3}
+      fullWidth
       {...props}
+      className={className}
     />
   )
 }
