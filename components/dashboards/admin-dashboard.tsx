@@ -1,23 +1,20 @@
 "use client"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import LogoutIcon from "@mui/icons-material/Logout"
-import PeopleIcon from "@mui/icons-material/People"
-import SettingsIcon from "@mui/icons-material/Settings"
-import BarChartIcon from "@mui/icons-material/BarChart"
-import AddIcon from "@mui/icons-material/Add"
-import GetAppIcon from "@mui/icons-material/GetApp"
-import SendIcon from "@mui/icons-material/Send"
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import DeleteIcon from "@mui/icons-material/Delete"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send, Settings, UserPlus, Trash2 } from "lucide-react"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/simple-tabs"
 import { Input } from "@/components/ui/input"
-import UsersIcon from "@mui/icons-material/Group"
-import SettingsIconComponent from "@mui/icons-material/Settings"
-import SendIconComponent from "@mui/icons-material/Send"
+import PeopleIcon from "@mui/icons-material/People"
+import WarningIcon from "@mui/icons-material/Warning"
+import GetAppIcon from "@mui/icons-material/GetApp"
+import DownloadIcon from "@mui/icons-material/Download"
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"
+import SendIcon from "@mui/icons-material/Send"
+import SettingsIcon from "@mui/icons-material/Settings"
+import AddIcon from "@mui/icons-material/Add"
+import DeleteIcon from "@mui/icons-material/Delete"
 
 interface AdminDashboardProps {
   user: any
@@ -34,6 +31,12 @@ interface Comment {
 }
 
 export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDashboardProps) {
+  const [selectedReport, setSelectedReport] = useState<any>(null)
+  const [comments, setComments] = useState<Record<string, Comment[]>>({})
+  const [commentText, setCommentText] = useState("")
+  const [activeReportTab, setActiveReportTab] = useState("summary")
+  const [activeMainTab, setActiveMainTab] = useState("reports")
+  
   const [employees, setEmployees] = useState([
     { id: 1, name: "John Doe", email: "john@example.com", role: "reporter", status: "active" },
     { id: 2, name: "Jane Smith", email: "jane@example.com", role: "viewer", status: "active" },
@@ -52,10 +55,6 @@ export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDa
   const [showAddMachine, setShowAddMachine] = useState(false)
   const [newEmployee, setNewEmployee] = useState({ name: "", email: "", role: "reporter" })
   const [newMachine, setNewMachine] = useState({ name: "", productionRate: "" })
-  const [selectedReport, setSelectedReport] = useState<any>(null)
-  const [comments, setComments] = useState<Record<string, Comment[]>>({})
-  const [commentText, setCommentText] = useState("")
-  const [activeReportTab, setActiveReportTab] = useState("overview")
 
   const mockReports = [
     {
@@ -110,7 +109,7 @@ export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDa
   // Reset tab when selecting a new report
   const handleReportSelect = (report: any) => {
     setSelectedReport(report)
-    setActiveReportTab("overview") // Reset to overview tab when selecting a new report
+    setActiveReportTab("summary") // Reset to summary tab when selecting a new report
   }
 
   const handleAddEmployee = () => {
@@ -149,6 +148,17 @@ export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDa
 
   const handleDeleteMachine = (id: number) => {
     setMachines((prev) => prev.filter((mach) => mach.id !== id))
+  }
+
+  const handleExport = (report: any) => {
+    const exportData = JSON.stringify(report, null, 2)
+    const element = document.createElement("a")
+    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(exportData))
+    element.setAttribute("download", `Report-${report.id}.json`)
+    element.style.display = "none"
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
   }
 
   const handlePDFExport = (report: any) => {
@@ -222,432 +232,506 @@ ${new Date().toLocaleString()}
   }
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background text-foreground overflow-hidden">
-      {/* Fixed Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Image src="/logo.png" alt="IKO BRIQ" width={32} height={32} className="h-8 w-8 sm:h-10 sm:w-10" />
-            <h1 className="text-base sm:text-lg font-bold text-brand-primary hidden sm:block">Admin Dashboard</h1>
-            <h1 className="text-sm sm:text-lg font-bold text-brand-primary sm:hidden">Admin</h1>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-card border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <div className="relative w-24 h-10 sm:w-32 sm:h-14 flex-shrink-0">
+            <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
           </div>
-          <Button variant="ghost" size="sm" onClick={onLogout} className="gap-1 sm:gap-2 text-xs sm:text-sm touch-target">
-            <LogoutIcon className="h-4 w-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-xs sm:text-sm font-medium text-foreground truncate">{user?.name}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onLogout}
+              className="gap-1 sm:gap-2 bg-transparent touch-target text-xs sm:text-sm"
+            >
+              <LogOut size={16} />
+              <span className="hidden sm:inline">Sign Out</span>
+            </Button>
+          </div>
         </div>
       </header>
 
-      {/* Main Content Area - Fixed height scrollable */}
-      <main className="flex-1 overflow-hidden flex flex-col">
-        {/* Stats Cards - Always visible at top */}
-        <div className="p-3 sm:p-6 pb-0 flex-shrink-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <Card className="border-border/50">
-              <CardHeader className="pb-2 sm:pb-3">
-                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                  Total Reports
-                  <BarChartIcon className="h-4 w-4 text-primary" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl sm:text-3xl font-bold text-foreground">{allReports.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border/50">
-              <CardHeader className="pb-2 sm:pb-3">
-                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                  Active Reporters
-                  <PeopleIcon className="h-4 w-4 text-accent" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl sm:text-3xl font-bold text-foreground">
-                  {new Set(allReports.map((r) => r.reportedBy)).size}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">This month</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border/50">
-              <CardHeader className="pb-2 sm:pb-3">
-                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                  Avg Efficiency
-                  <SettingsIcon className="h-4 w-4 text-destructive" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl sm:text-3xl font-bold text-foreground">
-                  {(
-                    allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
-                    allReports.length
-                  ).toFixed(1)}%
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Overall production</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border/50">
-              <CardHeader className="pb-2 sm:pb-3">
-                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                  Total Employees
-                  <UsersIcon className="h-4 w-4 text-primary" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl sm:text-3xl font-bold text-foreground">{employees.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">Active users</p>
-              </CardContent>
-            </Card>
-          </div>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Admin Dashboard</h1>
+          <p className="text-xs sm:text-base text-muted-foreground">Manage reports, employees, and system settings</p>
         </div>
 
-        {/* Tabs Section */}
-        <Tabs defaultValue="reports" className="flex-1 flex flex-col overflow-hidden">
-          {/* Tab Navigation - Horizontal scrollable on mobile */}
-          <TabsList className="w-full justify-start gap-0 sm:gap-2 h-auto bg-muted/50 border-b border-border rounded-none overflow-x-auto flex-shrink-0 mx-3 sm:mx-6 mt-3 sm:mt-6">
-            <TabsTrigger value="reports" className="min-w-max text-xs sm:text-sm touch-target">
-              <BarChartIcon className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Reports</span>
-              <span className="sm:hidden">Report</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="border-border/50">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                Total Reports
+                <TrendingUp size={16} className="text-primary" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">{allReports.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                Active Reporters
+                <PeopleIcon sx={{ fontSize: 16, color: "var(--accent)" }} />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">
+                {new Set(allReports.map((r) => r.reportedBy)).size}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">This month</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                Avg Efficiency
+                <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">
+                {(
+                  allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
+                  allReports.length
+                ).toFixed(1)}
+                %
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Overall production</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                Total Employees
+                <Users size={16} className="text-primary" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">{employees.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">Active users</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Tabs */}
+        <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="w-full">
+          <TabsList className="w-full bg-muted text-xs mb-6">
+            <TabsTrigger value="reports" className="text-xs">
+              Reports
             </TabsTrigger>
-            <TabsTrigger value="employees" className="min-w-max text-xs sm:text-sm touch-target">
-              <UsersIcon className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Employees</span>
-              <span className="sm:hidden">Staff</span>
+            <TabsTrigger value="employees" className="text-xs">
+              Employees
             </TabsTrigger>
-            <TabsTrigger value="machines" className="min-w-max text-xs sm:text-sm touch-target">
-              <SettingsIconComponent className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Machines</span>
-              <span className="sm:hidden">Machines</span>
+            <TabsTrigger value="machines" className="text-xs">
+              Machines
             </TabsTrigger>
           </TabsList>
 
-          {/* Tab Content - Scrollable */}
-          <div className="flex-1 overflow-y-auto">
-            {/* Reports Tab */}
-            <TabsContent value="reports" className="m-0 h-full">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 h-full p-3 sm:p-6">
-                {/* Reports List */}
-                <div className="lg:col-span-1 flex flex-col gap-3 min-h-0">
-                  <h3 className="font-semibold text-sm sm:text-base flex-shrink-0">Recent Reports</h3>
-                  <div className="flex-1 overflow-y-auto space-y-2 min-h-0">
-                    {allReports.map((report) => (
-                      <button
-                        key={report.id}
-                        onClick={() => handleReportSelect(report)}
-                        className={`w-full text-left p-3 sm:p-4 rounded-lg border transition-all text-sm sm:text-base touch-target ${
-                          selectedReport?.id === report.id
-                            ? "border-brand-primary bg-brand-primary/5"
-                            : "border-border hover:border-brand-primary/50"
-                        }`}
-                      >
-                        <div className="font-medium truncate">{report.id}</div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">{report.reportedBy}</div>
-                        <div className="text-xs text-brand-secondary mt-1">{report.date}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+          {/* Reports Tab */}
+          <TabsContent value="reports" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Reports List */}
+              <Card className="border-border/50 lg:col-span-1">
+                <CardHeader>
+                  <CardTitle className="text-base sm:text-lg">Reports</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">All submissions</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2 max-h-96 sm:max-h-none overflow-y-auto">
+                  {allReports.map((report) => (
+                    <button
+                      key={report.id}
+                      onClick={() => handleReportSelect(report)}
+                      className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
+                        selectedReport?.id === report.id
+                          ? "bg-primary/10 border-primary"
+                          : "border-border/50 hover:bg-muted/50"
+                      }`}
+                    >
+                      <p className="font-medium text-xs sm:text-sm">{report.id}</p>
+                      <p className="text-xs text-muted-foreground">{report.reportedBy}</p>
+                      <p className="text-xs text-muted-foreground">{report.date}</p>
+                    </button>
+                  ))}
+                </CardContent>
+              </Card>
 
-                {/* Report Details */}
-                {selectedReport ? (
-                  <div className="lg:col-span-2 flex flex-col gap-3 sm:gap-4 min-h-0">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 flex-shrink-0">
-                      <h3 className="font-semibold text-sm sm:text-base">Report Details</h3>
+              {/* Report Detail */}
+              {selectedReport && (
+                <Card className="border-border/50 lg:col-span-2">
+                  <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
+                    <div className="min-w-0">
+                      <CardTitle className="text-base sm:text-lg">Report {selectedReport.id}</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
+                        Submitted by {selectedReport.reportedBy} on {selectedReport.date}
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-2 flex-col sm:flex-row flex-wrap">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleExport(selectedReport)}
+                        className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
+                      >
+                        <GetAppIcon sx={{ fontSize: 16 }} />
+                        JSON
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handlePDFExport(selectedReport)}
-                        className="w-full sm:w-auto text-xs sm:text-sm"
+                        className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
                       >
-                        <GetAppIcon sx={{ fontSize: 14, marginRight: "0.5rem" }} />
-                        Export PDF
+                        <DownloadIcon sx={{ fontSize: 16 }} />
+                        PDF
                       </Button>
                     </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Tabs value={activeReportTab} onValueChange={setActiveReportTab} className="w-full">
+                      <TabsList className="w-full bg-muted text-xs">
+                        <TabsTrigger value="summary" className="text-xs">
+                          Summary
+                        </TabsTrigger>
+                        <TabsTrigger value="power" className="text-xs">
+                          Power
+                        </TabsTrigger>
+                        <TabsTrigger value="production" className="text-xs">
+                          Production
+                        </TabsTrigger>
+                        <TabsTrigger value="incident" className="text-xs">
+                          Incident
+                        </TabsTrigger>
+                        <TabsTrigger value="visuals" className="text-xs">
+                          Visuals
+                        </TabsTrigger>
+                        <TabsTrigger value="comments" className="text-xs">
+                          Comments
+                        </TabsTrigger>
+                      </TabsList>
 
-                    <div className="flex-1 overflow-y-auto min-h-0">
-                      <Tabs value={activeReportTab} onValueChange={setActiveReportTab} className="w-full h-full flex flex-col">
-                        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 bg-muted/50 rounded-lg p-1 flex-shrink-0">
-                          <TabsTrigger value="overview" className="text-xs sm:text-sm touch-target">Overview</TabsTrigger>
-                          <TabsTrigger value="visuals" className="text-xs sm:text-sm touch-target">Visuals</TabsTrigger>
-                          <TabsTrigger value="production" className="text-xs sm:text-sm touch-target">Production</TabsTrigger>
-                          <TabsTrigger value="comments" className="text-xs sm:text-sm touch-target">Comments</TabsTrigger>
-                        </TabsList>
+                      <TabsContent value="summary" className="space-y-3 mt-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="p-3 bg-muted rounded-lg">
+                            <p className="text-xs text-muted-foreground">Report ID</p>
+                            <p className="font-mono text-xs sm:text-sm font-semibold">{selectedReport.id}</p>
+                          </div>
+                          <div className="p-3 bg-muted rounded-lg">
+                            <p className="text-xs text-muted-foreground">Status</p>
+                            <p className="font-semibold text-xs sm:text-sm text-primary">{selectedReport.status}</p>
+                          </div>
+                        </div>
+                      </TabsContent>
 
-                        <div className="flex-1 overflow-y-auto mt-3 sm:mt-4 min-h-0 space-y-3 sm:space-y-4">
-                          {/* Overview */}
-                          <TabsContent value="overview" className="space-y-4 m-0">
-                            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                              <div className="p-3 sm:p-4 bg-muted/50 rounded-lg">
-                                <span className="text-xs sm:text-sm text-muted-foreground">Status</span>
-                                <p className="font-medium text-sm sm:text-base mt-1">{selectedReport.status}</p>
-                              </div>
-                              <div className="p-3 sm:p-4 bg-muted/50 rounded-lg">
-                                <span className="text-xs sm:text-sm text-muted-foreground">Date</span>
-                                <p className="font-medium text-sm sm:text-base mt-1">{selectedReport.date}</p>
-                              </div>
+                      <TabsContent value="power" className="space-y-3 mt-4">
+                        <div className="space-y-2">
+                          <p className="font-medium text-sm">Power Interruptions</p>
+                          {selectedReport.powerInterruptions?.noInterruptions ? (
+                            <p className="text-sm text-green-600">No interruptions recorded</p>
+                          ) : (
+                            <div className="text-xs sm:text-sm space-y-1">
+                              <p>Duration: {selectedReport.powerInterruptions?.duration} minutes</p>
+                              <p>Affected Machines: {selectedReport.powerInterruptions?.affectedMachines?.join(", ")}</p>
                             </div>
-                            <div className="p-3 sm:p-4 bg-muted/50 rounded-lg">
-                              <span className="text-xs sm:text-sm text-muted-foreground">Power Interruptions</span>
-                              <p className="font-medium text-sm sm:text-base mt-1">
-                                {selectedReport.powerInterruptions?.noInterruptions
-                                  ? "No interruptions"
-                                  : `${selectedReport.powerInterruptions?.duration} minutes - ${selectedReport.powerInterruptions?.affectedMachines?.join(", ")}`}
-                              </p>
-                            </div>
-                            <div className="p-3 sm:p-4 bg-muted/50 rounded-lg">
-                              <span className="text-xs sm:text-sm text-muted-foreground">Incident Type</span>
-                              <p className="font-medium text-sm sm:text-base mt-1 capitalize">
-                                {selectedReport.incidentReport?.incidentType || "None"}
-                              </p>
-                            </div>
-                          </TabsContent>
+                          )}
+                        </div>
+                      </TabsContent>
 
-                          {/* Site Visuals */}
-                          <TabsContent value="visuals" className="space-y-3 m-0">
-                            {selectedReport.siteVisuals?.media && selectedReport.siteVisuals.media.length > 0 ? (
-                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-                                {selectedReport.siteVisuals.media.map((item: any, idx: number) => (
-                                  <div
-                                    key={idx}
-                                    className="relative aspect-square rounded-lg overflow-hidden bg-muted border border-border group cursor-pointer touch-target"
-                                  >
-                                    {item.type === "image" ? (
-                                      <div className="relative w-full h-full">
-                                        <Image src={item.url || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
-                                      </div>
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center bg-muted">
-                                        <div className="flex flex-col items-center gap-2">
-                                          <PlayArrowIcon sx={{ fontSize: 32, color: "var(--brand-orange)" }} />
-                                          <span className="text-xs text-muted-foreground text-center px-1 truncate">{item.name}</span>
-                                        </div>
-                                      </div>
-                                    )}
+                      <TabsContent value="production" className="space-y-3 mt-4">
+                        <div className="space-y-3">
+                          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                            <p className="text-xs text-muted-foreground mb-1">Overall Efficiency</p>
+                            <p className="text-xl sm:text-2xl font-bold text-primary">
+                              {selectedReport.dailyProduction?.overallEfficiency}%
+                            </p>
+                          </div>
+                          {selectedReport.dailyProduction?.products &&
+                            selectedReport.dailyProduction.products.length > 0 && (
+                              <div className="space-y-2">
+                                <p className="font-medium text-xs sm:text-sm">Production Details</p>
+                                {selectedReport.dailyProduction.products.map((product: any, idx: number) => (
+                                  <div key={idx} className="border border-border/50 rounded-lg p-3 space-y-2">
+                                    <p className="font-medium text-xs sm:text-sm">{product.productName}</p>
+                                    <div className="text-xs space-y-1 text-muted-foreground">
+                                      <p>
+                                        Quantity: {product.quantity} {product.unit}
+                                      </p>
+                                      <p>Machines: {product.machinesUsed?.join(", ")}</p>
+                                      <p>Employees: {product.employees}</p>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
-                            ) : (
-                              <p className="text-xs sm:text-sm text-muted-foreground">No media uploaded</p>
                             )}
-                          </TabsContent>
+                        </div>
+                      </TabsContent>
 
-                          {/* Production */}
-                          <TabsContent value="production" className="space-y-3 m-0">
-                            <div className="p-3 sm:p-4 bg-muted/50 rounded-lg">
-                              <span className="text-xs sm:text-sm text-muted-foreground">Overall Efficiency</span>
-                              <p className="font-medium text-sm sm:text-base mt-1">{selectedReport.dailyProduction?.overallEfficiency}%</p>
-                            </div>
-                            {selectedReport.dailyProduction?.products?.map((product: any, idx: number) => (
-                              <div key={idx} className="border border-border rounded-lg p-3 sm:p-4 space-y-2">
-                                <p className="font-medium text-sm sm:text-base">{product.productName}</p>
-                                <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
-                                  <div>
-                                    <span className="text-muted-foreground">Quantity</span>
-                                    <p className="font-medium">{product.quantity} {product.unit}</p>
-                                  </div>
-                                  <div>
-                                    <span className="text-muted-foreground">Employees</span>
-                                    <p className="font-medium">{product.employees}</p>
-                                  </div>
-                                  <div className="col-span-2">
-                                    <span className="text-muted-foreground">Machines</span>
-                                    <p className="font-medium">{product.machinesUsed?.join(", ")}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </TabsContent>
+                      <TabsContent value="incident" className="space-y-3 mt-4">
+                        <div className="text-xs sm:text-sm space-y-2">
+                          <p>
+                            Type:{" "}
+                            <span className="font-semibold capitalize">
+                              {selectedReport.incidentReport?.incidentType || "None"}
+                            </span>
+                          </p>
+                          <p>
+                            Severity:{" "}
+                            <span className="font-semibold">
+                              {selectedReport.incidentReport?.severity || "None reported"}
+                            </span>
+                          </p>
+                        </div>
+                      </TabsContent>
 
-                          {/* Comments */}
-                          <TabsContent value="comments" className="flex flex-col gap-3 m-0 h-full">
-                            <div className="flex-1 overflow-y-auto space-y-3 min-h-0">
-                              {comments[selectedReport.id]?.map((comment) => (
-                                <div key={comment.id} className="border border-border rounded-lg p-3 space-y-1">
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="text-xs sm:text-sm font-medium">{comment.author}</span>
-                                    <span className="text-xs bg-brand-primary text-white px-2 py-0.5 rounded">{comment.role}</span>
-                                  </div>
-                                  <p className="text-xs sm:text-sm text-foreground break-words">{comment.text}</p>
-                                  <span className="text-xs text-muted-foreground">{comment.timestamp}</span>
+                      <TabsContent value="visuals" className="space-y-3 mt-4">
+                        <div className="space-y-3">
+                          <p className="font-medium text-sm">Site Visual Documentation</p>
+                          {selectedReport.siteVisuals?.media && selectedReport.siteVisuals.media.length > 0 ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                              {selectedReport.siteVisuals.media.map((file: any, idx: number) => (
+                                <div
+                                  key={idx}
+                                  className="border border-border rounded-lg overflow-hidden bg-muted hover:shadow-md transition-shadow"
+                                >
+                                  {file.type === "image" ? (
+                                    <>
+                                      <div className="relative w-full aspect-video bg-muted flex items-center justify-center overflow-hidden">
+                                        <img
+                                          src={file.url || "/placeholder.svg"}
+                                          alt={file.name}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      </div>
+                                      <div className="p-2 border-t border-border bg-card">
+                                        <p className="text-xs font-medium truncate">{file.name}</p>
+                                        <p className="text-xs text-muted-foreground">Image</p>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div className="relative w-full aspect-video bg-black flex items-center justify-center">
+                                        <PlayArrowIcon sx={{ fontSize: 32, color: "rgba(255,255,255,0.6)" }} />
+                                      </div>
+                                      <div className="p-2 border-t border-border bg-card">
+                                        <p className="text-xs font-medium truncate">{file.name}</p>
+                                        <p className="text-xs text-muted-foreground">Video</p>
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
                               ))}
                             </div>
-                            <div className="flex gap-2 mt-auto flex-shrink-0">
-                              <Input
-                                placeholder="Add comment..."
-                                value={commentText}
-                                onChange={(e) => setCommentText(e.target.value)}
-                                onKeyPress={(e) => e.key === "Enter" && handleAddComment(selectedReport.id)}
-                                className="text-xs sm:text-sm"
-                              />
-                              <Button
-                                size="sm"
-                                onClick={() => handleAddComment(selectedReport.id)}
-                                className="px-2 sm:px-3 touch-target"
-                              >
-                                <SendIconComponent className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TabsContent>
+                          ) : (
+                            <p className="text-xs sm:text-sm text-muted-foreground text-center py-4">
+                              No media files uploaded
+                            </p>
+                          )}
                         </div>
-                      </Tabs>
+                      </TabsContent>
+
+                      <TabsContent value="comments" className="space-y-3 mt-4">
+                        <div className="space-y-4">
+                          <div className="space-y-3 max-h-64 overflow-y-auto border border-border/50 rounded-lg p-3 sm:p-4 bg-muted/30">
+                            {comments[selectedReport.id]?.length > 0 ? (
+                              comments[selectedReport.id].map((comment) => (
+                                <div key={comment.id} className="p-2 sm:p-3 bg-card rounded-lg border border-border/50">
+                                  <div className="flex items-center justify-between gap-2 mb-2">
+                                    <p className="font-medium text-xs sm:text-sm">{comment.author}</p>
+                                    <p className="text-xs text-muted-foreground flex-shrink-0">{comment.timestamp}</p>
+                                  </div>
+                                  <p className="text-xs sm:text-sm text-foreground">{comment.text}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-xs sm:text-sm text-muted-foreground text-center py-4">
+                                No comments yet. Be the first to comment!
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Add your comment..."
+                              value={commentText}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentText(e.target.value)}
+                              onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleAddComment(selectedReport.id)}
+                              className="flex-1 text-xs sm:text-sm"
+                            />
+                            <Button
+                              size="sm"
+                              onClick={() => handleAddComment(selectedReport.id)}
+                              className="px-2 sm:px-3"
+                            >
+                              <SendIcon sx={{ fontSize: 16 }} />
+                            </Button>
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+          {/* Employees Tab */}
+          <TabsContent value="employees" className="space-y-6">
+            <Card className="border-border/50">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
+                <div className="min-w-0">
+                  <CardTitle className="text-base sm:text-lg">Employee Management</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Manage system users and their roles</CardDescription>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => setShowAddEmployee(!showAddEmployee)}
+                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
+                >
+                  <UserPlus size={16} />
+                  Add Employee
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {showAddEmployee && (
+                  <div className="p-4 border border-border/50 rounded-lg bg-muted/30 space-y-3">
+                    <Input
+                      placeholder="Employee Name"
+                      value={newEmployee.name}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+                      className="text-xs sm:text-sm"
+                    />
+                    <Input
+                      placeholder="Email Address"
+                      value={newEmployee.email}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
+                      className="text-xs sm:text-sm"
+                    />
+                    <select
+                      value={newEmployee.role}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-xs sm:text-sm"
+                    >
+                      <option value="reporter">Reporter</option>
+                      <option value="viewer">Viewer</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={handleAddEmployee}
+                        className="flex-1 text-xs sm:text-sm touch-target"
+                      >
+                        Add Employee
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setShowAddEmployee(false)}
+                        className="flex-1 text-xs sm:text-sm touch-target"
+                      >
+                        Cancel
+                      </Button>
                     </div>
                   </div>
-                ) : (
-                  <div className="lg:col-span-2 flex items-center justify-center text-muted-foreground">
-                    <p className="text-sm sm:text-base">Select a report to view details</p>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-
-            {/* Employees Tab */}
-            <TabsContent value="employees" className="m-0 h-full">
-              <div className="flex flex-col h-full p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 flex-shrink-0">
-                  <h3 className="font-semibold text-sm sm:text-base">Employee Management</h3>
-                  <Button
-                    size="sm"
-                    onClick={() => setShowAddEmployee(!showAddEmployee)}
-                    className="w-full sm:w-auto text-xs sm:text-sm"
-                  >
-                    <AddIcon sx={{ fontSize: 16, marginRight: "0.5rem" }} />
-                    Add Employee
-                  </Button>
-                </div>
-
-                {showAddEmployee && (
-                  <Card className="mb-4 flex-shrink-0">
-                    <CardContent className="pt-4 sm:pt-6 space-y-3">
-                      <Input
-                        placeholder="Name"
-                        value={newEmployee.name}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                        className="text-xs sm:text-sm"
-                      />
-                      <Input
-                        placeholder="Email"
-                        value={newEmployee.email}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                        className="text-xs sm:text-sm"
-                      />
-                      <select
-                        value={newEmployee.role}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
-                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-xs sm:text-sm"
-                      >
-                        <option value="reporter">Reporter</option>
-                        <option value="viewer">Viewer</option>
-                      </select>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={handleAddEmployee}
-                          className="flex-1 text-xs sm:text-sm touch-target"
-                        >
-                          Add
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setShowAddEmployee(false)}
-                          className="flex-1 text-xs sm:text-sm touch-target"
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
                 )}
 
-                <div className="flex-1 overflow-y-auto min-h-0">
-                  <div className="space-y-2 sm:space-y-3">
-                    {employees.map((emp) => (
-                      <div key={emp.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border border-border rounded-lg gap-2 sm:gap-0">
+                <div className="space-y-3">
+                  {employees.map((emp) => (
+                    <div key={emp.id} className="p-3 sm:p-4 border border-border/50 rounded-lg bg-card hover:shadow-md transition-shadow">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-xs sm:text-sm truncate">{emp.name}</p>
                           <p className="text-xs text-muted-foreground truncate">{emp.email}</p>
-                          <div className="flex gap-2 mt-2 sm:mt-0 flex-wrap">
-                            <span className="text-xs bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded capitalize w-fit">
+                          <div className="flex gap-2 mt-2 flex-wrap">
+                            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded capitalize">
                               {emp.role}
                             </span>
-                            <span className="text-xs bg-green-500/10 text-green-600 px-2 py-0.5 rounded capitalize w-fit">{emp.status}</span>
+                            <span className="text-xs bg-green-500/10 text-green-600 px-2 py-0.5 rounded capitalize">
+                              {emp.status}
+                            </span>
                           </div>
                         </div>
                         <Button
                           size="sm"
-                          variant="destructive"
-                          onClick={() => handleDeleteEmployee(emp.id)}
-                          className="w-full sm:w-auto text-xs"
-                        >
-                          <DeleteIcon sx={{ fontSize: 16 }} />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* Machines Tab */}
-            <TabsContent value="machines" className="m-0 h-full">
-              <div className="flex flex-col h-full p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 flex-shrink-0">
-                  <h3 className="font-semibold text-sm sm:text-base">Machine Management</h3>
-                  <Button
-                    size="sm"
-                    onClick={() => setShowAddMachine(!showAddMachine)}
-                    className="w-full sm:w-auto text-xs sm:text-sm"
-                  >
-                    <AddIcon sx={{ fontSize: 16, marginRight: "0.5rem" }} />
-                    Add Machine
-                  </Button>
-                </div>
-
-                {showAddMachine && (
-                  <Card className="mb-4 flex-shrink-0">
-                    <CardContent className="pt-4 sm:pt-6 space-y-3">
-                      <Input
-                        placeholder="Machine Name"
-                        value={newMachine.name}
-                        onChange={(e) => setNewMachine({ ...newMachine, name: e.target.value })}
-                        className="text-xs sm:text-sm"
-                      />
-                      <Input
-                        placeholder="Production Rate (e.g., 100 units/hour)"
-                        value={newMachine.productionRate}
-                        onChange={(e) => setNewMachine({ ...newMachine, productionRate: e.target.value })}
-                        className="text-xs sm:text-sm"
-                      />
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={handleAddMachine}
-                          className="flex-1 text-xs sm:text-sm touch-target"
-                        >
-                          Add
-                        </Button>
-                        <Button
-                          size="sm"
                           variant="outline"
-                          onClick={() => setShowAddMachine(false)}
-                          className="flex-1 text-xs sm:text-sm touch-target"
+                          onClick={() => handleDeleteEmployee(emp.id)}
+                          className="gap-2 text-xs touch-target w-full sm:w-auto border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                         >
-                          Cancel
+                          <Trash2 size={16} />
+                          Remove
                         </Button>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Machines Tab */}
+          <TabsContent value="machines" className="space-y-6">
+            <Card className="border-border/50">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
+                <div className="min-w-0">
+                  <CardTitle className="text-base sm:text-lg">Machine Management</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Monitor and manage production equipment</CardDescription>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => setShowAddMachine(!showAddMachine)}
+                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
+                >
+                  <Settings size={16} />
+                  Add Machine
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {showAddMachine && (
+                  <div className="p-4 border border-border/50 rounded-lg bg-muted/30 space-y-3">
+                    <Input
+                      placeholder="Machine Name"
+                      value={newMachine.name}
+                      onChange={(e) => setNewMachine({ ...newMachine, name: e.target.value })}
+                      className="text-xs sm:text-sm"
+                    />
+                    <Input
+                      placeholder="Production Rate (e.g., 100 units/hour)"
+                      value={newMachine.productionRate}
+                      onChange={(e) => setNewMachine({ ...newMachine, productionRate: e.target.value })}
+                      className="text-xs sm:text-sm"
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={handleAddMachine}
+                        className="flex-1 text-xs sm:text-sm touch-target"
+                      >
+                        Add Machine
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setShowAddMachine(false)}
+                        className="flex-1 text-xs sm:text-sm touch-target"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
                 )}
 
-                <div className="flex-1 overflow-y-auto min-h-0">
-                  <div className="space-y-2 sm:space-y-3">
-                    {machines.map((machine) => (
-                      <div key={machine.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border border-border rounded-lg gap-2 sm:gap-0">
+                <div className="space-y-3">
+                  {machines.map((machine) => (
+                    <div key={machine.id} className="p-3 sm:p-4 border border-border/50 rounded-lg bg-card hover:shadow-md transition-shadow">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-xs sm:text-sm truncate">{machine.name}</p>
                           <p className="text-xs text-muted-foreground">{machine.productionRate}</p>
@@ -663,19 +747,20 @@ ${new Date().toLocaleString()}
                         </div>
                         <Button
                           size="sm"
-                          variant="destructive"
+                          variant="outline"
                           onClick={() => handleDeleteMachine(machine.id)}
-                          className="w-full sm:w-auto text-xs"
+                          className="gap-2 text-xs touch-target w-full sm:w-auto border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                         >
-                          <DeleteIcon sx={{ fontSize: 16 }} />
+                          <Trash2 size={16} />
+                          Remove
                         </Button>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </TabsContent>
-          </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </main>
     </div>
