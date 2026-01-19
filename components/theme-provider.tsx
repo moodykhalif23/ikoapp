@@ -68,8 +68,25 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             fontSize: '0.875rem',
+            backgroundColor: 'transparent !important',
             '&.Mui-focused': {
-              boxShadow: 'none',
+              boxShadow: 'none !important',
+              backgroundColor: 'transparent !important',
+            },
+            '&:focus-within': {
+              boxShadow: 'none !important',
+              backgroundColor: 'transparent !important',
+            },
+          },
+          '& .MuiOutlinedInput-input': {
+            backgroundColor: 'transparent !important',
+            '&:focus': {
+              backgroundColor: 'transparent !important',
+              boxShadow: 'none !important',
+            },
+            '&:focus-visible': {
+              backgroundColor: 'transparent !important',
+              boxShadow: 'none !important',
             },
           },
         },
@@ -78,11 +95,46 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          backgroundColor: 'transparent !important',
           '&.Mui-focused': {
-            boxShadow: 'none',
+            boxShadow: 'none !important',
+            backgroundColor: 'transparent !important',
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            boxShadow: 'none',
+            boxShadow: 'none !important',
+          },
+          '&:focus-within': {
+            boxShadow: 'none !important',
+            backgroundColor: 'transparent !important',
+          },
+        },
+        input: {
+          backgroundColor: 'transparent !important',
+          '&:focus': {
+            backgroundColor: 'transparent !important',
+            boxShadow: 'none !important',
+          },
+          '&:focus-visible': {
+            backgroundColor: 'transparent !important',
+            boxShadow: 'none !important',
+          },
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'transparent !important',
+          '&.Mui-focused': {
+            backgroundColor: 'transparent !important',
+            boxShadow: 'none !important',
+          },
+        },
+        input: {
+          backgroundColor: 'transparent !important',
+          '&:focus': {
+            backgroundColor: 'transparent !important',
+            boxShadow: 'none !important',
           },
         },
       },

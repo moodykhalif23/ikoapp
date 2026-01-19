@@ -135,6 +135,33 @@
     @apply bg-background text-foreground;
   }
 
+  /* Remove blue focus overlay from Material UI inputs */
+  .MuiOutlinedInput-root,
+  .MuiOutlinedInput-input,
+  .MuiTextField-root input,
+  .MuiInputBase-root,
+  .MuiInputBase-input {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .MuiOutlinedInput-root.Mui-focused,
+  .MuiOutlinedInput-input:focus,
+  .MuiTextField-root input:focus,
+  .MuiInputBase-root.Mui-focused,
+  .MuiInputBase-input:focus {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  .MuiOutlinedInput-root:focus-within,
+  .MuiTextField-root:focus-within,
+  .MuiInputBase-root:focus-within {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
   /* Mobile-first touch optimization */
   button,
   a,
