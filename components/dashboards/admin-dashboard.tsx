@@ -109,7 +109,7 @@ export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDa
   // Reset tab when selecting a new report
   const handleReportSelect = (report: any) => {
     setSelectedReport(report)
-    setActiveReportTab("summary") // Reset to summary tab when selecting a new report
+    setActiveReportTab("summary")
   }
 
   const handleAddEmployee = () => {
@@ -221,20 +221,21 @@ ${new Date().toLocaleString()}
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-orange-50 to-green-100">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 border-b border-border/50 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
           <div className="relative w-24 h-10 sm:w-32 sm:h-14 flex-shrink-0">
             <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-            <span className="text-xs sm:text-sm font-medium text-foreground truncate">{user?.name}</span>
+            <span className="text-xs sm:text-sm font-medium text-brand-contrast truncate">{user?.name}</span>
             <Button
               variant="outline"
               size="sm"
               onClick={onLogout}
-              className="gap-1 sm:gap-2 bg-white/90 hover:bg-white backdrop-blur-sm touch-target text-xs sm:text-sm border-border/50"
+              className="gap-1 sm:gap-2 backdrop-blur-sm touch-target text-xs sm:text-sm border-brand-subtle hover-brand focus-brand"
+              style={{ background: 'rgba(255, 255, 255, 0.8)' }}
             >
               <LogOut size={16} />
               <span className="hidden sm:inline">Sign Out</span>
@@ -251,9 +252,9 @@ ${new Date().toLocaleString()}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
                 Total Reports
                 <TrendingUp size={16} className="text-primary" />
               </CardTitle>
@@ -264,9 +265,9 @@ ${new Date().toLocaleString()}
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
                 Active Reporters
                 <PeopleIcon sx={{ fontSize: 16, color: "var(--accent)" }} />
               </CardTitle>
@@ -279,9 +280,9 @@ ${new Date().toLocaleString()}
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
                 Avg Efficiency
                 <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
               </CardTitle>
@@ -298,9 +299,9 @@ ${new Date().toLocaleString()}
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
                 Total Employees
                 <Users size={16} className="text-primary" />
               </CardTitle>
@@ -330,7 +331,7 @@ ${new Date().toLocaleString()}
           <TabsContent value="reports" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Reports List */}
-              <Card className="border-border/50 lg:col-span-1 bg-white/70 backdrop-blur-sm shadow-lg">
+              <Card className="card-brand lg:col-span-1 card-elevated">
                 <CardHeader>
                   <CardTitle className="text-base sm:text-lg">Reports</CardTitle>
                   <CardDescription className="text-xs sm:text-sm">All submissions</CardDescription>
@@ -343,7 +344,7 @@ ${new Date().toLocaleString()}
                       className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
                         selectedReport?.id === report.id
                           ? "bg-primary/10 border-primary"
-                          : "border-border/50 hover:bg-white/80 backdrop-blur-sm"
+                          : "border-brand-subtle hover-brand backdrop-blur-sm"
                       }`}
                     >
                       <p className="font-medium text-xs sm:text-sm">{report.id}</p>
@@ -356,7 +357,7 @@ ${new Date().toLocaleString()}
 
               {/* Report Detail */}
               {selectedReport && (
-                <Card className="border-border/50 lg:col-span-2 bg-white/70 backdrop-blur-sm shadow-lg">
+                <Card className="card-brand lg:col-span-2 card-elevated">
                   <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
                     <div className="min-w-0">
                       <CardTitle className="text-base sm:text-lg">Report {selectedReport.id}</CardTitle>
@@ -369,7 +370,7 @@ ${new Date().toLocaleString()}
                         size="sm"
                         variant="outline"
                         onClick={() => handlePDFExport(selectedReport)}
-                        className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
+                        className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto border-brand-subtle hover-brand focus-brand"
                       >
                         <DownloadIcon sx={{ fontSize: 16 }} />
                         PDF
@@ -520,10 +521,10 @@ ${new Date().toLocaleString()}
 
                       <TabsContent value="comments" className="space-y-3 mt-4">
                         <div className="space-y-4">
-                          <div className="space-y-3 max-h-64 overflow-y-auto border border-border/50 rounded-lg p-3 sm:p-4 bg-muted/30">
+                          <div className="space-y-3 max-h-64 overflow-y-auto border-brand-subtle rounded-lg p-3 sm:p-4 bg-brand-surface">
                             {comments[selectedReport.id]?.length > 0 ? (
                               comments[selectedReport.id].map((comment) => (
-                                <div key={comment.id} className="p-2 sm:p-3 bg-card rounded-lg border border-border/50">
+                                <div key={comment.id} className="p-2 sm:p-3 bg-card rounded-lg border-brand-subtle">
                                   <div className="flex items-center justify-between gap-2 mb-2">
                                     <p className="font-medium text-xs sm:text-sm">{comment.author}</p>
                                     <p className="text-xs text-muted-foreground flex-shrink-0">{comment.timestamp}</p>
@@ -544,7 +545,7 @@ ${new Date().toLocaleString()}
                               value={commentText}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentText(e.target.value)}
                               onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleAddComment(selectedReport.id)}
-                              className="flex-1 text-xs sm:text-sm"
+                              className="flex-1 text-xs sm:text-sm focus-brand"
                             />
                             <Button
                               size="sm"
@@ -564,7 +565,7 @@ ${new Date().toLocaleString()}
           </TabsContent>
           {/* Employees Tab */}
           <TabsContent value="employees" className="space-y-6">
-            <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+            <Card className="card-brand card-brand-dark card-elevated">
               <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
                 <div className="min-w-0">
                   <CardTitle className="text-base sm:text-lg">Employee Management</CardTitle>
@@ -573,7 +574,7 @@ ${new Date().toLocaleString()}
                 <Button
                   size="sm"
                   onClick={() => setShowAddEmployee(!showAddEmployee)}
-                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
+                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto border-brand-subtle hover-brand focus-brand"
                 >
                   <UserPlus size={16} />
                   Add Employee
@@ -581,23 +582,23 @@ ${new Date().toLocaleString()}
               </CardHeader>
               <CardContent className="space-y-4">
                 {showAddEmployee && (
-                  <div className="p-4 border border-border/50 rounded-lg bg-muted/30 space-y-3">
+                  <div className="p-4 border-brand-subtle rounded-lg bg-brand-surface space-y-3">
                     <Input
                       placeholder="Employee Name"
                       value={newEmployee.name}
                       onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                      className="text-xs sm:text-sm"
+                      className="text-xs sm:text-sm focus-brand"
                     />
                     <Input
                       placeholder="Email Address"
                       value={newEmployee.email}
                       onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                      className="text-xs sm:text-sm"
+                      className="text-xs sm:text-sm focus-brand"
                     />
                     <select
                       value={newEmployee.role}
                       onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-xs sm:text-sm"
+                      className="w-full px-3 py-2 border border-brand-subtle rounded-md bg-background text-xs sm:text-sm focus-brand"
                     >
                       <option value="reporter">Reporter</option>
                       <option value="viewer">Viewer</option>
@@ -615,7 +616,7 @@ ${new Date().toLocaleString()}
                         size="sm"
                         variant="outline"
                         onClick={() => setShowAddEmployee(false)}
-                        className="flex-1 text-xs sm:text-sm touch-target"
+                        className="flex-1 text-xs sm:text-sm touch-target border-brand-subtle hover-brand focus-brand"
                       >
                         Cancel
                       </Button>
@@ -625,7 +626,7 @@ ${new Date().toLocaleString()}
 
                 <div className="space-y-3">
                   {employees.map((emp) => (
-                    <div key={emp.id} className="p-3 sm:p-4 border border-border/50 rounded-lg bg-card hover:shadow-md transition-shadow">
+                    <div key={emp.id} className="p-3 sm:p-4 border-brand-subtle rounded-lg bg-card hover:shadow-md transition-shadow hover-brand">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-xs sm:text-sm truncate">{emp.name}</p>
@@ -658,7 +659,7 @@ ${new Date().toLocaleString()}
 
           {/* Machines Tab */}
           <TabsContent value="machines" className="space-y-6">
-            <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+            <Card className="card-brand card-brand-dark card-elevated">
               <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
                 <div className="min-w-0">
                   <CardTitle className="text-base sm:text-lg">Machine Management</CardTitle>
@@ -667,7 +668,7 @@ ${new Date().toLocaleString()}
                 <Button
                   size="sm"
                   onClick={() => setShowAddMachine(!showAddMachine)}
-                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
+                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto border-brand-subtle hover-brand focus-brand"
                 >
                   <Settings size={16} />
                   Add Machine
@@ -675,18 +676,18 @@ ${new Date().toLocaleString()}
               </CardHeader>
               <CardContent className="space-y-4">
                 {showAddMachine && (
-                  <div className="p-4 border border-border/50 rounded-lg bg-muted/30 space-y-3">
+                  <div className="p-4 border-brand-subtle rounded-lg bg-brand-surface space-y-3">
                     <Input
                       placeholder="Machine Name"
                       value={newMachine.name}
                       onChange={(e) => setNewMachine({ ...newMachine, name: e.target.value })}
-                      className="text-xs sm:text-sm"
+                      className="text-xs sm:text-sm focus-brand"
                     />
                     <Input
                       placeholder="Production Rate (e.g., 100 units/hour)"
                       value={newMachine.productionRate}
                       onChange={(e) => setNewMachine({ ...newMachine, productionRate: e.target.value })}
-                      className="text-xs sm:text-sm"
+                      className="text-xs sm:text-sm focus-brand"
                     />
                     <div className="flex gap-2">
                       <Button
@@ -700,7 +701,7 @@ ${new Date().toLocaleString()}
                         size="sm"
                         variant="outline"
                         onClick={() => setShowAddMachine(false)}
-                        className="flex-1 text-xs sm:text-sm touch-target"
+                        className="flex-1 text-xs sm:text-sm touch-target border-brand-subtle hover-brand focus-brand"
                       >
                         Cancel
                       </Button>
@@ -710,7 +711,7 @@ ${new Date().toLocaleString()}
 
                 <div className="space-y-3">
                   {machines.map((machine) => (
-                    <div key={machine.id} className="p-3 sm:p-4 border border-border/50 rounded-lg bg-card hover:shadow-md transition-shadow">
+                    <div key={machine.id} className="p-3 sm:p-4 border-brand-subtle rounded-lg bg-card hover:shadow-md transition-shadow hover-brand">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-xs sm:text-sm truncate">{machine.name}</p>

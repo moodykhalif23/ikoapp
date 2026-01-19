@@ -53,10 +53,10 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-background via-background to-muted p-4 md:p-6 safe-area-inset">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 safe-area-inset" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
       {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute top-0 left-0 w-72 h-72 rounded-full blur-3xl -z-10" style={{ background: 'rgba(45, 106, 79, 0.1)' }}></div>
+      <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full blur-3xl -z-10" style={{ background: 'rgba(255, 140, 0, 0.1)' }}></div>
 
       <div className="w-full max-w-md">
         {/* Logo */}
@@ -66,7 +66,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
           </div>
         </div>
 
-        <Card className="border-border/50 shadow-lg">
+        <Card className="card-brand card-elevated">
           <CardHeader className="space-y-2 text-center">
             <CardTitle className="text-xl sm:text-2xl md:text-3xl text-primary text-center">
               {isSignUp ? "Create Account" : "Welcome Back"}
@@ -84,39 +84,39 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
 
               {isSignUp && (
                 <div className="space-y-2">
-                  <label className="text-xs sm:text-sm font-medium text-foreground">Full Name</label>
+                  <label className="text-xs sm:text-sm font-medium text-brand-contrast">Full Name</label>
                   <Input
                     type="text"
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     disabled={loading}
-                    className="border-border text-base"
+                    className="border-brand-subtle text-base focus-brand"
                   />
                 </div>
               )}
 
               <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-medium text-foreground">Email</label>
+                <label className="text-xs sm:text-sm font-medium text-brand-contrast">Email</label>
                 <Input
                   type="email"
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
-                  className="border-border text-base"
+                  className="border-brand-subtle text-base focus-brand"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-medium text-foreground">Password</label>
+                <label className="text-xs sm:text-sm font-medium text-brand-contrast">Password</label>
                 <Input
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
-                  className="border-border text-base"
+                  className="border-brand-subtle text-base focus-brand"
                 />
               </div>
 

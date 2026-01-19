@@ -174,20 +174,21 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-orange-50 to-green-100">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 border-b border-border/50 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
           <div className="relative w-24 h-10 sm:w-32 sm:h-14 flex-shrink-0">
             <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-            <span className="text-xs sm:text-sm font-medium text-foreground truncate">{user?.name}</span>
+            <span className="text-xs sm:text-sm font-medium text-brand-contrast truncate">{user?.name}</span>
             <Button
               variant="outline"
               size="sm"
               onClick={onLogout}
-              className="gap-1 sm:gap-2 bg-white/90 hover:bg-white backdrop-blur-sm touch-target text-xs sm:text-sm border-border/50"
+              className="gap-1 sm:gap-2 backdrop-blur-sm touch-target text-xs sm:text-sm border-brand-subtle hover-brand focus-brand"
+              style={{ background: 'rgba(255, 255, 255, 0.8)' }}
             >
               <LogOut size={16} />
               <span className="hidden sm:inline">Sign Out</span>
@@ -199,16 +200,14 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Reports Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1 sm:mb-2">Reports Dashboard</h1>
           <p className="text-xs sm:text-base text-muted-foreground">View and analyze production reports</p>
         </div>
 
-
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
                 Total Reports
                 <TrendingUp size={16} className="text-primary" />
               </CardTitle>
@@ -219,9 +218,9 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
                 Active Reporters
                 <PeopleIcon sx={{ fontSize: 16, color: "var(--accent)" }} />
               </CardTitle>
@@ -234,9 +233,9 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
                 Avg Efficiency
                 <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
               </CardTitle>
@@ -256,7 +255,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Reports List */}
-          <Card className="border-border/50 lg:col-span-1 bg-white/70 backdrop-blur-sm shadow-lg">
+          <Card className="card-brand lg:col-span-1 card-elevated">
             <CardHeader>
               <CardTitle className="text-base sm:text-lg">Reports</CardTitle>
               <CardDescription className="text-xs sm:text-sm">All submissions</CardDescription>
@@ -269,7 +268,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                   className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
                     selectedReport?.id === report.id
                       ? "bg-primary/10 border-primary"
-                      : "border-border/50 hover:bg-white/80 backdrop-blur-sm"
+                      : "border-brand-subtle hover-brand backdrop-blur-sm"
                   }`}
                 >
                   <p className="font-medium text-xs sm:text-sm">{report.id}</p>
@@ -282,7 +281,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
           {/* Report Detail */}
           {selectedReport && (
-            <Card className="border-border/50 lg:col-span-2 bg-white/70 backdrop-blur-sm shadow-lg">
+            <Card className="card-brand lg:col-span-2 card-elevated">
               <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
                 <div className="min-w-0">
                   <CardTitle className="text-base sm:text-lg">Report {selectedReport.id}</CardTitle>
@@ -295,7 +294,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                     size="sm"
                     variant="outline"
                     onClick={() => handlePDFExport(selectedReport)}
-                    className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
+                    className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto border-brand-subtle hover-brand focus-brand"
                   >
                     <DownloadIcon sx={{ fontSize: 16 }} />
                     PDF
@@ -446,10 +445,10 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
                   <TabsContent value="comments" className="space-y-3 mt-4">
                     <div className="space-y-4">
-                      <div className="space-y-3 max-h-64 overflow-y-auto border border-border/50 rounded-lg p-3 sm:p-4 bg-muted/30">
+                      <div className="space-y-3 max-h-64 overflow-y-auto border-brand-subtle rounded-lg p-3 sm:p-4 bg-brand-surface">
                         {comments[selectedReport.id]?.length > 0 ? (
                           comments[selectedReport.id].map((comment) => (
-                            <div key={comment.id} className="p-2 sm:p-3 bg-card rounded-lg border border-border/50">
+                            <div key={comment.id} className="p-2 sm:p-3 bg-card rounded-lg border-brand-subtle">
                               <div className="flex items-center justify-between gap-2 mb-2">
                                 <p className="font-medium text-xs sm:text-sm">{comment.author}</p>
                                 <p className="text-xs text-muted-foreground flex-shrink-0">{comment.timestamp}</p>
@@ -470,7 +469,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                           value={commentText}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentText(e.target.value)}
                           onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleAddComment(selectedReport.id)}
-                          className="flex-1 text-xs sm:text-sm"
+                          className="flex-1 text-xs sm:text-sm focus-brand"
                         />
                         <Button
                           size="sm"

@@ -8,9 +8,13 @@
   --brand-green: #2d6a4f;
   --brand-green-dark: #1e4a35;
   --brand-green-light: #4a8066;
+  --brand-green-lighter: #6b9080;
+  --brand-green-subtle: #f0f7f4;
   --brand-orange: #ff8c00;
   --brand-orange-dark: #e67c00;
   --brand-orange-light: #ffb347;
+  --brand-orange-lighter: #ffc266;
+  --brand-orange-subtle: #fff8f0;
   --neutral-50: #f9fafb;
   --neutral-100: #f3f4f6;
   --neutral-200: #e5e7eb;
@@ -19,75 +23,75 @@
   --neutral-700: #374151;
   --neutral-900: #111827;
 
-  /* Design tokens */
-  --background: var(--neutral-50);
+  /* Design tokens - Enhanced with brand colors */
+  --background: linear-gradient(135deg, var(--brand-green-subtle) 0%, var(--brand-orange-subtle) 100%);
   --foreground: var(--neutral-900);
-  --card: white;
+  --card: rgba(255, 255, 255, 0.95);
   --card-foreground: var(--neutral-900);
-  --popover: white;
+  --popover: rgba(255, 255, 255, 0.98);
   --popover-foreground: var(--neutral-900);
   --primary: var(--brand-green);
   --primary-foreground: white;
   --secondary: var(--brand-orange);
   --secondary-foreground: white;
-  --muted: var(--neutral-100);
-  --muted-foreground: var(--neutral-500);
+  --muted: var(--brand-green-subtle);
+  --muted-foreground: var(--brand-green-dark);
   --accent: var(--brand-orange);
   --accent-foreground: white;
   --destructive: #dc2626;
   --destructive-foreground: white;
-  --border: var(--neutral-200);
-  --input: transparent;
+  --border: rgba(45, 106, 79, 0.15);
+  --input: rgba(255, 255, 255, 0.8);
   --ring: var(--brand-green);
   --chart-1: var(--brand-green);
   --chart-2: var(--brand-orange);
-  --chart-3: #059669;
-  --chart-4: #f59e0b;
-  --chart-5: #6366f1;
-  --radius: 0.5rem;
+  --chart-3: var(--brand-green-light);
+  --chart-4: var(--brand-orange-light);
+  --chart-5: var(--brand-green-lighter);
+  --radius: 0.75rem;
   --sidebar: var(--brand-green);
   --sidebar-foreground: white;
   --sidebar-primary: var(--brand-orange);
   --sidebar-primary-foreground: white;
-  --sidebar-accent: var(--neutral-200);
+  --sidebar-accent: var(--brand-green-subtle);
   --sidebar-accent-foreground: var(--brand-green);
-  --sidebar-border: rgba(0, 0, 0, 0.1);
+  --sidebar-border: rgba(45, 106, 79, 0.2);
   --sidebar-ring: var(--brand-orange);
 }
 
 .dark {
-  --background: #0f172a;
+  --background: linear-gradient(135deg, #0a1f15 0%, #1a0f00 100%);
   --foreground: white;
-  --card: #1e293b;
+  --card: rgba(30, 41, 59, 0.95);
   --card-foreground: white;
-  --popover: #1e293b;
+  --popover: rgba(30, 41, 59, 0.98);
   --popover-foreground: white;
-  --primary: var(--brand-green);
+  --primary: var(--brand-green-light);
   --primary-foreground: white;
-  --secondary: var(--brand-orange);
-  --secondary-foreground: white;
-  --muted: #334155;
-  --muted-foreground: #94a3b8;
-  --accent: var(--brand-orange);
-  --accent-foreground: white;
+  --secondary: var(--brand-orange-light);
+  --secondary-foreground: var(--neutral-900);
+  --muted: rgba(45, 106, 79, 0.15);
+  --muted-foreground: var(--brand-green-lighter);
+  --accent: var(--brand-orange-light);
+  --accent-foreground: var(--neutral-900);
   --destructive: #ef4444;
   --destructive-foreground: white;
-  --border: #334155;
-  --input: transparent;
-  --ring: var(--brand-green);
+  --border: rgba(45, 106, 79, 0.3);
+  --input: rgba(30, 41, 59, 0.8);
+  --ring: var(--brand-green-light);
   --chart-1: var(--brand-green-light);
   --chart-2: var(--brand-orange-light);
-  --chart-3: #10b981;
-  --chart-4: #fbbf24;
-  --chart-5: #818cf8;
-  --sidebar: var(--brand-green);
+  --chart-3: var(--brand-green-lighter);
+  --chart-4: var(--brand-orange-lighter);
+  --chart-5: #6b9080;
+  --sidebar: var(--brand-green-dark);
   --sidebar-foreground: white;
   --sidebar-primary: var(--brand-orange);
   --sidebar-primary-foreground: white;
-  --sidebar-accent: #334155;
-  --sidebar-accent-foreground: white;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: var(--brand-orange);
+  --sidebar-accent: rgba(45, 106, 79, 0.2);
+  --sidebar-accent-foreground: var(--brand-green-light);
+  --sidebar-border: rgba(45, 106, 79, 0.3);
+  --sidebar-ring: var(--brand-orange-light);
 }
 
 @theme inline {
@@ -136,7 +140,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: var(--background);
+    min-height: 100vh;
   }
 
   /* Completely remove blue focus overlay from Material UI inputs */
@@ -253,6 +259,26 @@
     background-image: none !important;
   }
 
+  /* Enhanced focus styles for brand consistency */
+  input:focus,
+  textarea:focus,
+  select:focus,
+  .focus-brand:focus,
+  .focus-brand:focus-within {
+    outline: 2px solid var(--brand-green) !important;
+    outline-offset: 2px !important;
+    border-color: var(--brand-green) !important;
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus,
+  .dark .focus-brand:focus,
+  .dark .focus-brand:focus-within {
+    outline-color: var(--brand-green-light) !important;
+    border-color: var(--brand-green-light) !important;
+  }
+
   /* Mobile-first touch optimization */
   button,
   a,
@@ -278,12 +304,28 @@
     background-color: var(--brand-green-dark);
   }
   
+  .bg-brand-green-light {
+    background-color: var(--brand-green-light);
+  }
+  
+  .bg-brand-green-subtle {
+    background-color: var(--brand-green-subtle);
+  }
+  
   .bg-brand-orange {
     background-color: var(--brand-orange);
   }
   
   .bg-brand-orange-dark {
     background-color: var(--brand-orange-dark);
+  }
+  
+  .bg-brand-orange-light {
+    background-color: var(--brand-orange-light);
+  }
+  
+  .bg-brand-orange-subtle {
+    background-color: var(--brand-orange-subtle);
   }
   
   .text-brand-green {
@@ -302,32 +344,48 @@
     border-color: var(--brand-orange);
   }
 
-  /* IKO BRIQ Brand Gradients */
+  /* Enhanced IKO BRIQ Brand Gradients */
   .bg-brand-gradient {
     background: linear-gradient(135deg, 
-      rgba(45, 106, 79, 0.05) 0%,     /* Light green start */
-      rgba(255, 140, 0, 0.03) 25%,    /* Light orange */
-      rgba(45, 106, 79, 0.02) 50%,    /* Very light green */
-      rgba(255, 140, 0, 0.05) 75%,    /* Light orange */
-      rgba(45, 106, 79, 0.08) 100%    /* Light green end */
+      var(--brand-green-subtle) 0%,      /* Light green start */
+      var(--brand-orange-subtle) 100%    /* Light orange end */
     );
   }
 
   .bg-brand-gradient-subtle {
     background: linear-gradient(135deg, 
-      rgba(45, 106, 79, 0.02) 0%,     /* Very light green */
-      rgba(255, 140, 0, 0.01) 50%,    /* Very light orange */
-      rgba(45, 106, 79, 0.03) 100%    /* Light green */
+      rgba(240, 247, 244, 0.5) 0%,       /* Very light green */
+      rgba(255, 248, 240, 0.5) 100%      /* Very light orange */
     );
   }
 
   .bg-brand-gradient-card {
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.95) 0%,   /* White with slight transparency */
-      rgba(45, 106, 79, 0.02) 25%,    /* Very light green tint */
-      rgba(255, 140, 0, 0.01) 50%,    /* Very light orange tint */
-      rgba(255, 255, 255, 0.98) 100%  /* Almost white */
+      rgba(255, 255, 255, 0.98) 0%,      /* Almost white */
+      rgba(240, 247, 244, 0.8) 25%,      /* Light green tint */
+      rgba(255, 248, 240, 0.8) 75%,      /* Light orange tint */
+      rgba(255, 255, 255, 0.95) 100%     /* White with transparency */
     );
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(45, 106, 79, 0.1);
+  }
+
+  .bg-brand-gradient-dark {
+    background: linear-gradient(135deg, 
+      rgba(10, 31, 21, 0.9) 0%,          /* Dark green */
+      rgba(26, 15, 0, 0.9) 100%          /* Dark orange */
+    );
+  }
+
+  .bg-brand-gradient-card-dark {
+    background: linear-gradient(135deg, 
+      rgba(30, 41, 59, 0.95) 0%,         /* Dark card base */
+      rgba(45, 106, 79, 0.1) 25%,        /* Green tint */
+      rgba(255, 140, 0, 0.05) 75%,       /* Orange tint */
+      rgba(30, 41, 59, 0.98) 100%        /* Dark card base */
+    );
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(45, 106, 79, 0.2);
   }
 
   /* Mobile-specific utilities for thumb accessibility */
@@ -341,6 +399,93 @@
 
   .mobile-tab-list {
     @apply grid gap-1 auto-cols-max overflow-x-auto;
+  }
+
+  /* Enhanced card styling with brand colors */
+  .card-brand {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.98) 0%,      /* Almost white */
+      rgba(240, 247, 244, 0.8) 25%,      /* Light green tint */
+      rgba(255, 248, 240, 0.8) 75%,      /* Light orange tint */
+      rgba(255, 255, 255, 0.95) 100%     /* White with transparency */
+    );
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(45, 106, 79, 0.1);
+    box-shadow: 0 10px 25px rgba(45, 106, 79, 0.08);
+  }
+
+  .dark .card-brand {
+    background: linear-gradient(135deg, 
+      rgba(30, 41, 59, 0.95) 0%,         /* Dark card base */
+      rgba(45, 106, 79, 0.1) 25%,        /* Green tint */
+      rgba(255, 140, 0, 0.05) 75%,       /* Orange tint */
+      rgba(30, 41, 59, 0.98) 100%        /* Dark card base */
+    );
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(45, 106, 79, 0.2);
+    box-shadow: 0 10px 25px rgba(45, 106, 79, 0.15);
+  }
+
+  .card-brand-dark {
+    /* Applied via .dark .card-brand above */
+  }
+
+  .card-elevated {
+    box-shadow: 0 20px 40px rgba(45, 106, 79, 0.1);
+  }
+
+  .dark .card-elevated {
+    box-shadow: 0 20px 40px rgba(45, 106, 79, 0.2);
+  }
+
+  .text-brand-contrast {
+    color: var(--brand-green-dark);
+  }
+
+  .dark .text-brand-contrast {
+    color: var(--brand-green-light);
+  }
+
+  .bg-brand-surface {
+    background-color: rgba(240, 247, 244, 0.5);
+  }
+
+  .dark .bg-brand-surface {
+    background-color: rgba(45, 106, 79, 0.2);
+  }
+
+  .border-brand-subtle {
+    border-color: rgba(45, 106, 79, 0.2);
+  }
+
+  .dark .border-brand-subtle {
+    border-color: rgba(45, 106, 79, 0.3);
+  }
+
+  /* Interactive states with brand colors */
+  .hover-brand {
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .hover-brand:hover {
+    background-color: rgba(240, 247, 244, 0.7);
+  }
+
+  .dark .hover-brand:hover {
+    background-color: rgba(45, 106, 79, 0.3);
+  }
+
+  .focus-brand:focus,
+  .focus-brand:focus-within {
+    outline: 2px solid var(--brand-green);
+    outline-offset: 2px;
+    border-color: var(--brand-green);
+  }
+
+  .dark .focus-brand:focus,
+  .dark .focus-brand:focus-within {
+    outline-color: var(--brand-green-light);
+    border-color: var(--brand-green-light);
   }
 
   /* Mobile tabs improvements */

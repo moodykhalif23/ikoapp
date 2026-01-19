@@ -14,16 +14,16 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
   palette: {
     mode,
     primary: {
-      main: '#2d6a4f', // Brand green
+      main: mode === 'light' ? '#2d6a4f' : '#4a8066', // Brand green / lighter green for dark
       dark: '#1e4a35', // Darker green
-      light: '#4a8066', // Lighter green
+      light: '#6b9080', // Lighter green
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#ff8c00', // Brand orange
+      main: mode === 'light' ? '#ff8c00' : '#ffb347', // Brand orange / lighter orange for dark
       dark: '#e67c00', // Darker orange
-      light: '#ffb347', // Lighter orange
-      contrastText: '#ffffff',
+      light: '#ffc266', // Lighter orange
+      contrastText: mode === 'light' ? '#ffffff' : '#111827',
     },
     error: {
       main: '#dc2626',
@@ -50,18 +50,18 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
       contrastText: '#ffffff',
     },
     background: {
-      default: mode === 'light' ? '#f9fafb' : '#0f172a',
-      paper: mode === 'light' ? '#ffffff' : '#1e293b',
+      default: mode === 'light' ? '#f0f7f4' : '#0a1f15',
+      paper: mode === 'light' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(30, 41, 59, 0.95)',
     },
     text: {
       primary: mode === 'light' ? '#111827' : '#f8fafc',
-      secondary: mode === 'light' ? '#6b7280' : '#94a3b8',
+      secondary: mode === 'light' ? '#1e4a35' : '#6b9080',
       disabled: mode === 'light' ? '#d1d5db' : '#475569',
     },
-    divider: mode === 'light' ? '#e5e7eb' : '#334155',
+    divider: mode === 'light' ? 'rgba(45, 106, 79, 0.15)' : 'rgba(45, 106, 79, 0.3)',
     action: {
-      hover: mode === 'light' ? '#f3f4f6' : '#1e293b',
-      selected: mode === 'light' ? '#e5e7eb' : '#334155',
+      hover: mode === 'light' ? 'rgba(240, 247, 244, 0.7)' : 'rgba(45, 106, 79, 0.15)',
+      selected: mode === 'light' ? 'rgba(240, 247, 244, 0.9)' : 'rgba(45, 106, 79, 0.2)',
     },
   },
   typography: {
@@ -69,7 +69,7 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
     fontSize: 14,
   },
   shape: {
-    borderRadius: 6,
+    borderRadius: 12,
   },
   components: {
     MuiButton: {
@@ -77,8 +77,37 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
         root: {
           textTransform: 'none',
           fontWeight: 500,
-          borderRadius: '6px',
+          borderRadius: '12px',
           transition: 'all 0.2s ease-in-out',
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: '0 4px 12px rgba(45, 106, 79, 0.15)',
+          },
+        },
+        contained: {
+          '&:hover': {
+            boxShadow: '0 6px 16px rgba(45, 106, 79, 0.25)',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: '12px',
+          border: mode === 'light' ? '1px solid rgba(45, 106, 79, 0.1)' : '1px solid rgba(45, 106, 79, 0.2)',
+          boxShadow: mode === 'light' 
+            ? '0 4px 12px rgba(45, 106, 79, 0.08)' 
+            : '0 4px 12px rgba(0, 0, 0, 0.3)',
+          backdropFilter: 'blur(10px)',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+          backdropFilter: 'blur(10px)',
         },
       },
     },
@@ -87,14 +116,20 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             fontSize: '0.875rem',
-            backgroundColor: 'transparent !important',
+            backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(30, 41, 59, 0.8)',
+            borderRadius: '12px',
+            backdropFilter: 'blur(10px)',
             '&.Mui-focused': {
               boxShadow: 'none !important',
-              backgroundColor: 'transparent !important',
+              backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(30, 41, 59, 0.9)',
             },
             '&:focus-within': {
               boxShadow: 'none !important',
-              backgroundColor: 'transparent !important',
+              backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(30, 41, 59, 0.9)',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: mode === 'light' ? '#2d6a4f' : '#4a8066',
+              borderWidth: '2px',
             },
           },
           '& .MuiOutlinedInput-input': {
@@ -114,18 +149,21 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          backgroundColor: 'transparent !important',
+          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(30, 41, 59, 0.8)',
+          borderRadius: '12px',
+          backdropFilter: 'blur(10px)',
           '&.Mui-focused': {
             boxShadow: 'none !important',
-            backgroundColor: 'transparent !important',
+            backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(30, 41, 59, 0.9)',
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
             boxShadow: 'none !important',
-            borderColor: '#2d6a4f', // Brand green focus border
+            borderColor: mode === 'light' ? '#2d6a4f' : '#4a8066',
+            borderWidth: '2px',
           },
           '&:focus-within': {
             boxShadow: 'none !important',
-            backgroundColor: 'transparent !important',
+            backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(30, 41, 59, 0.9)',
           },
         },
         input: {
@@ -144,9 +182,11 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          backgroundColor: 'transparent !important',
+          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(30, 41, 59, 0.8)',
+          borderRadius: '12px',
+          backdropFilter: 'blur(10px)',
           '&.Mui-focused': {
-            backgroundColor: 'transparent !important',
+            backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(30, 41, 59, 0.9)',
             boxShadow: 'none !important',
           },
         },
