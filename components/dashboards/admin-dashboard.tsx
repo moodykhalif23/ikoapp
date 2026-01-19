@@ -239,10 +239,75 @@ ${new Date().toLocaleString()}
       </header>
 
       {/* Main Content Area - Fixed height scrollable */}
-      <main className="flex-1 overflow-hidden">
-        <Tabs defaultValue="reports" className="h-full flex flex-col">
+      <main className="flex-1 overflow-hidden flex flex-col">
+        {/* Stats Cards - Always visible at top */}
+        <div className="p-3 sm:p-6 pb-0 flex-shrink-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <Card className="border-border/50">
+              <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                  Total Reports
+                  <BarChartIcon className="h-4 w-4 text-primary" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl sm:text-3xl font-bold text-foreground">{allReports.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/50">
+              <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                  Active Reporters
+                  <PeopleIcon className="h-4 w-4 text-accent" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl sm:text-3xl font-bold text-foreground">
+                  {new Set(allReports.map((r) => r.reportedBy)).size}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">This month</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/50">
+              <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                  Avg Efficiency
+                  <SettingsIcon className="h-4 w-4 text-destructive" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl sm:text-3xl font-bold text-foreground">
+                  {(
+                    allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
+                    allReports.length
+                  ).toFixed(1)}%
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Overall production</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/50">
+              <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
+                  Total Employees
+                  <UsersIcon className="h-4 w-4 text-primary" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl sm:text-3xl font-bold text-foreground">{employees.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">Active users</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Tabs Section */}
+        <Tabs defaultValue="reports" className="flex-1 flex flex-col overflow-hidden">
           {/* Tab Navigation - Horizontal scrollable on mobile */}
-          <TabsList className="w-full justify-start gap-0 sm:gap-2 h-auto bg-muted/50 border-b border-border rounded-none overflow-x-auto flex-shrink-0">
+          <TabsList className="w-full justify-start gap-0 sm:gap-2 h-auto bg-muted/50 border-b border-border rounded-none overflow-x-auto flex-shrink-0 mx-3 sm:mx-6 mt-3 sm:mt-6">
             <TabsTrigger value="reports" className="min-w-max text-xs sm:text-sm touch-target">
               <BarChartIcon className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Reports</span>
@@ -264,71 +329,7 @@ ${new Date().toLocaleString()}
           <div className="flex-1 overflow-y-auto">
             {/* Reports Tab */}
             <TabsContent value="reports" className="m-0 h-full">
-              <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 h-full flex flex-col">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 flex-shrink-0">
-                  <Card className="border-border/50">
-                    <CardHeader className="pb-2 sm:pb-3">
-                      <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                        Total Reports
-                        <BarChartIcon className="h-4 w-4 text-primary" />
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl sm:text-3xl font-bold text-foreground">{allReports.length}</div>
-                      <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-border/50">
-                    <CardHeader className="pb-2 sm:pb-3">
-                      <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                        Active Reporters
-                        <PeopleIcon className="h-4 w-4 text-accent" />
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl sm:text-3xl font-bold text-foreground">
-                        {new Set(allReports.map((r) => r.reportedBy)).size}
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1">This month</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-border/50">
-                    <CardHeader className="pb-2 sm:pb-3">
-                      <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                        Avg Efficiency
-                        <SettingsIcon className="h-4 w-4 text-destructive" />
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl sm:text-3xl font-bold text-foreground">
-                        {(
-                          allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
-                          allReports.length
-                        ).toFixed(1)}%
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1">Overall production</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-border/50">
-                    <CardHeader className="pb-2 sm:pb-3">
-                      <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
-                        Total Employees
-                        <UsersIcon className="h-4 w-4 text-primary" />
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl sm:text-3xl font-bold text-foreground">{employees.length}</div>
-                      <p className="text-xs text-muted-foreground mt-1">Active users</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Reports Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 flex-1 min-h-0">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 h-full p-3 sm:p-6">
                 {/* Reports List */}
                 <div className="lg:col-span-1 flex flex-col gap-3 min-h-0">
                   <h3 className="font-semibold text-sm sm:text-base flex-shrink-0">Recent Reports</h3>
@@ -501,7 +502,6 @@ ${new Date().toLocaleString()}
                     <p className="text-sm sm:text-base">Select a report to view details</p>
                   </div>
                 )}
-                </div>
               </div>
             </TabsContent>
 
