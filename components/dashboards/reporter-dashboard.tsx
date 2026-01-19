@@ -130,7 +130,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
                   <div className="space-y-2 text-sm">
                     <p>
                       <span className="font-medium text-foreground">Power Interruptions:</span>{" "}
-                      {report.powerInterruptions || 0}
+                      {report.powerInterruptions?.noInterruptions ? "None" : "Yes"}
                     </p>
                     <p>
                       <span className="font-medium text-foreground">Submitted:</span>{" "}
