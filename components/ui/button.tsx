@@ -51,50 +51,77 @@ const StyledButton = styled(MuiButton, {
     padding: 0,
   }),
   
-  // Variant styles
+  // Brand color variants
   ...(customVariant === 'default' && {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
+    backgroundColor: '#2d6a4f', // Brand green
+    color: '#ffffff',
     '&:hover': {
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor: '#1e4a35', // Darker green
+      transform: 'translateY(-1px)',
+      boxShadow: '0 4px 8px rgba(45, 106, 79, 0.3)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 2px 4px rgba(45, 106, 79, 0.3)',
+    },
+  }),
+  ...(customVariant === 'secondary' && {
+    backgroundColor: '#ff8c00', // Brand orange
+    color: '#ffffff',
+    '&:hover': {
+      backgroundColor: '#e67c00', // Darker orange
+      transform: 'translateY(-1px)',
+      boxShadow: '0 4px 8px rgba(255, 140, 0, 0.3)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 2px 4px rgba(255, 140, 0, 0.3)',
     },
   }),
   ...(customVariant === 'destructive' && {
-    backgroundColor: theme.palette.error.main,
-    color: theme.palette.error.contrastText,
+    backgroundColor: '#dc2626',
+    color: '#ffffff',
     '&:hover': {
-      backgroundColor: theme.palette.error.dark,
+      backgroundColor: '#b91c1c',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 4px 8px rgba(220, 38, 38, 0.3)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 2px 4px rgba(220, 38, 38, 0.3)',
     },
   }),
   ...(customVariant === 'outline' && {
     backgroundColor: 'transparent',
-    color: theme.palette.text.primary,
-    border: `1px solid ${theme.palette.divider}`,
+    color: '#2d6a4f', // Brand green text
+    border: '1px solid #2d6a4f', // Brand green border
     '&:hover': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: '#2d6a4f', // Brand green background on hover
+      color: '#ffffff',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 4px 8px rgba(45, 106, 79, 0.2)',
     },
-  }),
-  ...(customVariant === 'secondary' && {
-    backgroundColor: theme.palette.grey[100],
-    color: theme.palette.text.primary,
-    '&:hover': {
-      backgroundColor: theme.palette.grey[200],
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 2px 4px rgba(45, 106, 79, 0.2)',
     },
   }),
   ...(customVariant === 'ghost' && {
     backgroundColor: 'transparent',
-    color: theme.palette.text.primary,
+    color: '#2d6a4f', // Brand green text
     '&:hover': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: 'rgba(45, 106, 79, 0.1)', // Light brand green background
+      color: '#1e4a35', // Darker green text
     },
   }),
   ...(customVariant === 'link' && {
     backgroundColor: 'transparent',
-    color: theme.palette.primary.main,
+    color: '#2d6a4f', // Brand green text
     textDecoration: 'underline',
     textUnderlineOffset: '4px',
     '&:hover': {
       backgroundColor: 'transparent',
+      color: '#ff8c00', // Brand orange on hover
       textDecoration: 'underline',
     },
   }),

@@ -6,7 +6,11 @@
 :root {
   /* IKO BRIQ Brand Colors */
   --brand-green: #2d6a4f;
+  --brand-green-dark: #1e4a35;
+  --brand-green-light: #4a8066;
   --brand-orange: #ff8c00;
+  --brand-orange-dark: #e67c00;
+  --brand-orange-light: #ffb347;
   --neutral-50: #f9fafb;
   --neutral-100: #f3f4f6;
   --neutral-200: #e5e7eb;

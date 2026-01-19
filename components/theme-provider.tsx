@@ -14,37 +14,54 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
   palette: {
     mode,
     primary: {
-      main: mode === 'light' ? '#2563eb' : '#3b82f6',
+      main: '#2d6a4f', // Brand green
+      dark: '#1e4a35', // Darker green
+      light: '#4a8066', // Lighter green
       contrastText: '#ffffff',
     },
     secondary: {
-      main: mode === 'light' ? '#64748b' : '#94a3b8',
+      main: '#ff8c00', // Brand orange
+      dark: '#e67c00', // Darker orange
+      light: '#ffb347', // Lighter orange
+      contrastText: '#ffffff',
     },
     error: {
-      main: '#ef4444',
+      main: '#dc2626',
+      dark: '#b91c1c',
+      light: '#ef4444',
+      contrastText: '#ffffff',
     },
     warning: {
       main: '#f59e0b',
+      dark: '#d97706',
+      light: '#fbbf24',
+      contrastText: '#ffffff',
     },
     info: {
       main: '#06b6d4',
+      dark: '#0891b2',
+      light: '#22d3ee',
+      contrastText: '#ffffff',
     },
     success: {
       main: '#10b981',
+      dark: '#059669',
+      light: '#34d399',
+      contrastText: '#ffffff',
     },
     background: {
-      default: mode === 'light' ? '#ffffff' : '#0f172a',
+      default: mode === 'light' ? '#f9fafb' : '#0f172a',
       paper: mode === 'light' ? '#ffffff' : '#1e293b',
     },
     text: {
-      primary: mode === 'light' ? '#0f172a' : '#f8fafc',
-      secondary: mode === 'light' ? '#64748b' : '#94a3b8',
-      disabled: mode === 'light' ? '#cbd5e1' : '#475569',
+      primary: mode === 'light' ? '#111827' : '#f8fafc',
+      secondary: mode === 'light' ? '#6b7280' : '#94a3b8',
+      disabled: mode === 'light' ? '#d1d5db' : '#475569',
     },
-    divider: mode === 'light' ? '#e2e8f0' : '#334155',
+    divider: mode === 'light' ? '#e5e7eb' : '#334155',
     action: {
-      hover: mode === 'light' ? '#f1f5f9' : '#1e293b',
-      selected: mode === 'light' ? '#e2e8f0' : '#334155',
+      hover: mode === 'light' ? '#f3f4f6' : '#1e293b',
+      selected: mode === 'light' ? '#e5e7eb' : '#334155',
     },
   },
   typography: {
@@ -60,6 +77,8 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
         root: {
           textTransform: 'none',
           fontWeight: 500,
+          borderRadius: '6px',
+          transition: 'all 0.2s ease-in-out',
         },
       },
     },
@@ -102,6 +121,7 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
             boxShadow: 'none !important',
+            borderColor: '#2d6a4f', // Brand green focus border
           },
           '&:focus-within': {
             boxShadow: 'none !important',
