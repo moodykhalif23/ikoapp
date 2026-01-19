@@ -107,6 +107,12 @@ export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDa
     }
   }
 
+  // Reset tab when selecting a new report
+  const handleReportSelect = (report: any) => {
+    setSelectedReport(report)
+    setActiveReportTab("overview") // Reset to overview tab when selecting a new report
+  }
+
   const handleAddEmployee = () => {
     if (newEmployee.name && newEmployee.email) {
       setEmployees((prev) => [
@@ -266,7 +272,7 @@ ${new Date().toLocaleString()}
                     {allReports.map((report) => (
                       <button
                         key={report.id}
-                        onClick={() => setSelectedReport(report)}
+                        onClick={() => handleReportSelect(report)}
                         className={`w-full text-left p-3 sm:p-4 rounded-lg border transition-all text-sm sm:text-base touch-target ${
                           selectedReport?.id === report.id
                             ? "border-brand-primary bg-brand-primary/5"

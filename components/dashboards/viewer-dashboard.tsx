@@ -92,6 +92,12 @@ export default function ViewerDashboard({ user, onLogout, reports = [] }: Viewer
     }
   }
 
+  // Reset tab when selecting a new report
+  const handleReportSelect = (report: any) => {
+    setSelectedReport(report)
+    setActiveReportTab("summary") // Reset to summary tab when selecting a new report
+  }
+
   const handleExport = (report: any) => {
     const exportData = JSON.stringify(report, null, 2)
     const element = document.createElement("a")
@@ -271,7 +277,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               {allReports.map((report) => (
                 <button
                   key={report.id}
-                  onClick={() => setSelectedReport(report)}
+                  onClick={() => handleReportSelect(report)}
                   className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
                     selectedReport?.id === report.id
                       ? "bg-primary/10 border-primary"
