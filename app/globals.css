@@ -283,4 +283,32 @@
   .mobile-tab-list {
     @apply grid gap-1 auto-cols-max overflow-x-auto;
   }
+
+  /* Mobile tabs improvements */
+  .mobile-tabs-container {
+    @apply w-full overflow-hidden;
+  }
+
+  .mobile-tabs-scrollable {
+    @apply overflow-x-auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .mobile-tabs-scrollable::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ensure tabs are properly sized on mobile */
+  @media (max-width: 640px) {
+    .MuiTabs-flexContainer {
+      min-width: max-content !important;
+    }
+    
+    .MuiTab-root {
+      min-width: 60px !important;
+      padding: 6px 8px !important;
+      font-size: 0.75rem !important;
+    }
+  }
 }

@@ -12,7 +12,7 @@ import SendIcon from "@mui/icons-material/Send"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import DownloadIcon from "@mui/icons-material/Download" // Import DownloadIcon
+import DownloadIcon from "@mui/icons-material/Download" 
 
 interface ViewerDashboardProps {
   user: any
@@ -492,8 +492,8 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                         <Input
                           placeholder="Add your comment..."
                           value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                          onKeyPress={(e) => e.key === "Enter" && handleAddComment(selectedReport.id)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentText(e.target.value)}
+                          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleAddComment(selectedReport.id)}
                           className="flex-1 text-xs sm:text-sm"
                         />
                         <Button
