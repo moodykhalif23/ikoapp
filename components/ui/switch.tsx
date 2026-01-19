@@ -4,9 +4,10 @@ import * as React from 'react'
 import { Switch as MuiSwitch, FormControlLabel, SwitchProps as MuiSwitchProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
-interface SwitchProps extends Omit<MuiSwitchProps, 'size'> {
+interface SwitchProps extends Omit<MuiSwitchProps, 'size' | 'onChange'> {
   className?: string
   label?: string
+  onCheckedChange?: (checked: boolean) => void
 }
 
 const StyledSwitch = styled(MuiSwitch)(({ theme }) => ({
@@ -55,9 +56,17 @@ const StyledSwitch = styled(MuiSwitch)(({ theme }) => ({
   },
 }))
 
-function Switch({ className, label, ...props }: SwitchProps) {
+function Switch({ className, label, onCheckedChange, ...props }: SwitchProps) {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onCheckedChange?.(event.target.checked)
+  }
+
   const switchComponent = (
-    <StyledSwitch className={className} {...props} />
+    <StyledSwitch 
+      className={className} 
+      onChange={handleChange}
+      {...props} 
+    />
   )
 
   if (label) {

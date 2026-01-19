@@ -5,8 +5,9 @@ import { Checkbox as MuiCheckbox, FormControlLabel, CheckboxProps as MuiCheckbox
 import { styled } from '@mui/material/styles'
 import { Check } from 'lucide-react'
 
-interface CheckboxProps extends Omit<MuiCheckboxProps, 'icon' | 'checkedIcon'> {
+interface CheckboxProps extends Omit<MuiCheckboxProps, 'icon' | 'checkedIcon' | 'onChange'> {
   label?: string
+  onCheckedChange?: (checked: boolean) => void
 }
 
 const StyledCheckbox = styled(MuiCheckbox)(({ theme }) => ({
@@ -31,7 +32,11 @@ const CheckIcon = styled(Check)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
 }))
 
-function Checkbox({ label, ...props }: CheckboxProps) {
+function Checkbox({ label, onCheckedChange, ...props }: CheckboxProps) {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onCheckedChange?.(event.target.checked)
+  }
+
   const checkbox = (
     <StyledCheckbox
       icon={<div style={{ 
@@ -52,6 +57,7 @@ function Checkbox({ label, ...props }: CheckboxProps) {
       }}>
         <CheckIcon />
       </div>}
+      onChange={handleChange}
       {...props}
     />
   )
