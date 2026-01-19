@@ -3,14 +3,9 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import LogoutIcon from "@mui/icons-material/Logout"
-import ChevronRightIcon from "@mui/icons-material/ChevronRight"
-import AddIcon from "@mui/icons-material/Add"
+import { Logout, ChevronRight, Add } from "@mui/icons-material"
 import Image from "next/image"
 import ReportingFlow from "@/components/reporter/reporting-flow"
-import LogOut from "@mui/icons-material/Logout" // Import LogOut icon
-import Plus from "@mui/icons-material/Add" // Import Plus icon
-import ChevronRight from "@mui/icons-material/ChevronRight" // Import ChevronRight icon
 
 interface ReporterDashboardProps {
   user: any
@@ -44,7 +39,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-foreground">{user?.name}</span>
               <Button variant="outline" size="sm" onClick={onLogout} className="gap-2 bg-transparent">
-                <LogOut sx={{ fontSize: 16 }} />
+                <Logout sx={{ fontSize: 16 }} />
                 Sign Out
               </Button>
             </div>
@@ -78,7 +73,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
           <div className="flex items-center gap-4">
             <span className="text-sm font-medium text-foreground">{user?.name}</span>
             <Button variant="outline" size="sm" onClick={onLogout} className="gap-2 bg-transparent">
-              <LogoutIcon sx={{ fontSize: 16 }} />
+              <Logout sx={{ fontSize: 16 }} />
               Sign Out
             </Button>
           </div>
@@ -96,7 +91,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
             onClick={() => setShowNewReport(true)}
             className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 self-start md:self-auto"
           >
-            <AddIcon sx={{ fontSize: 16 }} />
+            <Add sx={{ fontSize: 16 }} />
             New Report
           </Button>
         </div>
@@ -105,7 +100,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
           <Card className="border-border/50">
             <CardContent className="py-12 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
-                <ChevronRightIcon sx={{ fontSize: 32, color: "var(--muted-foreground)" }} />
+                <ChevronRight sx={{ fontSize: 32, color: "var(--muted-foreground)" }} />
               </div>
               <h2 className="text-xl font-semibold text-foreground mb-2">No reports yet</h2>
               <p className="text-muted-foreground mb-6">Create your first production report to get started</p>
@@ -113,7 +108,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
                 onClick={() => setShowNewReport(true)}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
               >
-                <AddIcon sx={{ fontSize: 16 }} />
+                <Add sx={{ fontSize: 16 }} />
                 Create First Report
               </Button>
             </CardContent>

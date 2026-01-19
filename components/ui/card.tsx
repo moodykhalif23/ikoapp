@@ -10,6 +10,7 @@ import { styled } from '@mui/material/styles'
 
 interface CardProps extends MuiCardProps {
   className?: string
+  children?: React.ReactNode
 }
 
 const StyledCard = styled(MuiCard)(({ theme }) => ({
