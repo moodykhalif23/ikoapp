@@ -75,8 +75,8 @@
   --border: #334155;
   --input: #1e293b;
   --ring: var(--brand-green);
-  --chart-1: var(--brand-green);
-  --chart-2: var(--brand-orange);
+  --chart-1: var(--brand-green-light);
+  --chart-2: var(--brand-orange-light);
   --chart-3: #10b981;
   --chart-4: #fbbf24;
   --chart-5: #818cf8;
@@ -180,6 +180,39 @@
 @layer utilities {
   .transition-all-smooth {
     @apply transition-all duration-300 ease-in-out;
+  }
+
+  /* Brand color utilities */
+  .bg-brand-green {
+    background-color: var(--brand-green);
+  }
+  
+  .bg-brand-green-dark {
+    background-color: var(--brand-green-dark);
+  }
+  
+  .bg-brand-orange {
+    background-color: var(--brand-orange);
+  }
+  
+  .bg-brand-orange-dark {
+    background-color: var(--brand-orange-dark);
+  }
+  
+  .text-brand-green {
+    color: var(--brand-green);
+  }
+  
+  .text-brand-orange {
+    color: var(--brand-orange);
+  }
+  
+  .border-brand-green {
+    border-color: var(--brand-green);
+  }
+  
+  .border-brand-orange {
+    border-color: var(--brand-orange);
   }
 
   /* Mobile-specific utilities for thumb accessibility */
