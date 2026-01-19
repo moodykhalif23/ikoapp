@@ -32,6 +32,17 @@ const CheckIcon = styled(Check)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
 }))
 
+const StyledFormControlLabel = styled(FormControlLabel)({
+  margin: 0,
+  alignItems: 'flex-start',
+  gap: '12px', // Add more space between checkbox and label
+  '& .MuiFormControlLabel-label': {
+    marginLeft: '8px', // Additional space after the checkbox
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+})
+
 function Checkbox({ label, onCheckedChange, ...props }: CheckboxProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onCheckedChange?.(event.target.checked)
@@ -64,10 +75,9 @@ function Checkbox({ label, onCheckedChange, ...props }: CheckboxProps) {
 
   if (label) {
     return (
-      <FormControlLabel
+      <StyledFormControlLabel
         control={checkbox}
         label={label}
-        sx={{ margin: 0, alignItems: 'flex-start' }}
       />
     )
   }

@@ -94,7 +94,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     disabled={loading}
-                    className="bg-input border-border text-base"
+                    className="border-border text-base"
                   />
                 </div>
               )}
@@ -107,7 +107,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
-                  className="bg-input border-border text-base"
+                  className="border-border text-base"
                 />
               </div>
 

@@ -139,12 +139,15 @@
     @apply bg-background text-foreground;
   }
 
-  /* Remove blue focus overlay from Material UI inputs */
+  /* Completely remove blue focus overlay from Material UI inputs */
   .MuiOutlinedInput-root,
   .MuiOutlinedInput-input,
   .MuiTextField-root input,
   .MuiInputBase-root,
-  .MuiInputBase-input {
+  .MuiInputBase-input,
+  .MuiOutlinedInput-root *,
+  .MuiTextField-root *,
+  .MuiInputBase-root * {
     background-color: transparent !important;
     box-shadow: none !important;
   }
@@ -153,7 +156,10 @@
   .MuiOutlinedInput-input:focus,
   .MuiTextField-root input:focus,
   .MuiInputBase-root.Mui-focused,
-  .MuiInputBase-input:focus {
+  .MuiInputBase-input:focus,
+  .MuiOutlinedInput-root.Mui-focused *,
+  .MuiTextField-root:focus *,
+  .MuiInputBase-root.Mui-focused * {
     background-color: transparent !important;
     box-shadow: none !important;
     outline: none !important;
@@ -161,9 +167,46 @@
 
   .MuiOutlinedInput-root:focus-within,
   .MuiTextField-root:focus-within,
-  .MuiInputBase-root:focus-within {
+  .MuiInputBase-root:focus-within,
+  .MuiOutlinedInput-root:focus-within *,
+  .MuiTextField-root:focus-within *,
+  .MuiInputBase-root:focus-within * {
     background-color: transparent !important;
     box-shadow: none !important;
+  }
+
+  /* Override webkit autofill styles */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  textarea:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    -webkit-text-fill-color: inherit !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Force transparent backgrounds on all input states */
+  input,
+  textarea,
+  .MuiInputBase-input,
+  .MuiOutlinedInput-input {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  input:focus,
+  textarea:focus,
+  .MuiInputBase-input:focus,
+  .MuiOutlinedInput-input:focus {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
   }
 
   /* Mobile-first touch optimization */
