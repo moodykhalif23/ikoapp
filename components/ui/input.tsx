@@ -49,14 +49,17 @@ const StyledTextField = styled(TextField)(({ theme }: { theme: any }) => ({
       WebkitBoxShadow: '0 0 0 1000px transparent inset !important',
       WebkitTextFillColor: 'inherit !important',
       backgroundColor: 'transparent !important',
+      transition: 'background-color 5000s ease-in-out 0s !important',
     },
     '&:-webkit-autofill:hover': {
       WebkitBoxShadow: '0 0 0 1000px transparent inset !important',
       backgroundColor: 'transparent !important',
+      transition: 'background-color 5000s ease-in-out 0s !important',
     },
     '&:-webkit-autofill:focus': {
       WebkitBoxShadow: '0 0 0 1000px transparent inset !important',
       backgroundColor: 'transparent !important',
+      transition: 'background-color 5000s ease-in-out 0s !important',
     },
     '&::placeholder': {
       color: theme.palette.text.disabled,

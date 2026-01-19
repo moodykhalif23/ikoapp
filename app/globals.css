@@ -73,7 +73,7 @@
   --destructive: #ef4444;
   --destructive-foreground: white;
   --border: #334155;
-  --input: #1e293b;
+  --input: transparent;
   --ring: var(--brand-green);
   --chart-1: var(--brand-green-light);
   --chart-2: var(--brand-orange-light);
@@ -220,6 +220,37 @@
   /* Override any Tailwind bg-input class */
   .bg-input {
     background-color: transparent !important;
+  }
+
+  /* Additional overrides for input backgrounds */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  textarea:focus {
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Force override Material-UI input backgrounds */
+  .MuiInputBase-root,
+  .MuiOutlinedInput-root,
+  .MuiTextField-root {
+    background-color: transparent !important;
+  }
+
+  .MuiInputBase-root .MuiInputBase-input,
+  .MuiOutlinedInput-root .MuiOutlinedInput-input,
+  .MuiTextField-root input {
+    background-color: transparent !important;
+    background-image: none !important;
   }
 
   /* Mobile-first touch optimization */
