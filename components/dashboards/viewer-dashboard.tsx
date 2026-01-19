@@ -2,17 +2,16 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import LogoutIcon from "@mui/icons-material/Logout"
-import TrendingUpIcon from "@mui/icons-material/TrendingUp"
-import PeopleIcon from "@mui/icons-material/People"
-import WarningIcon from "@mui/icons-material/Warning"
-import GetAppIcon from "@mui/icons-material/GetApp"
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import SendIcon from "@mui/icons-material/Send"
+import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send } from "lucide-react"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import DownloadIcon from "@mui/icons-material/Download" 
+import PeopleIcon from "@mui/icons-material/People"
+import WarningIcon from "@mui/icons-material/Warning"
+import GetAppIcon from "@mui/icons-material/GetApp"
+import DownloadIcon from "@mui/icons-material/Download"
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"
+import SendIcon from "@mui/icons-material/Send" 
 
 interface ViewerDashboardProps {
   user: any
@@ -195,7 +194,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               onClick={onLogout}
               className="gap-1 sm:gap-2 bg-transparent touch-target text-xs sm:text-sm"
             >
-              <LogoutIcon sx={{ fontSize: 16 }} />
+              <LogOut size={16} />
               <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
@@ -216,7 +215,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             <CardHeader className="pb-2 sm:pb-3">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
                 Total Reports
-                <TrendingUpIcon sx={{ fontSize: 16, color: "var(--primary)" }} />
+                <TrendingUp size={16} className="text-primary" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -305,15 +304,6 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                   >
                     <GetAppIcon sx={{ fontSize: 16 }} />
                     JSON
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handlePDFExport(selectedReport)}
-                    className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
-                  >
-                    <GetAppIcon sx={{ fontSize: 16 }} />
-                    PDF
                   </Button>
                   <Button
                     size="sm"
