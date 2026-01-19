@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/simple
 import { Input } from "@/components/ui/input"
 import PeopleIcon from "@mui/icons-material/People"
 import WarningIcon from "@mui/icons-material/Warning"
-import GetAppIcon from "@mui/icons-material/GetApp"
 import DownloadIcon from "@mui/icons-material/Download"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import SendIcon from "@mui/icons-material/Send" 
@@ -96,17 +95,6 @@ export default function ViewerDashboard({ user, onLogout, reports = [] }: Viewer
   const handleReportSelect = (report: any) => {
     setSelectedReport(report)
     setActiveReportTab("summary") // Reset to summary tab when selecting a new report
-  }
-
-  const handleExport = (report: any) => {
-    const exportData = JSON.stringify(report, null, 2)
-    const element = document.createElement("a")
-    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(exportData))
-    element.setAttribute("download", `Report-${report.id}.json`)
-    element.style.display = "none"
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
   }
 
   const handlePDFExport = (report: any) => {
@@ -306,15 +294,6 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleExport(selectedReport)}
-                    className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
-                  >
-                    <GetAppIcon sx={{ fontSize: 16 }} />
-                    JSON
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
                     onClick={() => handlePDFExport(selectedReport)}
                     className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto"
                   >
@@ -325,23 +304,23 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               </CardHeader>
               <CardContent className="space-y-4">
                 <Tabs value={activeReportTab} onValueChange={setActiveReportTab} className="w-full">
-                  <TabsList className="w-full bg-muted text-xs">
-                    <TabsTrigger value="summary" className="text-xs">
+                  <TabsList className="w-full bg-muted text-xs overflow-x-auto">
+                    <TabsTrigger value="summary" className="text-xs flex-shrink-0 min-w-fit">
                       Summary
                     </TabsTrigger>
-                    <TabsTrigger value="power" className="text-xs">
+                    <TabsTrigger value="power" className="text-xs flex-shrink-0 min-w-fit">
                       Power
                     </TabsTrigger>
-                    <TabsTrigger value="production" className="text-xs">
+                    <TabsTrigger value="production" className="text-xs flex-shrink-0 min-w-fit">
                       Production
                     </TabsTrigger>
-                    <TabsTrigger value="incident" className="text-xs">
+                    <TabsTrigger value="incident" className="text-xs flex-shrink-0 min-w-fit">
                       Incident
                     </TabsTrigger>
-                    <TabsTrigger value="visuals" className="text-xs">
+                    <TabsTrigger value="visuals" className="text-xs flex-shrink-0 min-w-fit">
                       Visuals
                     </TabsTrigger>
-                    <TabsTrigger value="comments" className="text-xs">
+                    <TabsTrigger value="comments" className="text-xs flex-shrink-0 min-w-fit">
                       Comments
                     </TabsTrigger>
                   </TabsList>
