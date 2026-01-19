@@ -68,12 +68,14 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
 
         <Card className="border-border/50 shadow-lg">
           <CardHeader className="space-y-2 text-center">
-            <CardTitle className="text-xl sm:text-2xl md:text-3xl text-primary">
+            <CardTitle className="text-xl sm:text-2xl md:text-3xl text-primary text-center">
               {isSignUp ? "Create Account" : "Welcome Back"}
             </CardTitle>
-            <CardDescription className="text-sm sm:text-base text-neutral-500">
-              {isSignUp ? "Join IKO BRIQ production reporting system" : "Sign in to your production reporting account"}
-            </CardDescription>
+            {isSignUp && (
+              <CardDescription className="text-sm sm:text-base text-neutral-500">
+                Join IKO BRIQ production reporting system
+              </CardDescription>
+            )}
           </CardHeader>
 
           <CardContent>

@@ -37,7 +37,7 @@
   --destructive: #dc2626;
   --destructive-foreground: white;
   --border: var(--neutral-200);
-  --input: var(--neutral-100);
+  --input: transparent;
   --ring: var(--brand-green);
   --chart-1: var(--brand-green);
   --chart-2: var(--brand-orange);
