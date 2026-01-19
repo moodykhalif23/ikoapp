@@ -71,11 +71,6 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
             <CardTitle className="text-xl sm:text-2xl md:text-3xl text-primary text-center">
               {isSignUp ? "Create Account" : "Welcome Back"}
             </CardTitle>
-            {isSignUp && (
-              <CardDescription className="text-sm sm:text-base text-neutral-500">
-                Join IKO BRIQ production reporting system
-              </CardDescription>
-            )}
           </CardHeader>
 
           <CardContent>
