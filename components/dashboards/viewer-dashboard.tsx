@@ -174,9 +174,9 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+    <div className="min-h-screen bg-brand-gradient">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card border-b border-border/50">
+      <header className="sticky top-0 z-50 bg-brand-gradient-card border-b border-border/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
           <div className="relative w-24 h-10 sm:w-32 sm:h-14 flex-shrink-0">
             <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
@@ -187,7 +187,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               variant="outline"
               size="sm"
               onClick={onLogout}
-              className="gap-1 sm:gap-2 bg-transparent touch-target text-xs sm:text-sm"
+              className="gap-1 sm:gap-2 bg-white/80 hover:bg-white/90 backdrop-blur-sm touch-target text-xs sm:text-sm border-border/50"
             >
               <LogOut size={16} />
               <span className="hidden sm:inline">Sign Out</span>
@@ -206,7 +206,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="border-border/50">
+          <Card className="border-border/50 bg-brand-gradient-card backdrop-blur-sm">
             <CardHeader className="pb-2 sm:pb-3">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
                 Total Reports
@@ -219,7 +219,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             </CardContent>
           </Card>
 
-          <Card className="border-border/50">
+          <Card className="border-border/50 bg-brand-gradient-card backdrop-blur-sm">
             <CardHeader className="pb-2 sm:pb-3">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
                 Active Reporters
@@ -234,7 +234,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             </CardContent>
           </Card>
 
-          <Card className="border-border/50">
+          <Card className="border-border/50 bg-brand-gradient-card backdrop-blur-sm">
             <CardHeader className="pb-2 sm:pb-3">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center justify-between">
                 Avg Efficiency
@@ -256,7 +256,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Reports List */}
-          <Card className="border-border/50 lg:col-span-1">
+          <Card className="border-border/50 lg:col-span-1 bg-brand-gradient-card backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-base sm:text-lg">Reports</CardTitle>
               <CardDescription className="text-xs sm:text-sm">All submissions</CardDescription>
@@ -269,7 +269,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                   className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
                     selectedReport?.id === report.id
                       ? "bg-primary/10 border-primary"
-                      : "border-border/50 hover:bg-muted/50"
+                      : "border-border/50 hover:bg-white/50 backdrop-blur-sm"
                   }`}
                 >
                   <p className="font-medium text-xs sm:text-sm">{report.id}</p>
@@ -282,7 +282,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
           {/* Report Detail */}
           {selectedReport && (
-            <Card className="border-border/50 lg:col-span-2">
+            <Card className="border-border/50 lg:col-span-2 bg-brand-gradient-card backdrop-blur-sm">
               <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
                 <div className="min-w-0">
                   <CardTitle className="text-base sm:text-lg">Report {selectedReport.id}</CardTitle>

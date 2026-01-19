@@ -302,6 +302,34 @@
     border-color: var(--brand-orange);
   }
 
+  /* IKO BRIQ Brand Gradients */
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, 
+      rgba(45, 106, 79, 0.05) 0%,     /* Light green start */
+      rgba(255, 140, 0, 0.03) 25%,    /* Light orange */
+      rgba(45, 106, 79, 0.02) 50%,    /* Very light green */
+      rgba(255, 140, 0, 0.05) 75%,    /* Light orange */
+      rgba(45, 106, 79, 0.08) 100%    /* Light green end */
+    );
+  }
+
+  .bg-brand-gradient-subtle {
+    background: linear-gradient(135deg, 
+      rgba(45, 106, 79, 0.02) 0%,     /* Very light green */
+      rgba(255, 140, 0, 0.01) 50%,    /* Very light orange */
+      rgba(45, 106, 79, 0.03) 100%    /* Light green */
+    );
+  }
+
+  .bg-brand-gradient-card {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.95) 0%,   /* White with slight transparency */
+      rgba(45, 106, 79, 0.02) 25%,    /* Very light green tint */
+      rgba(255, 140, 0, 0.01) 50%,    /* Very light orange tint */
+      rgba(255, 255, 255, 0.98) 100%  /* Almost white */
+    );
+  }
+
   /* Mobile-specific utilities for thumb accessibility */
   .touch-target {
     @apply min-h-12 min-w-12;
