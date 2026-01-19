@@ -76,7 +76,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
         <CardDescription>Document any power interruptions that occurred</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg border border-primary/10">
+        <div className="flex items-center space-x-3 p-3 bg-primary/5 rounded-lg border border-primary/10">
           <Checkbox
             id="no-interruptions"
             checked={noInterruptions}
@@ -121,7 +121,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                 {MACHINES.map((machine) => (
                   <div
                     key={machine}
-                    className="flex items-center space-x-2 p-2 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                    className="flex items-center space-x-3 p-2 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                   >
                     <Checkbox
                       id={machine}

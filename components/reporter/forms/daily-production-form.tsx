@@ -167,7 +167,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                   {MACHINES.map((machine) => (
                     <div
                       key={machine}
-                      className="flex items-center space-x-2 p-2 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex items-center space-x-3 p-2 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <Checkbox
                         id={`product-${product.id}-${machine}`}
@@ -197,7 +197,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         <Button
           onClick={addProduct}
           variant="outline"
-          className="w-full gap-2 bg-transparent border-primary/20 hover:bg-primary/5"
+          className="w-full gap-2 bg-transparent border-primary/20 hover:bg-primary/5 mb-6"
         >
           <Plus className="w-4 h-4" />
           Add Product
