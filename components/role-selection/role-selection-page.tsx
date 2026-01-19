@@ -41,21 +41,21 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-2xl mx-auto">
           {/* Reporter Role */}
-          <Card className="group cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all-smooth border-border/50 overflow-hidden">
-            <CardHeader className="bg-gradient-to-br from-primary/5 to-transparent pb-4">
+          <Card className="group cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all-smooth border-border/50 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
+            <CardHeader className="pb-4">
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                <div className="p-2 bg-primary/20 rounded-lg group-hover:bg-primary/30 transition-colors">
                   <BarChartIcon sx={{ fontSize: 24, color: "var(--primary)" }} />
                 </div>
               </div>
               <CardTitle className="text-primary">Reporter</CardTitle>
-              <CardDescription>Submit production reports and data</CardDescription>
+              <CardDescription className="text-gray-700">Submit production reports and data</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-700">
                 Fill out production reports with a guided workflow including:
               </p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm text-gray-700">
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>
                   <span>Power Interruptions</span>
@@ -87,19 +87,19 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
           </Card>
 
           {/* Viewer Role */}
-          <Card className="group cursor-pointer hover:shadow-lg hover:border-accent/50 transition-all-smooth border-border/50 overflow-hidden">
-            <CardHeader className="bg-gradient-to-br from-accent/5 to-transparent pb-4">
+          <Card className="group cursor-pointer hover:shadow-lg hover:border-accent/50 transition-all-smooth border-border/50 overflow-hidden bg-gradient-to-br from-orange-50 to-yellow-100">
+            <CardHeader className="pb-4">
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-accent/10 rounded-lg group-hover:bg-accent/20 transition-colors">
+                <div className="p-2 bg-accent/20 rounded-lg group-hover:bg-accent/30 transition-colors">
                   <PeopleIcon sx={{ fontSize: 24, color: "var(--accent)" }} />
                 </div>
               </div>
               <CardTitle className="text-accent">Viewer</CardTitle>
-              <CardDescription>View and analyze production reports</CardDescription>
+              <CardDescription className="text-gray-700">View and analyze production reports</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">Access and analyze submitted reports with:</p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <p className="text-sm text-gray-700">Access and analyze submitted reports with:</p>
+              <ul className="space-y-2 text-sm text-gray-700">
                 <li className="flex items-start gap-2">
                   <span className="text-accent font-bold">•</span>
                   <span>Report filtering and search</span>
