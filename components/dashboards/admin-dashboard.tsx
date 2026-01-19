@@ -55,6 +55,7 @@ export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDa
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [commentText, setCommentText] = useState("")
+  const [activeReportTab, setActiveReportTab] = useState("overview")
 
   const mockReports = [
     {
@@ -297,7 +298,7 @@ ${new Date().toLocaleString()}
                     </div>
 
                     <div className="flex-1 overflow-y-auto min-h-0">
-                      <Tabs defaultValue="overview" className="w-full h-full flex flex-col">
+                      <Tabs value={activeReportTab} onValueChange={setActiveReportTab} className="w-full h-full flex flex-col">
                         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 bg-muted/50 rounded-lg p-1 flex-shrink-0">
                           <TabsTrigger value="overview" className="text-xs sm:text-sm touch-target">Overview</TabsTrigger>
                           <TabsTrigger value="visuals" className="text-xs sm:text-sm touch-target">Visuals</TabsTrigger>

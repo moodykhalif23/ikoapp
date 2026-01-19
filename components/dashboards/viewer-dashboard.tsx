@@ -31,6 +31,7 @@ export default function ViewerDashboard({ user, onLogout, reports = [] }: Viewer
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [commentText, setCommentText] = useState("")
+  const [activeReportTab, setActiveReportTab] = useState("summary")
 
   const mockReports = [
     {
@@ -317,7 +318,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Tabs defaultValue="summary" className="w-full">
+                <Tabs value={activeReportTab} onValueChange={setActiveReportTab} className="w-full">
                   <TabsList className="w-full bg-muted text-xs">
                     <TabsTrigger value="summary" className="text-xs">
                       Summary
