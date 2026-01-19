@@ -209,41 +209,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
           <p className="text-xs sm:text-base text-muted-foreground">View and analyze production reports</p>
         </div>
 
-        {/* Role Description */}
-        <Card className="border-accent/30 bg-accent/5 mb-6 sm:mb-8">
-          <CardHeader>
-            <CardTitle className="text-base sm:text-lg text-accent">Your Role: Viewer</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p className="text-sm text-muted-foreground">Access and analyze submitted reports with:</p>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <span className="text-accent font-bold">•</span>
-                <span>Report filtering and search</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-accent font-bold">•</span>
-                <span>Analytics dashboard</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-accent font-bold">•</span>
-                <span>Historical data access</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-accent font-bold">•</span>
-                <span>Export capabilities</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-accent font-bold">•</span>
-                <span>Team insights</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-accent font-bold">•</span>
-                <span>Comment and collaborate</span>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
+
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card className="border-border/50">
@@ -362,7 +328,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               </CardHeader>
               <CardContent className="space-y-4">
                 <Tabs defaultValue="summary" className="w-full">
-                  <TabsList className="mobile-tab-list w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 bg-muted text-xs overflow-x-auto">
+                  <TabsList className="w-full bg-muted text-xs">
                     <TabsTrigger value="summary" className="text-xs">
                       Summary
                     </TabsTrigger>
@@ -370,7 +336,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                       Power
                     </TabsTrigger>
                     <TabsTrigger value="production" className="text-xs">
-                      Prod
+                      Production
                     </TabsTrigger>
                     <TabsTrigger value="incident" className="text-xs">
                       Incident
