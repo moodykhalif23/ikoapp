@@ -3,9 +3,10 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Logout, ChevronRight, Add } from "@mui/icons-material"
+import { Logout, ChevronRight, Add, Visibility } from "@mui/icons-material"
 import Image from "next/image"
 import ReportingFlow from "@/components/reporter/reporting-flow"
+import ReportDetailView from "@/components/reporter/report-detail-view"
 
 interface ReporterDashboardProps {
   user: any
@@ -15,16 +16,53 @@ interface ReporterDashboardProps {
 
 export default function ReporterDashboard({ user, onLogout, onReportSubmit }: ReporterDashboardProps) {
   const [showNewReport, setShowNewReport] = useState(false)
+  const [selectedReport, setSelectedReport] = useState<any>(null)
   const [localReports, setLocalReports] = useState<any[]>([])
   const reports = localReports; // Declare the reports variable
 
   const handleReportSubmit = (reportData: any) => {
-    const reportWithMetadata = { ...reportData, id: Math.random(), createdAt: new Date() }
+    const reportWithMetadata = { ...reportData, id: `RPT-${Date.now()}`, createdAt: new Date() }
     setLocalReports([reportWithMetadata, ...localReports])
     if (onReportSubmit) {
       onReportSubmit(reportData)
     }
     setShowNewReport(false)
+  }
+
+  const handleViewReport = (report: any) => {
+    setSelectedReport(report)
+  }
+
+  const handleBackToReports = () => {
+    setSelectedReport(null)
+  }
+
+  // Show detailed report view
+  if (selectedReport) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+        {/* Header */}
+        <header className="bg-card border-b border-border/50">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+            <div className="relative w-32 h-14">
+              <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-foreground">{user?.name}</span>
+              <Button variant="outline" size="sm" onClick={onLogout} className="gap-2 bg-transparent">
+                <Logout sx={{ fontSize: 16 }} />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        {/* Report Detail View */}
+        <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+          <ReportDetailView report={selectedReport} onBack={handleBackToReports} />
+        </main>
+      </div>
+    )
   }
 
   if (showNewReport) {
@@ -122,7 +160,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
                   <CardDescription>Report #{report.id}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2 text-sm mb-4">
                     <p>
                       <span className="font-medium text-foreground">Power Interruptions:</span>{" "}
                       {report.powerInterruptions?.noInterruptions ? "None" : "Yes"}
@@ -131,7 +169,19 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
                       <span className="font-medium text-foreground">Submitted:</span>{" "}
                       {new Date(report.createdAt).toLocaleDateString()}
                     </p>
+                    <p>
+                      <span className="font-medium text-foreground">Products:</span>{" "}
+                      {report.dailyProduction?.products?.length || 0}
+                    </p>
                   </div>
+                  <Button
+                    onClick={() => handleViewReport(report)}
+                    variant="outline"
+                    className="w-full gap-2 bg-transparent hover:bg-primary/5"
+                  >
+                    <Visibility sx={{ fontSize: 16 }} />
+                    View Details
+                  </Button>
                 </CardContent>
               </Card>
             ))}
