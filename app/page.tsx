@@ -46,7 +46,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+    <main className="min-h-screen bg-app-standard">
       {currentPage === "auth" && <AuthPage onSuccess={handleAuthSuccess} />}
       {currentPage === "roleSelection" && (
         <RoleSelectionPage user={user} onRoleSelect={handleRoleSelect} onLogout={handleLogout} />

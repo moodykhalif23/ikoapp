@@ -53,10 +53,10 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 safe-area-inset" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 safe-area-inset bg-app-standard">
       {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-72 h-72 rounded-full blur-3xl -z-10" style={{ background: 'rgba(45, 106, 79, 0.1)' }}></div>
-      <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full blur-3xl -z-10" style={{ background: 'rgba(255, 140, 0, 0.1)' }}></div>
+      <div className="absolute top-0 left-0 w-72 h-72 rounded-full blur-3xl -z-10" style={{ background: 'rgba(45, 106, 79, 0.15)' }}></div>
+      <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full blur-3xl -z-10" style={{ background: 'rgba(255, 140, 0, 0.15)' }}></div>
 
       <div className="w-full max-w-md">
         {/* Logo */}

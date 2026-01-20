@@ -41,7 +41,7 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-2xl mx-auto">
           {/* Reporter Role */}
-          <Card className="group cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all-smooth border-border/50 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
+          <Card className="group cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all-smooth border-border/50 overflow-hidden bg-gradient-to-br from-green-100 to-green-200">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-primary/20 rounded-lg group-hover:bg-primary/30 transition-colors">
@@ -87,7 +87,7 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
           </Card>
 
           {/* Viewer Role */}
-          <Card className="group cursor-pointer hover:shadow-lg hover:border-accent/50 transition-all-smooth border-border/50 overflow-hidden bg-gradient-to-br from-orange-50 to-yellow-100">
+          <Card className="group cursor-pointer hover:shadow-lg hover:border-accent/50 transition-all-smooth border-border/50 overflow-hidden bg-gradient-to-br from-orange-100 to-orange-200">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-accent/20 rounded-lg group-hover:bg-accent/30 transition-colors">
