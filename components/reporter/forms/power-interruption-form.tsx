@@ -22,8 +22,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
     occurredAt: data?.occurredAt || "",
     duration: data?.duration || "",
     affectedMachines: data?.affectedMachines || [],
-    cause: data?.cause || "",
-    notes: data?.notes || "",
+    kplcMeter: data?.kplcMeter || "",
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -58,8 +57,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
       occurredAt: "",
       duration: "",
       affectedMachines: [],
-      cause: "",
-      notes: "",
+      kplcMeter: "",
     })
   }
 
@@ -89,7 +87,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
 
         {!noInterruptions && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Time of Interruption</label>
                 <Input
@@ -111,6 +109,16 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   className={errors.duration ? "border-red-500" : ""}
                 />
                 {errors.duration && <p className="text-xs text-red-500">{errors.duration}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">KPLC Meter Reading</label>
+                <Input
+                  type="number"
+                  placeholder="Enter meter reading"
+                  value={formData.kplcMeter}
+                  onChange={(e) => setFormData({ ...formData, kplcMeter: e.target.value })}
+                />
               </div>
             </div>
 
@@ -135,26 +143,6 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                 ))}
               </div>
               {errors.affectedMachines && <p className="text-xs text-red-500">{errors.affectedMachines}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Cause (optional)</label>
-              <Input
-                placeholder="What caused the interruption?"
-                value={formData.cause}
-                onChange={(e) => setFormData({ ...formData, cause: e.target.value })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Additional Notes (optional)</label>
-              <Textarea
-                placeholder="Any additional details..."
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="resize-none"
-                rows={3}
-              />
             </div>
           </>
         )}

@@ -12,10 +12,19 @@ interface DailyProductionFormProps {
   onComplete: (data: any) => void
 }
 
+interface Product {
+  id: number
+  productName: string
+  quantity: string
+  unit: string
+  machinesUsed: string[]
+  employees: string
+}
+
 const MACHINES = ["Machine A", "Machine B", "Machine C", "Machine D", "Machine E"]
 
 export default function DailyProductionForm({ data, onComplete }: DailyProductionFormProps) {
-  const [products, setProducts] = useState(
+  const [products, setProducts] = useState<Product[]>(
     data?.products || [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
   )
   const [qualityIssues, setQualityIssues] = useState(data?.qualityIssues || "")
@@ -24,7 +33,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    products.forEach((product, index) => {
+    products.forEach((product: Product, index: number) => {
       if (!product.productName) newErrors[`product-${index}-name`] = "Required"
       if (!product.quantity) newErrors[`product-${index}-quantity`] = "Required"
       if (product.machinesUsed.length === 0) newErrors[`product-${index}-machines`] = "Select at least one machine"
@@ -47,19 +56,19 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
   }
 
   const removeProduct = (id: number) => {
-    setProducts(products.filter((p) => p.id !== id))
+    setProducts(products.filter((p: Product) => p.id !== id))
   }
 
   const updateProduct = (id: number, field: string, value: any) => {
-    setProducts(products.map((p) => (p.id === id ? { ...p, [field]: value } : p)))
+    setProducts(products.map((p: Product) => (p.id === id ? { ...p, [field]: value } : p)))
   }
 
   const toggleMachine = (id: number, machine: string) => {
     setProducts(
-      products.map((p) => {
+      products.map((p: Product) => {
         if (p.id === id) {
           const machinesUsed = p.machinesUsed.includes(machine)
-            ? p.machinesUsed.filter((m) => m !== machine)
+            ? p.machinesUsed.filter((m: string) => m !== machine)
             : [...p.machinesUsed, machine]
           return { ...p, machinesUsed }
         }
@@ -69,7 +78,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
   }
 
   const getTotalEfficiency = () => {
-    const totalQuantity = products.reduce((sum, p) => sum + Number(p.quantity || 0), 0)
+    const totalQuantity = products.reduce((sum: number, p: Product) => sum + Number(p.quantity || 0), 0)
     return products.length > 0 ? ((totalQuantity / (products.length * 100)) * 100).toFixed(1) : "0"
   }
 
@@ -90,7 +99,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          {products.map((product, index) => (
+          {products.map((product: Product, index: number) => (
             <div key={product.id} className="p-6 border border-border rounded-lg space-y-4 bg-muted/30">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
