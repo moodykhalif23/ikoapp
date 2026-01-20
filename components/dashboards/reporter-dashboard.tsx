@@ -51,7 +51,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
   // Show standalone power interruption form
   if (showPowerInterruption) {
     return (
-      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+      <div className="min-h-screen bg-app-standard">
         {/* Header */}
         <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
@@ -83,7 +83,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
   // Show detailed report view
   if (selectedReport) {
     return (
-      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+      <div className="min-h-screen bg-app-standard">
         {/* Header */}
         <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
@@ -110,7 +110,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
 
   if (showNewReport) {
     return (
-      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+      <div className="min-h-screen bg-app-standard">
         {/* Header */}
         <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
@@ -146,7 +146,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+    <div className="min-h-screen bg-app-standard">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">

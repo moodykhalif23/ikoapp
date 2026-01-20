@@ -221,7 +221,7 @@ ${new Date().toLocaleString()}
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+    <div className="min-h-screen bg-app-standard">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">

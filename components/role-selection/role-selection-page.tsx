@@ -15,7 +15,7 @@ interface RoleSelectionPageProps {
 
 export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: RoleSelectionPageProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+    <div className="min-h-screen bg-app-standard">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-card border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">

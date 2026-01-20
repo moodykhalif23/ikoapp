@@ -9,12 +9,12 @@
   --brand-green-dark: #1e4a35;
   --brand-green-light: #4a8066;
   --brand-green-lighter: #6b9080;
-  --brand-green-subtle: #f0f7f4;
+  --brand-green-subtle: #d4e6d9;
   --brand-orange: #ff8c00;
   --brand-orange-dark: #e67c00;
   --brand-orange-light: #ffb347;
   --brand-orange-lighter: #ffc266;
-  --brand-orange-subtle: #fff8f0;
+  --brand-orange-subtle: #f5e6d3;
   --neutral-50: #f9fafb;
   --neutral-100: #f3f4f6;
   --neutral-200: #e5e7eb;
@@ -345,10 +345,17 @@
   }
 
   /* Enhanced IKO BRIQ Brand Gradients */
+  .bg-app-standard {
+    background: linear-gradient(135deg, 
+      var(--brand-green-subtle) 0%,      /* Dense green start */
+      var(--brand-orange-subtle) 100%    /* Dense orange end */
+    );
+  }
+
   .bg-brand-gradient {
     background: linear-gradient(135deg, 
-      var(--brand-green-subtle) 0%,      /* Light green start */
-      var(--brand-orange-subtle) 100%    /* Light orange end */
+      var(--brand-green-subtle) 0%,      /* Dense green start */
+      var(--brand-orange-subtle) 100%    /* Dense orange end */
     );
   }
 
