@@ -16,7 +16,7 @@ const MACHINES = ["Machine A", "Machine B", "Machine C", "Machine D", "Machine E
 
 export default function DailyProductionForm({ data, onComplete }: DailyProductionFormProps) {
   const [products, setProducts] = useState(
-    data?.products || [{ id: 1, productName: "", quantity: "", unit: "kg", machinesUsed: [], employees: "" }],
+    data?.products || [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
   )
   const [qualityIssues, setQualityIssues] = useState(data?.qualityIssues || "")
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -42,7 +42,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
   const addProduct = () => {
     setProducts([
       ...products,
-      { id: Date.now(), productName: "", quantity: "", unit: "kg", machinesUsed: [], employees: "" },
+      { id: Date.now(), productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" },
     ])
   }
 
@@ -87,7 +87,6 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
     <Card className="border-border/50 animate-in fade-in duration-300">
       <CardHeader>
         <CardTitle className="text-primary">Daily Production Data</CardTitle>
-        <CardDescription>Enter production metrics with machines and employees per product</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
@@ -135,15 +134,9 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Unit</label>
-                  <select
-                    value={product.unit}
-                    onChange={(e) => updateProduct(product.id, "unit", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground"
-                  >
-                    <option value="kg">Kilograms (kg)</option>
-                    <option value="tonnes">Tonnes (t)</option>
-                    <option value="units">Units</option>
-                  </select>
+                  <div className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground">
+                    kgs
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -197,7 +190,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         <Button
           onClick={addProduct}
           variant="outline"
-          className="w-full gap-2 bg-transparent border-primary/20 hover:bg-primary/5 mb-8"
+          className="w-full gap-2 bg-transparent border-primary/20 hover:bg-primary/5 mb-12"
         >
           <Plus className="w-4 h-4" />
           Add Product

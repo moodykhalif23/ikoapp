@@ -73,7 +73,6 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
     <Card className="border-border/50 animate-in fade-in duration-300">
       <CardHeader>
         <CardTitle className="text-primary">Power Interruption Report</CardTitle>
-        <CardDescription>Document any power interruptions that occurred</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center space-x-3 p-4 bg-primary/5 rounded-lg border border-primary/10">

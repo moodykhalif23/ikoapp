@@ -43,7 +43,6 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
     <Card className="border-border/50 animate-in fade-in duration-300">
       <CardHeader>
         <CardTitle className="text-primary">Employee Planning</CardTitle>
-        <CardDescription>Document today's employee allocation and planning</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

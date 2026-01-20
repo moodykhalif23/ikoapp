@@ -29,7 +29,6 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
     <Card className="border-border/50 animate-in fade-in duration-300">
       <CardHeader>
         <CardTitle className="text-primary">Incident Report</CardTitle>
-        <CardDescription>Document any incidents that occurred</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
