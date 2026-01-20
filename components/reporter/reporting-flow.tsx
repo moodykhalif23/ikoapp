@@ -114,7 +114,7 @@ export default function ReportingFlow({ onSubmit, user }: ReportingFlowProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Progress Indicator */}
       <div className="grid grid-cols-5 gap-2 md:gap-4">
         {steps.map((step, index) => (
@@ -155,7 +155,7 @@ export default function ReportingFlow({ onSubmit, user }: ReportingFlowProps) {
       </div>
 
       {/* Navigation */}
-      <div className="flex gap-3 justify-between pt-4 border-t border-border/50">
+      <div className="flex gap-3 justify-between pt-6 border-t border-border/50">
         <Button variant="outline" onClick={handleBack} disabled={currentStep === 0} className="px-6 bg-transparent">
           Back
         </Button>

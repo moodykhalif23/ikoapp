@@ -31,14 +31,14 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
         <CardTitle className="text-primary">Incident Report</CardTitle>
         <CardDescription>Document any incidents that occurred</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div className="space-y-3">
           <label className="text-sm font-medium">Were there any incidents today?</label>
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-4 flex-wrap">
             {["no", "yes"].map((option) => (
               <div
                 key={option}
-                className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
               >
                 <input
                   type="radio"
@@ -49,7 +49,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   onChange={(e) => setFormData({ ...formData, hasIncident: e.target.value })}
                   className="w-4 h-4 cursor-pointer accent-primary"
                 />
-                <label htmlFor={`incident-${option}`} className="text-sm cursor-pointer font-medium capitalize">
+                <label htmlFor={`incident-${option}`} className="text-sm cursor-pointer font-medium capitalize ml-2">
                   {option}
                 </label>
               </div>

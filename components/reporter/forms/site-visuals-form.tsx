@@ -81,7 +81,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
       <CardHeader>
         <CardTitle className="text-primary">Site Visuals & Documentation</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div className="space-y-3">
           <label className="text-sm font-medium">Media Files (Images & Videos)</label>
 

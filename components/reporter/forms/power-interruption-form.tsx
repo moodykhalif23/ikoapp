@@ -75,15 +75,15 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
         <CardTitle className="text-primary">Power Interruption Report</CardTitle>
         <CardDescription>Document any power interruptions that occurred</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center space-x-3 p-3 bg-primary/5 rounded-lg border border-primary/10">
+      <CardContent className="space-y-6">
+        <div className="flex items-center space-x-3 p-4 bg-primary/5 rounded-lg border border-primary/10">
           <Checkbox
             id="no-interruptions"
             checked={noInterruptions}
             onCheckedChange={handleNoInterruptionsChange}
             className="border-primary"
           />
-          <label htmlFor="no-interruptions" className="text-sm font-medium cursor-pointer">
+          <label htmlFor="no-interruptions" className="text-sm font-medium cursor-pointer ml-2">
             No power interruptions occurred today
           </label>
         </div>
@@ -117,11 +117,11 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
 
             <div className="space-y-3">
               <label className="text-sm font-medium">Affected Machines</label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {MACHINES.map((machine) => (
                   <div
                     key={machine}
-                    className="flex items-center space-x-3 p-2 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                    className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                   >
                     <Checkbox
                       id={machine}
@@ -129,7 +129,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                       onCheckedChange={() => toggleMachine(machine)}
                       className="border-primary"
                     />
-                    <label htmlFor={machine} className="text-sm cursor-pointer font-medium">
+                    <label htmlFor={machine} className="text-sm cursor-pointer font-medium ml-2">
                       {machine}
                     </label>
                   </div>

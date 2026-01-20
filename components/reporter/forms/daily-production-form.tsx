@@ -89,10 +89,10 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         <CardTitle className="text-primary">Daily Production Data</CardTitle>
         <CardDescription>Enter production metrics with machines and employees per product</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
           {products.map((product, index) => (
-            <div key={product.id} className="p-4 border border-border rounded-lg space-y-3 bg-muted/30">
+            <div key={product.id} className="p-6 border border-border rounded-lg space-y-4 bg-muted/30">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <label className="text-sm font-medium block mb-2">Product Name</label>
@@ -118,7 +118,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Quantity Produced</label>
                   <Input
@@ -163,11 +163,11 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
 
               <div className="space-y-3">
                 <label className="text-sm font-medium">Machines Used</label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {MACHINES.map((machine) => (
                     <div
                       key={machine}
-                      className="flex items-center space-x-3 p-2 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <Checkbox
                         id={`product-${product.id}-${machine}`}
@@ -177,7 +177,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                       />
                       <label
                         htmlFor={`product-${product.id}-${machine}`}
-                        className="text-sm cursor-pointer font-medium"
+                        className="text-sm cursor-pointer font-medium ml-2"
                       >
                         {machine}
                       </label>
@@ -197,13 +197,13 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         <Button
           onClick={addProduct}
           variant="outline"
-          className="w-full gap-2 bg-transparent border-primary/20 hover:bg-primary/5 mb-6"
+          className="w-full gap-2 bg-transparent border-primary/20 hover:bg-primary/5 mb-8"
         >
           <Plus className="w-4 h-4" />
           Add Product
         </Button>
 
-        <div className="bg-accent/10 border border-accent/20 rounded-lg p-4">
+        <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6">
           <p className="text-sm text-muted-foreground mb-1">Overall Daily Efficiency</p>
           <p className="text-2xl font-bold text-accent">{getTotalEfficiency()}%</p>
         </div>

@@ -45,7 +45,7 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
         <CardTitle className="text-primary">Employee Planning</CardTitle>
         <CardDescription>Document today's employee allocation and planning</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Employees Present</label>
