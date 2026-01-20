@@ -21,20 +21,12 @@ interface MediaFile {
 }
 
 export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormProps) {
-  const [formData, setFormData] = useState({
-    siteCondition: data?.siteCondition || "",
-    visualNotes: data?.visualNotes || "",
-    equipmentStatus: data?.equipmentStatus || "",
-    media: data?.media || [],
-  })
-
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>(data?.media || [])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.siteCondition) newErrors.siteCondition = "Site condition is required"
     if (mediaFiles.length === 0) newErrors.media = "Upload at least one image or video"
 
     setErrors(newErrors)
@@ -79,7 +71,6 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
   const handleSubmit = () => {
     if (validateForm()) {
       onComplete({
-        ...formData,
         media: mediaFiles,
       })
     }
@@ -89,36 +80,8 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
     <Card className="border-border/50 animate-in fade-in duration-300">
       <CardHeader>
         <CardTitle className="text-primary">Site Visuals & Documentation</CardTitle>
-        <CardDescription>Document the visual condition with images and videos</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Site Condition</label>
-          <textarea
-            className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="Describe the current site condition..."
-            value={formData.siteCondition}
-            onChange={(e) => setFormData({ ...formData, siteCondition: e.target.value })}
-            rows={3}
-          />
-          {errors.siteCondition && <p className="text-xs text-red-500">{errors.siteCondition}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Equipment Status</label>
-          <select
-            className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            value={formData.equipmentStatus}
-            onChange={(e) => setFormData({ ...formData, equipmentStatus: e.target.value })}
-          >
-            <option value="">Select equipment status</option>
-            <option value="operational">Operational</option>
-            <option value="maintenance">Under Maintenance</option>
-            <option value="non-operational">Non-Operational</option>
-            <option value="partial">Partially Operational</option>
-          </select>
-        </div>
-
         <div className="space-y-3">
           <label className="text-sm font-medium">Media Files (Images & Videos)</label>
 
@@ -165,17 +128,6 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
               </div>
             </div>
           )}
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Visual Notes (optional)</label>
-          <textarea
-            className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-            placeholder="Any visual observations or concerns..."
-            value={formData.visualNotes}
-            onChange={(e) => setFormData({ ...formData, visualNotes: e.target.value })}
-            rows={2}
-          />
         </div>
 
         <div className="flex justify-end pt-4">

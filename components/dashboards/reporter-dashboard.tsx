@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Logout, ChevronRight, Add, Visibility, Power } from "@mui/icons-material"
+import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack } from "@mui/icons-material"
 import Image from "next/image"
 import ReportingFlow from "@/components/reporter/reporting-flow"
 import ReportDetailView from "@/components/reporter/report-detail-view"
@@ -130,12 +130,14 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
         {/* Reporting Flow - Full Width on Large Screens */}
         <main className="w-full px-4 md:px-6 py-8 md:py-12">
           <div className="max-w-7xl mx-auto">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setShowNewReport(false)}
-              className="mb-6 text-primary hover:text-primary/80 font-medium text-sm flex items-center gap-2 hover-brand rounded-lg px-2 py-1 transition-colors"
+              className="mb-6 gap-2 hover:bg-muted"
             >
-              ← Back to Dashboard
-            </button>
+              <ArrowBack sx={{ fontSize: 16 }} />
+              Back to Dashboard
+            </Button>
             <ReportingFlow onSubmit={handleReportSubmit} user={user} />
           </div>
         </main>
