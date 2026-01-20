@@ -53,7 +53,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
     return (
       <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
         {/* Header */}
-        <header className="border-b backdrop-blur-sm card-brand">
+        <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
             <div className="relative w-32 h-14">
               <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
@@ -85,7 +85,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
     return (
       <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
         {/* Header */}
-        <header className="border-b backdrop-blur-sm card-brand">
+        <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
             <div className="relative w-32 h-14">
               <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
@@ -112,7 +112,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
     return (
       <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
         {/* Header */}
-        <header className="border-b backdrop-blur-sm card-brand">
+        <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
             <div className="relative w-32 h-14">
               <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
@@ -148,7 +148,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
       {/* Header */}
-      <header className="border-b backdrop-blur-sm card-brand">
+      <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <div className="relative w-32 h-14">
             <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
