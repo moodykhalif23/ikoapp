@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Logout, ChevronRight, Add, Visibility } from "@mui/icons-material"
+import { Logout, ChevronRight, Add, Visibility, Power } from "@mui/icons-material"
 import Image from "next/image"
 import ReportingFlow from "@/components/reporter/reporting-flow"
 import ReportDetailView from "@/components/reporter/report-detail-view"
+import StandalonePowerInterruption from "@/components/reporter/standalone-power-interruption"
 
 interface ReporterDashboardProps {
   user: any
@@ -16,8 +17,10 @@ interface ReporterDashboardProps {
 
 export default function ReporterDashboard({ user, onLogout, onReportSubmit }: ReporterDashboardProps) {
   const [showNewReport, setShowNewReport] = useState(false)
+  const [showPowerInterruption, setShowPowerInterruption] = useState(false)
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [localReports, setLocalReports] = useState<any[]>([])
+  const [powerInterruptionReports, setPowerInterruptionReports] = useState<any[]>([])
   const reports = localReports; // Declare the reports variable
 
   const handleReportSubmit = (reportData: any) => {
@@ -29,12 +32,52 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
     setShowNewReport(false)
   }
 
+  const handlePowerInterruptionSubmit = (reportData: any) => {
+    const reportWithMetadata = { ...reportData, createdAt: new Date() }
+    setPowerInterruptionReports([reportWithMetadata, ...powerInterruptionReports])
+    if (onReportSubmit) {
+      onReportSubmit(reportData)
+    }
+  }
+
   const handleViewReport = (report: any) => {
     setSelectedReport(report)
   }
 
   const handleBackToReports = () => {
     setSelectedReport(null)
+  }
+
+  // Show standalone power interruption form
+  if (showPowerInterruption) {
+    return (
+      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f7f4 0%, #fff8f0 100%)' }}>
+        {/* Header */}
+        <header className="border-b backdrop-blur-sm card-brand">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+            <div className="relative w-32 h-14">
+              <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-brand-contrast">{user?.name}</span>
+              <Button variant="outline" size="sm" onClick={onLogout} className="gap-2 bg-transparent border-brand-subtle hover-brand focus-brand">
+                <Logout sx={{ fontSize: 16 }} />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        {/* Power Interruption Form */}
+        <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+          <StandalonePowerInterruption 
+            user={user} 
+            onBack={() => setShowPowerInterruption(false)}
+            onSubmit={handlePowerInterruptionSubmit}
+          />
+        </main>
+      </div>
+    )
   }
 
   // Show detailed report view
@@ -125,13 +168,23 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Production Reports</h1>
             <p className="text-muted-foreground">Submit and manage your production reports</p>
           </div>
-          <Button
-            onClick={() => setShowNewReport(true)}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 self-start md:self-auto shadow-lg hover:shadow-xl transition-shadow"
-          >
-            <Add sx={{ fontSize: 16 }} />
-            New Report
-          </Button>
+          <div className="flex gap-3 self-start md:self-auto">
+            <Button
+              onClick={() => setShowPowerInterruption(true)}
+              variant="outline"
+              className="gap-2 border-orange-200 text-orange-700 hover:bg-orange-50 hover:border-orange-300"
+            >
+              <Power sx={{ fontSize: 16 }} />
+              Power Interruption
+            </Button>
+            <Button
+              onClick={() => setShowNewReport(true)}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg hover:shadow-xl transition-shadow"
+            >
+              <Add sx={{ fontSize: 16 }} />
+              New Report
+            </Button>
+          </div>
         </div>
 
         {localReports.length === 0 ? (
