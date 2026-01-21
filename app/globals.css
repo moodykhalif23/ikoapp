@@ -653,11 +653,11 @@
 }
 /* Sidebar specific enhancements */
 .sidebar-fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  z-index: 40;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  height: 100vh !important;
+  z-index: 40 !important;
 }
 
 .sidebar-text-white {
@@ -738,4 +738,14 @@
   background-color: var(--brand-orange) !important;
   box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
   transform: translateX(2px);
+}
+
+/* Ensure sidebar never scrolls with content */
+.sidebar-no-scroll {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  height: 100vh !important;
+  overflow-y: auto !important;
+  z-index: 1000 !important;
 }

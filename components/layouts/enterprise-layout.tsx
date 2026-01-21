@@ -50,13 +50,9 @@ export default function EnterpriseLayout({
   }, [])
 
   return (
-    <div className="min-h-screen bg-app-standard flex">
-      {/* Sidebar - Responsive positioning */}
-      <div className={`${
-        sidebarCollapsed 
-          ? 'fixed left-0 top-0 h-full z-40 lg:relative lg:z-auto' 
-          : 'fixed left-0 top-0 h-full z-40 lg:relative lg:z-auto'
-      }`}>
+    <div className="min-h-screen bg-app-standard">
+      {/* Sidebar - Always fixed position */}
+      <div className="fixed left-0 top-0 h-full z-40">
         <Sidebar
           activeTab={activeTab}
           onTabChange={onTabChange}
@@ -75,9 +71,11 @@ export default function EnterpriseLayout({
         />
       )}
 
-      {/* Main Content - No margin on large screens */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header - Fixed positioning */}
+      {/* Main Content - With left margin to account for fixed sidebar */}
+      <div className={`min-h-screen transition-all duration-300 ${
+        sidebarCollapsed ? 'ml-16' : 'ml-64'
+      }`}>
+        {/* Top Header - Sticky within the content area */}
         <header className="sticky top-0 z-30 bg-card border-b border-border px-6 py-4 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -154,7 +152,7 @@ export default function EnterpriseLayout({
         </header>
 
         {/* Page Content - Scrollable area */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1">
           <div className="p-6">
             {children}
           </div>

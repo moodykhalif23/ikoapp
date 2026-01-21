@@ -79,7 +79,7 @@ export default function Sidebar({
   ]
 
   return (
-    <div className={`h-screen bg-brand-green border-r border-brand-green/20 transition-all duration-300 ${
+    <div className={`sidebar-no-scroll bg-brand-green border-r border-brand-green/20 transition-all duration-300 ${
       collapsed ? 'w-16' : 'w-64'
     } flex flex-col sidebar-force-white`}>
       {/* Header */}
