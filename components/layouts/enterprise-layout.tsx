@@ -134,20 +134,40 @@ export default function EnterpriseLayout({
       {/* Main Content - Responsive margin */}
       <div className={`min-h-screen transition-all duration-300 lg:${
         sidebarCollapsed ? 'ml-16' : 'ml-64'
-      } pb-20 lg:pb-0`}>
+      } pb-16 lg:pb-0`}>
         {/* Top Header - Responsive */}
-        <header className="sticky top-0 z-30 bg-card border-b border-border px-4 lg:px-6 py-4 backdrop-blur-sm">
-          <div className="flex items-center justify-between">
+        <header className="sticky top-0 z-30 bg-card border-b border-border backdrop-blur-sm">
+          {/* Mobile Header - Compact */}
+          <div className="lg:hidden mobile-header-compact flex items-center justify-between">
+            <div className="relative w-24 h-8">
+              <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onLogout}
+              className="mobile-avatar-button mobile-touch-target"
+            >
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                <span className="text-sm font-medium text-primary-foreground">
+                  {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                </span>
+              </div>
+            </Button>
+          </div>
+
+          {/* Desktop Header - Full */}
+          <div className="hidden lg:flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <div className="block">
-                <h1 className="text-xl lg:text-2xl font-bold text-foreground">{title || 'Dashboard'}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{title || 'Dashboard'}</h1>
                 {subtitle && (
-                  <p className="text-sm text-muted-foreground hidden sm:block">{subtitle}</p>
+                  <p className="text-sm text-muted-foreground">{subtitle}</p>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center gap-2 lg:gap-4">
+            <div className="flex items-center gap-4">
               {/* Home Button */}
               {onGoHome && (
                 <Button
@@ -161,7 +181,7 @@ export default function EnterpriseLayout({
                 </Button>
               )}
 
-              {/* Search - Hidden on mobile */}
+              {/* Search */}
               <div className="hidden md:block relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input
@@ -180,7 +200,7 @@ export default function EnterpriseLayout({
 
               {/* User Menu */}
               <div className="flex items-center gap-3">
-                <div className="w-8 lg:w-10 h-8 lg:h-10 rounded-full bg-primary flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                   <span className="text-sm font-medium text-primary-foreground">
                     {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
@@ -189,30 +209,14 @@ export default function EnterpriseLayout({
                   <p className="text-sm font-medium">{user?.name}</p>
                   <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
                 </div>
-                {/* Mobile logout button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onLogout}
-                  className="lg:hidden p-2"
-                >
-                  <LogOut size={16} />
-                </Button>
               </div>
             </div>
-          </div>
-
-          {/* Mobile Title */}
-          <div className="lg:hidden mt-4">
-            {subtitle && (
-              <p className="text-sm text-muted-foreground">{subtitle}</p>
-            )}
           </div>
         </header>
 
         {/* Page Content - Scrollable area */}
         <main className="flex-1">
-          <div className="p-4 lg:p-6">
+          <div className="p-3 lg:p-6">
             {children}
           </div>
         </main>
@@ -220,7 +224,7 @@ export default function EnterpriseLayout({
 
       {/* Bottom Navigation - Only visible on mobile */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bottom-nav">
-        <div className="flex items-center justify-around px-1 py-2 safe-area-inset">
+        <div className="flex items-center justify-around px-1 py-1 safe-area-inset">
           {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').slice(0, 4).map((item) => {
             const Icon = item.icon
             const isActive = activeTab === item.id
@@ -230,7 +234,7 @@ export default function EnterpriseLayout({
                 key={item.id}
                 variant="ghost"
                 onClick={() => onTabChange?.(item.id)}
-                className={`flex-1 flex-col gap-1 h-16 px-1 bottom-nav-button ${
+                className={`flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target ${
                   isActive ? 'active' : ''
                 } ${
                   isActive
@@ -238,7 +242,7 @@ export default function EnterpriseLayout({
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 }`}
               >
-                <Icon size={20} />
+                <Icon size={18} />
                 <span className="text-xs font-medium leading-tight">{item.label}</span>
               </Button>
             )
@@ -248,9 +252,9 @@ export default function EnterpriseLayout({
           {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').length > 4 && (
             <Button
               variant="ghost"
-              className="flex-1 flex-col gap-1 h-16 px-1 bottom-nav-button text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target text-muted-foreground hover:text-foreground hover:bg-muted"
             >
-              <Menu size={20} />
+              <Menu size={18} />
               <span className="text-xs font-medium leading-tight">More</span>
             </Button>
           )}
@@ -260,9 +264,9 @@ export default function EnterpriseLayout({
             <Button
               variant="ghost"
               onClick={onLogout}
-              className="flex-1 flex-col gap-1 h-16 px-1 bottom-nav-button text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target text-muted-foreground hover:text-foreground hover:bg-muted"
             >
-              <LogOut size={20} />
+              <LogOut size={18} />
               <span className="text-xs font-medium leading-tight">Logout</span>
             </Button>
           )}

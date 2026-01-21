@@ -777,7 +777,7 @@
 /* Ensure content doesn't get hidden behind bottom nav on mobile */
 @media (max-width: 1023px) {
   .mobile-content-padding {
-    padding-bottom: 5rem !important;
+    padding-bottom: 4rem !important;
   }
 }
 
@@ -815,14 +815,29 @@
     padding-bottom: 5rem;
   }
   
-  /* Improve mobile header */
-  .mobile-header {
-    padding: 1rem;
+  /* Compact mobile header */
+  .mobile-header-compact {
+    padding: 0.75rem 1rem;
+    min-height: 3.5rem;
   }
   
   /* Better mobile touch targets */
   .mobile-touch-target {
     min-height: 44px;
     min-width: 44px;
+  }
+  
+  /* Mobile avatar button */
+  .mobile-avatar-button {
+    padding: 0.25rem;
+    border-radius: 50%;
+  }
+  
+  .mobile-avatar-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .mobile-avatar-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
   }
 }
