@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { EmployeeTimeEntry } from '@/lib/models'
 import { getServerSession } from 'next-auth'
+import mongoose from 'mongoose'
 
 // Clock in endpoint
 export async function POST(request: NextRequest) {
@@ -10,6 +11,22 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const { employeeId, employeeName, employeeEmail, shiftType, location, notes } = body
+
+    // Validate required fields
+    if (!employeeId || !employeeName || !employeeEmail) {
+      return NextResponse.json(
+        { error: 'Employee ID, name, and email are required' },
+        { status: 400 }
+      )
+    }
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+      return NextResponse.json(
+        { error: 'Invalid employee ID format' },
+        { status: 400 }
+      )
+    }
 
     // Check if employee already has an active session
     const activeEntry = await EmployeeTimeEntry.findOne({
@@ -65,7 +82,18 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
 
     const query: any = {}
-    if (employeeId) query.employeeId = employeeId
+    
+    // Only add employeeId to query if it's a valid ObjectId
+    if (employeeId && employeeId !== 'undefined' && employeeId !== 'null') {
+      if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+        return NextResponse.json(
+          { error: 'Invalid employee ID format' },
+          { status: 400 }
+        )
+      }
+      query.employeeId = employeeId
+    }
+    
     if (status) query.status = status
 
     const skip = (page - 1) * limit

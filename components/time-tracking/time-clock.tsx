@@ -42,6 +42,11 @@ export default function TimeClock({ user, onTimeEntryUpdate }: TimeClockProps) {
   }, [user])
 
   const checkActiveEntry = async () => {
+    // Don't make API call if user._id is not available
+    if (!user?._id) {
+      return
+    }
+    
     try {
       const response = await fetch(`/api/time-tracking?employeeId=${user._id}&status=active`)
       if (response.ok) {
@@ -56,6 +61,16 @@ export default function TimeClock({ user, onTimeEntryUpdate }: TimeClockProps) {
   }
 
   const handleClockIn = async () => {
+    // Validate user data before making API call
+    if (!user?._id || !user?.name || !user?.email) {
+      toast({
+        title: "Error",
+        description: "User information is missing. Please refresh and try again.",
+        variant: "destructive"
+      })
+      return
+    }
+
     setLoading(true)
     try {
       const response = await fetch('/api/time-tracking', {
