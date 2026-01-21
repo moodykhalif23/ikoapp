@@ -21,39 +21,6 @@ import {
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart as RechartsLineChart, Line, PieChart as RechartsPieChart, Cell, Pie } from 'recharts'
 
-// Mock data for demonstration
-const mockProductionData = [
-  { month: 'Jan', efficiency: 85, reports: 45, incidents: 3 },
-  { month: 'Feb', efficiency: 88, reports: 52, incidents: 2 },
-  { month: 'Mar', efficiency: 92, reports: 48, incidents: 1 },
-  { month: 'Apr', efficiency: 89, reports: 55, incidents: 4 },
-  { month: 'May', efficiency: 94, reports: 61, incidents: 2 },
-  { month: 'Jun', efficiency: 96, reports: 58, incidents: 1 },
-]
-
-const mockTimeData = [
-  { day: 'Mon', hours: 8.5, employees: 12 },
-  { day: 'Tue', hours: 8.2, employees: 15 },
-  { day: 'Wed', hours: 8.8, employees: 13 },
-  { day: 'Thu', hours: 7.9, employees: 14 },
-  { day: 'Fri', hours: 8.1, employees: 16 },
-  { day: 'Sat', hours: 4.2, employees: 6 },
-  { day: 'Sun', hours: 2.1, employees: 3 },
-]
-
-const mockIncidentTypes = [
-  { name: 'Equipment Failure', value: 45, color: '#ef4444' },
-  { name: 'Power Outage', value: 30, color: '#f97316' },
-  { name: 'Safety Incident', value: 15, color: '#eab308' },
-  { name: 'Quality Issue', value: 10, color: '#22c55e' },
-]
-
-interface AnalyticsDashboardProps {
-  reports?: any[]
-  timeEntries?: any[]
-  users?: any[]
-}
-
 export default function AnalyticsDashboard({
   reports = [],
   timeEntries = [],
@@ -61,6 +28,51 @@ export default function AnalyticsDashboard({
 }: AnalyticsDashboardProps) {
   const [timeRange, setTimeRange] = useState("30d")
   const [selectedMetric, setSelectedMetric] = useState("efficiency")
+
+  // Calculate production data from reports
+  const productionData = reports.slice(-6).map((report, index) => {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const date = new Date(report.createdAt || report.date)
+    return {
+      month: monthNames[date.getMonth()],
+      efficiency: Number(report.dailyProduction?.overallEfficiency || 0),
+      reports: 1,
+      incidents: report.incidentReport?.incidents?.length || 0
+    }
+  })
+
+  // Calculate time data from time entries
+  const timeData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => {
+    const dayEntries = timeEntries.filter(entry => {
+      const entryDate = new Date(entry.clockInTime)
+      return entryDate.toLocaleDateString('en-US', { weekday: 'short' }) === day
+    })
+    return {
+      day,
+      hours: dayEntries.reduce((sum, entry) => sum + (entry.hoursWorked || 0), 0),
+      employees: dayEntries.length
+    }
+  })
+
+  // Calculate incident types from reports
+  const incidentCounts = reports.reduce((acc, report) => {
+    if (report.incidentReport?.incidents) {
+      report.incidentReport.incidents.forEach((incident: any) => {
+        const type = incident.type || 'Other'
+        acc[type] = (acc[type] || 0) + 1
+      })
+    }
+    return acc
+  }, {} as Record<string, number>)
+
+  const incidentTypes = Object.entries(incidentCounts).map(([name, value], index) => {
+    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6']
+    return {
+      name,
+      value,
+      color: colors[index % colors.length]
+    }
+  })
 
   // Calculate KPIs
   const totalReports = reports.length
@@ -181,7 +193,7 @@ export default function AnalyticsDashboard({
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <RechartsLineChart data={mockProductionData}>
+              <RechartsLineChart data={productionData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
@@ -218,7 +230,7 @@ export default function AnalyticsDashboard({
             <ResponsiveContainer width="100%" height={300}>
               <RechartsPieChart>
                 <Pie
-                  data={mockIncidentTypes}
+                  data={incidentTypes}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
@@ -226,7 +238,7 @@ export default function AnalyticsDashboard({
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {mockIncidentTypes.map((entry, index) => (
+                  {incidentTypes.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -234,7 +246,7 @@ export default function AnalyticsDashboard({
               </RechartsPieChart>
             </ResponsiveContainer>
             <div className="flex flex-wrap gap-4 mt-4">
-              {mockIncidentTypes.map((item, index) => (
+              {incidentTypes.map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full"
@@ -258,7 +270,7 @@ export default function AnalyticsDashboard({
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={mockTimeData}>
+              <BarChart data={timeData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis />
