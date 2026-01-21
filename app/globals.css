@@ -762,3 +762,67 @@
     display: flex !important;
   }
 }
+/* Bottom Navigation Styles */
+.bottom-nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .bottom-nav {
+  background: rgba(30, 41, 59, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure content doesn't get hidden behind bottom nav on mobile */
+@media (max-width: 1023px) {
+  .mobile-content-padding {
+    padding-bottom: 5rem !important;
+  }
+}
+
+/* Bottom nav button improvements */
+.bottom-nav-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.bottom-nav-button:active {
+  transform: scale(0.95);
+}
+
+.bottom-nav-button.active {
+  background-color: rgba(var(--primary), 0.1);
+  color: rgb(var(--primary));
+}
+
+/* Safe area for devices with home indicator */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Mobile-first responsive design improvements */
+@media (max-width: 1023px) {
+  /* Hide sidebar completely on mobile */
+  .sidebar-mobile-hidden {
+    display: none !important;
+  }
+  
+  /* Adjust main content for mobile */
+  .mobile-main-content {
+    margin-left: 0 !important;
+    padding-bottom: 5rem;
+  }
+  
+  /* Improve mobile header */
+  .mobile-header {
+    padding: 1rem;
+  }
+  
+  /* Better mobile touch targets */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
