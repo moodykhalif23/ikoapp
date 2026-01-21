@@ -34,9 +34,9 @@ export default function EnterpriseLayout({
   React.useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) { // lg breakpoint
-        setSidebarCollapsed(false) // Expand on desktop
+        setSidebarCollapsed(false) // Always expanded on desktop
       } else {
-        setSidebarCollapsed(true) // Collapse on mobile
+        setSidebarCollapsed(true) // Collapsed on mobile by default
       }
     }
 
@@ -71,24 +71,25 @@ export default function EnterpriseLayout({
         />
       )}
 
-      {/* Main Content - With left margin to account for fixed sidebar */}
+      {/* Main Content - Fixed margin for large screens since sidebar is always expanded */}
       <div className={`min-h-screen transition-all duration-300 ${
-        sidebarCollapsed ? 'ml-16' : 'ml-64'
+        sidebarCollapsed ? 'ml-16 lg:ml-64' : 'ml-64'
       }`}>
         {/* Top Header - Sticky within the content area */}
         <header className="sticky top-0 z-30 bg-card border-b border-border px-6 py-4 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              {/* Menu toggle - hidden on large screens */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="lg:hidden text-foreground hover:bg-muted"
+                className="text-foreground hover:bg-muted toggle-button-mobile-only"
               >
                 <Menu size={20} />
               </Button>
 
-              <div className="hidden lg:block">
+              <div className="block">
                 <h1 className="text-2xl font-bold text-foreground">{title || 'Dashboard'}</h1>
                 {subtitle && (
                   <p className="text-sm text-muted-foreground">{subtitle}</p>

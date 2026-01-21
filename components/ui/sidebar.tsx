@@ -85,16 +85,16 @@ export default function Sidebar({
       {/* Header */}
       <div className="p-4 border-b border-brand-green/20 flex-shrink-0">
         <div className="flex items-center justify-between">
-          {!collapsed && (
-            <div className="relative w-24 h-8">
-              <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
-            </div>
-          )}
+          {/* Logo - hidden when collapsed on mobile, always visible on large screens */}
+          <div className={`relative w-24 h-8 ${collapsed ? 'hidden lg:block' : 'block'}`}>
+            <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
+          </div>
+          {/* Toggle button - hidden on large screens */}
           <Button
             variant="ghost"
             size="sm"
             onClick={onToggleCollapse}
-            className="p-1 h-8 w-8 sidebar-force-white sidebar-item-hover"
+            className="p-1 h-8 w-8 sidebar-force-white sidebar-item-hover toggle-button-mobile-only"
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </Button>
@@ -119,22 +119,21 @@ export default function Sidebar({
               }`}
             >
               <Icon size={20} className="flex-shrink-0 sidebar-force-white" />
-              {!collapsed && (
-                <>
-                  <span className="flex-1 text-sm font-medium sidebar-force-white">{item.label}</span>
-                  {item.badge && (
-                    <Badge
-                      className={`h-6 px-2 text-xs font-medium sidebar-force-white ${
-                        isActive 
-                          ? 'badge-visible-active' 
-                          : 'badge-visible'
-                      }`}
-                    >
-                      {item.badge}
-                    </Badge>
-                  )}
-                </>
-              )}
+              {/* Labels and badges - hidden when collapsed on mobile, always visible on large screens */}
+              <div className={`flex items-center justify-between flex-1 ${collapsed ? 'hidden lg:flex' : 'flex'}`}>
+                <span className="text-sm font-medium sidebar-force-white">{item.label}</span>
+                {item.badge && (
+                  <Badge
+                    className={`h-6 px-2 text-xs font-medium sidebar-force-white ${
+                      isActive 
+                        ? 'badge-visible-active' 
+                        : 'badge-visible'
+                    }`}
+                  >
+                    {item.badge}
+                  </Badge>
+                )}
+              </div>
             </Button>
           )
         })}
@@ -142,25 +141,25 @@ export default function Sidebar({
 
       {/* User Section */}
       <div className="p-4 border-t border-brand-green/20 flex-shrink-0">
-        <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
+        <div className={`flex items-center gap-3 ${collapsed ? 'justify-center lg:justify-start' : 'justify-start'}`}>
           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
             <span className="text-sm font-medium sidebar-force-white">
               {user?.name?.charAt(0)?.toUpperCase() || 'U'}
             </span>
           </div>
-          {!collapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium sidebar-force-white truncate">
-                {user?.name || 'User'}
-              </p>
-              <p className="text-xs sidebar-force-white truncate opacity-90">
-                {user?.role || 'Role'}
-              </p>
-            </div>
-          )}
+          {/* User info - hidden when collapsed on mobile, always visible on large screens */}
+          <div className={`flex-1 min-w-0 ${collapsed ? 'hidden lg:block' : 'block'}`}>
+            <p className="text-sm font-medium sidebar-force-white truncate">
+              {user?.name || 'User'}
+            </p>
+            <p className="text-xs sidebar-force-white truncate opacity-90">
+              {user?.role || 'Role'}
+            </p>
+          </div>
         </div>
 
-        {!collapsed && (
+        {/* Sign out button - hidden when collapsed on mobile, always visible on large screens */}
+        <div className={`${collapsed ? 'hidden lg:block' : 'block'}`}>
           <Button
             variant="ghost"
             size="sm"
@@ -170,7 +169,7 @@ export default function Sidebar({
             <LogOut size={16} className="sidebar-force-white" />
             <span className="text-sm font-medium sidebar-force-white">Sign Out</span>
           </Button>
-        )}
+        </div>
       </div>
     </div>
   )

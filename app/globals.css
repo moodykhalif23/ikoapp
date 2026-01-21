@@ -749,3 +749,16 @@
   overflow-y: auto !important;
   z-index: 1000 !important;
 }
+/* Hide toggle buttons on large screens */
+@media (min-width: 1024px) {
+  .toggle-button-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Ensure toggle buttons are visible on mobile */
+@media (max-width: 1023px) {
+  .toggle-button-mobile-only {
+    display: flex !important;
+  }
+}
