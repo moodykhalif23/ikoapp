@@ -339,7 +339,7 @@ ${new Date().toLocaleString()}
       title="Admin Dashboard"
       subtitle="Manage reports, employees, and system settings"
     >
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-6 sm:mb-8 mt-6">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Admin Dashboard</h1>
           <p className="text-xs sm:text-base text-muted-foreground">Manage reports, employees, and system settings</p>
         </div>
@@ -407,27 +407,28 @@ ${new Date().toLocaleString()}
         </div>
 
         {/* Main Tabs */}
-        <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="w-full">
-          <TabsList className="w-full bg-muted text-xs mb-6 overflow-y-hidden">
-            <TabsTrigger value="reports" className="text-xs flex-shrink-0 min-w-fit h-8">
-              Reports
-            </TabsTrigger>
-            <TabsTrigger value="time-tracking" className="text-xs flex-shrink-0 min-w-fit h-8">
-              Time Tracking
-            </TabsTrigger>
-            <TabsTrigger value="employees" className="text-xs flex-shrink-0 min-w-fit h-8">
-              Employees
-            </TabsTrigger>
-            <TabsTrigger value="machines" className="text-xs flex-shrink-0 min-w-fit h-8">
-              Machines
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="text-xs flex-shrink-0 min-w-fit h-8">
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="equipment" className="text-xs flex-shrink-0 min-w-fit h-8">
-              Equipment
-            </TabsTrigger>
-          </TabsList>
+        <div className="mt-8">
+          <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="w-full">
+            <TabsList className="w-full bg-muted text-sm mb-8 overflow-y-hidden h-12">
+              <TabsTrigger value="reports" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
+                Reports
+              </TabsTrigger>
+              <TabsTrigger value="time-tracking" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
+                Time Tracking
+              </TabsTrigger>
+              <TabsTrigger value="employees" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
+                Employees
+              </TabsTrigger>
+              <TabsTrigger value="machines" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
+                Machines
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="equipment" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
+                Equipment
+              </TabsTrigger>
+            </TabsList>
 
           {/* Time Tracking Tab */}
           <TabsContent value="time-tracking" className="space-y-6">
@@ -997,6 +998,7 @@ ${new Date().toLocaleString()}
             <EquipmentDashboard machines={machines} user={user} />
           </TabsContent>
         </Tabs>
+        </div>
     </EnterpriseLayout>
   )
 }

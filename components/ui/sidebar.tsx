@@ -111,7 +111,7 @@ export default function Sidebar({
       <div className="p-4 border-b border-brand-green/20 flex-shrink-0">
         <div className="flex items-center justify-between">
           {/* Logo - hidden when collapsed on mobile, always visible on large screens */}
-          <div className={`relative w-24 h-8 ${collapsed ? 'hidden lg:block' : 'block'}`}>
+          <div className={`relative w-32 h-10 ${collapsed ? 'hidden lg:block' : 'block'}`}>
             <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
           </div>
           {/* Toggle button - hidden on large screens */}

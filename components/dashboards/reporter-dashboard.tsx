@@ -126,7 +126,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
   const renderReportsContent = () => (
     <>
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 mt-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Production Reports</h1>
           <p className="text-muted-foreground">Submit individual reports or create a comprehensive report</p>
@@ -422,7 +422,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
     >
       {activeTab === "reports" && renderReportsContent()}
       {activeTab === "time-tracking" && (
-        <div className="space-y-6">
+        <div className="space-y-6 mt-6">
           <div className="mb-6">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Time Tracking</h1>
             <p className="text-muted-foreground">Track your work hours and attendance</p>
@@ -431,7 +431,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </div>
       )}
       {activeTab === "dashboard" && (
-        <div className="space-y-6">
+        <div className="space-y-6 mt-6">
           <div className="mb-6">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Overview Dashboard</h1>
             <p className="text-muted-foreground">Your production reporting overview</p>
