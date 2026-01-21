@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { connectToDatabase } from '@/lib/mongodb'
+import connectToDatabase from '@/lib/mongodb'
 import { EmployeeTimeEntry } from '@/lib/models'
 
 export async function POST(
