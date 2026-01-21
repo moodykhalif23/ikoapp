@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://admin:password123@localhost:27017/ikoapp'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://admin:password123@localhost:27017/ikoapp?authSource=admin'
 
 // Define models inline for migration script
 const UserSchema = new mongoose.Schema({
@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 const ReportSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
+  id: { type: String, unique: true },
   date: { type: String, required: true },
   reportedBy: { type: String, required: true },
   reportedByEmail: { type: String, required: true },
@@ -26,6 +26,21 @@ const ReportSchema = new mongoose.Schema({
   incidentReportId: mongoose.Schema.Types.ObjectId,
   employeePlanningId: mongoose.Schema.Types.ObjectId
 }, { timestamps: true })
+
+// Add pre-save hook for ID generation
+ReportSchema.pre('save', async function(next) {
+  const report = this
+  if (!report.id) {
+    let counter = 0
+    let uniqueId
+    do {
+      uniqueId = `RPT-${Date.now()}${counter > 0 ? `-${counter}` : ''}`
+      counter++
+    } while (await mongoose.models.Report.findOne({ id: uniqueId }))
+    report.id = uniqueId
+  }
+  next()
+})
 
 const PowerInterruptionSchema = new mongoose.Schema({
   reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
@@ -61,14 +76,14 @@ const IncidentReportSchema = new mongoose.Schema({
   reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
   noIncidents: { type: Boolean, default: false, required: true },
   incidents: [{
-    type: String,
-    severity: String,
-    description: String,
-    occurredAt: String,
-    affectedArea: String,
-    immediateAction: String,
+    type: { type: String, required: true },
+    severity: { type: String, required: true },
+    description: { type: String, required: true },
+    occurredAt: { type: String, required: true },
+    affectedArea: { type: String, required: true },
+    immediateAction: { type: String, required: true },
     reportedTo: String,
-    followUpRequired: Boolean,
+    followUpRequired: { type: Boolean, default: false },
     followUpNotes: String
   }]
 }, { timestamps: true })
