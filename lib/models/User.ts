@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 export interface IUser extends Document {
   name: string
   email: string
-  role: 'admin' | 'reporter' | 'viewer'
+  roles: ('admin' | 'reporter' | 'viewer')[] // Changed to array to support multiple roles
   employeeType: 'permanent' | 'casual'
   employeeId?: string
   department?: string
@@ -29,12 +29,11 @@ const UserSchema: Schema = new Schema({
     trim: true,
     match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
   },
-  role: {
+  roles: [{
     type: String,
     enum: ['admin', 'reporter', 'viewer'],
-    default: 'viewer',
-    required: false // Allow users to sign up without a role initially
-  },
+    required: false // Allow users to sign up without roles initially
+  }],
   employeeType: {
     type: String,
     enum: ['permanent', 'casual'],
@@ -70,7 +69,7 @@ const UserSchema: Schema = new Schema({
 })
 
 // Additional indexes for better query performance (email index is already created by unique: true)
-UserSchema.index({ role: 1 })
+UserSchema.index({ roles: 1 })
 UserSchema.index({ employeeType: 1 })
 UserSchema.index({ status: 1 })
 UserSchema.index({ department: 1 })

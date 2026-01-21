@@ -8,67 +8,82 @@ import ViewerDashboard from "@/components/dashboards/viewer-dashboard"
 import AdminDashboard from "@/components/dashboards/admin-dashboard"
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState<"auth" | "roleSelection" | "reporter" | "viewer" | "admin">("auth")
+  const [currentPage, setCurrentPage] = useState<"auth" | "roleSelection" | "dashboardSelection" | "reporter" | "viewer" | "admin">("auth")
   const [user, setUser] = useState<any>(null)
   const [submittedReports, setSubmittedReports] = useState<any[]>([])
 
   const handleAuthSuccess = (userData: any) => {
     setUser(userData)
-    // Route based on user role from database
-    if (userData.role === "admin") {
+    // Route based on user roles from database
+    if (userData.roles && userData.roles.includes("admin")) {
       setCurrentPage("admin")
-    } else if (userData.role === "reporter") {
-      setCurrentPage("reporter")
-    } else if (userData.role === "viewer") {
-      setCurrentPage("viewer")
+    } else if (userData.roles && userData.roles.length > 0) {
+      // If user has roles assigned, show dashboard selection if multiple roles, or go directly to dashboard
+      if (userData.roles.length === 1) {
+        if (userData.roles.includes("reporter")) {
+          setCurrentPage("reporter")
+        } else if (userData.roles.includes("viewer")) {
+          setCurrentPage("viewer")
+        }
+      } else {
+        // Multiple roles - show dashboard selection
+        setCurrentPage("dashboardSelection")
+      }
     } else {
-      // If user has no role assigned, show role selection
+      // If user has no roles assigned, show role selection
       setCurrentPage("roleSelection")
     }
   }
 
-  const handleRoleSelect = async (role: "reporter" | "viewer" | "admin") => {
+  const handleRoleSelect = async (roles: ("reporter" | "viewer")[]) => {
     try {
-      // Update the user's role in the database
+      // Update the user's roles in the database
       const response = await fetch('/api/users/update-role', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, role })
+        body: JSON.stringify({ userId: user.id, roles })
       })
 
       if (response.ok) {
         const data = await response.json()
-        // Update local user state with new role
+        // Update local user state with new roles
         setUser(data.user)
         
-        // Navigate to appropriate dashboard
-        if (role === "reporter") {
-          setCurrentPage("reporter")
-        } else if (role === "viewer") {
-          setCurrentPage("viewer")
-        } else if (role === "admin") {
-          setCurrentPage("admin")
+        // Navigate based on selected roles
+        if (roles.length === 1) {
+          if (roles.includes("reporter")) {
+            setCurrentPage("reporter")
+          } else if (roles.includes("viewer")) {
+            setCurrentPage("viewer")
+          }
+        } else {
+          // Multiple roles - show dashboard selection
+          setCurrentPage("dashboardSelection")
         }
       } else {
-        console.error('Failed to update user role')
+        console.error('Failed to update user roles')
         // Still navigate for now, but in production you'd want to handle this error
-        if (role === "reporter") {
-          setCurrentPage("reporter")
-        } else if (role === "viewer") {
-          setCurrentPage("viewer")
-        } else if (role === "admin") {
-          setCurrentPage("admin")
+        if (roles.length === 1) {
+          if (roles.includes("reporter")) {
+            setCurrentPage("reporter")
+          } else if (roles.includes("viewer")) {
+            setCurrentPage("viewer")
+          }
+        } else {
+          setCurrentPage("dashboardSelection")
         }
       }
     } catch (error) {
-      console.error('Error updating role:', error)
+      console.error('Error updating roles:', error)
       // Still navigate for now, but in production you'd want to handle this error
-      if (role === "reporter") {
-        setCurrentPage("reporter")
-      } else if (role === "viewer") {
-        setCurrentPage("viewer")
-      } else if (role === "admin") {
-        setCurrentPage("admin")
+      if (roles.length === 1) {
+        if (roles.includes("reporter")) {
+          setCurrentPage("reporter")
+        } else if (roles.includes("viewer")) {
+          setCurrentPage("viewer")
+        }
+      } else {
+        setCurrentPage("dashboardSelection")
       }
     }
   }

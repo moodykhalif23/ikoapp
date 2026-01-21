@@ -2,32 +2,34 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { User } from '@/lib/models'
 
-// PUT /api/users/update-role - Update user role
+// PUT /api/users/update-role - Update user roles
 export async function PUT(request: NextRequest) {
   try {
     await connectToDatabase()
 
-    const { userId, role } = await request.json()
+    const { userId, roles } = await request.json()
 
-    if (!userId || !role) {
+    if (!userId || !roles || !Array.isArray(roles)) {
       return NextResponse.json(
-        { error: 'User ID and role are required' },
+        { error: 'User ID and roles array are required' },
         { status: 400 }
       )
     }
 
-    // Validate role
-    if (!['admin', 'reporter', 'viewer'].includes(role)) {
+    // Validate roles
+    const validRoles = ['admin', 'reporter', 'viewer']
+    const invalidRoles = roles.filter(role => !validRoles.includes(role))
+    if (invalidRoles.length > 0) {
       return NextResponse.json(
-        { error: 'Invalid role specified' },
+        { error: `Invalid roles specified: ${invalidRoles.join(', ')}` },
         { status: 400 }
       )
     }
 
-    // Update user role
+    // Update user roles
     const user = await User.findByIdAndUpdate(
       userId,
-      { role: role },
+      { roles: roles },
       { new: true }
     )
 
@@ -43,16 +45,16 @@ export async function PUT(request: NextRequest) {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role,
+      roles: user.roles,
       createdAt: user.createdAt
     }
 
     return NextResponse.json({
       user: userData,
-      message: 'Role updated successfully'
+      message: 'Roles updated successfully'
     }, { status: 200 })
   } catch (error) {
-    console.error('Error updating user role:', error)
+    console.error('Error updating user roles:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
