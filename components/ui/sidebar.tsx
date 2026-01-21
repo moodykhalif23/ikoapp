@@ -33,50 +33,75 @@ export default function Sidebar({
   collapsed = false,
   onToggleCollapse
 }: SidebarProps) {
-  const menuItems = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: LayoutDashboard,
-      badge: null
-    },
-    {
-      id: "reports",
-      label: "Reports",
-      icon: FileText,
-      badge: "12"
-    },
-    {
-      id: "time-tracking",
-      label: "Time Tracking",
-      icon: Clock,
-      badge: "3"
-    },
-    {
-      id: "employees",
-      label: "Employees",
-      icon: Users,
-      badge: null
-    },
-    {
-      id: "machines",
-      label: "Equipment",
-      icon: Settings,
-      badge: "2"
-    },
-    {
-      id: "analytics",
-      label: "Analytics",
-      icon: BarChart3,
-      badge: null
-    },
-    {
-      id: "alerts",
-      label: "Alerts",
-      icon: AlertTriangle,
-      badge: "5"
-    }
-  ]
+  // Define menu items based on user role
+  const getMenuItemsForRole = (userRole: string) => {
+    const baseItems = [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        icon: LayoutDashboard,
+        badge: null,
+        roles: ["admin", "reporter", "viewer"]
+      },
+      {
+        id: "reports",
+        label: "Reports",
+        icon: FileText,
+        badge: null,
+        roles: ["admin", "reporter", "viewer"]
+      }
+    ]
+
+    const roleSpecificItems = [
+      // Reporter specific items
+      {
+        id: "time-tracking",
+        label: "Time Tracking",
+        icon: Clock,
+        badge: null,
+        roles: ["admin", "reporter"]
+      },
+      // Admin specific items
+      {
+        id: "employees",
+        label: "Employees",
+        icon: Users,
+        badge: null,
+        roles: ["admin"]
+      },
+      {
+        id: "machines",
+        label: "Equipment",
+        icon: Settings,
+        badge: null,
+        roles: ["admin"]
+      },
+      {
+        id: "analytics",
+        label: "Analytics",
+        icon: BarChart3,
+        badge: null,
+        roles: ["admin", "viewer"]
+      },
+      {
+        id: "alerts",
+        label: "Alerts",
+        icon: AlertTriangle,
+        badge: null,
+        roles: ["admin"]
+      }
+    ]
+
+    // Combine base items with role-specific items
+    const allItems = [...baseItems, ...roleSpecificItems]
+    
+    // Filter items based on user role
+    return allItems.filter(item => 
+      item.roles.includes(userRole?.toLowerCase() || 'viewer')
+    )
+  }
+
+  const menuItems = getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer')
 
   return (
     <div className={`sidebar-no-scroll bg-brand-green border-r border-brand-green/20 transition-all duration-300 ${

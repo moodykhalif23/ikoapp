@@ -471,15 +471,123 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
     >
       {activeTab === "reports" && renderReportsContent()}
       {activeTab === "analytics" && (
-        <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-2">Analytics</h2>
-          <p className="text-muted-foreground">Analytics dashboard coming soon...</p>
+        <div className="space-y-6">
+          <div className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Analytics</h1>
+            <p className="text-muted-foreground">Production data insights and trends</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="card-brand card-elevated">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-brand-contrast">Total Reports</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">{allReports.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">All time</p>
+              </CardContent>
+            </Card>
+            <Card className="card-brand card-elevated">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-brand-contrast">This Month</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">
+                  {allReports.filter(r => {
+                    const reportDate = new Date(r.createdAt)
+                    const thisMonth = new Date()
+                    return reportDate.getMonth() === thisMonth.getMonth() && 
+                           reportDate.getFullYear() === thisMonth.getFullYear()
+                  }).length}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Reports</p>
+              </CardContent>
+            </Card>
+            <Card className="card-brand card-elevated">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-brand-contrast">Avg Efficiency</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">
+                  {allReports.length > 0 ? (
+                    allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
+                    allReports.length
+                  ).toFixed(1) : '0'}%
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Production</p>
+              </CardContent>
+            </Card>
+            <Card className="card-brand card-elevated">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-brand-contrast">Active Reporters</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">
+                  {new Set(allReports.map((r) => r.reportedBy)).size}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Contributors</p>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Detailed analytics charts coming soon...</p>
+          </div>
         </div>
       )}
       {activeTab === "dashboard" && (
-        <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-2">Overview Dashboard</h2>
-          <p className="text-muted-foreground">Overview dashboard coming soon...</p>
+        <div className="space-y-6">
+          <div className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Overview Dashboard</h1>
+            <p className="text-muted-foreground">Production reporting overview and insights</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="card-brand card-elevated">
+              <CardHeader>
+                <CardTitle className="text-lg">Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-primary">
+                  {allReports.filter(r => {
+                    const reportDate = new Date(r.createdAt)
+                    const yesterday = new Date()
+                    yesterday.setDate(yesterday.getDate() - 1)
+                    return reportDate >= yesterday
+                  }).length}
+                </div>
+                <p className="text-sm text-muted-foreground">Reports in last 24h</p>
+              </CardContent>
+            </Card>
+            <Card className="card-brand card-elevated">
+              <CardHeader>
+                <CardTitle className="text-lg">System Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-green-600">Active</div>
+                <p className="text-sm text-muted-foreground">All systems operational</p>
+              </CardContent>
+            </Card>
+            <Card className="card-brand card-elevated">
+              <CardHeader>
+                <CardTitle className="text-lg">Quick Access</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button 
+                  onClick={() => setActiveTab("reports")}
+                  className="w-full text-sm"
+                  size="sm"
+                >
+                  View Reports
+                </Button>
+                <Button 
+                  onClick={() => setActiveTab("analytics")}
+                  variant="outline"
+                  className="w-full text-sm"
+                  size="sm"
+                >
+                  Analytics
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
     </EnterpriseLayout>

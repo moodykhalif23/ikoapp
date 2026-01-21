@@ -422,21 +422,72 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
     >
       {activeTab === "reports" && renderReportsContent()}
       {activeTab === "time-tracking" && (
-        <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-2">Time Tracking</h2>
-          <p className="text-muted-foreground">Time tracking dashboard coming soon...</p>
-        </div>
-      )}
-      {activeTab === "analytics" && (
-        <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-2">Analytics</h2>
-          <p className="text-muted-foreground">Analytics dashboard coming soon...</p>
+        <div className="space-y-6">
+          <div className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Time Tracking</h1>
+            <p className="text-muted-foreground">Track your work hours and attendance</p>
+          </div>
+          <TimeClock user={user} onTimeEntryUpdate={() => {}} />
         </div>
       )}
       {activeTab === "dashboard" && (
-        <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-2">Overview Dashboard</h2>
-          <p className="text-muted-foreground">Overview dashboard coming soon...</p>
+        <div className="space-y-6">
+          <div className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Overview Dashboard</h1>
+            <p className="text-muted-foreground">Your production reporting overview</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="card-brand card-elevated">
+              <CardHeader>
+                <CardTitle className="text-lg">Your Reports</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-primary">{reports.length}</div>
+                <p className="text-sm text-muted-foreground">Total submitted</p>
+              </CardContent>
+            </Card>
+            <Card className="card-brand card-elevated">
+              <CardHeader>
+                <CardTitle className="text-lg">This Week</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-secondary">
+                  {reports.filter(r => {
+                    const reportDate = new Date(r.createdAt)
+                    const weekAgo = new Date()
+                    weekAgo.setDate(weekAgo.getDate() - 7)
+                    return reportDate >= weekAgo
+                  }).length}
+                </div>
+                <p className="text-sm text-muted-foreground">Reports submitted</p>
+              </CardContent>
+            </Card>
+            <Card className="card-brand card-elevated">
+              <CardHeader>
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button 
+                  onClick={() => {
+                    setActiveTab("reports")
+                    setShowNewReport(true)
+                  }}
+                  className="w-full text-sm"
+                  size="sm"
+                >
+                  New Report
+                </Button>
+                <Button 
+                  onClick={() => setActiveTab("time-tracking")}
+                  variant="outline"
+                  className="w-full text-sm"
+                  size="sm"
+                >
+                  Time Clock
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
     </EnterpriseLayout>
