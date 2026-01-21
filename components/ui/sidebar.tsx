@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -9,7 +8,6 @@ import {
   Users,
   Settings,
   Clock,
-  TrendingUp,
   AlertTriangle,
   BarChart3,
   ChevronLeft,
@@ -81,11 +79,11 @@ export default function Sidebar({
   ]
 
   return (
-    <div className={`bg-sidebar border-r border-sidebar-border transition-all duration-300 ${
+    <div className={`bg-brand-green border-r border-brand-green/20 transition-all duration-300 ${
       collapsed ? 'w-16' : 'w-64'
     }`}>
       {/* Header */}
-      <div className="p-4 border-b border-sidebar-border">
+      <div className="p-4 border-b border-brand-green/20">
         <div className="flex items-center justify-between">
           {!collapsed && (
             <div className="relative w-24 h-8">
@@ -96,7 +94,7 @@ export default function Sidebar({
             variant="ghost"
             size="sm"
             onClick={onToggleCollapse}
-            className="p-1 h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent"
+            className="p-1 h-8 w-8 text-white hover:bg-white/10"
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </Button>
@@ -116,8 +114,8 @@ export default function Sidebar({
               onClick={() => onTabChange?.(item.id)}
               className={`w-full justify-start gap-3 h-10 px-3 text-left transition-colors ${
                 isActive
-                  ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                  ? 'bg-brand-orange text-white'
+                  : 'text-white hover:bg-white/10 hover:text-white'
               }`}
             >
               <Icon size={18} />
@@ -127,7 +125,11 @@ export default function Sidebar({
                   {item.badge && (
                     <Badge
                       variant={isActive ? "secondary" : "outline"}
-                      className="h-5 px-2 text-xs"
+                      className={`h-5 px-2 text-xs ${
+                        isActive 
+                          ? 'bg-white/20 text-white border-white/30' 
+                          : 'bg-white/10 text-white border-white/30'
+                      }`}
                     >
                       {item.badge}
                     </Badge>
@@ -140,19 +142,19 @@ export default function Sidebar({
       </nav>
 
       {/* User Section */}
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-brand-green/20">
         <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-8 h-8 rounded-full bg-sidebar-accent flex items-center justify-center">
-            <span className="text-sm font-medium text-sidebar-accent-foreground">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <span className="text-sm font-medium text-white">
               {user?.name?.charAt(0)?.toUpperCase() || 'U'}
             </span>
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">
+              <p className="text-sm font-medium text-white truncate">
                 {user?.name || 'User'}
               </p>
-              <p className="text-xs text-sidebar-accent-foreground truncate">
+              <p className="text-xs text-white/70 truncate">
                 {user?.role || 'Role'}
               </p>
             </div>
@@ -164,7 +166,7 @@ export default function Sidebar({
             variant="ghost"
             size="sm"
             onClick={onLogout}
-            className="w-full mt-3 gap-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className="w-full mt-3 gap-2 text-white hover:bg-white/10 hover:text-white"
           >
             <LogOut size={16} />
             Sign Out
