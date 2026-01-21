@@ -1,7 +1,101 @@
 const mongoose = require('mongoose')
-const { User, Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport, EmployeePlanning } = require('../lib/models')
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://admin:password123@localhost:27017/ikoapp'
+
+// Define models inline for migration script
+const UserSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  role: { type: String, enum: ['admin', 'reporter', 'viewer'], default: 'viewer' }
+}, { timestamps: true })
+
+const ReportSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  date: { type: String, required: true },
+  reportedBy: { type: String, required: true },
+  reportedByEmail: { type: String, required: true },
+  status: { type: String, enum: ['draft', 'submitted', 'reviewed', 'approved'], default: 'draft' },
+  submittedAt: Date,
+  reviewedAt: Date,
+  reviewedBy: String,
+  approvedAt: Date,
+  approvedBy: String,
+  powerInterruptionId: mongoose.Schema.Types.ObjectId,
+  siteVisualId: mongoose.Schema.Types.ObjectId,
+  dailyProductionId: mongoose.Schema.Types.ObjectId,
+  incidentReportId: mongoose.Schema.Types.ObjectId,
+  employeePlanningId: mongoose.Schema.Types.ObjectId
+}, { timestamps: true })
+
+const PowerInterruptionSchema = new mongoose.Schema({
+  reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
+  noInterruptions: { type: Boolean, default: false, required: true },
+  occurredAt: String,
+  duration: Number,
+  affectedMachines: [String],
+  kplcMeter: Number
+}, { timestamps: true })
+
+const SiteVisualSchema = new mongoose.Schema({
+  reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
+  photos: [String],
+  notes: String
+}, { timestamps: true })
+
+const DailyProductionSchema = new mongoose.Schema({
+  reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
+  machineProductions: [{
+    machineName: String,
+    producedUnits: Number,
+    targetUnits: Number,
+    efficiency: Number,
+    downtime: Number,
+    notes: String
+  }],
+  totalProduced: Number,
+  totalTarget: Number,
+  overallEfficiency: Number
+}, { timestamps: true })
+
+const IncidentReportSchema = new mongoose.Schema({
+  reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
+  noIncidents: { type: Boolean, default: false, required: true },
+  incidents: [{
+    type: String,
+    severity: String,
+    description: String,
+    occurredAt: String,
+    affectedArea: String,
+    immediateAction: String,
+    reportedTo: String,
+    followUpRequired: Boolean,
+    followUpNotes: String
+  }]
+}, { timestamps: true })
+
+const EmployeePlanningSchema = new mongoose.Schema({
+  reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
+  totalEmployees: { type: Number, required: true },
+  presentEmployees: { type: Number, required: true },
+  shiftDetails: [{
+    shift: String,
+    plannedEmployees: Number,
+    actualEmployees: Number,
+    supervisor: String
+  }],
+  overtimeHours: Number,
+  trainingHours: Number,
+  notes: String
+}, { timestamps: true })
+
+// Create models
+const User = mongoose.models.User || mongoose.model('User', UserSchema)
+const Report = mongoose.models.Report || mongoose.model('Report', ReportSchema)
+const PowerInterruption = mongoose.models.PowerInterruption || mongoose.model('PowerInterruption', PowerInterruptionSchema)
+const SiteVisual = mongoose.models.SiteVisual || mongoose.model('SiteVisual', SiteVisualSchema)
+const DailyProduction = mongoose.models.DailyProduction || mongoose.model('DailyProduction', DailyProductionSchema)
+const IncidentReport = mongoose.models.IncidentReport || mongoose.model('IncidentReport', IncidentReportSchema)
+const EmployeePlanning = mongoose.models.EmployeePlanning || mongoose.model('EmployeePlanning', EmployeePlanningSchema)
 
 async function migrate() {
   try {
