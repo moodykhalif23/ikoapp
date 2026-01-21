@@ -97,38 +97,7 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
   const [importFile, setImportFile] = useState<File | null>(null)
   const [importLoading, setImportLoading] = useState(false)
 
-  const mockReports = [
-    {
-      id: "RPT-1704067200000",
-      date: "2024-01-15",
-      reportedBy: "John Doe",
-      status: "Complete",
-      powerInterruptions: { noInterruptions: false, duration: "45", affectedMachines: ["Machine A", "Machine B"] },
-      siteVisuals: {
-        media: [
-          { type: "image", name: "Site Overview.jpg", url: "/industrial-site.jpg" },
-          { type: "image", name: "Equipment.jpg", url: "/intricate-machinery.png" },
-          { type: "video", name: "Production.mp4", url: "/video-production-team.png" },
-        ],
-      },
-      dailyProduction: {
-        overallEfficiency: "92.5",
-        products: [
-          {
-            productName: "Widget A",
-            quantity: "150",
-            unit: "kg",
-            machinesUsed: ["Machine A", "Machine B"],
-            employees: 5,
-          },
-        ],
-      },
-      incidentReport: { severity: "Medium", incidentType: "power outage" },
-      timestamp: "2024-01-15T10:30:00Z",
-    },
-  ]
-
-  const allReports = reports.length > 0 ? reports : mockReports
+  const allReports = reports
 
   const handleAddComment = (reportId: string) => {
     if (commentText.trim()) {
@@ -431,7 +400,7 @@ ${new Date().toLocaleString()}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl sm:text-3xl font-bold text-foreground">{employees.length}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">{users.length}</div>
               <p className="text-xs text-muted-foreground mt-1">Active users</p>
             </CardContent>
           </Card>
@@ -1019,7 +988,7 @@ ${new Date().toLocaleString()}
             <AnalyticsDashboard
               reports={allReports}
               timeEntries={[]} // Will be populated from API
-              users={employees}
+              users={users}
             />
           </TabsContent>
 

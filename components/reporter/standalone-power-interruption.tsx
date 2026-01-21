@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,9 +17,9 @@ interface StandalonePowerInterruptionProps {
   onSubmit?: (data: any) => void
 }
 
-const MACHINES = ["Machine A", "Machine B", "Machine C", "Machine D", "Machine E"]
-
 export default function StandalonePowerInterruption({ user, onBack, onSubmit }: StandalonePowerInterruptionProps) {
+  const [machines, setMachines] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
   const [submitted, setSubmitted] = useState(false)
   const [noInterruptions, setNoInterruptions] = useState(false)
   const [formData, setFormData] = useState({
@@ -37,6 +37,25 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Fetch machines from database
+  useEffect(() => {
+    const fetchMachines = async () => {
+      try {
+        const response = await fetch('/api/machines')
+        if (response.ok) {
+          const machinesData = await response.json()
+          setMachines(machinesData.map((m: any) => m.name))
+        }
+      } catch (error) {
+        console.error('Error fetching machines:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMachines()
+  }, [])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -231,7 +250,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                 <div className="space-y-3">
                   <label className="text-sm font-medium">Affected Machines *</label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {MACHINES.map((machine) => (
+                    {machines.map((machine) => (
                       <div
                         key={machine}
                         className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"

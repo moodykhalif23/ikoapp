@@ -403,7 +403,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           </div>
         </div>
 
-        {localReports.length === 0 ? (
+        {reports.length === 0 ? (
           <Card className="card-brand card-elevated">
             <CardContent className="py-12 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-surface mb-4">
@@ -422,7 +422,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {localReports.map((report) => (
+            {reports.map((report) => (
               <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">
                 <CardHeader>
                   <CardTitle className="text-primary">{report.date}</CardTitle>
