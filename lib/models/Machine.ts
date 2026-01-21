@@ -31,8 +31,7 @@ const MachineSchema: Schema = new Schema({
   toObject: { virtuals: true }
 })
 
-// Index for better query performance
-MachineSchema.index({ name: 1 }, { unique: true })
+// Additional indexes for better query performance
 MachineSchema.index({ status: 1 })
 MachineSchema.index({ type: 1 })
 

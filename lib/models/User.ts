@@ -69,8 +69,7 @@ const UserSchema: Schema = new Schema({
   toObject: { virtuals: true }
 })
 
-// Index for better query performance
-UserSchema.index({ email: 1 }, { unique: true })
+// Additional indexes for better query performance
 UserSchema.index({ role: 1 })
 UserSchema.index({ employeeType: 1 })
 UserSchema.index({ status: 1 })
