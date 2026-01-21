@@ -132,8 +132,8 @@ export default function EnterpriseLayout({
       </div>
 
       {/* Main Content - Responsive margin */}
-      <div className={`min-h-screen transition-all duration-300 lg:${
-        sidebarCollapsed ? 'ml-16' : 'ml-64'
+      <div className={`min-h-screen transition-all duration-300 ${
+        sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       } pb-16 lg:pb-0`}>
         {/* Top Header - Responsive */}
         <header className="sticky top-0 z-30 bg-card border-b border-border backdrop-blur-sm">
