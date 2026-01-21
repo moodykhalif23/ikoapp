@@ -70,7 +70,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
   return (
     <Card className="border-border/50 animate-in fade-in duration-300">
       <CardHeader>
-        <CardTitle className="text-primary">Power Interruption Report</CardTitle>
+        <CardTitle className="card-title-large text-primary">Power Interruption Report</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center space-x-3 p-4 bg-primary/5 rounded-lg border border-primary/10">
@@ -80,16 +80,16 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
             onCheckedChange={handleNoInterruptionsChange}
             className="border-primary"
           />
-          <label htmlFor="no-interruptions" className="text-sm font-medium cursor-pointer ml-2">
+          <label htmlFor="no-interruptions" className="text-base sm:text-lg font-semibold cursor-pointer ml-2">
             No power interruptions occurred today
           </label>
         </div>
 
         {!noInterruptions && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Time of Interruption</label>
+                <label className="form-label-large">Time of Interruption</label>
                 <Input
                   type="time"
                   value={formData.occurredAt}
@@ -100,7 +100,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Duration (minutes)</label>
+                <label className="form-label-large">Duration (minutes)</label>
                 <Input
                   type="number"
                   placeholder="30"
@@ -112,7 +112,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">KPLC Meter Reading</label>
+                <label className="form-label-large">KPLC Meter Reading</label>
                 <Input
                   type="number"
                   placeholder="Enter meter reading"
@@ -123,8 +123,8 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
             </div>
 
             <div className="space-y-3">
-              <label className="text-sm font-medium">Affected Machines</label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <label className="form-label-large">Affected Machines</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {MACHINES.map((machine) => (
                   <div
                     key={machine}
@@ -148,8 +148,8 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
         )}
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
-            Continue <ChevronRight className="w-4 h-4" />
+          <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+            Continue <ChevronRight className="w-5 h-5" />
           </Button>
         </div>
       </CardContent>

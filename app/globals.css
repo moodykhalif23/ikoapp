@@ -140,9 +140,96 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply text-foreground;
+    @apply text-foreground font-sans;
     background: var(--background);
     min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* Enhanced Typography Scale */
+  h1 {
+    @apply text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  h3 {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  h4 {
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  h5 {
+    @apply text-lg sm:text-xl lg:text-2xl font-medium tracking-tight;
+    line-height: 1.35;
+  }
+
+  h6 {
+    @apply text-base sm:text-lg lg:text-xl font-medium;
+    line-height: 1.4;
+  }
+
+  p {
+    @apply text-base sm:text-lg leading-relaxed;
+    margin-bottom: 1rem;
+  }
+
+  .text-large {
+    @apply text-lg sm:text-xl lg:text-2xl font-medium;
+  }
+
+  .text-xlarge {
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold;
+  }
+
+  .text-xxlarge {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold;
+  }
+
+  /* Enhanced Button Typography */
+  .btn-large {
+    @apply text-lg sm:text-xl font-semibold px-8 py-4;
+  }
+
+  .btn-xlarge {
+    @apply text-xl sm:text-2xl font-bold px-10 py-5;
+  }
+
+  /* Card Title Enhancements */
+  .card-title-large {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold;
+  }
+
+  .card-title-xlarge {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold;
+  }
+
+  /* Form Label Enhancements */
+  .form-label-large {
+    @apply text-lg sm:text-xl font-semibold;
+  }
+
+  /* Enhanced Link Styles */
+  a {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  a:hover {
+    @apply text-primary;
   }
 
   /* Completely remove blue focus overlay from Material UI inputs */
