@@ -22,17 +22,54 @@ export default function Home() {
     } else if (userData.role === "viewer") {
       setCurrentPage("viewer")
     } else {
+      // If user has no role assigned, show role selection
       setCurrentPage("roleSelection")
     }
   }
 
-  const handleRoleSelect = (role: "reporter" | "viewer" | "admin") => {
-    if (role === "reporter") {
-      setCurrentPage("reporter")
-    } else if (role === "viewer") {
-      setCurrentPage("viewer")
-    } else if (role === "admin") {
-      setCurrentPage("admin")
+  const handleRoleSelect = async (role: "reporter" | "viewer" | "admin") => {
+    try {
+      // Update the user's role in the database
+      const response = await fetch('/api/users/update-role', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, role })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        // Update local user state with new role
+        setUser(data.user)
+        
+        // Navigate to appropriate dashboard
+        if (role === "reporter") {
+          setCurrentPage("reporter")
+        } else if (role === "viewer") {
+          setCurrentPage("viewer")
+        } else if (role === "admin") {
+          setCurrentPage("admin")
+        }
+      } else {
+        console.error('Failed to update user role')
+        // Still navigate for now, but in production you'd want to handle this error
+        if (role === "reporter") {
+          setCurrentPage("reporter")
+        } else if (role === "viewer") {
+          setCurrentPage("viewer")
+        } else if (role === "admin") {
+          setCurrentPage("admin")
+        }
+      }
+    } catch (error) {
+      console.error('Error updating role:', error)
+      // Still navigate for now, but in production you'd want to handle this error
+      if (role === "reporter") {
+        setCurrentPage("reporter")
+      } else if (role === "viewer") {
+        setCurrentPage("viewer")
+      } else if (role === "admin") {
+        setCurrentPage("admin")
+      }
     }
   }
 

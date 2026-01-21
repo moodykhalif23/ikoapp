@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase()
 
-    const { name, email, password, role = 'viewer' } = await request.json()
+    const { name, email, password, role } = await request.json()
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -25,11 +25,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create new user
+    // Create new user without a role initially (they'll select it after signup)
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      role: role // In production, you'd validate this more carefully
+      role: role || undefined // Don't set a default role for new signups
     })
 
     await user.save()

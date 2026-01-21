@@ -33,7 +33,7 @@ const UserSchema: Schema = new Schema({
     type: String,
     enum: ['admin', 'reporter', 'viewer'],
     default: 'viewer',
-    required: [true, 'Role is required']
+    required: false // Allow users to sign up without a role initially
   },
   employeeType: {
     type: String,

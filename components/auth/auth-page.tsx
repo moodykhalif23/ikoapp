@@ -36,7 +36,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
 
       const endpoint = isSignUp ? '/api/auth/signup' : '/api/auth/login'
       const body = isSignUp
-        ? { name, email, password, role: 'viewer' }
+        ? { name, email, password }
         : { email, password }
 
       const response = await fetch(endpoint, {
