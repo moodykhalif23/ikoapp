@@ -190,13 +190,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
           </p>
         </div>
 
-        <Alert className="mb-6 border-blue-200 bg-blue-50">
-          <AlertDescription className="text-blue-800">
-            This is a standalone power interruption report. You can submit this anytime an interruption occurs, 
-            independent of your daily production reports.
-          </AlertDescription>
-        </Alert>
-
         <Card className="border-border/50">
           <CardHeader>
             <CardTitle className="text-primary flex items-center gap-2">
