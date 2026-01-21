@@ -27,21 +27,6 @@ const ReportSchema = new mongoose.Schema({
   employeePlanningId: mongoose.Schema.Types.ObjectId
 }, { timestamps: true })
 
-// Add pre-save hook for ID generation
-ReportSchema.pre('save', async function(next) {
-  const report = this
-  if (!report.id) {
-    let counter = 0
-    let uniqueId
-    do {
-      uniqueId = `RPT-${Date.now()}${counter > 0 ? `-${counter}` : ''}`
-      counter++
-    } while (await mongoose.models.Report.findOne({ id: uniqueId }))
-    report.id = uniqueId
-  }
-  next()
-})
-
 const PowerInterruptionSchema = new mongoose.Schema({
   reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', required: true },
   noInterruptions: { type: Boolean, default: false, required: true },
@@ -180,7 +165,9 @@ async function migrate() {
 
     for (const user of users.filter(u => u.role === 'reporter')) {
       // Create a complete report for each reporter
+      const reportId = `RPT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       const report = new Report({
+        id: reportId,
         date: new Date().toISOString().split('T')[0],
         reportedBy: user.name,
         reportedByEmail: user.email,
@@ -289,7 +276,9 @@ async function migrate() {
     }
 
     // Create a draft report
+    const draftReportId = `RPT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     const draftReport = new Report({
+      id: draftReportId,
       date: new Date().toISOString().split('T')[0],
       reportedBy: users[1].name,
       reportedByEmail: users[1].email,
