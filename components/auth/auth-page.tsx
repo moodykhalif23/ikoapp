@@ -28,25 +28,32 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
     setLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
       if (!email || !password || (isSignUp && !name)) {
         setError("Please fill in all fields")
         setLoading(false)
         return
       }
 
-      const userData = {
-        id: Math.random().toString(),
-        email,
-        name: isSignUp ? name : email.split("@")[0],
-        createdAt: new Date(),
-      }
+      const endpoint = isSignUp ? '/api/auth/signup' : '/api/auth/login'
+      const body = isSignUp
+        ? { name, email, password, role: 'viewer' }
+        : { email, password }
 
-      onSuccess(userData)
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        onSuccess(data.user)
+      } else {
+        setError(data.error || 'Authentication failed')
+      }
     } catch (err) {
-      setError("Authentication failed. Please try again.")
+      setError("Network error. Please check your connection and try again.")
     } finally {
       setLoading(false)
     }

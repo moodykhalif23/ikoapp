@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send, Settings, UserPlus, Trash2 } from "lucide-react"
@@ -30,26 +30,50 @@ interface Comment {
   role: string
 }
 
-export default function AdminDashboard({ user, onLogout, reports = [] }: AdminDashboardProps) {
+export default function AdminDashboard({ user, onLogout, reports: propReports = [] }: AdminDashboardProps) {
   const [selectedReport, setSelectedReport] = useState<any>(null)
+  const [reports, setReports] = useState<any[]>([])
+  const [users, setUsers] = useState<any[]>([])
+  const [machines, setMachines] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [commentText, setCommentText] = useState("")
   const [activeReportTab, setActiveReportTab] = useState("summary")
   const [activeMainTab, setActiveMainTab] = useState("reports")
-  
-  const [employees, setEmployees] = useState([
-    { id: 1, name: "John Doe", email: "john@example.com", role: "reporter", status: "active" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "viewer", status: "active" },
-    { id: 3, name: "Admin User", email: "admin@example.com", role: "admin", status: "active" },
-  ])
 
-  const [machines, setMachines] = useState([
-    { id: 1, name: "Machine A", status: "active", productionRate: "100 units/hour" },
-    { id: 2, name: "Machine B", status: "active", productionRate: "120 units/hour" },
-    { id: 3, name: "Machine C", status: "maintenance", productionRate: "110 units/hour" },
-    { id: 4, name: "Machine D", status: "active", productionRate: "95 units/hour" },
-    { id: 5, name: "Machine E", status: "active", productionRate: "105 units/hour" },
-  ])
+  // Fetch data from database
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch all reports
+        const reportsResponse = await fetch('/api/reports?limit=100')
+        if (reportsResponse.ok) {
+          const reportsData = await reportsResponse.json()
+          setReports(reportsData.reports)
+        }
+
+        // Fetch all users
+        const usersResponse = await fetch('/api/users')
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json()
+          setUsers(usersData)
+        }
+
+        // Fetch all machines
+        const machinesResponse = await fetch('/api/machines')
+        if (machinesResponse.ok) {
+          const machinesData = await machinesResponse.json()
+          setMachines(machinesData)
+        }
+      } catch (error) {
+        console.error('Error fetching admin data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const [showAddEmployee, setShowAddEmployee] = useState(false)
   const [showAddMachine, setShowAddMachine] = useState(false)

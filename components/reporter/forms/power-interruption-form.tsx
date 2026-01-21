@@ -1,22 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronRight } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { IMachine } from "@/lib/models"
 
 interface PowerInterruptionFormProps {
   data: any
   onComplete: (data: any) => void
 }
 
-const MACHINES = ["Machine A", "Machine B", "Machine C", "Machine D", "Machine E"]
-
 export default function PowerInterruptionForm({ data, onComplete }: PowerInterruptionFormProps) {
   const [noInterruptions, setNoInterruptions] = useState(data?.noInterruptions || false)
+  const [machines, setMachines] = useState<IMachine[]>([])
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
     noInterruptions: data?.noInterruptions || false,
     occurredAt: data?.occurredAt || "",
@@ -26,6 +27,27 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Fetch machines from database
+  useEffect(() => {
+    const fetchMachines = async () => {
+      try {
+        const response = await fetch('/api/machines')
+        if (response.ok) {
+          const machinesData = await response.json()
+          setMachines(machinesData)
+        } else {
+          console.error('Failed to fetch machines')
+        }
+      } catch (error) {
+        console.error('Error fetching machines:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMachines()
+  }, [])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -124,24 +146,31 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
 
             <div className="space-y-3">
               <label className="form-label-large">Affected Machines</label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {MACHINES.map((machine) => (
-                  <div
-                    key={machine}
-                    className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <Checkbox
-                      id={machine}
-                      checked={formData.affectedMachines.includes(machine)}
-                      onCheckedChange={() => toggleMachine(machine)}
-                      className="border-primary"
-                    />
-                    <label htmlFor={machine} className="text-sm cursor-pointer font-medium ml-2">
-                      {machine}
-                    </label>
-                  </div>
-                ))}
-              </div>
+              {loading ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {machines.map((machine) => (
+                    <div
+                      key={machine._id}
+                      className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <Checkbox
+                        id={machine._id}
+                        checked={formData.affectedMachines.includes(machine.name)}
+                        onCheckedChange={() => toggleMachine(machine.name)}
+                        className="border-primary"
+                      />
+                      <label htmlFor={machine._id} className="text-sm cursor-pointer font-medium ml-2">
+                        {machine.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
               {errors.affectedMachines && <p className="text-xs text-red-500">{errors.affectedMachines}</p>}
             </div>
           </>

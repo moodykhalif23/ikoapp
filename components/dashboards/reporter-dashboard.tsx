@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack } from "@mui/icons-material"
@@ -19,22 +19,57 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
   const [showNewReport, setShowNewReport] = useState(false)
   const [showPowerInterruption, setShowPowerInterruption] = useState(false)
   const [selectedReport, setSelectedReport] = useState<any>(null)
-  const [localReports, setLocalReports] = useState<any[]>([])
-  const [powerInterruptionReports, setPowerInterruptionReports] = useState<any[]>([])
-  const reports = localReports; // Declare the reports variable
+  const [reports, setReports] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const handleReportSubmit = (reportData: any) => {
-    const reportWithMetadata = { ...reportData, id: `RPT-${Date.now()}`, createdAt: new Date() }
-    setLocalReports([reportWithMetadata, ...localReports])
+  // Fetch user's reports from database
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await fetch(`/api/reports?reportedByEmail=${encodeURIComponent(user.email)}`)
+        if (response.ok) {
+          const data = await response.json()
+          setReports(data.reports)
+        } else {
+          console.error('Failed to fetch reports')
+        }
+      } catch (error) {
+        console.error('Error fetching reports:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (user?.email) {
+      fetchReports()
+    }
+  }, [user?.email])
+
+  // Refresh reports after submission
+  const refreshReports = async () => {
+    try {
+      const response = await fetch(`/api/reports?reportedByEmail=${encodeURIComponent(user.email)}`)
+      if (response.ok) {
+        const data = await response.json()
+        setReports(data.reports)
+      }
+    } catch (error) {
+      console.error('Error refreshing reports:', error)
+    }
+  }
+
+  const handleReportSubmit = async (reportData: any) => {
+    // Refresh reports from database
+    await refreshReports()
     if (onReportSubmit) {
       onReportSubmit(reportData)
     }
     setShowNewReport(false)
   }
 
-  const handlePowerInterruptionSubmit = (reportData: any) => {
-    const reportWithMetadata = { ...reportData, createdAt: new Date() }
-    setPowerInterruptionReports([reportWithMetadata, ...powerInterruptionReports])
+  const handlePowerInterruptionSubmit = async (reportData: any) => {
+    // Refresh reports from database
+    await refreshReports()
     if (onReportSubmit) {
       onReportSubmit(reportData)
     }

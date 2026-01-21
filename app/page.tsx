@@ -14,9 +14,13 @@ export default function Home() {
 
   const handleAuthSuccess = (userData: any) => {
     setUser(userData)
-    // Check if user email matches admin pattern (for demo: admin@example.com)
-    if (userData.email === "admin@example.com") {
+    // Route based on user role from database
+    if (userData.role === "admin") {
       setCurrentPage("admin")
+    } else if (userData.role === "reporter") {
+      setCurrentPage("reporter")
+    } else if (userData.role === "viewer") {
+      setCurrentPage("viewer")
     } else {
       setCurrentPage("roleSelection")
     }

@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Plus, Trash2, ChevronRight } from "lucide-react"
+import { IMachine } from "@/lib/models"
 
 interface DailyProductionFormProps {
   data: any
@@ -21,14 +22,35 @@ interface Product {
   employees: string
 }
 
-const MACHINES = ["Machine A", "Machine B", "Machine C", "Machine D", "Machine E"]
-
 export default function DailyProductionForm({ data, onComplete }: DailyProductionFormProps) {
   const [products, setProducts] = useState<Product[]>(
     data?.products || [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
   )
   const [qualityIssues, setQualityIssues] = useState(data?.qualityIssues || "")
+  const [machines, setMachines] = useState<IMachine[]>([])
+  const [loading, setLoading] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Fetch machines from database
+  useEffect(() => {
+    const fetchMachines = async () => {
+      try {
+        const response = await fetch('/api/machines')
+        if (response.ok) {
+          const machinesData = await response.json()
+          setMachines(machinesData)
+        } else {
+          console.error('Failed to fetch machines')
+        }
+      } catch (error) {
+        console.error('Error fetching machines:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMachines()
+  }, [])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -164,28 +186,35 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-medium">Machines Used</label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {MACHINES.map((machine) => (
-                    <div
-                      key={machine}
-                      className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <Checkbox
-                        id={`product-${product.id}-${machine}`}
-                        checked={product.machinesUsed.includes(machine)}
-                        onCheckedChange={() => toggleMachine(product.id, machine)}
-                        className="border-primary"
-                      />
-                      <label
-                        htmlFor={`product-${product.id}-${machine}`}
-                        className="text-sm cursor-pointer font-medium ml-2"
+                <label className="form-label-large">Machines Used</label>
+                {loading ? (
+                  <div className="flex items-center justify-center p-4">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {machines.map((machine) => (
+                      <div
+                        key={machine._id}
+                        className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                       >
-                        {machine}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                        <Checkbox
+                          id={`product-${product.id}-${machine._id}`}
+                          checked={product.machinesUsed.includes(machine.name)}
+                          onCheckedChange={() => toggleMachine(product.id, machine.name)}
+                          className="border-primary"
+                        />
+                        <label
+                          htmlFor={`product-${product.id}-${machine._id}`}
+                          className="text-sm cursor-pointer font-medium ml-2"
+                        >
+                          {machine.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {errors[`product-${index}-machines`] && (
                   <p className="text-xs text-red-500">{errors[`product-${index}-machines`]}</p>
                 )}

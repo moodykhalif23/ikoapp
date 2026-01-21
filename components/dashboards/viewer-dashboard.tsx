@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send } from "lucide-react"
@@ -10,7 +10,7 @@ import PeopleIcon from "@mui/icons-material/People"
 import WarningIcon from "@mui/icons-material/Warning"
 import DownloadIcon from "@mui/icons-material/Download"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import SendIcon from "@mui/icons-material/Send" 
+import SendIcon from "@mui/icons-material/Send"
 
 interface ViewerDashboardProps {
   user: any
@@ -26,53 +26,37 @@ interface Comment {
   role: string
 }
 
-export default function ViewerDashboard({ user, onLogout, reports = [] }: ViewerDashboardProps) {
+export default function ViewerDashboard({ user, onLogout, reports: propReports = [] }: ViewerDashboardProps) {
   const [selectedReport, setSelectedReport] = useState<any>(null)
+  const [reports, setReports] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [commentText, setCommentText] = useState("")
   const [activeReportTab, setActiveReportTab] = useState("summary")
 
-  const mockReports = [
-    {
-      id: "RPT-1704067200000",
-      date: "2024-01-15",
-      reportedBy: "John Doe",
-      status: "Complete",
-      powerInterruptions: { noInterruptions: false, duration: "45", affectedMachines: ["Machine A", "Machine B"] },
-      siteVisuals: {
-        media: [
-          { type: "image", name: "Site Overview.jpg", url: "/industrial-site.jpg" },
-          { type: "image", name: "Equipment.jpg", url: "/intricate-machinery.png" },
-          { type: "video", name: "Production.mp4", url: "/video-production-team.png" },
-        ],
-      },
-      dailyProduction: {
-        overallEfficiency: "92.5",
-        products: [
-          {
-            productName: "Widget A",
-            quantity: "150",
-            unit: "kg",
-            machinesUsed: ["Machine A", "Machine B"],
-            employees: 5,
-          },
-          { productName: "Widget B", quantity: "200", unit: "kg", machinesUsed: ["Machine C"], employees: 3 },
-        ],
-      },
-      incidentReport: { severity: "Medium", incidentType: "power outage" },
-    },
-    {
-      id: "RPT-1704153600000",
-      date: "2024-01-14",
-      reportedBy: "Jane Smith",
-      status: "Complete",
-      powerInterruptions: { noInterruptions: true },
-      siteVisuals: { media: [] },
-      dailyProduction: { overallEfficiency: "88.0" },
-    },
-  ]
+  // Fetch all submitted reports from database
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await fetch('/api/reports?status=submitted&limit=50')
+        if (response.ok) {
+          const data = await response.json()
+          setReports(data.reports)
+        } else {
+          console.error('Failed to fetch reports')
+        }
+      } catch (error) {
+        console.error('Error fetching reports:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const allReports = reports.length > 0 ? reports : mockReports
+    fetchReports()
+  }, [])
+
+  // Use reports from database, or empty array if loading
+  const allReports = reports
 
   const handleAddComment = (reportId: string) => {
     if (commentText.trim()) {

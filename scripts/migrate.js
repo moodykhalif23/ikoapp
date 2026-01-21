@@ -88,6 +88,12 @@ const EmployeePlanningSchema = new mongoose.Schema({
   notes: String
 }, { timestamps: true })
 
+const MachineSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  type: { type: String, required: true },
+  status: { type: String, enum: ['active', 'inactive', 'maintenance'], default: 'active' }
+}, { timestamps: true })
+
 // Create models
 const User = mongoose.models.User || mongoose.model('User', UserSchema)
 const Report = mongoose.models.Report || mongoose.model('Report', ReportSchema)
@@ -96,6 +102,7 @@ const SiteVisual = mongoose.models.SiteVisual || mongoose.model('SiteVisual', Si
 const DailyProduction = mongoose.models.DailyProduction || mongoose.model('DailyProduction', DailyProductionSchema)
 const IncidentReport = mongoose.models.IncidentReport || mongoose.model('IncidentReport', IncidentReportSchema)
 const EmployeePlanning = mongoose.models.EmployeePlanning || mongoose.model('EmployeePlanning', EmployeePlanningSchema)
+const Machine = mongoose.models.Machine || mongoose.model('Machine', MachineSchema)
 
 async function migrate() {
   try {
@@ -112,7 +119,8 @@ async function migrate() {
       SiteVisual.deleteMany({}),
       DailyProduction.deleteMany({}),
       IncidentReport.deleteMany({}),
-      EmployeePlanning.deleteMany({})
+      EmployeePlanning.deleteMany({}),
+      Machine.deleteMany({})
     ])
 
     // Seed users
@@ -138,6 +146,18 @@ async function migrate() {
         email: 'viewer@ikoapp.com',
         role: 'viewer'
       }
+    ])
+
+    // Seed machines
+    console.log('Seeding machines...')
+    const machines = await Machine.insertMany([
+      { name: 'Machine A', type: 'Production', status: 'active' },
+      { name: 'Machine B', type: 'Production', status: 'active' },
+      { name: 'Machine C', type: 'Assembly', status: 'active' },
+      { name: 'Machine D', type: 'Packaging', status: 'active' },
+      { name: 'Machine E', type: 'Quality Control', status: 'active' },
+      { name: 'Machine F', type: 'Production', status: 'maintenance' },
+      { name: 'Machine G', type: 'Assembly', status: 'inactive' }
     ])
 
     // Seed sample reports with complete data
