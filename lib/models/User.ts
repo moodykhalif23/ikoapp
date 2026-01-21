@@ -69,23 +69,10 @@ const UserSchema: Schema = new Schema({
   toObject: { virtuals: true }
 })
 
-// Additional indexes for better query performance
+// Additional indexes for better query performance (email index is already created by unique: true)
 UserSchema.index({ role: 1 })
 UserSchema.index({ employeeType: 1 })
 UserSchema.index({ status: 1 })
 UserSchema.index({ department: 1 })
-
-// Prevent duplicate registration
-UserSchema.pre('save', async function(next) {
-  const user = this as IUser
-  if (this.isModified('email')) {
-    const existingUser = await mongoose.models.User.findOne({ email: user.email })
-    if (existingUser && existingUser._id.toString() !== user._id.toString()) {
-      const error = new Error('Email already exists')
-      return next(error)
-    }
-  }
-  next()
-})
 
 export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
