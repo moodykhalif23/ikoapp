@@ -93,7 +93,6 @@ const ReportSchema: Schema = new Schema({
 })
 
 // Indexes for better query performance
-ReportSchema.index({ id: 1 }, { unique: true })
 ReportSchema.index({ reportedByEmail: 1 })
 ReportSchema.index({ date: 1 })
 ReportSchema.index({ status: 1 })
