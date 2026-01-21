@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Slot } from '@radix-ui/react-slot'
+import { Box } from '@mui/material'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
@@ -56,18 +56,32 @@ function Item({
   variant = 'default',
   size = 'default',
   asChild = false,
+  children,
   ...props
 }: React.ComponentProps<'div'> &
   VariantProps<typeof itemVariants> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : 'div'
+  
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      className: cn(itemVariants({ variant, size }), className, children.props.className),
+      'data-slot': 'item',
+      'data-variant': variant,
+      'data-size': size,
+      ...props,
+      ...children.props,
+    })
+  }
+
   return (
-    <Comp
+    <div
       data-slot="item"
       data-variant={variant}
       data-size={size}
       className={cn(itemVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {children}
+    </div>
   )
 }
 

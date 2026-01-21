@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot'
+import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
@@ -40,20 +40,33 @@ function ButtonGroup({
 function ButtonGroupText({
   className,
   asChild = false,
+  children,
   ...props
 }: React.ComponentProps<'div'> & {
   asChild?: boolean
 }) {
-  const Comp = asChild ? Slot : 'div'
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      className: cn(
+        "bg-muted flex items-center gap-2 rounded-md border px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+        className,
+        children.props.className
+      ),
+      ...props,
+      ...children.props,
+    })
+  }
 
   return (
-    <Comp
+    <div
       className={cn(
         "bg-muted flex items-center gap-2 rounded-md border px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </div>
   )
 }
 

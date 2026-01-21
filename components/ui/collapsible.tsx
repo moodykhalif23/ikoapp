@@ -1,32 +1,115 @@
 'use client'
 
-import * as CollapsiblePrimitive from '@radix-ui/react-collapsible'
+import * as React from 'react'
+import { Collapse, Box } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-function Collapsible({
-  ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
-  return <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />
+interface CollapsibleProps {
+  children: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  disabled?: boolean
 }
 
-function CollapsibleTrigger({
-  ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>) {
+interface CollapsibleTriggerProps {
+  children: React.ReactNode
+  asChild?: boolean
+}
+
+interface CollapsibleContentProps {
+  children: React.ReactNode
+  className?: string
+}
+
+const StyledBox = styled(Box)({
+  width: '100%',
+})
+
+const CollapsibleContext = React.createContext<{
+  open: boolean
+  setOpen: (open: boolean) => void
+  disabled: boolean
+}>({
+  open: false,
+  setOpen: () => {},
+  disabled: false,
+})
+
+function Collapsible({ 
+  children, 
+  open, 
+  onOpenChange, 
+  disabled = false 
+}: CollapsibleProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false)
+  
+  const isOpen = open !== undefined ? open : internalOpen
+  
+  const setOpen = React.useCallback((newOpen: boolean) => {
+    if (disabled) return
+    
+    if (open === undefined) {
+      setInternalOpen(newOpen)
+    }
+    onOpenChange?.(newOpen)
+  }, [open, onOpenChange, disabled])
+
   return (
-    <CollapsiblePrimitive.CollapsibleTrigger
-      data-slot="collapsible-trigger"
-      {...props}
-    />
+    <CollapsibleContext.Provider value={{ 
+      open: isOpen, 
+      setOpen, 
+      disabled 
+    }}>
+      <StyledBox>
+        {children}
+      </StyledBox>
+    </CollapsibleContext.Provider>
   )
 }
 
-function CollapsibleContent({
-  ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
+function CollapsibleTrigger({ children, asChild }: CollapsibleTriggerProps) {
+  const { open, setOpen, disabled } = React.useContext(CollapsibleContext)
+  
+  const handleClick = () => {
+    if (!disabled) {
+      setOpen(!open)
+    }
+  }
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      onClick: handleClick,
+      'aria-expanded': open,
+      'aria-disabled': disabled,
+      ...children.props,
+    })
+  }
+
   return (
-    <CollapsiblePrimitive.CollapsibleContent
-      data-slot="collapsible-content"
-      {...props}
-    />
+    <button 
+      onClick={handleClick}
+      aria-expanded={open}
+      aria-disabled={disabled}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  )
+}
+
+function CollapsibleContent({ 
+  children, 
+  className,
+  ...props 
+}: CollapsibleContentProps) {
+  const { open } = React.useContext(CollapsibleContext)
+
+  return (
+    <Collapse in={open} timeout="auto" unmountOnExit>
+      <Box className={className} {...props}>
+        {children}
+      </Box>
+    </Collapse>
   )
 }
 

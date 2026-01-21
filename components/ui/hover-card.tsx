@@ -1,43 +1,209 @@
 'use client'
 
 import * as React from 'react'
-import * as HoverCardPrimitive from '@radix-ui/react-hover-card'
+import { Popover, Paper } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
 import { cn } from '@/lib/utils'
 
-function HoverCard({
-  ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Root>) {
-  return <HoverCardPrimitive.Root data-slot="hover-card" {...props} />
+interface HoverCardProps {
+  children: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  openDelay?: number
+  closeDelay?: number
 }
 
-function HoverCardTrigger({
-  ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Trigger>) {
+interface HoverCardTriggerProps {
+  children: React.ReactNode
+  asChild?: boolean
+}
+
+interface HoverCardContentProps {
+  children: React.ReactNode
+  className?: string
+  align?: 'start' | 'center' | 'end'
+  sideOffset?: number
+}
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  borderRadius: '8px',
+  padding: '16px',
+  maxWidth: '256px',
+  boxShadow: theme.shadows[8],
+  border: `1px solid ${theme.palette.divider}`,
+}))
+
+const HoverCardContext = React.createContext<{
+  open: boolean
+  setOpen: (open: boolean) => void
+  anchorEl: HTMLElement | null
+  setAnchorEl: (el: HTMLElement | null) => void
+}>({
+  open: false,
+  setOpen: () => {},
+  anchorEl: null,
+  setAnchorEl: () => {},
+})
+
+function HoverCard({ 
+  children, 
+  open, 
+  onOpenChange, 
+  openDelay = 700,
+  closeDelay = 300 
+}: HoverCardProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+  const openTimeoutRef = React.useRef<NodeJS.Timeout>()
+  const closeTimeoutRef = React.useRef<NodeJS.Timeout>()
+  
+  const isOpen = open !== undefined ? open : internalOpen
+  
+  const setOpen = React.useCallback((newOpen: boolean) => {
+    if (open === undefined) {
+      setInternalOpen(newOpen)
+    }
+    onOpenChange?.(newOpen)
+    if (!newOpen) {
+      setAnchorEl(null)
+    }
+  }, [open, onOpenChange])
+
+  React.useEffect(() => {
+    return () => {
+      if (openTimeoutRef.current) {
+        clearTimeout(openTimeoutRef.current)
+      }
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
+  }, [])
+
   return (
-    <HoverCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />
+    <HoverCardContext.Provider value={{ 
+      open: isOpen, 
+      setOpen, 
+      anchorEl, 
+      setAnchorEl 
+    }}>
+      {children}
+    </HoverCardContext.Provider>
   )
 }
 
-function HoverCardContent({
-  className,
+function HoverCardTrigger({ children, asChild }: HoverCardTriggerProps) {
+  const { setOpen, setAnchorEl } = React.useContext(HoverCardContext)
+  const openTimeoutRef = React.useRef<NodeJS.Timeout>()
+  const closeTimeoutRef = React.useRef<NodeJS.Timeout>()
+  
+  const handleMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+    
+    setAnchorEl(event.currentTarget)
+    openTimeoutRef.current = setTimeout(() => {
+      setOpen(true)
+    }, 700)
+  }
+
+  const handleMouseLeave = () => {
+    if (openTimeoutRef.current) {
+      clearTimeout(openTimeoutRef.current)
+    }
+    
+    closeTimeoutRef.current = setTimeout(() => {
+      setOpen(false)
+    }, 300)
+  }
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave,
+      ...children.props,
+    })
+  }
+
+  return (
+    <div 
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </div>
+  )
+}
+
+function HoverCardContent({ 
+  children, 
+  className, 
   align = 'center',
   sideOffset = 4,
-  ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Content>) {
+  ...props 
+}: HoverCardContentProps) {
+  const { open, setOpen, anchorEl } = React.useContext(HoverCardContext)
+
+  const getAnchorOrigin = () => {
+    switch (align) {
+      case 'start':
+        return { vertical: 'bottom' as const, horizontal: 'left' as const }
+      case 'end':
+        return { vertical: 'bottom' as const, horizontal: 'right' as const }
+      default:
+        return { vertical: 'bottom' as const, horizontal: 'center' as const }
+    }
+  }
+
+  const getTransformOrigin = () => {
+    switch (align) {
+      case 'start':
+        return { vertical: 'top' as const, horizontal: 'left' as const }
+      case 'end':
+        return { vertical: 'top' as const, horizontal: 'right' as const }
+      default:
+        return { vertical: 'top' as const, horizontal: 'center' as const }
+    }
+  }
+
+  const handleMouseEnter = () => {
+    // Keep the hover card open when hovering over the content
+    setOpen(true)
+  }
+
+  const handleMouseLeave = () => {
+    setOpen(false)
+  }
+
   return (
-    <HoverCardPrimitive.Portal data-slot="hover-card-portal">
-      <HoverCardPrimitive.Content
-        data-slot="hover-card-content"
-        align={align}
-        sideOffset={sideOffset}
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={() => setOpen(false)}
+      anchorOrigin={getAnchorOrigin()}
+      transformOrigin={getTransformOrigin()}
+      disableRestoreFocus
+      sx={{
+        pointerEvents: 'none',
+        '& .MuiPopover-paper': {
+          pointerEvents: 'auto',
+        },
+      }}
+      {...props}
+    >
+      <StyledPaper
         className={cn(
-          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-64 origin-(--radix-hover-card-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden',
+          'z-50 w-64 rounded-md border p-4 shadow-md outline-none',
           className,
         )}
-        {...props}
-      />
-    </HoverCardPrimitive.Portal>
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {children}
+      </StyledPaper>
+    </Popover>
   )
 }
 
