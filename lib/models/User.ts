@@ -4,6 +4,12 @@ export interface IUser extends Document {
   name: string
   email: string
   role: 'admin' | 'reporter' | 'viewer'
+  employeeType: 'permanent' | 'casual'
+  employeeId?: string
+  department?: string
+  phone?: string
+  hireDate?: Date
+  status: 'active' | 'inactive'
   createdAt: Date
   updatedAt: Date
 }
@@ -28,6 +34,34 @@ const UserSchema: Schema = new Schema({
     enum: ['admin', 'reporter', 'viewer'],
     default: 'viewer',
     required: [true, 'Role is required']
+  },
+  employeeType: {
+    type: String,
+    enum: ['permanent', 'casual'],
+    default: 'permanent',
+    required: [true, 'Employee type is required']
+  },
+  employeeId: {
+    type: String,
+    trim: true,
+    sparse: true
+  },
+  department: {
+    type: String,
+    trim: true
+  },
+  phone: {
+    type: String,
+    trim: true
+  },
+  hireDate: {
+    type: Date
+  },
+  status: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active',
+    required: [true, 'Status is required']
   }
 }, {
   timestamps: true,
@@ -38,6 +72,9 @@ const UserSchema: Schema = new Schema({
 // Index for better query performance
 UserSchema.index({ email: 1 }, { unique: true })
 UserSchema.index({ role: 1 })
+UserSchema.index({ employeeType: 1 })
+UserSchema.index({ status: 1 })
+UserSchema.index({ department: 1 })
 
 // Prevent duplicate registration
 UserSchema.pre('save', async function(next) {

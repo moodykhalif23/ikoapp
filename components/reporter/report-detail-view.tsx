@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowBack, CheckCircle, Cancel } from "@mui/icons-material"
+import { ArrowBack, CheckCircle, Close } from "@mui/icons-material"
 import { Badge } from "@/components/ui/badge"
 
 interface ReportDetailViewProps {
@@ -80,7 +80,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
               </div>
             ) : (
               <div className="flex items-center gap-1">
-                <Cancel sx={{ fontSize: 16, color: "#dc2626" }} />
+                <Close sx={{ fontSize: 16, color: "#dc2626" }} />
                 <Badge variant="destructive">Interruption Occurred</Badge>
               </div>
             )}
@@ -221,7 +221,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
               </div>
             ) : (
               <div className="flex items-center gap-1">
-                <Cancel sx={{ fontSize: 16, color: "#dc2626" }} />
+                <Close sx={{ fontSize: 16, color: "#dc2626" }} />
                 <Badge variant="destructive">Incident Reported</Badge>
               </div>
             )}

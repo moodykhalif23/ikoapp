@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send, Settings, UserPlus, Trash2 } from "lucide-react"
+import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send, Settings, UserPlus, Trash2, Upload, FileText } from "lucide-react"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/simple-tabs"
 import { Input } from "@/components/ui/input"
@@ -15,6 +15,10 @@ import SendIcon from "@mui/icons-material/Send"
 import SettingsIcon from "@mui/icons-material/Settings"
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
+import TimeTrackingDashboard from "@/components/time-tracking/time-tracking-dashboard"
+import AnalyticsDashboard from "@/components/analytics/analytics-dashboard"
+import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
+import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 
 interface AdminDashboardProps {
   user: any
@@ -77,8 +81,20 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
 
   const [showAddEmployee, setShowAddEmployee] = useState(false)
   const [showAddMachine, setShowAddMachine] = useState(false)
-  const [newEmployee, setNewEmployee] = useState({ name: "", email: "", role: "reporter" })
+  const [showImportEmployees, setShowImportEmployees] = useState(false)
+  const [newEmployee, setNewEmployee] = useState({
+    name: "",
+    email: "",
+    role: "reporter",
+    employeeType: "permanent",
+    employeeId: "",
+    department: "",
+    phone: "",
+    hireDate: ""
+  })
   const [newMachine, setNewMachine] = useState({ name: "", productionRate: "" })
+  const [importFile, setImportFile] = useState<File | null>(null)
+  const [importLoading, setImportLoading] = useState(false)
 
   const mockReports = [
     {
@@ -136,23 +152,122 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
     setActiveReportTab("summary")
   }
 
-  const handleAddEmployee = () => {
-    if (newEmployee.name && newEmployee.email) {
-      setEmployees((prev) => [
-        ...prev,
-        {
-          id: prev.length + 1,
-          ...newEmployee,
-          status: "active",
-        },
-      ])
-      setNewEmployee({ name: "", email: "", role: "reporter" })
-      setShowAddEmployee(false)
+  const handleAddEmployee = async () => {
+    if (!newEmployee.name || !newEmployee.email) {
+      alert("Name and email are required")
+      return
+    }
+
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newEmployee.name,
+          email: newEmployee.email,
+          password: 'defaultPassword123!', // This should be changed by the employee
+          role: newEmployee.role,
+          employeeType: newEmployee.employeeType,
+          employeeId: newEmployee.employeeId || undefined,
+          department: newEmployee.department || undefined,
+          phone: newEmployee.phone || undefined,
+          hireDate: newEmployee.hireDate ? new Date(newEmployee.hireDate) : undefined
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Refresh employees list
+        const usersResponse = await fetch('/api/users')
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json()
+          setUsers(usersData)
+        }
+
+        setNewEmployee({
+          name: "",
+          email: "",
+          role: "reporter",
+          employeeType: "permanent",
+          employeeId: "",
+          department: "",
+          phone: "",
+          hireDate: ""
+        })
+        setShowAddEmployee(false)
+        alert(`Employee ${newEmployee.name} added successfully. They should change their password on first login.`)
+      } else {
+        alert(data.error || 'Failed to add employee')
+      }
+    } catch (error) {
+      alert('Network error. Please try again.')
     }
   }
 
-  const handleDeleteEmployee = (id: number) => {
-    setEmployees((prev) => prev.filter((emp) => emp.id !== id))
+  const handleImportEmployees = async () => {
+    if (!importFile) {
+      alert("Please select a CSV file")
+      return
+    }
+
+    setImportLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', importFile)
+
+      const response = await fetch('/api/employees/import', {
+        method: 'POST',
+        body: formData
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Refresh employees list
+        const usersResponse = await fetch('/api/users')
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json()
+          setUsers(usersData)
+        }
+
+        setShowImportEmployees(false)
+        setImportFile(null)
+        alert(data.message)
+        if (data.data.errors && data.data.errors.length > 0) {
+          console.log('Import errors:', data.data.errors)
+        }
+      } else {
+        alert(data.error || 'Failed to import employees')
+      }
+    } catch (error) {
+      alert('Network error. Please try again.')
+    } finally {
+      setImportLoading(false)
+    }
+  }
+
+  const handleDeleteEmployee = async (id: string) => {
+    if (confirm('Are you sure you want to delete this employee? This action cannot be undone.')) {
+      try {
+        const response = await fetch(`/api/users/${id}`, {
+          method: 'DELETE'
+        })
+
+        if (response.ok) {
+          // Refresh users list
+          const usersResponse = await fetch('/api/users')
+          if (usersResponse.ok) {
+            const usersData = await usersResponse.json()
+            setUsers(usersData)
+          }
+        } else {
+          alert('Failed to delete employee')
+        }
+      } catch (error) {
+        alert('Network error. Please try again.')
+      }
+    }
   }
 
   const handleAddMachine = () => {
@@ -245,31 +360,14 @@ ${new Date().toLocaleString()}
   }
 
   return (
-    <div className="min-h-screen bg-app-standard">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b backdrop-blur-sm card-brand">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
-          <div className="relative w-24 h-10 sm:w-32 sm:h-14 flex-shrink-0">
-            <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <span className="text-xs sm:text-sm font-medium text-brand-contrast truncate">{user?.name}</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onLogout}
-              className="gap-1 sm:gap-2 backdrop-blur-sm touch-target text-xs sm:text-sm border-brand-subtle hover-brand focus-brand"
-              style={{ background: 'rgba(255, 255, 255, 0.8)' }}
-            >
-              <LogOut size={16} />
-              <span className="hidden sm:inline">Sign Out</span>
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+    <EnterpriseLayout
+      user={user}
+      onLogout={onLogout}
+      activeTab={activeMainTab}
+      onTabChange={setActiveMainTab}
+      title="Admin Dashboard"
+      subtitle="Manage reports, employees, and system settings"
+    >
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Admin Dashboard</h1>
           <p className="text-xs sm:text-base text-muted-foreground">Manage reports, employees, and system settings</p>
@@ -343,13 +441,27 @@ ${new Date().toLocaleString()}
             <TabsTrigger value="reports" className="text-xs flex-shrink-0 min-w-fit h-8">
               Reports
             </TabsTrigger>
+            <TabsTrigger value="time-tracking" className="text-xs flex-shrink-0 min-w-fit h-8">
+              Time Tracking
+            </TabsTrigger>
             <TabsTrigger value="employees" className="text-xs flex-shrink-0 min-w-fit h-8">
               Employees
             </TabsTrigger>
             <TabsTrigger value="machines" className="text-xs flex-shrink-0 min-w-fit h-8">
               Machines
             </TabsTrigger>
+            <TabsTrigger value="analytics" className="text-xs flex-shrink-0 min-w-fit h-8">
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="equipment" className="text-xs flex-shrink-0 min-w-fit h-8">
+              Equipment
+            </TabsTrigger>
           </TabsList>
+
+          {/* Time Tracking Tab */}
+          <TabsContent value="time-tracking" className="space-y-6">
+            <TimeTrackingDashboard users={users} />
+          </TabsContent>
 
           {/* Reports Tab */}
           <TabsContent value="reports" className="space-y-6">
@@ -595,39 +707,96 @@ ${new Date().toLocaleString()}
                   <CardTitle className="text-base sm:text-lg">Employee Management</CardTitle>
                   <CardDescription className="text-xs sm:text-sm">Manage system users and their roles</CardDescription>
                 </div>
-                <Button
-                  size="sm"
-                  onClick={() => setShowAddEmployee(!showAddEmployee)}
-                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto border-brand-subtle hover-brand focus-brand"
-                >
-                  <UserPlus size={16} />
-                  Add Employee
-                </Button>
+                <div className="flex gap-2 flex-col sm:flex-row">
+                  <Button
+                    size="sm"
+                    onClick={() => setShowAddEmployee(!showAddEmployee)}
+                    className="gap-2 bg-transparent text-xs touch-target border-brand-subtle hover-brand focus-brand"
+                  >
+                    <UserPlus size={16} />
+                    Add Employee
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShowImportEmployees(!showImportEmployees)}
+                    className="gap-2 text-xs touch-target border-brand-subtle hover-brand focus-brand"
+                  >
+                    <Upload size={16} />
+                    Import CSV
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 {showAddEmployee && (
                   <div className="p-4 border-brand-subtle rounded-lg bg-brand-surface space-y-3">
-                    <Input
-                      placeholder="Employee Name"
-                      value={newEmployee.name}
-                      onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                      className="text-xs sm:text-sm focus-brand"
-                    />
-                    <Input
-                      placeholder="Email Address"
-                      value={newEmployee.email}
-                      onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                      className="text-xs sm:text-sm focus-brand"
-                    />
-                    <select
-                      value={newEmployee.role}
-                      onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
-                      className="w-full px-3 py-2 border border-brand-subtle rounded-md bg-background text-xs sm:text-sm focus-brand"
-                    >
-                      <option value="reporter">Reporter</option>
-                      <option value="viewer">Viewer</option>
-                      <option value="admin">Admin</option>
-                    </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <Input
+                        placeholder="Employee Name"
+                        value={newEmployee.name}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+                        className="text-xs sm:text-sm focus-brand"
+                      />
+                      <Input
+                        placeholder="Email Address"
+                        type="email"
+                        value={newEmployee.email}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
+                        className="text-xs sm:text-sm focus-brand"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <select
+                        value={newEmployee.role}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
+                        className="w-full px-3 py-2 border border-brand-subtle rounded-md bg-background text-xs sm:text-sm focus-brand"
+                      >
+                        <option value="reporter">Reporter</option>
+                        <option value="viewer">Viewer</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                      <select
+                        value={newEmployee.employeeType}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeType: e.target.value })}
+                        className="w-full px-3 py-2 border border-brand-subtle rounded-md bg-background text-xs sm:text-sm focus-brand"
+                      >
+                        <option value="permanent">Permanent</option>
+                        <option value="casual">Casual</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <Input
+                        placeholder="Employee ID (optional)"
+                        value={newEmployee.employeeId}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeId: e.target.value })}
+                        className="text-xs sm:text-sm focus-brand"
+                      />
+                      <Input
+                        placeholder="Department (optional)"
+                        value={newEmployee.department}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
+                        className="text-xs sm:text-sm focus-brand"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <Input
+                        placeholder="Phone (optional)"
+                        value={newEmployee.phone}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
+                        className="text-xs sm:text-sm focus-brand"
+                      />
+                      <Input
+                        type="date"
+                        placeholder="Hire Date (optional)"
+                        value={newEmployee.hireDate}
+                        onChange={(e) => setNewEmployee({ ...newEmployee, hireDate: e.target.value })}
+                        className="text-xs sm:text-sm focus-brand"
+                      />
+                    </div>
+
                     <div className="flex gap-2">
                       <Button
                         size="sm"
@@ -648,26 +817,102 @@ ${new Date().toLocaleString()}
                   </div>
                 )}
 
+                {showImportEmployees && (
+                  <div className="p-4 border-brand-subtle rounded-lg bg-brand-surface space-y-3">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium">Import Employees from CSV</h4>
+                      <p className="text-xs text-muted-foreground">
+                        CSV should have headers: name, email, role (optional), employeeType (optional), employeeId (optional), department (optional), phone (optional), hireDate (optional)
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <input
+                        type="file"
+                        accept=".csv"
+                        onChange={(e) => setImportFile(e.target.files?.[0] || null)}
+                        className="w-full text-xs sm:text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                      />
+                      {importFile && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <FileText size={14} />
+                          {importFile.name}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={handleImportEmployees}
+                        disabled={!importFile || importLoading}
+                        className="flex-1 text-xs sm:text-sm touch-target"
+                      >
+                        {importLoading ? 'Importing...' : 'Import Employees'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setShowImportEmployees(false)
+                          setImportFile(null)
+                        }}
+                        className="flex-1 text-xs sm:text-sm touch-target border-brand-subtle hover-brand focus-brand"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-3">
-                  {employees.map((emp) => (
-                    <div key={emp.id} className="p-3 sm:p-4 border-brand-subtle rounded-lg bg-card hover:shadow-md transition-shadow hover-brand">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  {users.map((emp) => (
+                    <div key={emp._id} className="p-3 sm:p-4 border-brand-subtle rounded-lg bg-card hover:shadow-md transition-shadow hover-brand">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                         <div className="min-w-0 flex-1">
-                          <p className="font-medium text-xs sm:text-sm truncate">{emp.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{emp.email}</p>
-                          <div className="flex gap-2 mt-2 flex-wrap">
-                            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded capitalize">
-                              {emp.role}
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="font-medium text-xs sm:text-sm truncate">{emp.name}</p>
+                            <span className={`text-xs px-2 py-0.5 rounded capitalize ${
+                              emp.employeeType === 'casual'
+                                ? 'bg-orange-100 text-orange-700'
+                                : 'bg-blue-100 text-blue-700'
+                            }`}>
+                              {emp.employeeType}
                             </span>
-                            <span className="text-xs bg-green-500/10 text-green-600 px-2 py-0.5 rounded capitalize">
-                              {emp.status}
-                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate mb-2">{emp.email}</p>
+
+                          <div className="grid grid-cols-2 gap-4 text-xs">
+                            <div>
+                              <span className="text-muted-foreground">Role:</span>
+                              <span className="ml-1 capitalize bg-primary/10 text-primary px-1 py-0.5 rounded">
+                                {emp.role}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Status:</span>
+                              <span className="ml-1 capitalize bg-green-100 text-green-700 px-1 py-0.5 rounded">
+                                {emp.status}
+                              </span>
+                            </div>
+                            {emp.employeeId && (
+                              <div>
+                                <span className="text-muted-foreground">ID:</span>
+                                <span className="ml-1">{emp.employeeId}</span>
+                              </div>
+                            )}
+                            {emp.department && (
+                              <div>
+                                <span className="text-muted-foreground">Dept:</span>
+                                <span className="ml-1">{emp.department}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleDeleteEmployee(emp.id)}
+                          onClick={() => handleDeleteEmployee(emp._id)}
                           className="gap-2 text-xs touch-target w-full sm:w-auto border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                         >
                           <Trash2 size={16} />
@@ -766,8 +1011,21 @@ ${new Date().toLocaleString()}
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <AnalyticsDashboard
+              reports={allReports}
+              timeEntries={[]} // Will be populated from API
+              users={employees}
+            />
+          </TabsContent>
+
+          {/* Equipment Tab */}
+          <TabsContent value="equipment" className="space-y-6">
+            <EquipmentDashboard machines={machines} user={user} />
+          </TabsContent>
         </Tabs>
-      </main>
-    </div>
+    </EnterpriseLayout>
   )
 }
