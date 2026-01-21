@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Sidebar from "@/components/ui/sidebar"
 import { Menu, Bell, Search, Home } from "lucide-react"
@@ -28,31 +28,64 @@ export default function EnterpriseLayout({
   title,
   subtitle
 }: EnterpriseLayoutProps) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true) // Start collapsed by default
+
+  // Handle responsive behavior
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) { // lg breakpoint
+        setSidebarCollapsed(false) // Expand on desktop
+      } else {
+        setSidebarCollapsed(true) // Collapse on mobile
+      }
+    }
+
+    // Set initial state
+    if (typeof window !== 'undefined') {
+      handleResize()
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <div className="min-h-screen bg-app-standard flex">
-      {/* Sidebar */}
-      <Sidebar
-        activeTab={activeTab}
-        onTabChange={onTabChange}
-        user={user}
-        onLogout={onLogout}
-        collapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-      />
+      {/* Sidebar - Responsive positioning */}
+      <div className={`${
+        sidebarCollapsed 
+          ? 'fixed left-0 top-0 h-full z-40 lg:relative lg:z-auto' 
+          : 'fixed left-0 top-0 h-full z-40 lg:relative lg:z-auto'
+      }`}>
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={onTabChange}
+          user={user}
+          onLogout={onLogout}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
+      </div>
 
-      {/* Main Content */}
+      {/* Mobile overlay */}
+      {!sidebarCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setSidebarCollapsed(true)}
+        />
+      )}
+
+      {/* Main Content - No margin on large screens */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header */}
-        <header className="bg-card border-b border-border px-6 py-4">
+        {/* Top Header - Fixed positioning */}
+        <header className="sticky top-0 z-30 bg-card border-b border-border px-6 py-4 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="lg:hidden"
+                className="lg:hidden text-foreground hover:bg-muted"
               >
                 <Menu size={20} />
               </Button>
@@ -120,8 +153,8 @@ export default function EnterpriseLayout({
           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-auto">
+        {/* Page Content - Scrollable area */}
+        <main className="flex-1 overflow-y-auto">
           <div className="p-6">
             {children}
           </div>

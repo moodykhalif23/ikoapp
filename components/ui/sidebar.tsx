@@ -79,11 +79,11 @@ export default function Sidebar({
   ]
 
   return (
-    <div className={`bg-brand-green border-r border-brand-green/20 transition-all duration-300 ${
+    <div className={`h-screen bg-brand-green border-r border-brand-green/20 transition-all duration-300 ${
       collapsed ? 'w-16' : 'w-64'
-    }`}>
+    } flex flex-col sidebar-force-white`}>
       {/* Header */}
-      <div className="p-4 border-b border-brand-green/20">
+      <div className="p-4 border-b border-brand-green/20 flex-shrink-0">
         <div className="flex items-center justify-between">
           {!collapsed && (
             <div className="relative w-24 h-8">
@@ -94,7 +94,7 @@ export default function Sidebar({
             variant="ghost"
             size="sm"
             onClick={onToggleCollapse}
-            className="p-1 h-8 w-8 text-white hover:bg-white/10"
+            className="p-1 h-8 w-8 sidebar-force-white sidebar-item-hover"
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </Button>
@@ -102,7 +102,7 @@ export default function Sidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {menuItems.map((item) => {
           const Icon = item.icon
           const isActive = activeTab === item.id
@@ -112,23 +112,22 @@ export default function Sidebar({
               key={item.id}
               variant="ghost"
               onClick={() => onTabChange?.(item.id)}
-              className={`w-full justify-start gap-3 h-10 px-3 text-left transition-colors ${
+              className={`w-full justify-start gap-3 h-12 px-3 text-left sidebar-force-white ${
                 isActive
-                  ? 'bg-brand-orange text-white'
-                  : 'text-white hover:bg-white/10 hover:text-white'
+                  ? 'sidebar-item-active'
+                  : 'sidebar-item-hover'
               }`}
             >
-              <Icon size={18} />
+              <Icon size={20} className="flex-shrink-0 sidebar-force-white" />
               {!collapsed && (
                 <>
-                  <span className="flex-1 text-sm font-medium">{item.label}</span>
+                  <span className="flex-1 text-sm font-medium sidebar-force-white">{item.label}</span>
                   {item.badge && (
                     <Badge
-                      variant={isActive ? "secondary" : "outline"}
-                      className={`h-5 px-2 text-xs ${
+                      className={`h-6 px-2 text-xs font-medium sidebar-force-white ${
                         isActive 
-                          ? 'bg-white/20 text-white border-white/30' 
-                          : 'bg-white/10 text-white border-white/30'
+                          ? 'badge-visible-active' 
+                          : 'badge-visible'
                       }`}
                     >
                       {item.badge}
@@ -142,19 +141,19 @@ export default function Sidebar({
       </nav>
 
       {/* User Section */}
-      <div className="p-4 border-t border-brand-green/20">
+      <div className="p-4 border-t border-brand-green/20 flex-shrink-0">
         <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <span className="text-sm font-medium text-white">
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+            <span className="text-sm font-medium sidebar-force-white">
               {user?.name?.charAt(0)?.toUpperCase() || 'U'}
             </span>
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
+              <p className="text-sm font-medium sidebar-force-white truncate">
                 {user?.name || 'User'}
               </p>
-              <p className="text-xs text-white/70 truncate">
+              <p className="text-xs sidebar-force-white truncate opacity-90">
                 {user?.role || 'Role'}
               </p>
             </div>
@@ -166,10 +165,10 @@ export default function Sidebar({
             variant="ghost"
             size="sm"
             onClick={onLogout}
-            className="w-full mt-3 gap-2 text-white hover:bg-white/10 hover:text-white"
+            className="w-full mt-3 gap-2 h-10 sidebar-force-white sidebar-item-hover"
           >
-            <LogOut size={16} />
-            Sign Out
+            <LogOut size={16} className="sidebar-force-white" />
+            <span className="text-sm font-medium sidebar-force-white">Sign Out</span>
           </Button>
         )}
       </div>

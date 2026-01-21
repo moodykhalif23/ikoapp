@@ -651,3 +651,91 @@
     }
   }
 }
+/* Sidebar specific enhancements */
+.sidebar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 40;
+}
+
+.sidebar-text-white {
+  color: white !important;
+}
+
+.sidebar-text-white * {
+  color: white !important;
+}
+
+.sidebar-hover:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.sidebar-hover:hover * {
+  color: white !important;
+}
+
+.sidebar-active {
+  background-color: var(--brand-orange) !important;
+  color: white !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.sidebar-active * {
+  color: white !important;
+}
+
+/* Ensure proper text contrast */
+.text-contrast-white {
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.text-contrast-white * {
+  color: white !important;
+}
+
+/* Badge visibility improvements */
+.badge-visible {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  font-weight: 600 !important;
+}
+
+.badge-visible-active {
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Force white text on sidebar elements */
+.sidebar-force-white,
+.sidebar-force-white * {
+  color: white !important;
+}
+
+.sidebar-force-white svg {
+  color: white !important;
+  fill: white !important;
+}
+
+/* Improved hover states for sidebar */
+.sidebar-item-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-item-hover:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  transform: translateX(2px);
+}
+
+.sidebar-item-active {
+  background-color: var(--brand-orange) !important;
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+  transform: translateX(2px);
+}
