@@ -165,7 +165,7 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
         body: JSON.stringify({
           name: newEmployee.name,
           email: newEmployee.email,
-          password: 'defaultPassword123!', // This should be changed by the employee
+          password: 'temp123!', // Temporary password - should be changed by employee
           role: newEmployee.role,
           employeeType: newEmployee.employeeType,
           employeeId: newEmployee.employeeId || undefined,

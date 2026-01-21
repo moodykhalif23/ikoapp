@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://admin:password123@localhost:27017/ikoapp?authSource=admin'
+const MONGODB_URI = process.env.MONGODB_URI
 
 // Define models inline for migration script
 const UserSchema = new mongoose.Schema({

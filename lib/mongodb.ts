@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://admin:password123@localhost:27017/ikoapp?authSource=admin'
+const MONGODB_URI = process.env.MONGODB_URI
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local')
@@ -25,11 +25,17 @@ async function connectToDatabase() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
     }
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       console.log('Connected to MongoDB')
       return mongoose
+    }).catch((error) => {
+      console.error('MongoDB connection error:', error)
+      throw error
     })
   }
 
@@ -37,6 +43,7 @@ async function connectToDatabase() {
     cached.conn = await cached.promise
   } catch (e) {
     cached.promise = null
+    console.error('Failed to connect to MongoDB:', e)
     throw e
   }
 

@@ -59,7 +59,7 @@ A modern, mobile-responsive industrial reporting application built with Next.js,
 
 6. **Access the application**
    - Main app: http://localhost:3000
-   - MongoDB Admin: http://localhost:8081 (admin/password123)
+   - MongoDB Admin: http://localhost:8081 (credentials in docker-compose.yml)
 
 ## Database Setup
 
@@ -72,8 +72,7 @@ The application uses MongoDB running in Docker with the following services:
 
 - **Host**: localhost:27017
 - **Database**: ikoapp
-- **Username**: admin
-- **Password**: password123
+- **Credentials**: Configured in docker-compose.yml and .env.local
 
 ### Available Scripts
 

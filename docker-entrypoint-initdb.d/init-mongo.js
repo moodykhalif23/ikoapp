@@ -10,8 +10,7 @@ db.createCollection('daily_productions');
 db.createCollection('incident_reports');
 db.createCollection('employee_plannings');
 
-// Create indexes
-db.users.createIndex({ "email": 1 }, { unique: true });
+// Create indexes (skip email index since it's already defined in the schema as unique)
 db.users.createIndex({ "role": 1 });
 db.reports.createIndex({ "reportedByEmail": 1 });
 db.reports.createIndex({ "date": 1 });
