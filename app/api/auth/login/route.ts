@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { User } from '@/lib/models'
+import bcrypt from 'bcryptjs'
 
 // POST /api/auth/login - Authenticate user
 export async function POST(request: NextRequest) {
@@ -26,16 +27,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // For demo purposes, accept any password for seeded users
-    // In production, you would verify hashed passwords
-    const validUsers = [
-      'admin@ikoapp.com',
-      'reporter1@ikoapp.com',
-      'reporter2@ikoapp.com',
-      'viewer@ikoapp.com'
-    ]
-
-    if (!validUsers.includes(user.email)) {
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password)
+    
+    if (!isValidPassword) {
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -47,7 +42,7 @@ export async function POST(request: NextRequest) {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role,
+      roles: user.roles,
       createdAt: user.createdAt
     }
 

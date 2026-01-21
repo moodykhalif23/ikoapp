@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send } from "lucide-react"
+import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send, Home } from "lucide-react"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/simple-tabs"
 import { Input } from "@/components/ui/input"
@@ -16,6 +16,7 @@ interface ViewerDashboardProps {
   user: any
   onLogout: () => void
   reports?: any[]
+  onGoHome?: () => void
 }
 
 interface Comment {
@@ -26,7 +27,7 @@ interface Comment {
   role: string
 }
 
-export default function ViewerDashboard({ user, onLogout, reports: propReports = [] }: ViewerDashboardProps) {
+export default function ViewerDashboard({ user, onLogout, reports: propReports = [], onGoHome }: ViewerDashboardProps) {
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [reports, setReports] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -167,6 +168,18 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <span className="text-xs sm:text-sm font-medium text-brand-contrast truncate">{user?.name}</span>
+            {onGoHome && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onGoHome}
+                className="gap-1 sm:gap-2 backdrop-blur-sm touch-target text-xs sm:text-sm border-brand-subtle hover-brand focus-brand"
+                style={{ background: 'rgba(255, 255, 255, 0.8)' }}
+              >
+                <Home size={16} />
+                <span className="hidden sm:inline">Home</span>
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"

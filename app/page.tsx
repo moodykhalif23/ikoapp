@@ -18,16 +18,11 @@ export default function Home() {
     if (userData.roles && userData.roles.includes("admin")) {
       setCurrentPage("admin")
     } else if (userData.roles && userData.roles.length > 0) {
-      // If user has roles assigned, show dashboard selection if multiple roles, or go directly to dashboard
-      if (userData.roles.length === 1) {
-        if (userData.roles.includes("reporter")) {
-          setCurrentPage("reporter")
-        } else if (userData.roles.includes("viewer")) {
-          setCurrentPage("viewer")
-        }
-      } else {
-        // Multiple roles - show dashboard selection
-        setCurrentPage("dashboardSelection")
+      // If user has roles assigned, go directly to the first role's dashboard
+      if (userData.roles.includes("reporter")) {
+        setCurrentPage("reporter")
+      } else if (userData.roles.includes("viewer")) {
+        setCurrentPage("viewer")
       }
     } else {
       // If user has no roles assigned, show role selection
@@ -35,56 +30,29 @@ export default function Home() {
     }
   }
 
-  const handleRoleSelect = async (roles: ("reporter" | "viewer")[]) => {
+  const handleRoleSelect = async (role: "reporter" | "viewer") => {
     try {
-      // Update the user's roles in the database
+      // Update the user's role in the database
       const response = await fetch('/api/users/update-role', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, roles })
+        body: JSON.stringify({ userId: user.id, roles: [role] })
       })
 
       if (response.ok) {
         const data = await response.json()
-        // Update local user state with new roles
+        // Update local user state with new role
         setUser(data.user)
-        
-        // Navigate based on selected roles
-        if (roles.length === 1) {
-          if (roles.includes("reporter")) {
-            setCurrentPage("reporter")
-          } else if (roles.includes("viewer")) {
-            setCurrentPage("viewer")
-          }
-        } else {
-          // Multiple roles - show dashboard selection
-          setCurrentPage("dashboardSelection")
-        }
-      } else {
-        console.error('Failed to update user roles')
-        // Still navigate for now, but in production you'd want to handle this error
-        if (roles.length === 1) {
-          if (roles.includes("reporter")) {
-            setCurrentPage("reporter")
-          } else if (roles.includes("viewer")) {
-            setCurrentPage("viewer")
-          }
-        } else {
-          setCurrentPage("dashboardSelection")
-        }
       }
     } catch (error) {
-      console.error('Error updating roles:', error)
-      // Still navigate for now, but in production you'd want to handle this error
-      if (roles.length === 1) {
-        if (roles.includes("reporter")) {
-          setCurrentPage("reporter")
-        } else if (roles.includes("viewer")) {
-          setCurrentPage("viewer")
-        }
-      } else {
-        setCurrentPage("dashboardSelection")
-      }
+      console.error('Error updating role:', error)
+    }
+    
+    // Navigate to the selected dashboard
+    if (role === "reporter") {
+      setCurrentPage("reporter")
+    } else if (role === "viewer") {
+      setCurrentPage("viewer")
     }
   }
 
@@ -94,6 +62,10 @@ export default function Home() {
       timestamp: new Date().toISOString(),
     }
     setSubmittedReports([newReport, ...submittedReports])
+  }
+
+  const handleGoHome = () => {
+    setCurrentPage("roleSelection")
   }
 
   const handleLogout = () => {
@@ -108,13 +80,13 @@ export default function Home() {
         <RoleSelectionPage user={user} onRoleSelect={handleRoleSelect} onLogout={handleLogout} />
       )}
       {currentPage === "reporter" && (
-        <ReporterDashboard user={user} onLogout={handleLogout} onReportSubmit={handleReportSubmit} />
+        <ReporterDashboard user={user} onLogout={handleLogout} onReportSubmit={handleReportSubmit} onGoHome={handleGoHome} />
       )}
       {currentPage === "viewer" && (
-        <ViewerDashboard user={user} onLogout={handleLogout} reports={submittedReports} />
+        <ViewerDashboard user={user} onLogout={handleLogout} reports={submittedReports} onGoHome={handleGoHome} />
       )}
       {currentPage === "admin" && (
-        <AdminDashboard user={user} onLogout={handleLogout} reports={submittedReports} />
+        <AdminDashboard user={user} onLogout={handleLogout} reports={submittedReports} onGoHome={handleGoHome} />
       )}
     </main>
   )

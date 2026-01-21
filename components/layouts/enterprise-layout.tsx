@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Sidebar from "@/components/ui/sidebar"
-import { Menu, Bell, Search } from "lucide-react"
+import { Menu, Bell, Search, Home } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 
@@ -11,6 +11,7 @@ interface EnterpriseLayoutProps {
   children: React.ReactNode
   user: any
   onLogout: () => void
+  onGoHome?: () => void
   activeTab?: string
   onTabChange?: (tab: string) => void
   title?: string
@@ -21,6 +22,7 @@ export default function EnterpriseLayout({
   children,
   user,
   onLogout,
+  onGoHome,
   activeTab,
   onTabChange,
   title,
@@ -64,6 +66,19 @@ export default function EnterpriseLayout({
             </div>
 
             <div className="flex items-center gap-4">
+              {/* Home Button */}
+              {onGoHome && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onGoHome}
+                  className="gap-2"
+                >
+                  <Home size={16} />
+                  <span className="hidden sm:inline">Home</span>
+                </Button>
+              )}
+
               {/* Search */}
               <div className="hidden md:block relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -76,9 +91,9 @@ export default function EnterpriseLayout({
               {/* Notifications */}
               <Button variant="ghost" size="sm" className="relative">
                 <Bell size={20} />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">
                   3
-                </Badge>
+                </span>
               </Button>
 
               {/* User Menu */}

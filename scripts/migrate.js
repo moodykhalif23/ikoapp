@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
 
 const MONGODB_URI = process.env.MONGODB_URI
 
@@ -6,7 +7,10 @@ const MONGODB_URI = process.env.MONGODB_URI
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  role: { type: String, enum: ['admin', 'reporter', 'viewer'], default: 'viewer' }
+  password: { type: String, required: true },
+  roles: [{ type: String, enum: ['admin', 'reporter', 'viewer'] }],
+  employeeType: { type: String, enum: ['permanent', 'casual'], default: 'permanent' },
+  status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true })
 
 const ReportSchema = new mongoose.Schema({
@@ -125,26 +129,33 @@ async function migrate() {
 
     // Seed users
     console.log('Seeding users...')
+    const defaultPassword = 'password123'
+    const hashedPassword = await bcrypt.hash(defaultPassword, 12)
+    
     const users = await User.insertMany([
       {
         name: 'Admin User',
         email: 'admin@ikoapp.com',
-        role: 'admin'
+        password: hashedPassword,
+        roles: ['admin']
       },
       {
         name: 'Reporter One',
         email: 'reporter1@ikoapp.com',
-        role: 'reporter'
+        password: hashedPassword,
+        roles: ['reporter']
       },
       {
         name: 'Reporter Two',
         email: 'reporter2@ikoapp.com',
-        role: 'reporter'
+        password: hashedPassword,
+        roles: ['reporter']
       },
       {
         name: 'Viewer User',
         email: 'viewer@ikoapp.com',
-        role: 'viewer'
+        password: hashedPassword,
+        roles: ['viewer']
       }
     ])
 
@@ -163,7 +174,7 @@ async function migrate() {
     // Seed sample reports with complete data
     console.log('Seeding sample reports...')
 
-    for (const user of users.filter(u => u.role === 'reporter')) {
+    for (const user of users.filter(u => u.roles.includes('reporter'))) {
       // Create a complete report for each reporter
       const reportId = `RPT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       const report = new Report({

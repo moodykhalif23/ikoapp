@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { User } from '@/lib/models'
+import bcrypt from 'bcryptjs'
 
 // POST /api/auth/signup - Register new user
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase()
 
-    const { name, email, password, role } = await request.json()
+    const { name, email, password, role, employeeType, employeeId, department, phone, hireDate } = await request.json()
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -25,21 +26,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create new user without a role initially (they'll select it after signup)
+    // Hash the password
+    const saltRounds = 12
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+
+    // Create new user
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      role: role || undefined // Don't set a default role for new signups
+      password: hashedPassword,
+      roles: role ? [role] : [], // Convert single role to array or empty array
+      employeeType: employeeType || 'permanent',
+      employeeId: employeeId || undefined,
+      department: department || undefined,
+      phone: phone || undefined,
+      hireDate: hireDate ? new Date(hireDate) : undefined
     })
 
     await user.save()
 
-    // Return user data
+    // Return user data (excluding password)
     const userData = {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role,
+      roles: user.roles,
       createdAt: user.createdAt
     }
 

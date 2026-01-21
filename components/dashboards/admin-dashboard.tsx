@@ -24,6 +24,7 @@ interface AdminDashboardProps {
   user: any
   onLogout: () => void
   reports?: any[]
+  onGoHome?: () => void
 }
 
 interface Comment {
@@ -34,7 +35,7 @@ interface Comment {
   role: string
 }
 
-export default function AdminDashboard({ user, onLogout, reports: propReports = [] }: AdminDashboardProps) {
+export default function AdminDashboard({ user, onLogout, reports: propReports = [], onGoHome }: AdminDashboardProps) {
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [reports, setReports] = useState<any[]>([])
   const [users, setUsers] = useState<any[]>([])
@@ -363,6 +364,7 @@ ${new Date().toLocaleString()}
     <EnterpriseLayout
       user={user}
       onLogout={onLogout}
+      onGoHome={onGoHome}
       activeTab={activeMainTab}
       onTabChange={setActiveMainTab}
       title="Admin Dashboard"

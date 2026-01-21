@@ -19,9 +19,10 @@ interface ReporterDashboardProps {
   user: any
   onLogout: () => void
   onReportSubmit?: (reportData: any) => void
+  onGoHome?: () => void
 }
 
-export default function ReporterDashboard({ user, onLogout, onReportSubmit }: ReporterDashboardProps) {
+export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGoHome }: ReporterDashboardProps) {
   const [showNewReport, setShowNewReport] = useState(false)
   const [showPowerInterruption, setShowPowerInterruption] = useState(false)
   const [showDailyProduction, setShowDailyProduction] = useState(false)
@@ -322,6 +323,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit }: Re
     <EnterpriseLayout
       user={user}
       onLogout={onLogout}
+      onGoHome={onGoHome}
       title="Reporter Dashboard"
       subtitle="Submit and manage your production reports"
     >
