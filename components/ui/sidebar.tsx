@@ -11,8 +11,7 @@ import {
   AlertTriangle,
   BarChart3,
   ChevronLeft,
-  ChevronRight,
-  LogOut
+  ChevronRight
 } from "lucide-react"
 import Image from "next/image"
 
@@ -164,38 +163,7 @@ export default function Sidebar({
         })}
       </nav>
 
-      {/* User Section */}
-      <div className="p-4 border-t border-brand-green/20 flex-shrink-0">
-        <div className={`flex items-center gap-3 ${collapsed ? 'justify-center lg:justify-start' : 'justify-start'}`}>
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-medium sidebar-force-white">
-              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-            </span>
-          </div>
-          {/* User info - hidden when collapsed on mobile, always visible on large screens */}
-          <div className={`flex-1 min-w-0 ${collapsed ? 'hidden lg:block' : 'block'}`}>
-            <p className="text-sm font-medium sidebar-force-white truncate">
-              {user?.name || 'User'}
-            </p>
-            <p className="text-xs sidebar-force-white truncate opacity-90">
-              {user?.role || 'Role'}
-            </p>
-          </div>
-        </div>
 
-        {/* Sign out button - hidden when collapsed on mobile, always visible on large screens */}
-        <div className={`${collapsed ? 'hidden lg:block' : 'block'}`}>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onLogout}
-            className="w-full mt-3 gap-2 h-10 sidebar-force-white sidebar-item-hover"
-          >
-            <LogOut size={16} className="sidebar-force-white" />
-            <span className="text-sm font-medium sidebar-force-white">Sign Out</span>
-          </Button>
-        </div>
-      </div>
     </div>
   )
 }
