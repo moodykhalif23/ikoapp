@@ -99,6 +99,13 @@ const MachineSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive', 'maintenance'], default: 'active' }
 }, { timestamps: true })
 
+const EmployeeSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  employeeId: { type: String, required: true, unique: true },
+  phone: { type: String },
+  status: { type: String, enum: ['active', 'inactive'], default: 'active' }
+}, { timestamps: true })
+
 // Create models
 const User = mongoose.models.User || mongoose.model('User', UserSchema)
 const Report = mongoose.models.Report || mongoose.model('Report', ReportSchema)
@@ -108,6 +115,7 @@ const DailyProduction = mongoose.models.DailyProduction || mongoose.model('Daily
 const IncidentReport = mongoose.models.IncidentReport || mongoose.model('IncidentReport', IncidentReportSchema)
 const EmployeePlanning = mongoose.models.EmployeePlanning || mongoose.model('EmployeePlanning', EmployeePlanningSchema)
 const Machine = mongoose.models.Machine || mongoose.model('Machine', MachineSchema)
+const Employee = mongoose.models.Employee || mongoose.model('Employee', EmployeeSchema)
 
 async function migrate() {
   try {
@@ -125,7 +133,8 @@ async function migrate() {
       DailyProduction.deleteMany({}),
       IncidentReport.deleteMany({}),
       EmployeePlanning.deleteMany({}),
-      Machine.deleteMany({})
+      Machine.deleteMany({}),
+      Employee.deleteMany({})
     ])
 
     // Seed users
@@ -170,6 +179,21 @@ async function migrate() {
       { name: 'Machine E', type: 'Quality Control', status: 'active' },
       { name: 'Machine F', type: 'Production', status: 'maintenance' },
       { name: 'Machine G', type: 'Assembly', status: 'inactive' }
+    ])
+
+    // Seed employees
+    console.log('Seeding employees...')
+    const employees = await Employee.insertMany([
+      { name: 'John Smith', employeeId: 'EMP001', phone: '+254700123456', status: 'active' },
+      { name: 'Jane Doe', employeeId: 'EMP002', phone: '+254700123457', status: 'active' },
+      { name: 'Mike Johnson', employeeId: 'EMP003', phone: '+254700123458', status: 'active' },
+      { name: 'Sarah Wilson', employeeId: 'EMP004', phone: '+254700123459', status: 'active' },
+      { name: 'David Brown', employeeId: 'EMP005', phone: '+254700123460', status: 'active' },
+      { name: 'Lisa Davis', employeeId: 'EMP006', phone: '+254700123461', status: 'active' },
+      { name: 'Tom Anderson', employeeId: 'EMP007', phone: '+254700123462', status: 'inactive' },
+      { name: 'Emma Taylor', employeeId: 'EMP008', phone: '+254700123463', status: 'active' },
+      { name: 'Chris Martin', employeeId: 'EMP009', phone: '+254700123464', status: 'active' },
+      { name: 'Amy White', employeeId: 'EMP010', phone: '+254700123465', status: 'active' }
     ])
 
     // Seed sample reports with complete data
@@ -314,9 +338,13 @@ async function migrate() {
     const reportCount = await Report.countDocuments()
     const submittedCount = await Report.countDocuments({ status: 'submitted' })
     const draftCount = await Report.countDocuments({ status: 'draft' })
+    const machineCount = await Machine.countDocuments()
+    const employeeCount = await Employee.countDocuments()
 
     console.log('\nMigration Summary:')
     console.log(`Users created: ${userCount}`)
+    console.log(`Employees created: ${employeeCount}`)
+    console.log(`Machines created: ${machineCount}`)
     console.log(`Total reports: ${reportCount}`)
     console.log(`Submitted reports: ${submittedCount}`)
     console.log(`Draft reports: ${draftCount}`)
