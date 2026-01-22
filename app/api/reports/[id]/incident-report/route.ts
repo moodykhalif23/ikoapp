@@ -6,12 +6,13 @@ import { getReportById, handleApiError } from '@/lib/api-utils'
 // GET /api/reports/[id]/incident-report - Get incident report data
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const { report, error } = await getReportById(params.id)
+    const resolvedParams = await params
+    const { report, error } = await getReportById(resolvedParams.id)
     if (error) return error
 
     if (!report.incidentReportId) {
@@ -28,12 +29,13 @@ export async function GET(
 // POST /api/reports/[id]/incident-report - Create/update incident report data
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const { report, error } = await getReportById(params.id)
+    const resolvedParams = await params
+    const { report, error } = await getReportById(resolvedParams.id)
     if (error) return error
 
     const body = await request.json()
@@ -69,12 +71,13 @@ export async function POST(
 // DELETE /api/reports/[id]/incident-report - Delete incident report data
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const { report, error } = await getReportById(params.id)
+    const resolvedParams = await params
+    const { report, error } = await getReportById(resolvedParams.id)
     if (error) return error
 
     if (report.incidentReportId) {
