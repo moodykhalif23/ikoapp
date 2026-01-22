@@ -102,7 +102,7 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
                 type="number"
                 placeholder="0"
                 value={selectedEmployees.length}
-                readOnly
+                readOnly={true}
                 className={`flex-1 ${errors.employeesPresent ? "border-red-500" : ""}`}
               />
               <Dialog open={showEmployeeDialog} onOpenChange={setShowEmployeeDialog}>

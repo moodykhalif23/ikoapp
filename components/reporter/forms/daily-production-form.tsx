@@ -196,7 +196,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {machines.map((machine) => (
                       <div
-                        key={machine._id}
+                        key={machine._id.toString()}
                         className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                       >
                         <Checkbox
