@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -37,7 +37,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     // Don't fetch if user is not available
     if (!user?._id || !user?.role) {
       return
@@ -56,7 +56,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     } finally {
       setLoading(false)
     }
-  }
+  }, [user?._id, user?.role])
 
   const markAsRead = async (notificationId: string) => {
     try {
@@ -113,7 +113,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     if (isOpen && user?._id && user?.role) {
       fetchNotifications()
     }
-  }, [isOpen, user?._id, user?.role])
+  }, [isOpen, fetchNotifications])
 
   // Poll for new notifications every 30 seconds (only when user is available)
   useEffect(() => {
@@ -128,7 +128,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     }, 30000)
 
     return () => clearInterval(interval)
-  }, [user?._id, user?.role]) // Remove isOpen from dependencies to prevent recreation
+  }, [fetchNotifications, isOpen]) // Now we can safely include isOpen since fetchNotifications is memoized
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
