@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, AlertTriangle } from "lucide-react"
 import IncidentReportForm from "./forms/incident-report-form"
@@ -62,20 +62,18 @@ export default function StandaloneIncidentReport({ user, onBack, onSubmit }: Sta
       </div>
 
       {/* Form */}
-      <Card className="card-brand card-elevated">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2">
+      <div>
+        <div className="text-center mb-6">
+          <h2 className="flex items-center justify-center gap-2 text-xl font-semibold">
             <AlertTriangle size={20} className="text-orange-500" />
             Incident Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <IncidentReportForm
-            data={{}}
-            onComplete={handleSubmit}
-          />
-        </CardContent>
-      </Card>
+          </h2>
+        </div>
+        <IncidentReportForm
+          data={{}}
+          onComplete={handleSubmit}
+        />
+      </div>
 
       {/* Loading Overlay */}
       {isSubmitting && (
