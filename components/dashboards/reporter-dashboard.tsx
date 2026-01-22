@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack, Warning, People } from "@mui/icons-material"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import Image from "next/image"
 
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
@@ -38,6 +39,11 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [sortBy, setSortBy] = useState<string>("newest")
   const [filtersExpanded, setFiltersExpanded] = useState(false)
+  
+  // Form completion tracking
+  const [completedForms, setCompletedForms] = useState<Set<string>>(new Set())
+  const [showValidationDialog, setShowValidationDialog] = useState(false)
+  const [pendingSubmission, setPendingSubmission] = useState<any>(null)
 
   // Fetch user's reports from database
   useEffect(() => {
@@ -95,6 +101,44 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   }
 
   const handleFormSubmit = async (reportData: any) => {
+    // Mark the form as completed based on the report type
+    const formType = getFormTypeFromReportData(reportData)
+    setCompletedForms(prev => new Set([...prev, formType]))
+    
+    // Check if this is a comprehensive submission attempt
+    if (shouldValidateAllForms(reportData)) {
+      const missingForms = getMissingForms()
+      if (missingForms.length > 0) {
+        setPendingSubmission(reportData)
+        setShowValidationDialog(true)
+        return
+      }
+    }
+    
+    // Proceed with normal submission
+    await submitReport(reportData)
+  }
+
+  const getFormTypeFromReportData = (reportData: any) => {
+    if (reportData.powerInterruptions || reportData.id?.startsWith('PWR-')) return 'power'
+    if (reportData.dailyProduction || reportData.id?.startsWith('RPT-')) return 'production'
+    if (reportData.incidentReport || reportData.id?.startsWith('INC-')) return 'incident'
+    if (reportData.employeePlanning || reportData.id?.startsWith('EMP-')) return 'planning'
+    if (reportData.siteVisuals || reportData.id?.startsWith('VIS-')) return 'visuals'
+    return 'unknown'
+  }
+
+  const shouldValidateAllForms = (reportData: any) => {
+    // Only validate for comprehensive reports, not individual form submissions
+    return false // For now, we'll validate on individual submissions
+  }
+
+  const getMissingForms = () => {
+    const allForms = ['power', 'visuals', 'production', 'incident', 'planning']
+    return allForms.filter(form => !completedForms.has(form))
+  }
+
+  const submitReport = async (reportData: any) => {
     // Refresh reports from database
     await refreshReports()
     if (onReportSubmit) {
@@ -106,6 +150,16 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
     setShowEmployeePlanning(false)
     setShowSiteVisuals(false)
     setActiveTab("dashboard")
+  }
+
+  const handleValidationDialogSubmit = async (forceSubmit: boolean) => {
+    setShowValidationDialog(false)
+    
+    if (forceSubmit && pendingSubmission) {
+      await submitReport(pendingSubmission)
+    }
+    
+    setPendingSubmission(null)
   }
 
   const handleViewReport = (report: any) => {
@@ -635,6 +689,54 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </div>
       )}
       {activeTab === "dashboard" && renderReportsContent()}
+
+      {/* Form Validation Dialog */}
+      <Dialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Warning sx={{ fontSize: 20, color: "#f59e0b" }} />
+              Incomplete Report Sections
+            </DialogTitle>
+            <DialogDescription>
+              Some report sections haven't been filled out yet. You can either:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <h4 className="font-medium text-yellow-800 mb-2">Missing Sections:</h4>
+              <ul className="text-sm text-yellow-700 space-y-1">
+                {getMissingForms().map(form => (
+                  <li key={form} className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                    {form === 'power' && 'Power Interruptions'}
+                    {form === 'visuals' && 'Site Visuals'}
+                    {form === 'production' && 'Daily Production'}
+                    {form === 'incident' && 'Incident Report'}
+                    {form === 'planning' && 'Employee Planning'}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <Button
+                onClick={() => handleValidationDialogSubmit(false)}
+                variant="outline"
+                className="w-full"
+              >
+                Continue Filling Forms
+              </Button>
+              <Button
+                onClick={() => handleValidationDialogSubmit(true)}
+                className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
+              >
+                Submit Anyway (Incomplete)
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </EnterpriseLayout>
   )
 }

@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import PowerIcon from "@mui/icons-material/Power"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Plus, Trash2 } from "lucide-react"
 
 interface StandalonePowerInterruptionProps {
   user: any
@@ -27,9 +27,12 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
     reportedBy: user?.name,
     reportedByEmail: user?.email,
     noInterruptions: false,
-    occurredAt: "",
-    duration: "",
-    affectedMachines: [] as string[],
+    interruptions: [] as Array<{
+      id: string
+      occurredAt: string
+      duration: string
+      affectedMachines: string[]
+    }>,
     submittedAt: null as string | null,
   })
 
@@ -58,21 +61,63 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
     const newErrors: Record<string, string> = {}
 
     if (!formData.noInterruptions) {
-      if (!formData.occurredAt) newErrors.occurredAt = "Time is required"
-      if (!formData.duration) newErrors.duration = "Duration is required"
-      if (formData.affectedMachines.length === 0) newErrors.affectedMachines = "Select at least one machine"
+      if (formData.interruptions.length === 0) {
+        newErrors.interruptions = "Add at least one interruption or check 'No interruptions'"
+      } else {
+        formData.interruptions.forEach((interruption, index) => {
+          if (!interruption.occurredAt) newErrors[`occurredAt_${index}`] = "Time is required"
+          if (!interruption.duration) newErrors[`duration_${index}`] = "Duration is required"
+          if (interruption.affectedMachines.length === 0) newErrors[`affectedMachines_${index}`] = "Select at least one machine"
+        })
+      }
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const toggleMachine = (machine: string) => {
+  const addInterruption = () => {
+    const newInterruption = {
+      id: `INT-${Date.now()}-${Math.random()}`,
+      occurredAt: "",
+      duration: "",
+      affectedMachines: [] as string[]
+    }
     setFormData({
       ...formData,
-      affectedMachines: formData.affectedMachines.includes(machine)
-        ? formData.affectedMachines.filter((m: string) => m !== machine)
-        : [...formData.affectedMachines, machine],
+      interruptions: [...formData.interruptions, newInterruption]
+    })
+  }
+
+  const removeInterruption = (interruptionId: string) => {
+    setFormData({
+      ...formData,
+      interruptions: formData.interruptions.filter(int => int.id !== interruptionId)
+    })
+  }
+
+  const updateInterruption = (interruptionId: string, field: string, value: any) => {
+    setFormData({
+      ...formData,
+      interruptions: formData.interruptions.map(int => 
+        int.id === interruptionId ? { ...int, [field]: value } : int
+      )
+    })
+  }
+
+  const toggleMachine = (interruptionId: string, machine: string) => {
+    setFormData({
+      ...formData,
+      interruptions: formData.interruptions.map(int => 
+        int.id === interruptionId 
+          ? {
+              ...int,
+              affectedMachines: int.affectedMachines.includes(machine)
+                ? int.affectedMachines.filter(m => m !== machine)
+                : [...int.affectedMachines, machine]
+            }
+          : int
+      )
     })
   }
 
@@ -81,9 +126,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
     setFormData({
       ...formData,
       noInterruptions: checked,
-      occurredAt: "",
-      duration: "",
-      affectedMachines: [],
+      interruptions: [],
     })
   }
 
@@ -109,9 +152,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
       reportedBy: user?.name,
       reportedByEmail: user?.email,
       noInterruptions: false,
-      occurredAt: "",
-      duration: "",
-      affectedMachines: [],
+      interruptions: [],
       submittedAt: null,
     })
     setNoInterruptions(false)
@@ -187,53 +228,109 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
 
             {!noInterruptions && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Time of Interruption *</label>
-                    <Input
-                      type="time"
-                      value={formData.occurredAt}
-                      onChange={(e) => setFormData({ ...formData, occurredAt: e.target.value })}
-                      className={errors.occurredAt ? "border-red-500" : ""}
-                    />
-                    {errors.occurredAt && <p className="text-xs text-red-500">{errors.occurredAt}</p>}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Duration (minutes) *</label>
-                    <Input
-                      type="number"
-                      placeholder="30"
-                      value={formData.duration}
-                      onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                      className={errors.duration ? "border-red-500" : ""}
-                    />
-                    {errors.duration && <p className="text-xs text-red-500">{errors.duration}</p>}
-                  </div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium">Power Interruptions</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addInterruption}
+                    className="gap-2"
+                  >
+                    <Plus size={16} />
+                    Add Interruption
+                  </Button>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">Affected Machines *</label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {machines.map((machine) => (
-                      <div
-                        key={machine}
-                        className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                      >
-                        <Checkbox
-                          id={machine}
-                          checked={formData.affectedMachines.includes(machine)}
-                          onCheckedChange={() => toggleMachine(machine)}
-                          className="border-primary"
-                        />
-                        <label htmlFor={machine} className="text-sm cursor-pointer font-medium">
-                          {machine}
-                        </label>
+                {errors.interruptions && <p className="text-xs text-red-500 mb-4">{errors.interruptions}</p>}
+
+                {formData.interruptions.length === 0 && (
+                  <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                    <PowerIcon sx={{ fontSize: 32, color: "#ea580c" }} className="mx-auto mb-2 opacity-50" />
+                    <p className="text-sm text-muted-foreground mb-4">No interruptions added yet</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={addInterruption}
+                      className="gap-2"
+                    >
+                      <Plus size={16} />
+                      Add First Interruption
+                    </Button>
+                  </div>
+                )}
+
+                {formData.interruptions.map((interruption, index) => (
+                  <Card key={interruption.id} className="border-orange-200 bg-orange-50/30">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-medium text-orange-800">
+                          Interruption #{index + 1}
+                        </h4>
+                        {formData.interruptions.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeInterruption(interruption.id)}
+                            className="text-red-600 hover:text-red-800 hover:bg-red-100"
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                  {errors.affectedMachines && <p className="text-xs text-red-500">{errors.affectedMachines}</p>}
-                </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Time of Interruption *</label>
+                          <Input
+                            type="time"
+                            value={interruption.occurredAt}
+                            onChange={(e) => updateInterruption(interruption.id, 'occurredAt', e.target.value)}
+                            className={errors[`occurredAt_${index}`] ? "border-red-500" : ""}
+                          />
+                          {errors[`occurredAt_${index}`] && <p className="text-xs text-red-500">{errors[`occurredAt_${index}`]}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Duration (minutes) *</label>
+                          <Input
+                            type="number"
+                            placeholder="30"
+                            value={interruption.duration}
+                            onChange={(e) => updateInterruption(interruption.id, 'duration', e.target.value)}
+                            className={errors[`duration_${index}`] ? "border-red-500" : ""}
+                          />
+                          {errors[`duration_${index}`] && <p className="text-xs text-red-500">{errors[`duration_${index}`]}</p>}
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <label className="text-sm font-medium">Affected Machines *</label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {machines.map((machine) => (
+                            <div
+                              key={machine}
+                              className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                            >
+                              <Checkbox
+                                id={`${interruption.id}-${machine}`}
+                                checked={interruption.affectedMachines.includes(machine)}
+                                onCheckedChange={() => toggleMachine(interruption.id, machine)}
+                                className="border-primary"
+                              />
+                              <label htmlFor={`${interruption.id}-${machine}`} className="text-sm cursor-pointer font-medium">
+                                {machine}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors[`affectedMachines_${index}`] && <p className="text-xs text-red-500">{errors[`affectedMachines_${index}`]}</p>}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </>
             )}
 
