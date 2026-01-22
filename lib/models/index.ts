@@ -8,3 +8,4 @@ export { default as EmployeePlanning, type IEmployeePlanning } from './EmployeeP
 export { default as Machine, type IMachine } from './Machine'
 export { default as EquipmentMaintenance, type IEquipmentMaintenance } from './EquipmentMaintenance'
 export { default as Notification, type INotification } from './Notification'
+export { default as Employee, type IEmployee } from './Employee'

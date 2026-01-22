@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
-import { User } from '@/lib/models'
+import { Employee } from '@/lib/models'
 
 // PUT - Update employee
 export async function PUT(
@@ -12,56 +12,39 @@ export async function PUT(
     
     const { id } = params
     const body = await request.json()
-    const { name, email, phone, employeeId, department, employeeType, roles, hireDate, status } = body
+    const { name, employeeId, phone, employeeType, hireDate, status } = body
 
     // Validate required fields
-    if (!name || !email) {
+    if (!name || !employeeId) {
       return NextResponse.json(
-        { error: 'Name and email are required' },
-        { status: 400 }
-      )
-    }
-
-    // Check if email already exists (excluding current employee)
-    const existingUser = await User.findOne({ 
-      email: email.toLowerCase(),
-      _id: { $ne: id }
-    })
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'Email already exists' },
+        { error: 'Name and Employee ID are required' },
         { status: 400 }
       )
     }
 
     // Check if employeeId already exists (excluding current employee)
-    if (employeeId) {
-      const existingEmployee = await User.findOne({ 
-        employeeId,
-        _id: { $ne: id }
-      })
-      if (existingEmployee) {
-        return NextResponse.json(
-          { error: 'Employee ID already exists' },
-          { status: 400 }
-        )
-      }
+    const existingEmployee = await Employee.findOne({ 
+      employeeId,
+      _id: { $ne: id }
+    })
+    if (existingEmployee) {
+      return NextResponse.json(
+        { error: 'Employee ID already exists' },
+        { status: 400 }
+      )
     }
 
-    const updatedEmployee = await User.findByIdAndUpdate(
+    const updatedEmployee = await Employee.findByIdAndUpdate(
       id,
       {
         name,
-        email: email.toLowerCase(),
-        phone,
         employeeId,
-        department,
+        phone,
         employeeType,
-        roles,
         hireDate: hireDate ? new Date(hireDate) : undefined,
         status
       },
-      { new: true, select: '-password' }
+      { new: true }
     )
 
     if (!updatedEmployee) {
@@ -95,7 +78,7 @@ export async function DELETE(
     
     const { id } = params
 
-    const deletedEmployee = await User.findByIdAndDelete(id)
+    const deletedEmployee = await Employee.findByIdAndDelete(id)
 
     if (!deletedEmployee) {
       return NextResponse.json(

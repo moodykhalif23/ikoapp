@@ -37,12 +37,9 @@ import {
 interface Employee {
   _id: string
   name: string
-  email: string
+  employeeId: string
   phone?: string
-  employeeId?: string
-  department?: string
   employeeType: 'permanent' | 'casual'
-  roles: string[]
   hireDate?: string
   status: 'active' | 'inactive'
   createdAt: string
@@ -50,24 +47,18 @@ interface Employee {
 
 interface EmployeeFormData {
   name: string
-  email: string
-  phone: string
   employeeId: string
-  department: string
+  phone: string
   employeeType: 'permanent' | 'casual'
-  roles: string[]
   hireDate: string
   status: 'active' | 'inactive'
 }
 
 const initialFormData: EmployeeFormData = {
   name: '',
-  email: '',
-  phone: '',
   employeeId: '',
-  department: '',
+  phone: '',
   employeeType: 'permanent',
-  roles: ['viewer'],
   hireDate: new Date().toISOString().split('T')[0],
   status: 'active'
 }
@@ -109,12 +100,9 @@ export default function EmployeeManagement() {
       setEditingEmployee(employee)
       setFormData({
         name: employee.name,
-        email: employee.email,
+        employeeId: employee.employeeId,
         phone: employee.phone || '',
-        employeeId: employee.employeeId || '',
-        department: employee.department || '',
         employeeType: employee.employeeType,
-        roles: employee.roles,
         hireDate: employee.hireDate ? employee.hireDate.split('T')[0] : '',
         status: employee.status
       })
@@ -192,15 +180,6 @@ export default function EmployeeManagement() {
     }
   }
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'admin': return 'error'
-      case 'reporter': return 'warning'
-      case 'viewer': return 'info'
-      default: return 'default'
-    }
-  }
-
   const getStatusColor = (status: string) => {
     return status === 'active' ? 'success' : 'default'
   }
@@ -249,10 +228,8 @@ export default function EmployeeManagement() {
               <TableCell><strong>Employee Name</strong></TableCell>
               <TableCell><strong>Employee ID</strong></TableCell>
               <TableCell><strong>Phone Number</strong></TableCell>
-              <TableCell><strong>Email</strong></TableCell>
-              <TableCell><strong>Department</strong></TableCell>
-              <TableCell><strong>Type</strong></TableCell>
-              <TableCell><strong>Roles</strong></TableCell>
+              <TableCell><strong>Employee Type</strong></TableCell>
+              <TableCell><strong>Hire Date</strong></TableCell>
               <TableCell><strong>Status</strong></TableCell>
               <TableCell><strong>Actions</strong></TableCell>
             </TableRow>
@@ -260,7 +237,7 @@ export default function EmployeeManagement() {
           <TableBody>
             {employees.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
+                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                   <Typography variant="body1" color="text.secondary">
                     No employees found. Click "Add Employee" to get started.
                   </Typography>
@@ -270,10 +247,8 @@ export default function EmployeeManagement() {
               employees.map((employee) => (
                 <TableRow key={employee._id} hover>
                   <TableCell>{employee.name}</TableCell>
-                  <TableCell>{employee.employeeId || 'N/A'}</TableCell>
+                  <TableCell>{employee.employeeId}</TableCell>
                   <TableCell>{employee.phone || 'N/A'}</TableCell>
-                  <TableCell>{employee.email}</TableCell>
-                  <TableCell>{employee.department || 'N/A'}</TableCell>
                   <TableCell>
                     <Chip 
                       label={employee.employeeType} 
@@ -282,16 +257,7 @@ export default function EmployeeManagement() {
                     />
                   </TableCell>
                   <TableCell>
-                    <Box display="flex" gap={0.5} flexWrap="wrap">
-                      {employee.roles.map((role) => (
-                        <Chip
-                          key={role}
-                          label={role}
-                          size="small"
-                          color={getRoleColor(role) as any}
-                        />
-                      ))}
-                    </Box>
+                    {employee.hireDate ? new Date(employee.hireDate).toLocaleDateString() : 'N/A'}
                   </TableCell>
                   <TableCell>
                     <Chip 
@@ -344,7 +310,7 @@ export default function EmployeeManagement() {
             />
             
             <TextField
-              label="Employee ID"
+              label="Employee ID *"
               value={formData.employeeId}
               onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
               fullWidth
@@ -357,21 +323,6 @@ export default function EmployeeManagement() {
               fullWidth
             />
             
-            <TextField
-              label="Email *"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              fullWidth
-            />
-            
-            <TextField
-              label="Department"
-              value={formData.department}
-              onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-              fullWidth
-            />
-            
             <FormControl fullWidth>
               <InputLabel>Employee Type</InputLabel>
               <Select
@@ -381,27 +332,6 @@ export default function EmployeeManagement() {
               >
                 <MenuItem value="permanent">Permanent</MenuItem>
                 <MenuItem value="casual">Casual</MenuItem>
-              </Select>
-            </FormControl>
-            
-            <FormControl fullWidth>
-              <InputLabel>Roles</InputLabel>
-              <Select
-                multiple
-                value={formData.roles}
-                onChange={(e) => setFormData({ ...formData, roles: e.target.value as string[] })}
-                label="Roles"
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} size="small" />
-                    ))}
-                  </Box>
-                )}
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="reporter">Reporter</MenuItem>
-                <MenuItem value="viewer">Viewer</MenuItem>
               </Select>
             </FormControl>
             
@@ -432,7 +362,7 @@ export default function EmployeeManagement() {
           <Button 
             onClick={handleSubmit} 
             variant="contained"
-            disabled={submitting || !formData.name || !formData.email}
+            disabled={submitting || !formData.name || !formData.employeeId}
           >
             {submitting ? <CircularProgress size={20} /> : (editingEmployee ? 'Update' : 'Create')}
           </Button>
