@@ -56,7 +56,7 @@ export default function Sidebar({
       {
         id: "time-tracking",
         label: "Time Tracking",
-        icon: Clock,
+        icon: ClockIcon,
         badge: null,
         roles: ["admin", "reporter"]
       },
@@ -64,28 +64,28 @@ export default function Sidebar({
       {
         id: "employees",
         label: "Employees",
-        icon: Users,
+        icon: UsersIcon,
         badge: null,
         roles: ["admin"]
       },
       {
         id: "machines",
         label: "Equipment",
-        icon: Settings,
+        icon: SettingsIcon,
         badge: null,
         roles: ["admin"]
       },
       {
         id: "analytics",
         label: "Analytics",
-        icon: BarChart3,
+        icon: BarChart3Icon,
         badge: null,
         roles: ["admin", "viewer"]
       },
       {
         id: "alerts",
         label: "Alerts",
-        icon: AlertTriangle,
+        icon: AlertTriangleIcon,
         badge: null,
         roles: ["admin"]
       }
@@ -120,7 +120,7 @@ export default function Sidebar({
             onClick={onToggleCollapse}
             className="p-1 h-8 w-8 sidebar-force-white sidebar-item-hover toggle-button-mobile-only"
           >
-            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            {collapsed ? <ChevronRightIcon sx={{ fontSize: 16 }} /> : <ChevronLeftIcon sx={{ fontSize: 16 }} />}
           </Button>
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function Sidebar({
                   : 'sidebar-item-hover'
               }`}
             >
-              <Icon size={20} className="flex-shrink-0 sidebar-force-white" />
+              <Icon sx={{ fontSize: 20 }} className="flex-shrink-0 sidebar-force-white" />
               {/* Labels and badges - hidden when collapsed on mobile, always visible on large screens */}
               <div className={`flex items-center justify-between flex-1 ${collapsed ? 'hidden lg:flex' : 'flex'}`}>
                 <span className="text-sm font-medium sidebar-force-white">{item.label}</span>
