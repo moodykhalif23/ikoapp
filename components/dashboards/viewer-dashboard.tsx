@@ -253,7 +253,11 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    filterStatus !== "all" 
+                      ? "bg-green-50 text-green-800" 
+                      : "bg-background"
+                  }`}
                 >
                   <option value="all">All Status</option>
                   <option value="draft">Draft</option>
@@ -269,7 +273,11 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <select
                   value={filterReporter}
                   onChange={(e) => setFilterReporter(e.target.value)}
-                  className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    filterReporter !== "all" 
+                      ? "bg-green-50 text-green-800" 
+                      : "bg-background"
+                  }`}
                 >
                   <option value="all">All Reporters</option>
                   {uniqueReporters.map(reporter => (
@@ -284,7 +292,11 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <select
                   value={filterDate}
                   onChange={(e) => setFilterDate(e.target.value)}
-                  className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    filterDate !== "all" 
+                      ? "bg-green-50 text-green-800" 
+                      : "bg-background"
+                  }`}
                 >
                   <option value="all">All Time</option>
                   <option value="today">Today</option>

@@ -494,7 +494,11 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     <select
                       value={dateFilter}
                       onChange={(e) => setDateFilter(e.target.value)}
-                      className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                      className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                        dateFilter !== "all" 
+                          ? "bg-green-50 text-green-800" 
+                          : "bg-background"
+                      }`}
                     >
                       <option value="all">All Time</option>
                       <option value="today">Today</option>
@@ -509,7 +513,11 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     <select
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
-                      className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                      className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                        statusFilter !== "all" 
+                          ? "bg-green-50 text-green-800" 
+                          : "bg-background"
+                      }`}
                     >
                       <option value="all">All Status</option>
                       <option value="draft">Draft</option>
@@ -524,7 +532,11 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                      className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                        sortBy !== "newest" 
+                          ? "bg-green-50 text-green-800" 
+                          : "bg-background"
+                      }`}
                     >
                       <option value="newest">Newest First</option>
                       <option value="oldest">Oldest First</option>
