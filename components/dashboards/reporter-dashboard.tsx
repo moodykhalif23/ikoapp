@@ -343,17 +343,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
             </div>
           </div>
 
-          {reports.length === 0 ? (
-            <Card className="card-brand card-elevated">
-              <CardContent className="py-12 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-surface mb-4">
-                  <ChevronRight sx={{ fontSize: 32, color: "var(--brand-green)" }} />
-                </div>
-                <h2 className="text-xl font-semibold text-brand-contrast mb-2">No reports yet</h2>
-                <p className="text-muted-foreground mb-6">Use the quick report buttons above to create individual reports</p>
-              </CardContent>
-            </Card>
-          ) : (
+          {reports.length === 0 ? null : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {reports.map((report) => (
                 <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">
@@ -549,15 +539,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           {filteredReports.length === 0 ? (
             <Card className="card-brand card-elevated">
               <CardContent className="text-center py-12">
-                {reports.length === 0 ? (
-                  <>
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-surface mb-4">
-                      <ChevronRight sx={{ fontSize: 32, color: "var(--brand-green)" }} />
-                    </div>
-                    <h2 className="text-xl font-semibold text-brand-contrast mb-2">No reports yet</h2>
-                    <p className="text-muted-foreground mb-6">Use the quick report buttons to create individual reports</p>
-                  </>
-                ) : (
+                {reports.length === 0 ? null : (
                   <>
                     <p className="text-muted-foreground mb-4">No reports found matching your filters</p>
                     <Button

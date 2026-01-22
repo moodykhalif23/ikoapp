@@ -113,18 +113,6 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   </div>
                 </div>
               )}
-              {report.powerInterruptions?.cause && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Cause</p>
-                  <p className="text-foreground">{report.powerInterruptions.cause}</p>
-                </div>
-              )}
-              {report.powerInterruptions?.notes && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Additional Notes</p>
-                  <p className="text-foreground">{report.powerInterruptions.notes}</p>
-                </div>
-              )}
             </div>
           )}
         </CardContent>

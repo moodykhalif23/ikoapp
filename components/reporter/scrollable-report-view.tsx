@@ -174,18 +174,6 @@ export default function ScrollableReportView({
                     </div>
                   </div>
                 )}
-                {report.powerInterruptions?.cause && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Cause</p>
-                    <p className="text-gray-900 mt-1">{report.powerInterruptions.cause}</p>
-                  </div>
-                )}
-                {report.powerInterruptions?.notes && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Additional Notes</p>
-                    <p className="text-gray-900 mt-1">{report.powerInterruptions.notes}</p>
-                  </div>
-                )}
               </div>
             )}
           </div>

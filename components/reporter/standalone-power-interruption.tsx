@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
@@ -31,8 +30,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
     occurredAt: "",
     duration: "",
     affectedMachines: [] as string[],
-    cause: "",
-    notes: "",
     submittedAt: null as string | null,
   })
 
@@ -87,8 +84,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
       occurredAt: "",
       duration: "",
       affectedMachines: [],
-      cause: "",
-      notes: "",
     })
   }
 
@@ -117,8 +112,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
       occurredAt: "",
       duration: "",
       affectedMachines: [],
-      cause: "",
-      notes: "",
       submittedAt: null,
     })
     setNoInterruptions(false)
@@ -243,26 +236,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                     ))}
                   </div>
                   {errors.affectedMachines && <p className="text-xs text-red-500">{errors.affectedMachines}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Cause (optional)</label>
-                  <Input
-                    placeholder="What caused the interruption? (e.g., grid failure, maintenance, equipment fault)"
-                    value={formData.cause}
-                    onChange={(e) => setFormData({ ...formData, cause: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Additional Notes (optional)</label>
-                  <Textarea
-                    placeholder="Any additional details about the interruption, impact, or recovery actions..."
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="resize-none"
-                    rows={4}
-                  />
                 </div>
               </>
             )}
