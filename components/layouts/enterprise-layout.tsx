@@ -144,7 +144,7 @@ export default function EnterpriseLayout({
         />
       </div>
 
-      {/* Main Content - Responsive margin */}
+      {/* Main Content - Responsive margin and bottom padding for mobile navigation */}
       <div className={`min-h-screen transition-all duration-300 ${
         sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       } pb-20 sm:pb-24 lg:pb-0`}>
