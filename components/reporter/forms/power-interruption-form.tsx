@@ -155,16 +155,16 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {machines.map((machine) => (
                     <div
-                      key={machine._id}
+                      key={machine._id.toString()}
                       className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <Checkbox
-                        id={machine._id}
+                        id={machine._id.toString()}
                         checked={formData.affectedMachines.includes(machine.name)}
                         onCheckedChange={() => toggleMachine(machine.name)}
                         className="border-primary"
                       />
-                      <label htmlFor={machine._id} className="text-sm cursor-pointer font-medium ml-2">
+                      <label htmlFor={machine._id.toString()} className="text-sm cursor-pointer font-medium ml-2">
                         {machine.name}
                       </label>
                     </div>

@@ -169,5 +169,3 @@ function AccordionContent({ children, className }: AccordionContentProps) {
 }
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
-
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }

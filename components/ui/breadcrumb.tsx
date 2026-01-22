@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { ChevronRight, MoreHorizontal } from '@mui/icons-material'
+import { ChevronRight } from '@mui/icons-material'
+import { MoreHoriz as MoreHorizontal } from '@mui/icons-material'
 
 import { cn } from '@/lib/utils'
 
