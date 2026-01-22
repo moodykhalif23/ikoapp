@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Save } from "lucide-react"
 import DailyProductionForm from "./forms/daily-production-form"
@@ -62,20 +62,18 @@ export default function StandaloneDailyProduction({ user, onBack, onSubmit }: St
       </div>
 
       {/* Form */}
-      <Card className="card-brand card-elevated">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2">
+      <div>
+        <div className="text-center mb-6">
+          <h2 className="flex items-center justify-center gap-2 text-xl font-semibold">
             <Save size={20} className="text-primary" />
             Production Data Entry
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DailyProductionForm
-            data={{}}
-            onComplete={handleSubmit}
-          />
-        </CardContent>
-      </Card>
+          </h2>
+        </div>
+        <DailyProductionForm
+          data={{}}
+          onComplete={handleSubmit}
+        />
+      </div>
 
       {/* Loading Overlay */}
       {isSubmitting && (
