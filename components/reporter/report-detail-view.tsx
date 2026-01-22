@@ -91,26 +91,59 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
             <p className="text-muted-foreground">No power interruptions occurred on this day.</p>
           ) : (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
-                  <p className="text-foreground">{formatTime(report.powerInterruptions?.occurredAt)}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Duration</p>
-                  <p className="text-foreground">{report.powerInterruptions?.duration} minutes</p>
-                </div>
-              </div>
-              {report.powerInterruptions?.affectedMachines?.length > 0 && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
-                  <div className="flex flex-wrap gap-2">
-                    {report.powerInterruptions.affectedMachines.map((machine: string) => (
-                      <Badge key={machine} variant="outline">
-                        {machine}
-                      </Badge>
-                    ))}
+              {report.powerInterruptions?.interruptions?.length > 0 ? (
+                report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
+                  <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                    <h4 className="font-medium text-orange-800 mb-3">Interruption #{index + 1}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
+                        <p className="text-foreground">{formatTime(interruption.occurredAt)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Duration</p>
+                        <p className="text-foreground">{interruption.duration} minutes</p>
+                      </div>
+                    </div>
+                    {interruption.affectedMachines?.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
+                        <div className="flex flex-wrap gap-2">
+                          {interruption.affectedMachines.map((machine: string) => (
+                            <Badge key={machine} variant="outline">
+                              {machine}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
+                ))
+              ) : (
+                // Fallback for old single interruption format
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
+                      <p className="text-foreground">{formatTime(report.powerInterruptions?.occurredAt)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Duration</p>
+                      <p className="text-foreground">{report.powerInterruptions?.duration} minutes</p>
+                    </div>
+                  </div>
+                  {report.powerInterruptions?.affectedMachines?.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
+                      <div className="flex flex-wrap gap-2">
+                        {report.powerInterruptions.affectedMachines.map((machine: string) => (
+                          <Badge key={machine} variant="outline">
+                            {machine}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
