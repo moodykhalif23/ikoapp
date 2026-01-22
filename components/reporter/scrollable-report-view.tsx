@@ -64,7 +64,7 @@ export default function ScrollableReportView({
     <div className="h-full flex flex-col">
       {/* Header - Fixed */}
       <div className="flex-shrink-0 border-b bg-white backdrop-blur supports-[backdrop-filter]:bg-white/95">
-        <div className="flex items-center justify-between gap-4 p-4 sm:p-6">
+        <div className="flex items-center justify-between gap-4 p-3 sm:p-4">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <Button 
               variant="outline" 
@@ -99,11 +99,11 @@ export default function ScrollableReportView({
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto bg-white">
-        <div className="p-4 sm:p-6 space-y-6 pb-24">
+        <div className="p-3 sm:p-4 space-y-4 pb-24">
           
           {/* Report Overview */}
-          <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Report Overview</h2>
+          <div className="border-b border-gray-200 pb-4">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Report Overview</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Report ID</p>
@@ -133,9 +133,9 @@ export default function ScrollableReportView({
           </div>
 
           {/* Power Interruptions */}
-          <div className="border-b border-gray-200 pb-6">
-            <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Power Interruptions</h2>
+          <div className="border-b border-gray-200 pb-4">
+            <div className="flex items-center gap-3 mb-3">
+              <h2 className="text-lg font-semibold text-gray-900">Power Interruptions</h2>
               {report.powerInterruptions?.noInterruptions ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
@@ -191,9 +191,9 @@ export default function ScrollableReportView({
           </div>
 
           {/* Daily Production */}
-          <div className="border-b border-gray-200 pb-6">
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Daily Production Data</h2>
+          <div className="border-b border-gray-200 pb-4">
+            <div className="mb-3">
+              <h2 className="text-lg font-semibold text-gray-900">Daily Production Data</h2>
               {report.dailyProduction?.overallEfficiency && (
                 <div className="mt-3">
                   <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
@@ -246,9 +246,9 @@ export default function ScrollableReportView({
           </div>
 
           {/* Incident Report */}
-          <div className="border-b border-gray-200 pb-6">
-            <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Incident Report</h2>
+          <div className="border-b border-gray-200 pb-4">
+            <div className="flex items-center gap-3 mb-3">
+              <h2 className="text-lg font-semibold text-gray-900">Incident Report</h2>
               {report.incidentReport?.noIncidents ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
@@ -297,8 +297,8 @@ export default function ScrollableReportView({
           </div>
 
           {/* Employee Planning */}
-          <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Employee Planning</h2>
+          <div className="border-b border-gray-200 pb-4">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Employee Planning</h2>
             {report.employeePlanning?.shifts?.length > 0 ? (
               <div className="space-y-4">
                 {report.employeePlanning.shifts.map((shift: any, index: number) => (
@@ -338,8 +338,8 @@ export default function ScrollableReportView({
           </div>
 
           {/* Site Visuals */}
-          <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Site Visuals</h2>
+          <div className="border-b border-gray-200 pb-4">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Site Visuals</h2>
             {report.siteVisuals?.photos?.length > 0 || report.siteVisuals?.media?.length > 0 ? (
               <div className="space-y-4">
                 {/* Handle both photos and media arrays */}
@@ -401,8 +401,8 @@ export default function ScrollableReportView({
 
           {/* Comments Section - Only show if enabled */}
           {showComments && (
-            <div className="pb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Comments</h2>
+            <div className="pb-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-3">Comments</h2>
               <div className="space-y-4">
                 <div className="space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 bg-gray-50">
                   {comments[report.id]?.length > 0 ? (

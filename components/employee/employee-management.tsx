@@ -193,9 +193,14 @@ export default function EmployeeManagement() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4" component="h1" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h5" component="h1" sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1,
+          fontSize: { xs: '1.25rem', sm: '1.5rem' }
+        }}>
           <PersonIcon />
           Employee Management
         </Typography>
@@ -203,9 +208,19 @@ export default function EmployeeManagement() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
-          sx={{ bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' } }}
+          sx={{ 
+            bgcolor: '#2e7d32', 
+            '&:hover': { bgcolor: '#1b5e20' },
+            px: { xs: 2, sm: 3 }
+          }}
+          size="medium"
         >
-          Add Employee
+          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+            Add Employee
+          </Box>
+          <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+            Add
+          </Box>
         </Button>
       </Box>
 
@@ -221,17 +236,17 @@ export default function EmployeeManagement() {
         </Alert>
       )}
 
-      <TableContainer component={Paper} elevation={2}>
-        <Table>
+      <TableContainer component={Paper} elevation={2} sx={{ overflowX: 'auto' }}>
+        <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
           <TableHead>
             <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-              <TableCell><strong>Employee Name</strong></TableCell>
-              <TableCell><strong>Employee ID</strong></TableCell>
-              <TableCell><strong>Phone Number</strong></TableCell>
-              <TableCell><strong>Employee Type</strong></TableCell>
-              <TableCell><strong>Hire Date</strong></TableCell>
-              <TableCell><strong>Status</strong></TableCell>
-              <TableCell><strong>Actions</strong></TableCell>
+              <TableCell sx={{ minWidth: 120 }}><strong>Name</strong></TableCell>
+              <TableCell sx={{ minWidth: 100, display: { xs: 'none', sm: 'table-cell' } }}><strong>Employee ID</strong></TableCell>
+              <TableCell sx={{ minWidth: 120, display: { xs: 'none', md: 'table-cell' } }}><strong>Phone</strong></TableCell>
+              <TableCell sx={{ minWidth: 100, display: { xs: 'none', sm: 'table-cell' } }}><strong>Type</strong></TableCell>
+              <TableCell sx={{ minWidth: 100, display: { xs: 'none', lg: 'table-cell' } }}><strong>Hire Date</strong></TableCell>
+              <TableCell sx={{ minWidth: 80 }}><strong>Status</strong></TableCell>
+              <TableCell sx={{ minWidth: 100 }}><strong>Actions</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -246,17 +261,43 @@ export default function EmployeeManagement() {
             ) : (
               employees.map((employee) => (
                 <TableRow key={employee._id} hover>
-                  <TableCell>{employee.name}</TableCell>
-                  <TableCell>{employee.employeeId}</TableCell>
-                  <TableCell>{employee.phone || 'N/A'}</TableCell>
                   <TableCell>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        {employee.name}
+                      </Typography>
+                      {/* Show employee ID on mobile */}
+                      <Typography 
+                        variant="caption" 
+                        color="text.secondary"
+                        sx={{ display: { xs: 'block', sm: 'none' } }}
+                      >
+                        ID: {employee.employeeId}
+                      </Typography>
+                      {/* Show phone on mobile */}
+                      <Typography 
+                        variant="caption" 
+                        color="text.secondary"
+                        sx={{ display: { xs: 'block', md: 'none' } }}
+                      >
+                        {employee.phone || 'No phone'}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                    {employee.employeeId}
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
+                    {employee.phone || 'N/A'}
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                     <Chip 
                       label={employee.employeeType} 
                       size="small"
                       color={employee.employeeType === 'permanent' ? 'primary' : 'default'}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
                     {employee.hireDate ? new Date(employee.hireDate).toLocaleDateString() : 'N/A'}
                   </TableCell>
                   <TableCell>
@@ -267,23 +308,23 @@ export default function EmployeeManagement() {
                     />
                   </TableCell>
                   <TableCell>
-                    <Box display="flex" gap={1}>
-                      <Tooltip title="Edit Employee">
+                    <Box display="flex" gap={0.5}>
+                      <Tooltip title="Edit">
                         <IconButton
                           size="small"
                           onClick={() => handleOpenDialog(employee)}
                           color="primary"
                         >
-                          <EditIcon />
+                          <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Delete Employee">
+                      <Tooltip title="Delete">
                         <IconButton
                           size="small"
                           onClick={() => handleDelete(employee)}
                           color="error"
                         >
-                          <DeleteIcon />
+                          <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </Box>
@@ -296,8 +337,19 @@ export default function EmployeeManagement() {
       </TableContainer>
 
       {/* Add/Edit Employee Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
+      <Dialog 
+        open={dialogOpen} 
+        onClose={handleCloseDialog} 
+        maxWidth="sm" 
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            margin: { xs: 1, sm: 2 },
+            width: { xs: 'calc(100% - 16px)', sm: 'auto' }
+          }
+        }}
+      >
+        <DialogTitle sx={{ pb: 1 }}>
           {editingEmployee ? 'Edit Employee' : 'Add New Employee'}
         </DialogTitle>
         <DialogContent>
@@ -307,6 +359,7 @@ export default function EmployeeManagement() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               fullWidth
+              size="medium"
             />
             
             <TextField
@@ -314,6 +367,7 @@ export default function EmployeeManagement() {
               value={formData.employeeId}
               onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
               fullWidth
+              size="medium"
             />
             
             <TextField
@@ -321,9 +375,10 @@ export default function EmployeeManagement() {
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               fullWidth
+              size="medium"
             />
             
-            <FormControl fullWidth>
+            <FormControl fullWidth size="medium">
               <InputLabel>Employee Type</InputLabel>
               <Select
                 value={formData.employeeType}
@@ -341,10 +396,11 @@ export default function EmployeeManagement() {
               value={formData.hireDate}
               onChange={(e) => setFormData({ ...formData, hireDate: e.target.value })}
               fullWidth
+              size="medium"
               InputLabelProps={{ shrink: true }}
             />
             
-            <FormControl fullWidth>
+            <FormControl fullWidth size="medium">
               <InputLabel>Status</InputLabel>
               <Select
                 value={formData.status}
@@ -357,12 +413,13 @@ export default function EmployeeManagement() {
             </FormControl>
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button onClick={handleCloseDialog} size="medium">Cancel</Button>
           <Button 
             onClick={handleSubmit} 
             variant="contained"
             disabled={submitting || !formData.name || !formData.employeeId}
+            size="medium"
           >
             {submitting ? <CircularProgress size={20} /> : (editingEmployee ? 'Update' : 'Create')}
           </Button>
