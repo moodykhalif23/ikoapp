@@ -5,7 +5,7 @@ import { Tooltip as MuiTooltip, TooltipProps as MuiTooltipProps } from '@mui/mat
 import { styled } from '@mui/material/styles'
 
 interface TooltipProps extends Omit<MuiTooltipProps, 'title'> {
-  content?: React.ReactNode
+  content?: string
   delayDuration?: number
   sideOffset?: number
 }
