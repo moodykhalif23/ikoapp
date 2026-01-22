@@ -12,7 +12,6 @@ import {
   Logout as LogOutIcon, 
   Dashboard as LayoutDashboardIcon, 
   Description as FileTextIcon, 
-  Schedule as ClockIcon, 
   People as UsersIcon, 
   Settings as SettingsIcon, 
   BarChart as BarChart3Icon, 
@@ -82,14 +81,6 @@ export default function EnterpriseLayout({
     ]
 
     const roleSpecificItems = [
-      // Reporter specific items
-      {
-        id: "time-tracking",
-        label: "Time Tracking",
-        icon: ClockIcon,
-        badge: null,
-        roles: ["admin", "reporter"]
-      },
       // Admin specific items
       {
         id: "employees",

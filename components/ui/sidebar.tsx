@@ -7,7 +7,6 @@ import {
   Description as FileTextIcon,
   People as UsersIcon,
   Settings as SettingsIcon,
-  Schedule as ClockIcon,
   Warning as AlertTriangleIcon,
   BarChart as BarChart3Icon,
   ChevronLeft as ChevronLeftIcon,
@@ -52,14 +51,6 @@ export default function Sidebar({
     ]
 
     const roleSpecificItems = [
-      // Reporter specific items
-      {
-        id: "time-tracking",
-        label: "Time Tracking",
-        icon: ClockIcon,
-        badge: null,
-        roles: ["admin", "reporter"]
-      },
       // Admin specific items
       {
         id: "employees",

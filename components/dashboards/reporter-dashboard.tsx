@@ -685,15 +685,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           )}
         </div>
       )}
-      {activeTab === "time-tracking" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Time Tracking</h1>
-            <p className="text-muted-foreground">Track your work hours and attendance</p>
-          </div>
-          <TimeClock user={user} onTimeEntryUpdate={() => {}} />
-        </div>
-      )}
       {activeTab === "dashboard" && renderReportsContent()}
     </EnterpriseLayout>
   )
