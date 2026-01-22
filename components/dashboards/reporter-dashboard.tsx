@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack, Warning, People, Description } from "@mui/icons-material"
 import Image from "next/image"
 import ReportingFlow from "@/components/reporter/reporting-flow"
-import ReportDetailView from "@/components/reporter/report-detail-view"
+import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import StandalonePowerInterruption from "@/components/reporter/standalone-power-interruption"
 import StandaloneDailyProduction from "@/components/reporter/standalone-daily-production"
 import StandaloneIncidentReport from "@/components/reporter/standalone-incident-report"
@@ -314,18 +314,11 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {selectedReport && (
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              onClick={handleBackToReports}
-              className="gap-2 hover:bg-muted"
-            >
-              <ArrowBack sx={{ fontSize: 16 }} />
-              Back to Reports
-            </Button>
-            <h2 className="text-2xl font-bold text-brand-contrast">Report Details</h2>
-          </div>
-          <ReportDetailView report={selectedReport} onBack={handleBackToReports} />
+          <ScrollableReportView 
+            report={selectedReport} 
+            onBack={handleBackToReports}
+            showComments={false}
+          />
         </div>
       )}
 

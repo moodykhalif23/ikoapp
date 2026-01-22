@@ -18,7 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import TimeTrackingDashboard from "@/components/time-tracking/time-tracking-dashboard"
 import AnalyticsDashboard from "@/components/analytics/analytics-dashboard"
 import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
-import EnterpriseLayout from "@/components/layouts/enterprise-layout"
+import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 
 interface AdminDashboardProps {
   user: any
@@ -43,7 +43,6 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
   const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [commentText, setCommentText] = useState("")
-  const [activeReportTab, setActiveReportTab] = useState("summary")
   const [activeMainTab, setActiveMainTab] = useState("reports")
 
   // Fetch data from database
@@ -99,27 +98,23 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
 
   const allReports = reports
 
-  const handleAddComment = (reportId: string) => {
-    if (commentText.trim()) {
-      const newComment: Comment = {
-        id: `${Date.now()}`,
-        author: user?.name || "Admin",
-        text: commentText,
-        timestamp: new Date().toLocaleTimeString(),
-        role: "admin",
-      }
-      setComments((prev) => ({
-        ...prev,
-        [reportId]: [...(prev[reportId] || []), newComment],
-      }))
-      setCommentText("")
+  const handleAddComment = (reportId: string, comment: string) => {
+    const newComment: Comment = {
+      id: `${Date.now()}`,
+      author: user?.name || "Admin",
+      text: comment,
+      timestamp: new Date().toLocaleTimeString(),
+      role: "admin",
     }
+    setComments((prev) => ({
+      ...prev,
+      [reportId]: [...(prev[reportId] || []), newComment],
+    }))
   }
 
-  // Reset tab when selecting a new report
+  // Reset when selecting a new report
   const handleReportSelect = (report: any) => {
     setSelectedReport(report)
-    setActiveReportTab("summary")
   }
 
   const handleAddEmployee = async () => {
@@ -465,209 +460,17 @@ ${new Date().toLocaleString()}
 
               {/* Report Detail */}
               {selectedReport && (
-                <Card className="card-brand lg:col-span-2 card-elevated">
-                  <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
-                    <div className="min-w-0">
-                      <CardTitle className="text-base sm:text-lg">Report {selectedReport.id}</CardTitle>
-                      <CardDescription className="text-xs sm:text-sm">
-                        Submitted by {selectedReport.reportedBy} on {selectedReport.date}
-                      </CardDescription>
-                    </div>
-                    <div className="flex gap-2 flex-col sm:flex-row flex-wrap">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handlePDFExport(selectedReport)}
-                        className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto border-brand-subtle hover-brand focus-brand"
-                      >
-                        <DownloadIcon sx={{ fontSize: 16 }} />
-                        PDF
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Tabs value={activeReportTab} onValueChange={setActiveReportTab} className="w-full">
-                      <TabsList className="w-full bg-muted text-xs overflow-x-auto overflow-y-hidden">
-                        <TabsTrigger value="summary" className="text-xs flex-shrink-0 min-w-fit h-8">
-                          Summary
-                        </TabsTrigger>
-                        <TabsTrigger value="power" className="text-xs flex-shrink-0 min-w-fit h-8">
-                          Power
-                        </TabsTrigger>
-                        <TabsTrigger value="production" className="text-xs flex-shrink-0 min-w-fit h-8">
-                          Production
-                        </TabsTrigger>
-                        <TabsTrigger value="incident" className="text-xs flex-shrink-0 min-w-fit h-8">
-                          Incident
-                        </TabsTrigger>
-                        <TabsTrigger value="visuals" className="text-xs flex-shrink-0 min-w-fit h-8">
-                          Visuals
-                        </TabsTrigger>
-                        <TabsTrigger value="comments" className="text-xs flex-shrink-0 min-w-fit h-8">
-                          Comments
-                        </TabsTrigger>
-                      </TabsList>
-
-                      <TabsContent value="summary" className="space-y-3 mt-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div className="p-3 bg-muted rounded-lg">
-                            <p className="text-xs text-muted-foreground">Report ID</p>
-                            <p className="font-mono text-xs sm:text-sm font-semibold">{selectedReport.id}</p>
-                          </div>
-                          <div className="p-3 bg-muted rounded-lg">
-                            <p className="text-xs text-muted-foreground">Status</p>
-                            <p className="font-semibold text-xs sm:text-sm text-primary">{selectedReport.status}</p>
-                          </div>
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="power" className="space-y-3 mt-4">
-                        <div className="space-y-2">
-                          <p className="font-medium text-sm">Power Interruptions</p>
-                          {selectedReport.powerInterruptions?.noInterruptions ? (
-                            <p className="text-sm text-green-600">No interruptions recorded</p>
-                          ) : (
-                            <div className="text-xs sm:text-sm space-y-1">
-                              <p>Duration: {selectedReport.powerInterruptions?.duration} minutes</p>
-                              <p>Affected Machines: {selectedReport.powerInterruptions?.affectedMachines?.join(", ")}</p>
-                            </div>
-                          )}
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="production" className="space-y-3 mt-4">
-                        <div className="space-y-3">
-                          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                            <p className="text-xs text-muted-foreground mb-1">Overall Efficiency</p>
-                            <p className="text-xl sm:text-2xl font-bold text-primary">
-                              {selectedReport.dailyProduction?.overallEfficiency}%
-                            </p>
-                          </div>
-                          {selectedReport.dailyProduction?.products &&
-                            selectedReport.dailyProduction.products.length > 0 && (
-                              <div className="space-y-2">
-                                <p className="font-medium text-xs sm:text-sm">Production Details</p>
-                                {selectedReport.dailyProduction.products.map((product: any, idx: number) => (
-                                  <div key={idx} className="border border-border/50 rounded-lg p-3 space-y-2">
-                                    <p className="font-medium text-xs sm:text-sm">{product.productName}</p>
-                                    <div className="text-xs space-y-1 text-muted-foreground">
-                                      <p>
-                                        Quantity: {product.quantity} {product.unit}
-                                      </p>
-                                      <p>Machines: {product.machinesUsed?.join(", ")}</p>
-                                      <p>Employees: {product.employees}</p>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="incident" className="space-y-3 mt-4">
-                        <div className="text-xs sm:text-sm space-y-2">
-                          <p>
-                            Type:{" "}
-                            <span className="font-semibold capitalize">
-                              {selectedReport.incidentReport?.incidentType || "None"}
-                            </span>
-                          </p>
-                          <p>
-                            Severity:{" "}
-                            <span className="font-semibold">
-                              {selectedReport.incidentReport?.severity || "None reported"}
-                            </span>
-                          </p>
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="visuals" className="space-y-3 mt-4">
-                        <div className="space-y-3">
-                          <p className="font-medium text-sm">Site Visual Documentation</p>
-                          {selectedReport.siteVisuals?.media && selectedReport.siteVisuals.media.length > 0 ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                              {selectedReport.siteVisuals.media.map((file: any, idx: number) => (
-                                <div
-                                  key={idx}
-                                  className="border border-border rounded-lg overflow-hidden bg-muted hover:shadow-md transition-shadow"
-                                >
-                                  {file.type === "image" ? (
-                                    <>
-                                      <div className="relative w-full aspect-video bg-muted flex items-center justify-center overflow-hidden">
-                                        <img
-                                          src={file.url || "/placeholder.svg"}
-                                          alt={file.name}
-                                          className="w-full h-full object-cover"
-                                        />
-                                      </div>
-                                      <div className="p-2 border-t border-border bg-card">
-                                        <p className="text-xs font-medium truncate">{file.name}</p>
-                                        <p className="text-xs text-muted-foreground">Image</p>
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <div className="relative w-full aspect-video bg-black flex items-center justify-center">
-                                        <PlayArrowIcon sx={{ fontSize: 32, color: "rgba(255,255,255,0.6)" }} />
-                                      </div>
-                                      <div className="p-2 border-t border-border bg-card">
-                                        <p className="text-xs font-medium truncate">{file.name}</p>
-                                        <p className="text-xs text-muted-foreground">Video</p>
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <p className="text-xs sm:text-sm text-muted-foreground text-center py-4">
-                              No media files uploaded
-                            </p>
-                          )}
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="comments" className="space-y-3 mt-4">
-                        <div className="space-y-4">
-                          <div className="space-y-3 max-h-64 overflow-y-auto border-brand-subtle rounded-lg p-3 sm:p-4 bg-brand-surface">
-                            {comments[selectedReport.id]?.length > 0 ? (
-                              comments[selectedReport.id].map((comment) => (
-                                <div key={comment.id} className="p-2 sm:p-3 bg-card rounded-lg border-brand-subtle">
-                                  <div className="flex items-center justify-between gap-2 mb-2">
-                                    <p className="font-medium text-xs sm:text-sm">{comment.author}</p>
-                                    <p className="text-xs text-muted-foreground flex-shrink-0">{comment.timestamp}</p>
-                                  </div>
-                                  <p className="text-xs sm:text-sm text-foreground">{comment.text}</p>
-                                </div>
-                              ))
-                            ) : (
-                              <p className="text-xs sm:text-sm text-muted-foreground text-center py-4">
-                                No comments yet. Be the first to comment!
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="flex gap-2">
-                            <Input
-                              placeholder="Add your comment..."
-                              value={commentText}
-                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentText(e.target.value)}
-                              onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleAddComment(selectedReport.id)}
-                              className="flex-1 text-xs sm:text-sm focus-brand"
-                            />
-                            <Button
-                              size="sm"
-                              onClick={() => handleAddComment(selectedReport.id)}
-                              className="px-2 sm:px-3"
-                            >
-                              <SendIcon sx={{ fontSize: 16 }} />
-                            </Button>
-                          </div>
-                        </div>
-                      </TabsContent>
-                    </Tabs>
-                  </CardContent>
-                </Card>
+                <div className="lg:col-span-2">
+                  <ScrollableReportView 
+                    report={selectedReport} 
+                    onBack={() => setSelectedReport(null)}
+                    onPDFExport={handlePDFExport}
+                    showComments={true}
+                    user={user}
+                    comments={comments}
+                    onAddComment={handleAddComment}
+                  />
+                </div>
               )}
             </div>
           </TabsContent>
