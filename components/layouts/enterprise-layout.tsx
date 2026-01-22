@@ -3,8 +3,21 @@
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Sidebar from "@/components/ui/sidebar"
-import { Menu, Bell, Search, Home, LogOut, LayoutDashboard, FileText, Clock, Users, Settings, BarChart3, AlertTriangle } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import UserDropdown from "@/components/ui/user-dropdown"
+import NotificationDropdown from "@/components/ui/notification-dropdown"
+import { 
+  Menu as MenuIcon, 
+  Notifications as BellIcon, 
+  Home as HomeIcon, 
+  Logout as LogOutIcon, 
+  Dashboard as LayoutDashboardIcon, 
+  Description as FileTextIcon, 
+  Schedule as ClockIcon, 
+  People as UsersIcon, 
+  Settings as SettingsIcon, 
+  BarChart as BarChart3Icon, 
+  Warning as AlertTriangleIcon 
+} from "@mui/icons-material"
 import Image from "next/image"
 
 interface EnterpriseLayoutProps {
@@ -55,14 +68,14 @@ export default function EnterpriseLayout({
       {
         id: "dashboard",
         label: "Dashboard",
-        icon: LayoutDashboard,
+        icon: LayoutDashboardIcon,
         badge: null,
         roles: ["admin", "reporter", "viewer"]
       },
       {
         id: "reports",
         label: "Reports",
-        icon: FileText,
+        icon: FileTextIcon,
         badge: null,
         roles: ["admin", "reporter", "viewer"]
       }
@@ -73,7 +86,7 @@ export default function EnterpriseLayout({
       {
         id: "time-tracking",
         label: "Time Tracking",
-        icon: Clock,
+        icon: ClockIcon,
         badge: null,
         roles: ["admin", "reporter"]
       },
@@ -81,28 +94,28 @@ export default function EnterpriseLayout({
       {
         id: "employees",
         label: "Employees",
-        icon: Users,
+        icon: UsersIcon,
         badge: null,
         roles: ["admin"]
       },
       {
         id: "machines",
         label: "Equipment",
-        icon: Settings,
+        icon: SettingsIcon,
         badge: null,
         roles: ["admin"]
       },
       {
         id: "analytics",
         label: "Analytics",
-        icon: BarChart3,
+        icon: BarChart3Icon,
         badge: null,
         roles: ["admin", "viewer"]
       },
       {
         id: "alerts",
         label: "Alerts",
-        icon: AlertTriangle,
+        icon: AlertTriangleIcon,
         badge: null,
         roles: ["admin"]
       }
@@ -142,18 +155,7 @@ export default function EnterpriseLayout({
             <div className="relative w-24 h-8">
               <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onLogout}
-              className="mobile-avatar-button mobile-touch-target"
-            >
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-sm font-medium text-primary-foreground">
-                  {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                </span>
-              </div>
-            </Button>
+            <UserDropdown user={user} onLogout={onLogout} className="mobile-touch-target" />
           </div>
 
           {/* Desktop Header - Full */}
@@ -176,40 +178,18 @@ export default function EnterpriseLayout({
                   onClick={onGoHome}
                   className="gap-2"
                 >
-                  <Home size={16} />
+                  <HomeIcon sx={{ fontSize: 16 }} />
                   <span className="hidden sm:inline">Home</span>
                 </Button>
               )}
 
-              {/* Search */}
-              <div className="hidden md:block relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input
-                  placeholder="Search..."
-                  className="w-72 pl-12 h-10 text-base"
-                />
-              </div>
+
 
               {/* Notifications */}
-              <Button variant="ghost" size="sm" className="relative p-2">
-                <Bell size={20} />
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                  3
-                </span>
-              </Button>
+              <NotificationDropdown user={user} />
 
               {/* User Menu */}
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-sm font-medium text-primary-foreground">
-                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                  </span>
-                </div>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium">{user?.name}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
-                </div>
-              </div>
+              <UserDropdown user={user} onLogout={onLogout} />
             </div>
           </div>
         </header>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport, EmployeePlanning } from '@/lib/models'
+import { createReportNotification } from '@/lib/notification-utils'
 
 // GET /api/reports/[id] - Get a specific report
 export async function GET(
@@ -56,10 +57,23 @@ export async function PUT(
 
     // Update status-related fields
     if (status) {
+      const previousStatus = report.status
       report.status = status
 
       if (status === 'submitted' && !report.submittedAt) {
         report.submittedAt = new Date()
+        
+        // Create notification for admins and viewers when report is submitted
+        try {
+          await createReportNotification(
+            report.id,
+            report.reportedBy,
+            'Daily Report'
+          )
+        } catch (notificationError) {
+          console.error('Error creating notification:', notificationError)
+          // Don't fail the report submission if notification fails
+        }
       } else if (status === 'reviewed' && reviewedBy) {
         report.reviewedAt = new Date()
         report.reviewedBy = reviewedBy
