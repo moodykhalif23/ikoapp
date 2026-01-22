@@ -99,16 +99,16 @@ export default function EmployeeManagement() {
     if (employee) {
       setEditingEmployee(employee)
       setFormData({
-        name: employee.name,
-        employeeId: employee.employeeId,
+        name: employee.name || '',
+        employeeId: employee.employeeId || '',
         phone: employee.phone || '',
-        employeeType: employee.employeeType,
-        hireDate: employee.hireDate ? employee.hireDate.split('T')[0] : '',
-        status: employee.status
+        employeeType: employee.employeeType || 'permanent',
+        hireDate: employee.hireDate ? employee.hireDate.split('T')[0] : new Date().toISOString().split('T')[0],
+        status: employee.status || 'active'
       })
     } else {
       setEditingEmployee(null)
-      setFormData(initialFormData)
+      setFormData({ ...initialFormData })
     }
     setDialogOpen(true)
     setError(null)
@@ -118,7 +118,7 @@ export default function EmployeeManagement() {
   const handleCloseDialog = () => {
     setDialogOpen(false)
     setEditingEmployee(null)
-    setFormData(initialFormData)
+    setFormData({ ...initialFormData })
     setError(null)
   }
 
@@ -356,7 +356,7 @@ export default function EmployeeManagement() {
           <Box display="flex" flexDirection="column" gap={2} sx={{ mt: 1 }}>
             <TextField
               label="Employee Name *"
-              value={formData.name}
+              value={formData.name || ''}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               fullWidth
               size="medium"
@@ -364,7 +364,7 @@ export default function EmployeeManagement() {
             
             <TextField
               label="Employee ID *"
-              value={formData.employeeId}
+              value={formData.employeeId || ''}
               onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
               fullWidth
               size="medium"
@@ -372,7 +372,7 @@ export default function EmployeeManagement() {
             
             <TextField
               label="Phone Number"
-              value={formData.phone}
+              value={formData.phone || ''}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               fullWidth
               size="medium"
@@ -381,7 +381,7 @@ export default function EmployeeManagement() {
             <FormControl fullWidth size="medium">
               <InputLabel>Employee Type</InputLabel>
               <Select
-                value={formData.employeeType}
+                value={formData.employeeType || 'permanent'}
                 onChange={(e) => setFormData({ ...formData, employeeType: e.target.value as 'permanent' | 'casual' })}
                 label="Employee Type"
               >
@@ -393,7 +393,7 @@ export default function EmployeeManagement() {
             <TextField
               label="Hire Date"
               type="date"
-              value={formData.hireDate}
+              value={formData.hireDate || ''}
               onChange={(e) => setFormData({ ...formData, hireDate: e.target.value })}
               fullWidth
               size="medium"
@@ -403,7 +403,7 @@ export default function EmployeeManagement() {
             <FormControl fullWidth size="medium">
               <InputLabel>Status</InputLabel>
               <Select
-                value={formData.status}
+                value={formData.status || 'active'}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
                 label="Status"
               >
@@ -418,7 +418,7 @@ export default function EmployeeManagement() {
           <Button 
             onClick={handleSubmit} 
             variant="contained"
-            disabled={submitting || !formData.name || !formData.employeeId}
+            disabled={submitting || !formData.name?.trim() || !formData.employeeId?.trim()}
             size="medium"
           >
             {submitting ? <CircularProgress size={20} /> : (editingEmployee ? 'Update' : 'Create')}
