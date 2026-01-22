@@ -55,8 +55,8 @@ function HoverCard({
 }: HoverCardProps) {
   const [internalOpen, setInternalOpen] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
-  const openTimeoutRef = React.useRef<NodeJS.Timeout>()
-  const closeTimeoutRef = React.useRef<NodeJS.Timeout>()
+  const openTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+  const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
   
   const isOpen = open !== undefined ? open : internalOpen
   
@@ -95,8 +95,8 @@ function HoverCard({
 
 function HoverCardTrigger({ children, asChild }: HoverCardTriggerProps) {
   const { setOpen, setAnchorEl } = React.useContext(HoverCardContext)
-  const openTimeoutRef = React.useRef<NodeJS.Timeout>()
-  const closeTimeoutRef = React.useRef<NodeJS.Timeout>()
+  const openTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+  const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
   
   const handleMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
     if (closeTimeoutRef.current) {

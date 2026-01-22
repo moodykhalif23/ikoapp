@@ -154,3 +154,8 @@ function Button({
 
 export { Button }
 export type { ButtonProps }
+
+// Export buttonVariants for compatibility
+export const buttonVariants = (props: { variant?: ButtonVariant; size?: ButtonSize }) => {
+  return `button-${props.variant || 'default'} button-${props.size || 'default'}`
+}
