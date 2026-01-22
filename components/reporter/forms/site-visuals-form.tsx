@@ -137,8 +137,8 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {mediaFiles.map((file) => (
                   <div key={file.id} className="relative border border-border rounded-lg bg-muted/30 group overflow-hidden">
-                    {/* Preview Area */}
-                    <div className="aspect-video bg-muted/50 flex items-center justify-center relative">
+                    {/* Preview Area - Full Card Coverage */}
+                    <div className="aspect-video bg-muted/50 relative overflow-hidden">
                       {file.preview ? (
                         <>
                           {file.type === "image" ? (
@@ -149,12 +149,14 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                               onClick={() => openPreview(file)}
                             />
                           ) : (
-                            <video
-                              src={file.preview}
-                              className="w-full h-full object-cover"
-                              controls
-                              preload="metadata"
-                            />
+                            <div className="relative w-full h-full">
+                              <video
+                                src={file.preview}
+                                className="w-full h-full object-cover"
+                                controls
+                                preload="metadata"
+                              />
+                            </div>
                           )}
                           
                           {/* Preview Button for Images */}
@@ -170,7 +172,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                           )}
                         </>
                       ) : (
-                        <div className="flex flex-col items-center justify-center text-muted-foreground">
+                        <div className="flex flex-col items-center justify-center text-muted-foreground w-full h-full">
                           {file.type === "image" ? (
                             <ImageIcon className="w-8 h-8 mb-2" />
                           ) : (
@@ -189,19 +191,21 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                       >
                         <X className="w-4 h-4" />
                       </Button>
-                    </div>
-                    
-                    {/* File Info */}
-                    <div className="p-3">
-                      <div className="flex items-center gap-2">
-                        {file.type === "image" ? (
-                          <ImageIcon className="w-4 h-4 text-primary flex-shrink-0" />
-                        ) : (
-                          <Play className="w-4 h-4 text-accent flex-shrink-0" />
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-medium truncate" title={file.name}>{file.name}</p>
-                          <p className="text-xs text-muted-foreground">{file.size}</p>
+                      
+                      {/* File Info Overlay - Only show for images or when video is not playing */}
+                      <div className={`absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 transform transition-transform duration-200 ${
+                        file.type === "video" ? "translate-y-full group-hover:translate-y-0" : "translate-y-full group-hover:translate-y-0"
+                      }`}>
+                        <div className="flex items-center gap-2">
+                          {file.type === "image" ? (
+                            <ImageIcon className="w-3 h-3 flex-shrink-0" />
+                          ) : (
+                            <Play className="w-3 h-3 flex-shrink-0" />
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-medium truncate" title={file.name}>{file.name}</p>
+                            <p className="text-xs opacity-75">{file.size}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
