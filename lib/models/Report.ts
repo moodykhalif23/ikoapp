@@ -101,7 +101,7 @@ ReportSchema.index({ createdAt: -1 })
 
 // Virtual for checking if report is complete
 ReportSchema.virtual('isComplete').get(function() {
-  const report = this as IReport
+  const report = this as unknown as IReport
   return !!(report.powerInterruptionId && report.siteVisualId &&
            report.dailyProductionId && report.incidentReportId &&
            report.employeePlanningId)
@@ -124,7 +124,7 @@ ReportSchema.pre('save', async function() {
 // Update status when submitted
 ReportSchema.pre('save', function() {
   const report = this as unknown as IReport
-  if (report.isModified('submittedAt') && report.submittedAt && !report.status) {
+  if (report.isModified && report.isModified('submittedAt') && report.submittedAt && !report.status) {
     report.status = 'submitted'
   }
 })
