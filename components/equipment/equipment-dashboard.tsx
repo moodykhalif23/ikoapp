@@ -242,12 +242,112 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">Equipment Management</h2>
-          <p className="text-muted-foreground">Monitor and schedule equipment maintenance</p>
-        </div>
+      {/* Filters Section */}
+      <Card className="card-brand card-elevated mb-6">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+            <Filter size={20} />
+            Filters
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Search - Full width on top */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder="Search maintenance records..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 text-sm"
+              />
+            </div>
+            
+            {/* Filter dropdowns in a row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Status Filter */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Status</label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    statusFilter !== "all" 
+                      ? "bg-green-50 text-green-800" 
+                      : "bg-background"
+                  }`}
+                >
+                  <option value="all">All Status</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              {/* Priority Filter */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Priority</label>
+                <select
+                  value={priorityFilter}
+                  onChange={(e) => setPriorityFilter(e.target.value)}
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    priorityFilter !== "all" 
+                      ? "bg-green-50 text-green-800" 
+                      : "bg-background"
+                  }`}
+                >
+                  <option value="all">All Priority</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+
+              {/* Equipment Filter */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Equipment</label>
+                <select
+                  value=""
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+                >
+                  <option value="">All Equipment</option>
+                  {machines.map(machine => (
+                    <option key={machine._id} value={machine.name}>{machine.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Clear Filters */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setStatusFilter("all")
+                    setPriorityFilter("all")
+                    setSearchTerm("")
+                  }}
+                  className="text-sm w-full h-10"
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Results Count */}
+          <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
+            Showing {filteredRecords.length} of {maintenanceRecords.length} maintenance records
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Schedule Maintenance Button */}
+      <div className="flex justify-end mb-6">
         <Dialog open={showAddMaintenance} onOpenChange={setShowAddMaintenance}>
           <DialogTrigger asChild>
             <Button className="gap-2">
@@ -429,45 +529,6 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
           <CardDescription>Track and manage equipment maintenance activities</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search maintenance records..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="scheduled">Scheduled</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="All Priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Priority</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Table */}
           <div className="rounded-md border">
             <Table>
