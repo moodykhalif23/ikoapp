@@ -13,6 +13,7 @@ import FilterListIcon from "@mui/icons-material/FilterList"
 import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
+import EmployeeManagement from "@/components/employee/employee-management"
 
 interface AdminDashboardProps {
   user: any
@@ -659,13 +660,7 @@ ${new Date().toLocaleString()}
       )}
       {activeTab === "employees" && (
         <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Employee Management</h1>
-            <p className="text-muted-foreground">Manage users and their roles</p>
-          </div>
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Employee management interface coming soon...</p>
-          </div>
+          <EmployeeManagement />
         </div>
       )}
       {activeTab === "machines" && (
