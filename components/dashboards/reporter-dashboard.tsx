@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack, Warning, People, Description } from "@mui/icons-material"
+import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack, Warning, People } from "@mui/icons-material"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import Image from "next/image"
-import ReportingFlow from "@/components/reporter/reporting-flow"
+
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import StandalonePowerInterruption from "@/components/reporter/standalone-power-interruption"
 import StandaloneDailyProduction from "@/components/reporter/standalone-daily-production"
@@ -23,7 +23,6 @@ interface ReporterDashboardProps {
 }
 
 export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGoHome }: ReporterDashboardProps) {
-  const [showNewReport, setShowNewReport] = useState(false)
   const [showPowerInterruption, setShowPowerInterruption] = useState(false)
   const [showDailyProduction, setShowDailyProduction] = useState(false)
   const [showIncidentReport, setShowIncidentReport] = useState(false)
@@ -82,7 +81,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
     if (onReportSubmit) {
       onReportSubmit(reportData)
     }
-    setShowNewReport(false)
   }
 
   const handlePowerInterruptionSubmit = async (reportData: any) => {
@@ -121,7 +119,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
     // Reset all form states when changing tabs
-    setShowNewReport(false)
     setShowPowerInterruption(false)
     setShowDailyProduction(false)
     setShowIncidentReport(false)
@@ -139,7 +136,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
   // Helper function to close all forms
   const closeAllForms = () => {
-    setShowNewReport(false)
     setShowPowerInterruption(false)
     setShowDailyProduction(false)
     setShowIncidentReport(false)
@@ -172,11 +168,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   const handleShowSiteVisuals = () => {
     closeAllForms()
     setShowSiteVisuals(true)
-  }
-
-  const handleShowNewReport = () => {
-    closeAllForms()
-    setShowNewReport(true)
   }
 
   // Filter reports based on current filters
@@ -234,7 +225,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       </div>
 
       {/* Quick Report Buttons */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         <Button
           onClick={handleShowPowerInterruption}
           variant="outline"
@@ -278,14 +269,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         >
           <Visibility sx={{ fontSize: 20 }} />
           <span className="text-xs">Visuals</span>
-        </Button>
-
-        <Button
-          onClick={handleShowNewReport}
-          className="h-20 flex-col gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
-        >
-          <Description sx={{ fontSize: 20 }} />
-          <span className="text-xs">Full Report</span>
         </Button>
       </div>
 
@@ -340,12 +323,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </div>
       )}
 
-      {showNewReport && (
-        <div className="mb-8">
-          <ReportingFlow onSubmit={handleReportSubmit} user={user} />
-        </div>
-      )}
-
       {selectedReport && (
         <div className="mb-8">
           <ScrollableReportView 
@@ -357,7 +334,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       )}
 
       {/* Reports Section - only show when no forms are active */}
-      {!showPowerInterruption && !showDailyProduction && !showIncidentReport && !showEmployeePlanning && !showSiteVisuals && !showNewReport && !selectedReport && (
+      {!showPowerInterruption && !showDailyProduction && !showIncidentReport && !showEmployeePlanning && !showSiteVisuals && !selectedReport && (
         <>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
             <div>
@@ -373,14 +350,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                   <ChevronRight sx={{ fontSize: 32, color: "var(--brand-green)" }} />
                 </div>
                 <h2 className="text-xl font-semibold text-brand-contrast mb-2">No reports yet</h2>
-                <p className="text-muted-foreground mb-6">Create your first production report to get started</p>
-                <Button
-                  onClick={handleShowNewReport}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg hover:shadow-xl transition-shadow"
-                >
-                  <Add sx={{ fontSize: 16 }} />
-                  Create First Report
-                </Button>
+                <p className="text-muted-foreground mb-6">Use the quick report buttons above to create individual reports</p>
               </CardContent>
             </Card>
           ) : (
@@ -451,8 +421,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           <Card className="card-brand card-elevated mb-6">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                  <Description sx={{ fontSize: 20 }} />
+                <CardTitle className="text-base sm:text-lg">
                   Filter Reports
                 </CardTitle>
                 <Button
@@ -586,17 +555,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                       <ChevronRight sx={{ fontSize: 32, color: "var(--brand-green)" }} />
                     </div>
                     <h2 className="text-xl font-semibold text-brand-contrast mb-2">No reports yet</h2>
-                    <p className="text-muted-foreground mb-6">Create your first production report to get started</p>
-                    <Button
-                      onClick={() => {
-                        setActiveTab("dashboard")
-                        handleShowNewReport()
-                      }}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg hover:shadow-xl transition-shadow"
-                    >
-                      <Add sx={{ fontSize: 16 }} />
-                      Create First Report
-                    </Button>
+                    <p className="text-muted-foreground mb-6">Use the quick report buttons to create individual reports</p>
                   </>
                 ) : (
                   <>
