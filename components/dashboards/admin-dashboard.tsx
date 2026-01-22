@@ -2,23 +2,15 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { LogOut, TrendingUp, Users, AlertTriangle, Download, Play, Send, Settings, UserPlus, Trash2, Upload, FileText } from "lucide-react"
-import Image from "next/image"
+import { TrendingUp, Users, Settings, UserPlus, Download } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/simple-tabs"
 import { Input } from "@/components/ui/input"
 import PeopleIcon from "@mui/icons-material/People"
 import WarningIcon from "@mui/icons-material/Warning"
-import GetAppIcon from "@mui/icons-material/GetApp"
 import DownloadIcon from "@mui/icons-material/Download"
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import SendIcon from "@mui/icons-material/Send"
-import SettingsIcon from "@mui/icons-material/Settings"
-import AddIcon from "@mui/icons-material/Add"
-import DeleteIcon from "@mui/icons-material/Delete"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
 import TimeTrackingDashboard from "@/components/time-tracking/time-tracking-dashboard"
-import AnalyticsDashboard from "@/components/analytics/analytics-dashboard"
 import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
@@ -26,7 +18,6 @@ import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 interface AdminDashboardProps {
   user: any
   onLogout: () => void
-  reports?: any[]
   onGoHome?: () => void
 }
 
@@ -38,14 +29,10 @@ interface Comment {
   role: string
 }
 
-export default function AdminDashboard({ user, onLogout, reports: propReports = [], onGoHome }: AdminDashboardProps) {
+export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashboardProps) {
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [reports, setReports] = useState<any[]>([])
-  const [users, setUsers] = useState<any[]>([])
-  const [machines, setMachines] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
-  const [commentText, setCommentText] = useState("")
   const [activeTab, setActiveTab] = useState("dashboard")
   
   // Filter states for reports page
@@ -65,8 +52,6 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
         }
       } catch (error) {
         console.error('Error fetching reports:', error)
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -219,12 +204,12 @@ ${new Date().toLocaleString()}
 
   const renderDashboardContent = () => (
     <>
-      <div className="mb-6 sm:mb-8 mt-6">
+      <div className="mb-4 sm:mb-6 mt-4 sm:mt-6">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Admin Dashboard</h1>
         <p className="text-xs sm:text-base text-muted-foreground">Manage reports, employees, and system settings</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
         <Card className="card-brand card-elevated">
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
@@ -289,77 +274,77 @@ ${new Date().toLocaleString()}
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 pb-4 sm:pb-6">
         <Card className="card-brand card-elevated">
-          <CardHeader>
-            <CardTitle className="text-lg">Quick Actions</CardTitle>
-            <CardDescription>Common administrative tasks</CardDescription>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Common administrative tasks</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-start" variant="outline">
-              <UserPlus size={16} className="mr-2" />
+          <CardContent className="space-y-2 sm:space-y-3">
+            <Button className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10" variant="outline">
+              <UserPlus size={14} className="mr-2" />
               Add New User
             </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <Settings size={16} className="mr-2" />
+            <Button className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10" variant="outline">
+              <Settings size={14} className="mr-2" />
               System Settings
             </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <Download size={16} className="mr-2" />
+            <Button className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10" variant="outline">
+              <Download size={14} className="mr-2" />
               Export Reports
             </Button>
           </CardContent>
         </Card>
 
         <Card className="card-brand card-elevated">
-          <CardHeader>
-            <CardTitle className="text-lg">Recent Activity</CardTitle>
-            <CardDescription>Latest system events</CardDescription>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">Recent Activity</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Latest system events</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>New report submitted by John Doe</span>
+            <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                <span className="line-clamp-2">New report submitted by John Doe</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span>User role updated for Jane Smith</span>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                <span className="line-clamp-2">User role updated for Jane Smith</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                <span>Equipment maintenance scheduled</span>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+                <span className="line-clamp-2">Equipment maintenance scheduled</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="card-brand card-elevated">
-          <CardHeader>
-            <CardTitle className="text-lg">System Status</CardTitle>
-            <CardDescription>Current system health</CardDescription>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">System Status</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Current system health</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm">Database</span>
-                <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm">Database</span>
+                <div className="flex items-center gap-1 sm:gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-600">Online</span>
+                  <span className="text-xs sm:text-sm text-green-600">Online</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">API Services</span>
-                <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm">API Services</span>
+                <div className="flex items-center gap-1 sm:gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-600">Healthy</span>
+                  <span className="text-xs sm:text-sm text-green-600">Healthy</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Storage</span>
-                <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm">Storage</span>
+                <div className="flex items-center gap-1 sm:gap-2">
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <span className="text-sm text-yellow-600">75% Used</span>
+                  <span className="text-xs sm:text-sm text-yellow-600">75% Used</span>
                 </div>
               </div>
             </div>
@@ -371,13 +356,13 @@ ${new Date().toLocaleString()}
 
   const renderReportsContent = () => (
     <>
-      <div className="mb-6 sm:mb-8 mt-6">
+      <div className="mb-4 sm:mb-6 mt-4 sm:mt-6">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1 sm:mb-2">Reports Management</h1>
         <p className="text-xs sm:text-base text-muted-foreground">View, manage and analyze production reports</p>
       </div>
 
       {/* Filters Section */}
-      <Card className="card-brand card-elevated mb-6">
+      <Card className="card-brand card-elevated mb-4 sm:mb-6">
         <CardHeader className="pb-3">
           <CardTitle className="text-base sm:text-lg flex items-center gap-2">
             <FilterListIcon sx={{ fontSize: 20 }} />
@@ -503,7 +488,7 @@ ${new Date().toLocaleString()}
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 pb-4 sm:pb-6">
           {filteredReports.map((report) => (
             <Card 
               key={report.id} 

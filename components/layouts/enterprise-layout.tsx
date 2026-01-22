@@ -147,7 +147,7 @@ export default function EnterpriseLayout({
       {/* Main Content - Responsive margin and bottom padding for mobile navigation */}
       <div className={`min-h-screen transition-all duration-300 ${
         sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
-      } pb-20 sm:pb-24 lg:pb-0`}>
+      } pb-16 sm:pb-20 lg:pb-0`}>
         {/* Top Header - Responsive */}
         <header className="sticky top-0 z-30 bg-card border-b border-border backdrop-blur-sm">
           {/* Mobile Header - Compact */}
@@ -196,7 +196,7 @@ export default function EnterpriseLayout({
 
         {/* Page Content - Scrollable area */}
         <main className="flex-1">
-          <div className="p-3 lg:p-6">
+          <div className="p-2 sm:p-3 lg:p-6">
             {children}
           </div>
         </main>
