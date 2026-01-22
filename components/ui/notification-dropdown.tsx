@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -37,7 +37,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const fetchNotifications = useCallback(async () => {
+  const fetchNotifications = async () => {
     // Don't fetch if user is not available
     if (!user?._id || !user?.role) {
       return
@@ -56,7 +56,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     } finally {
       setLoading(false)
     }
-  }, [user?._id, user?.role])
+  }
 
   const markAsRead = async (notificationId: string) => {
     try {
@@ -109,26 +109,31 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     return `${Math.floor(diffInMinutes / 1440)}d ago`
   }
 
+  // Fetch notifications when dropdown opens
   useEffect(() => {
     if (isOpen && user?._id && user?.role) {
       fetchNotifications()
     }
-  }, [isOpen, fetchNotifications])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, user?._id, user?.role])
 
-  // Poll for new notifications every 30 seconds (only when user is available)
+  // Poll for new notifications every 30 seconds
   useEffect(() => {
     if (!user?._id || !user?.role) {
       return
     }
 
     const interval = setInterval(() => {
+      // Only fetch when dropdown is closed to avoid conflicts
       if (!isOpen) {
         fetchNotifications()
       }
     }, 30000)
 
     return () => clearInterval(interval)
-  }, [fetchNotifications, isOpen]) // Now we can safely include isOpen since fetchNotifications is memoized
+    // Only recreate interval when user changes, not when isOpen changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?._id, user?.role])
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
