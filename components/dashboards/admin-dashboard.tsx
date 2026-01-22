@@ -19,6 +19,7 @@ import TimeTrackingDashboard from "@/components/time-tracking/time-tracking-dash
 import AnalyticsDashboard from "@/components/analytics/analytics-dashboard"
 import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
+import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 
 interface AdminDashboardProps {
   user: any
@@ -43,60 +44,25 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
   const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [commentText, setCommentText] = useState("")
-  const [activeMainTab, setActiveMainTab] = useState("reports")
 
-  // Fetch data from database
+  // Fetch reports data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchReports = async () => {
       try {
-        // Fetch all reports
         const reportsResponse = await fetch('/api/reports?limit=100')
         if (reportsResponse.ok) {
           const reportsData = await reportsResponse.json()
           setReports(reportsData.reports)
         }
-
-        // Fetch all users
-        const usersResponse = await fetch('/api/users')
-        if (usersResponse.ok) {
-          const usersData = await usersResponse.json()
-          setUsers(usersData)
-        }
-
-        // Fetch all machines
-        const machinesResponse = await fetch('/api/machines')
-        if (machinesResponse.ok) {
-          const machinesData = await machinesResponse.json()
-          setMachines(machinesData)
-        }
       } catch (error) {
-        console.error('Error fetching admin data:', error)
+        console.error('Error fetching reports:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchData()
+    fetchReports()
   }, [])
-
-  const [showAddEmployee, setShowAddEmployee] = useState(false)
-  const [showAddMachine, setShowAddMachine] = useState(false)
-  const [showImportEmployees, setShowImportEmployees] = useState(false)
-  const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    email: "",
-    role: "reporter",
-    employeeType: "permanent",
-    employeeId: "",
-    department: "",
-    phone: "",
-    hireDate: ""
-  })
-  const [newMachine, setNewMachine] = useState({ name: "", productionRate: "" })
-  const [importFile, setImportFile] = useState<File | null>(null)
-  const [importLoading, setImportLoading] = useState(false)
-
-  const allReports = reports
 
   const handleAddComment = (reportId: string, comment: string) => {
     const newComment: Comment = {
@@ -115,143 +81,6 @@ export default function AdminDashboard({ user, onLogout, reports: propReports = 
   // Reset when selecting a new report
   const handleReportSelect = (report: any) => {
     setSelectedReport(report)
-  }
-
-  const handleAddEmployee = async () => {
-    if (!newEmployee.name || !newEmployee.email) {
-      alert("Name and email are required")
-      return
-    }
-
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newEmployee.name,
-          email: newEmployee.email,
-          password: 'temp123!', // Temporary password - should be changed by employee
-          role: newEmployee.role,
-          employeeType: newEmployee.employeeType,
-          employeeId: newEmployee.employeeId || undefined,
-          department: newEmployee.department || undefined,
-          phone: newEmployee.phone || undefined,
-          hireDate: newEmployee.hireDate ? new Date(newEmployee.hireDate) : undefined
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        // Refresh employees list
-        const usersResponse = await fetch('/api/users')
-        if (usersResponse.ok) {
-          const usersData = await usersResponse.json()
-          setUsers(usersData)
-        }
-
-        setNewEmployee({
-          name: "",
-          email: "",
-          role: "reporter",
-          employeeType: "permanent",
-          employeeId: "",
-          department: "",
-          phone: "",
-          hireDate: ""
-        })
-        setShowAddEmployee(false)
-        alert(`Employee ${newEmployee.name} added successfully. They should change their password on first login.`)
-      } else {
-        alert(data.error || 'Failed to add employee')
-      }
-    } catch (error) {
-      alert('Network error. Please try again.')
-    }
-  }
-
-  const handleImportEmployees = async () => {
-    if (!importFile) {
-      alert("Please select a CSV file")
-      return
-    }
-
-    setImportLoading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', importFile)
-
-      const response = await fetch('/api/employees/import', {
-        method: 'POST',
-        body: formData
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        // Refresh employees list
-        const usersResponse = await fetch('/api/users')
-        if (usersResponse.ok) {
-          const usersData = await usersResponse.json()
-          setUsers(usersData)
-        }
-
-        setShowImportEmployees(false)
-        setImportFile(null)
-        alert(data.message)
-        if (data.data.errors && data.data.errors.length > 0) {
-          console.log('Import errors:', data.data.errors)
-        }
-      } else {
-        alert(data.error || 'Failed to import employees')
-      }
-    } catch (error) {
-      alert('Network error. Please try again.')
-    } finally {
-      setImportLoading(false)
-    }
-  }
-
-  const handleDeleteEmployee = async (id: string) => {
-    if (confirm('Are you sure you want to delete this employee? This action cannot be undone.')) {
-      try {
-        const response = await fetch(`/api/users/${id}`, {
-          method: 'DELETE'
-        })
-
-        if (response.ok) {
-          // Refresh users list
-          const usersResponse = await fetch('/api/users')
-          if (usersResponse.ok) {
-            const usersData = await usersResponse.json()
-            setUsers(usersData)
-          }
-        } else {
-          alert('Failed to delete employee')
-        }
-      } catch (error) {
-        alert('Network error. Please try again.')
-      }
-    }
-  }
-
-  const handleAddMachine = () => {
-    if (newMachine.name && newMachine.productionRate) {
-      setMachines((prev) => [
-        ...prev,
-        {
-          id: prev.length + 1,
-          ...newMachine,
-          status: "active",
-        },
-      ])
-      setNewMachine({ name: "", productionRate: "" })
-      setShowAddMachine(false)
-    }
-  }
-
-  const handleDeleteMachine = (id: number) => {
-    setMachines((prev) => prev.filter((mach) => mach.id !== id))
   }
 
   const handlePDFExport = (report: any) => {
@@ -329,8 +158,6 @@ ${new Date().toLocaleString()}
       user={user}
       onLogout={onLogout}
       onGoHome={onGoHome}
-      activeTab={activeMainTab}
-      onTabChange={setActiveMainTab}
       title="Admin Dashboard"
       subtitle="Manage reports, employees, and system settings"
     >
@@ -348,7 +175,7 @@ ${new Date().toLocaleString()}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl sm:text-3xl font-bold text-foreground">{allReports.length}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">{reports.length}</div>
               <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
             </CardContent>
           </Card>
@@ -362,7 +189,7 @@ ${new Date().toLocaleString()}
             </CardHeader>
             <CardContent>
               <div className="text-2xl sm:text-3xl font-bold text-foreground">
-                {new Set(allReports.map((r) => r.reportedBy)).size}
+                {new Set(reports.map((r) => r.reportedBy)).size}
               </div>
               <p className="text-xs text-muted-foreground mt-1">This month</p>
             </CardContent>
@@ -377,10 +204,10 @@ ${new Date().toLocaleString()}
             </CardHeader>
             <CardContent>
               <div className="text-2xl sm:text-3xl font-bold text-foreground">
-                {(
-                  allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
-                  allReports.length
-                ).toFixed(1)}
+                {reports.length > 0 ? (
+                  reports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
+                  reports.length
+                ).toFixed(1) : '0.0'}
                 %
               </div>
               <p className="text-xs text-muted-foreground mt-1">Overall production</p>
@@ -390,418 +217,64 @@ ${new Date().toLocaleString()}
           <Card className="card-brand card-elevated">
             <CardHeader className="pb-2 sm:pb-3">
               <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
-                Total Employees
+                Submitted Reports
                 <Users size={16} className="text-primary" />
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl sm:text-3xl font-bold text-foreground">{users.length}</div>
-              <p className="text-xs text-muted-foreground mt-1">Active users</p>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">
+                {reports.filter(r => r.status === 'submitted').length}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Awaiting review</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Tabs */}
-        <div className="mt-8">
-          <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="w-full">
-            <TabsList className="w-full bg-muted text-sm mb-8 overflow-y-hidden h-12">
-              <TabsTrigger value="reports" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
-                Reports
-              </TabsTrigger>
-              <TabsTrigger value="time-tracking" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
-                Time Tracking
-              </TabsTrigger>
-              <TabsTrigger value="employees" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
-                Employees
-              </TabsTrigger>
-              <TabsTrigger value="machines" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
-                Machines
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="equipment" className="text-sm flex-shrink-0 min-w-fit h-10 px-6">
-                Equipment
-              </TabsTrigger>
-            </TabsList>
-
-          {/* Time Tracking Tab */}
-          <TabsContent value="time-tracking" className="space-y-6">
-            <TimeTrackingDashboard users={users} />
-          </TabsContent>
-
-          {/* Reports Tab */}
-          <TabsContent value="reports" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Reports List */}
-              <Card className="card-brand lg:col-span-1 card-elevated">
-                <CardHeader>
-                  <CardTitle className="text-base sm:text-lg">Reports</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">All submissions</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2 max-h-96 sm:max-h-none overflow-y-auto">
-                  {allReports.map((report) => (
-                    <button
-                      key={report.id}
-                      onClick={() => handleReportSelect(report)}
-                      className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
-                        selectedReport?.id === report.id
-                          ? "bg-primary/10 border-primary"
-                          : "border-brand-subtle hover-brand backdrop-blur-sm"
-                      }`}
-                    >
-                      <p className="font-medium text-xs sm:text-sm">{report.id}</p>
-                      <p className="text-xs text-muted-foreground">{report.reportedBy}</p>
-                      <p className="text-xs text-muted-foreground">{report.date}</p>
-                    </button>
-                  ))}
-                </CardContent>
-              </Card>
-
-              {/* Report Detail */}
-              {selectedReport && (
-                <div className="lg:col-span-2">
-                  <ScrollableReportView 
-                    report={selectedReport} 
-                    onBack={() => setSelectedReport(null)}
-                    onPDFExport={handlePDFExport}
-                    showComments={true}
-                    user={user}
-                    comments={comments}
-                    onAddComment={handleAddComment}
-                  />
-                </div>
-              )}
-            </div>
-          </TabsContent>
-          {/* Employees Tab */}
-          <TabsContent value="employees" className="space-y-6">
-            <Card className="card-brand card-brand-dark card-elevated">
-              <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
-                <div className="min-w-0">
-                  <CardTitle className="text-base sm:text-lg">Employee Management</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Manage system users and their roles</CardDescription>
-                </div>
-                <div className="flex gap-2 flex-col sm:flex-row">
-                  <Button
-                    size="sm"
-                    onClick={() => setShowAddEmployee(!showAddEmployee)}
-                    className="gap-2 bg-transparent text-xs touch-target border-brand-subtle hover-brand focus-brand"
-                  >
-                    <UserPlus size={16} />
-                    Add Employee
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setShowImportEmployees(!showImportEmployees)}
-                    className="gap-2 text-xs touch-target border-brand-subtle hover-brand focus-brand"
-                  >
-                    <Upload size={16} />
-                    Import CSV
-                  </Button>
-                </div>
+        {/* Reports Section */}
+        <div className="mt-8 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Reports List */}
+            <Card className="card-brand lg:col-span-1 card-elevated">
+              <CardHeader>
+                <CardTitle className="text-base sm:text-lg">Reports</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">All submissions</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {showAddEmployee && (
-                  <div className="p-4 border-brand-subtle rounded-lg bg-brand-surface space-y-3">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <Input
-                        placeholder="Employee Name"
-                        value={newEmployee.name}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                        className="text-xs sm:text-sm focus-brand"
-                      />
-                      <Input
-                        placeholder="Email Address"
-                        type="email"
-                        value={newEmployee.email}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                        className="text-xs sm:text-sm focus-brand"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <select
-                        value={newEmployee.role}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
-                        className="w-full px-3 py-2 border border-brand-subtle rounded-md bg-background text-xs sm:text-sm focus-brand"
-                      >
-                        <option value="reporter">Reporter</option>
-                        <option value="viewer">Viewer</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                      <select
-                        value={newEmployee.employeeType}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeType: e.target.value })}
-                        className="w-full px-3 py-2 border border-brand-subtle rounded-md bg-background text-xs sm:text-sm focus-brand"
-                      >
-                        <option value="permanent">Permanent</option>
-                        <option value="casual">Casual</option>
-                      </select>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <Input
-                        placeholder="Employee ID (optional)"
-                        value={newEmployee.employeeId}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeId: e.target.value })}
-                        className="text-xs sm:text-sm focus-brand"
-                      />
-                      <Input
-                        placeholder="Department (optional)"
-                        value={newEmployee.department}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
-                        className="text-xs sm:text-sm focus-brand"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <Input
-                        placeholder="Phone (optional)"
-                        value={newEmployee.phone}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
-                        className="text-xs sm:text-sm focus-brand"
-                      />
-                      <Input
-                        type="date"
-                        placeholder="Hire Date (optional)"
-                        value={newEmployee.hireDate}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, hireDate: e.target.value })}
-                        className="text-xs sm:text-sm focus-brand"
-                      />
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={handleAddEmployee}
-                        className="flex-1 text-xs sm:text-sm touch-target"
-                      >
-                        Add Employee
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setShowAddEmployee(false)}
-                        className="flex-1 text-xs sm:text-sm touch-target border-brand-subtle hover-brand focus-brand"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {showImportEmployees && (
-                  <div className="p-4 border-brand-subtle rounded-lg bg-brand-surface space-y-3">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium">Import Employees from CSV</h4>
-                      <p className="text-xs text-muted-foreground">
-                        CSV should have headers: name, email, role (optional), employeeType (optional), employeeId (optional), department (optional), phone (optional), hireDate (optional)
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <input
-                        type="file"
-                        accept=".csv"
-                        onChange={(e) => setImportFile(e.target.files?.[0] || null)}
-                        className="w-full text-xs sm:text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
-                      />
-                      {importFile && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <FileText size={14} />
-                          {importFile.name}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={handleImportEmployees}
-                        disabled={!importFile || importLoading}
-                        className="flex-1 text-xs sm:text-sm touch-target"
-                      >
-                        {importLoading ? 'Importing...' : 'Import Employees'}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setShowImportEmployees(false)
-                          setImportFile(null)
-                        }}
-                        className="flex-1 text-xs sm:text-sm touch-target border-brand-subtle hover-brand focus-brand"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  {users.map((emp) => (
-                    <div key={emp._id} className="p-3 sm:p-4 border-brand-subtle rounded-lg bg-card hover:shadow-md transition-shadow hover-brand">
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="font-medium text-xs sm:text-sm truncate">{emp.name}</p>
-                            <span className={`text-xs px-2 py-0.5 rounded capitalize ${
-                              emp.employeeType === 'casual'
-                                ? 'bg-orange-100 text-orange-700'
-                                : 'bg-blue-100 text-blue-700'
-                            }`}>
-                              {emp.employeeType}
-                            </span>
-                          </div>
-                          <p className="text-xs text-muted-foreground truncate mb-2">{emp.email}</p>
-
-                          <div className="grid grid-cols-2 gap-4 text-xs">
-                            <div>
-                              <span className="text-muted-foreground">Role:</span>
-                              <span className="ml-1 capitalize bg-primary/10 text-primary px-1 py-0.5 rounded">
-                                {emp.role}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Status:</span>
-                              <span className="ml-1 capitalize bg-green-100 text-green-700 px-1 py-0.5 rounded">
-                                {emp.status}
-                              </span>
-                            </div>
-                            {emp.employeeId && (
-                              <div>
-                                <span className="text-muted-foreground">ID:</span>
-                                <span className="ml-1">{emp.employeeId}</span>
-                              </div>
-                            )}
-                            {emp.department && (
-                              <div>
-                                <span className="text-muted-foreground">Dept:</span>
-                                <span className="ml-1">{emp.department}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDeleteEmployee(emp._id)}
-                          className="gap-2 text-xs touch-target w-full sm:w-auto border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                        >
-                          <Trash2 size={16} />
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <CardContent className="space-y-2 max-h-96 sm:max-h-none overflow-y-auto">
+                {reports.map((report) => (
+                  <button
+                    key={report.id}
+                    onClick={() => handleReportSelect(report)}
+                    className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
+                      selectedReport?.id === report.id
+                        ? "bg-primary/10 border-primary"
+                        : "border-brand-subtle hover-brand backdrop-blur-sm"
+                    }`}
+                  >
+                    <p className="font-medium text-xs sm:text-sm">{report.id}</p>
+                    <p className="text-xs text-muted-foreground">{report.reportedBy}</p>
+                    <p className="text-xs text-muted-foreground">{report.date}</p>
+                  </button>
+                ))}
               </CardContent>
             </Card>
-          </TabsContent>
 
-          {/* Machines Tab */}
-          <TabsContent value="machines" className="space-y-6">
-            <Card className="card-brand card-brand-dark card-elevated">
-              <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3">
-                <div className="min-w-0">
-                  <CardTitle className="text-base sm:text-lg">Machine Management</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Monitor and manage production equipment</CardDescription>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={() => setShowAddMachine(!showAddMachine)}
-                  className="gap-2 bg-transparent text-xs touch-target w-full sm:w-auto border-brand-subtle hover-brand focus-brand"
-                >
-                  <Settings size={16} />
-                  Add Machine
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {showAddMachine && (
-                  <div className="p-4 border-brand-subtle rounded-lg bg-brand-surface space-y-3">
-                    <Input
-                      placeholder="Machine Name"
-                      value={newMachine.name}
-                      onChange={(e) => setNewMachine({ ...newMachine, name: e.target.value })}
-                      className="text-xs sm:text-sm focus-brand"
-                    />
-                    <Input
-                      placeholder="Production Rate (e.g., 100 units/hour)"
-                      value={newMachine.productionRate}
-                      onChange={(e) => setNewMachine({ ...newMachine, productionRate: e.target.value })}
-                      className="text-xs sm:text-sm focus-brand"
-                    />
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={handleAddMachine}
-                        className="flex-1 text-xs sm:text-sm touch-target"
-                      >
-                        Add Machine
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setShowAddMachine(false)}
-                        className="flex-1 text-xs sm:text-sm touch-target border-brand-subtle hover-brand focus-brand"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  {machines.map((machine) => (
-                    <div key={machine.id} className="p-3 sm:p-4 border-brand-subtle rounded-lg bg-card hover:shadow-md transition-shadow hover-brand">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-xs sm:text-sm truncate">{machine.name}</p>
-                          <p className="text-xs text-muted-foreground">{machine.productionRate}</p>
-                          <span
-                            className={`text-xs mt-2 inline-block px-2 py-0.5 rounded capitalize ${
-                              machine.status === "active"
-                                ? "bg-green-500/10 text-green-600"
-                                : "bg-yellow-500/10 text-yellow-600"
-                            }`}
-                          >
-                            {machine.status}
-                          </span>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDeleteMachine(machine.id)}
-                          className="gap-2 text-xs touch-target w-full sm:w-auto border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                        >
-                          <Trash2 size={16} />
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <AnalyticsDashboard
-              reports={allReports}
-              timeEntries={[]} // Will be populated from API
-              users={users}
-            />
-          </TabsContent>
-
-          {/* Equipment Tab */}
-          <TabsContent value="equipment" className="space-y-6">
-            <EquipmentDashboard machines={machines} user={user} />
-          </TabsContent>
-        </Tabs>
+            {/* Report Detail */}
+            {selectedReport && (
+              <div className="lg:col-span-2">
+                <ScrollableReportView 
+                  report={selectedReport} 
+                  onBack={() => setSelectedReport(null)}
+                  onPDFExport={handlePDFExport}
+                  showComments={true}
+                  user={user}
+                  comments={comments}
+                  onAddComment={handleAddComment}
+                />
+              </div>
+            )}
+          </div>
         </div>
+          {/* Employees Tab */}
     </EnterpriseLayout>
   )
 }
