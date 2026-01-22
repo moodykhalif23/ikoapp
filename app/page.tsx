@@ -86,7 +86,7 @@ export default function Home() {
         <ViewerDashboard user={user} onLogout={handleLogout} reports={submittedReports} onGoHome={handleGoHome} />
       )}
       {currentPage === "admin" && (
-        <AdminDashboard user={user} onLogout={handleLogout} reports={submittedReports} onGoHome={handleGoHome} />
+        <AdminDashboard user={user} onLogout={handleLogout} onGoHome={handleGoHome} />
       )}
     </main>
   )

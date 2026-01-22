@@ -21,6 +21,12 @@ import {
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart as RechartsLineChart, Line, PieChart as RechartsPieChart, Cell, Pie } from 'recharts'
 
+interface AnalyticsDashboardProps {
+  reports?: any[]
+  timeEntries?: any[]
+  users?: any[]
+}
+
 export default function AnalyticsDashboard({
   reports = [],
   timeEntries = [],
@@ -30,7 +36,7 @@ export default function AnalyticsDashboard({
   const [selectedMetric, setSelectedMetric] = useState("efficiency")
 
   // Calculate production data from reports
-  const productionData = reports.slice(-6).map((report, index) => {
+  const productionData = reports.slice(-6).map((report: any, index: number) => {
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const date = new Date(report.createdAt || report.date)
     return {
@@ -43,19 +49,19 @@ export default function AnalyticsDashboard({
 
   // Calculate time data from time entries
   const timeData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => {
-    const dayEntries = timeEntries.filter(entry => {
+    const dayEntries = timeEntries.filter((entry: any) => {
       const entryDate = new Date(entry.clockInTime)
       return entryDate.toLocaleDateString('en-US', { weekday: 'short' }) === day
     })
     return {
       day,
-      hours: dayEntries.reduce((sum, entry) => sum + (entry.hoursWorked || 0), 0),
+      hours: dayEntries.reduce((sum: number, entry: any) => sum + (entry.hoursWorked || 0), 0),
       employees: dayEntries.length
     }
   })
 
   // Calculate incident types from reports
-  const incidentCounts = reports.reduce((acc, report) => {
+  const incidentCounts = reports.reduce((acc: Record<string, number>, report: any) => {
     if (report.incidentReport?.incidents) {
       report.incidentReport.incidents.forEach((incident: any) => {
         const type = incident.type || 'Other'
@@ -76,9 +82,9 @@ export default function AnalyticsDashboard({
 
   // Calculate KPIs
   const totalReports = reports.length
-  const activeEmployees = timeEntries.filter(entry => entry.status === 'active').length
-  const avgEfficiency = reports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) / reports.length || 0
-  const totalIncidents = reports.reduce((sum, r) => sum + (r.incidentReport?.severity ? 1 : 0), 0)
+  const activeEmployees = timeEntries.filter((entry: any) => entry.status === 'active').length
+  const avgEfficiency = reports.reduce((sum: number, r: any) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) / reports.length || 0
+  const totalIncidents = reports.reduce((sum: number, r: any) => sum + (r.incidentReport?.severity ? 1 : 0), 0)
 
   const kpis = [
     {

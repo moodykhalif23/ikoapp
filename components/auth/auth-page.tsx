@@ -84,7 +84,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2">
-                  <AlertIcon sx={{ fontSize: 20, color: "#dc2626" }} />
+                  <AlertIcon style={{ fontSize: 20, color: "#dc2626" }} />
                   <p className="text-sm text-red-600">{error}</p>
                 </div>
               )}
