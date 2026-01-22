@@ -203,7 +203,7 @@ export default function EnterpriseLayout({
       </div>
 
       {/* Bottom Navigation - Only visible on mobile */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-green-700 border-t border-green-600">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-brand-green border-t border-brand-green/20">
         <div className="flex items-center justify-around px-1 py-2 safe-area-inset">
           {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').slice(0, 4).map((item) => {
             const Icon = item.icon
@@ -214,14 +214,14 @@ export default function EnterpriseLayout({
                 key={item.id}
                 variant="ghost"
                 onClick={() => onTabChange?.(item.id)}
-                className={`flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target ${
+                className={`flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white ${
                   isActive
-                    ? 'text-white bg-green-600 hover:bg-green-600'
-                    : 'text-green-100 hover:text-white hover:bg-green-600'
+                    ? 'bg-brand-orange hover:bg-brand-orange'
+                    : 'hover:bg-white/20'
                 }`}
               >
-                <Icon sx={{ fontSize: 16 }} />
-                <span className="text-[10px] sm:text-xs font-medium leading-tight">{item.label}</span>
+                <Icon sx={{ fontSize: 16, color: 'white' }} />
+                <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">{item.label}</span>
               </Button>
             )
           })}
@@ -230,10 +230,10 @@ export default function EnterpriseLayout({
           {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').length > 4 && (
             <Button
               variant="ghost"
-              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-green-100 hover:text-white hover:bg-green-600"
+              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white hover:bg-white/20"
             >
-              <MenuIcon sx={{ fontSize: 16 }} />
-              <span className="text-[10px] sm:text-xs font-medium leading-tight">More</span>
+              <MenuIcon sx={{ fontSize: 16, color: 'white' }} />
+              <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">More</span>
             </Button>
           )}
           
@@ -242,10 +242,10 @@ export default function EnterpriseLayout({
             <Button
               variant="ghost"
               onClick={onLogout}
-              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-green-100 hover:text-white hover:bg-green-600"
+              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white hover:bg-white/20"
             >
-              <LogOutIcon sx={{ fontSize: 16 }} />
-              <span className="text-[10px] sm:text-xs font-medium leading-tight">Logout</span>
+              <LogOutIcon sx={{ fontSize: 16, color: 'white' }} />
+              <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">Logout</span>
             </Button>
           )}
         </div>
