@@ -236,6 +236,15 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </Button>
 
         <Button
+          onClick={handleShowSiteVisuals}
+          variant="outline"
+          className="h-20 flex-col gap-2 border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300"
+        >
+          <Visibility sx={{ fontSize: 20 }} />
+          <span className="text-xs">Visuals</span>
+        </Button>
+
+        <Button
           onClick={handleShowDailyProduction}
           variant="outline"
           className="h-20 flex-col gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300"
@@ -260,15 +269,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         >
           <People sx={{ fontSize: 20 }} />
           <span className="text-xs">Planning</span>
-        </Button>
-
-        <Button
-          onClick={handleShowSiteVisuals}
-          variant="outline"
-          className="h-20 flex-col gap-2 border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300"
-        >
-          <Visibility sx={{ fontSize: 20 }} />
-          <span className="text-xs">Visuals</span>
         </Button>
       </div>
 

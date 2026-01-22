@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Camera } from "lucide-react"
 import SiteVisualsForm from "./forms/site-visuals-form"
@@ -62,20 +62,18 @@ export default function StandaloneSiteVisuals({ user, onBack, onSubmit }: Standa
       </div>
 
       {/* Form */}
-      <Card className="card-brand card-elevated">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2">
+      <div>
+        <div className="text-center mb-6">
+          <h2 className="flex items-center justify-center gap-2 text-xl font-semibold">
             <Camera size={20} className="text-primary" />
             Visual Documentation
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <SiteVisualsForm
-            data={{}}
-            onComplete={handleSubmit}
-          />
-        </CardContent>
-      </Card>
+          </h2>
+        </div>
+        <SiteVisualsForm
+          data={{}}
+          onComplete={handleSubmit}
+        />
+      </div>
 
       {/* Loading Overlay */}
       {isSubmitting && (
