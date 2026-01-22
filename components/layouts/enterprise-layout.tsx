@@ -147,7 +147,7 @@ export default function EnterpriseLayout({
       {/* Main Content - Responsive margin */}
       <div className={`min-h-screen transition-all duration-300 ${
         sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
-      } pb-16 lg:pb-0`}>
+      } pb-20 sm:pb-24 lg:pb-0`}>
         {/* Top Header - Responsive */}
         <header className="sticky top-0 z-30 bg-card border-b border-border backdrop-blur-sm">
           {/* Mobile Header - Compact */}
@@ -203,8 +203,8 @@ export default function EnterpriseLayout({
       </div>
 
       {/* Bottom Navigation - Only visible on mobile */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bottom-nav">
-        <div className="flex items-center justify-around px-1 py-1 safe-area-inset">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-green-700 border-t border-green-600">
+        <div className="flex items-center justify-around px-1 py-2 safe-area-inset">
           {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').slice(0, 4).map((item) => {
             const Icon = item.icon
             const isActive = activeTab === item.id
@@ -214,16 +214,14 @@ export default function EnterpriseLayout({
                 key={item.id}
                 variant="ghost"
                 onClick={() => onTabChange?.(item.id)}
-                className={`flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target ${
-                  isActive ? 'active' : ''
-                } ${
+                className={`flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target ${
                   isActive
-                    ? 'text-primary bg-primary/10'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    ? 'text-white bg-green-600 hover:bg-green-600'
+                    : 'text-green-100 hover:text-white hover:bg-green-600'
                 }`}
               >
-                <Icon sx={{ fontSize: 18 }} />
-                <span className="text-xs font-medium leading-tight">{item.label}</span>
+                <Icon sx={{ fontSize: 16 }} />
+                <span className="text-[10px] sm:text-xs font-medium leading-tight">{item.label}</span>
               </Button>
             )
           })}
@@ -232,10 +230,10 @@ export default function EnterpriseLayout({
           {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').length > 4 && (
             <Button
               variant="ghost"
-              className="flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-green-100 hover:text-white hover:bg-green-600"
             >
-              <MenuIcon sx={{ fontSize: 18 }} />
-              <span className="text-xs font-medium leading-tight">More</span>
+              <MenuIcon sx={{ fontSize: 16 }} />
+              <span className="text-[10px] sm:text-xs font-medium leading-tight">More</span>
             </Button>
           )}
           
@@ -244,10 +242,10 @@ export default function EnterpriseLayout({
             <Button
               variant="ghost"
               onClick={onLogout}
-              className="flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-green-100 hover:text-white hover:bg-green-600"
             >
-              <LogOutIcon sx={{ fontSize: 18 }} />
-              <span className="text-xs font-medium leading-tight">Logout</span>
+              <LogOutIcon sx={{ fontSize: 16 }} />
+              <span className="text-[10px] sm:text-xs font-medium leading-tight">Logout</span>
             </Button>
           )}
         </div>
