@@ -474,92 +474,129 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           {/* Filters Section */}
           <Card className="card-brand card-elevated mb-6">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                <Description sx={{ fontSize: 20 }} />
-                Filter Reports
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <Description sx={{ fontSize: 20 }} />
+                  Filter Reports
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFiltersExpanded(!filtersExpanded)}
+                  className="gap-2"
+                >
+                  {filtersExpanded ? (
+                    <>
+                      <ChevronUp size={16} />
+                      <span className="hidden sm:inline">Collapse</span>
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown size={16} />
+                      <span className="hidden sm:inline">Expand</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Date Filter */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Date Range</label>
-                    <select
-                      value={dateFilter}
-                      onChange={(e) => setDateFilter(e.target.value)}
-                      className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                        dateFilter !== "all" 
-                          ? "bg-green-50 text-green-800" 
-                          : "bg-background"
-                      }`}
-                    >
-                      <option value="all">All Time</option>
-                      <option value="today">Today</option>
-                      <option value="week">This Week</option>
-                      <option value="month">This Month</option>
-                      <option value="quarter">This Quarter</option>
-                    </select>
-                  </div>
+            
+            {/* Always visible search bar - but for reporter dashboard, we don't have a search, so show compact info */}
+            <CardContent className="pt-0">
+              {/* Collapsible filter section */}
+              {filtersExpanded && (
+                <div className="space-y-4">
+                  {/* Date Filter */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground">Date Range</label>
+                      <select
+                        value={dateFilter}
+                        onChange={(e) => setDateFilter(e.target.value)}
+                        className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                          dateFilter !== "all" 
+                            ? "bg-green-50 text-green-800" 
+                            : "bg-background"
+                        }`}
+                      >
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                      </select>
+                    </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Status</label>
-                    <select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
-                      className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                        statusFilter !== "all" 
-                          ? "bg-green-50 text-green-800" 
-                          : "bg-background"
-                      }`}
-                    >
-                      <option value="all">All Status</option>
-                      <option value="draft">Draft</option>
-                      <option value="submitted">Submitted</option>
-                      <option value="reviewed">Reviewed</option>
-                      <option value="approved">Approved</option>
-                    </select>
-                  </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground">Status</label>
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                          statusFilter !== "all" 
+                            ? "bg-green-50 text-green-800" 
+                            : "bg-background"
+                        }`}
+                      >
+                        <option value="all">All Status</option>
+                        <option value="draft">Draft</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="reviewed">Reviewed</option>
+                        <option value="approved">Approved</option>
+                      </select>
+                    </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Sort By</label>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                        sortBy !== "newest" 
-                          ? "bg-green-50 text-green-800" 
-                          : "bg-background"
-                      }`}
-                    >
-                      <option value="newest">Newest First</option>
-                      <option value="oldest">Oldest First</option>
-                      <option value="date">Report Date</option>
-                    </select>
-                  </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground">Sort By</label>
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                          sortBy !== "newest" 
+                            ? "bg-green-50 text-green-800" 
+                            : "bg-background"
+                        }`}
+                      >
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="date">Report Date</option>
+                      </select>
+                    </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setDateFilter("all")
-                        setStatusFilter("all")
-                        setSortBy("newest")
-                      }}
-                      className="text-sm w-full h-10"
-                    >
-                      Clear Filters
-                    </Button>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setDateFilter("all")
+                          setStatusFilter("all")
+                          setSortBy("newest")
+                        }}
+                        className="text-sm w-full h-10"
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Results Count */}
+                  <div className="pt-4 border-t text-sm text-muted-foreground">
+                    Showing {filteredReports.length} of {reports.length} reports
                   </div>
                 </div>
-              </div>
+              )}
               
-              {/* Results Count */}
-              <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
-                Showing {filteredReports.length} of {reports.length} reports
-              </div>
+              {/* Compact results count when collapsed */}
+              {!filtersExpanded && (
+                <div className="text-sm text-muted-foreground">
+                  {filteredReports.length} of {reports.length} reports
+                  {(dateFilter !== "all" || statusFilter !== "all" || sortBy !== "newest") && (
+                    <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                      Filtered
+                    </span>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
