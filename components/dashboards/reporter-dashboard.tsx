@@ -182,9 +182,9 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
   const renderReportsContent = () => (
     <>
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 mt-6">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 mt-2">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Production Reports</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Production Reports</h1>
           <p className="text-muted-foreground">Submit individual reports or create a comprehensive report</p>
         </div>
       </div>
@@ -378,19 +378,12 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </div>
       )}
 
-      {/* Time Clock Section - only show when no forms are active */}
-      {!showPowerInterruption && !showDailyProduction && !showIncidentReport && !showEmployeePlanning && !showSiteVisuals && !showNewReport && !selectedReport && (
-        <div className="mb-8">
-          <TimeClock user={user} onTimeEntryUpdate={() => {}} />
-        </div>
-      )}
-
       {/* Reports Section - only show when no forms are active */}
       {!showPowerInterruption && !showDailyProduction && !showIncidentReport && !showEmployeePlanning && !showSiteVisuals && !showNewReport && !selectedReport && (
         <>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-brand-contrast mb-2">Your Reports</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-brand-contrast mb-1">Your Reports</h2>
               <p className="text-muted-foreground">Manage your submitted reports</p>
             </div>
           </div>
@@ -470,9 +463,9 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       subtitle="Submit and manage your production reports"
     >
       {activeTab === "reports" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Your Reports</h1>
+        <div className="space-y-6 mt-2">
+          <div className="mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Your Reports</h1>
             <p className="text-muted-foreground">View and manage your submitted reports</p>
           </div>
 

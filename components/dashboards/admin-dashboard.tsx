@@ -204,8 +204,8 @@ ${new Date().toLocaleString()}
 
   const renderDashboardContent = () => (
     <>
-      <div className="mb-4 sm:mb-6 mt-4 sm:mt-6">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Admin Dashboard</h1>
+      <div className="mb-3 sm:mb-4 mt-1 sm:mt-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1">Admin Dashboard</h1>
         <p className="text-xs sm:text-base text-muted-foreground">Manage reports, employees, and system settings</p>
       </div>
 
@@ -353,8 +353,8 @@ ${new Date().toLocaleString()}
 
   const renderReportsContent = () => (
     <>
-      <div className="mb-4 sm:mb-6 mt-4 sm:mt-6">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1 sm:mb-2">Reports Management</h1>
+      <div className="mb-3 sm:mb-4 mt-1 sm:mt-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports Management</h1>
         <p className="text-xs sm:text-base text-muted-foreground">View, manage and analyze production reports</p>
       </div>
 
@@ -596,9 +596,9 @@ ${new Date().toLocaleString()}
       {activeTab === "dashboard" && renderDashboardContent()}
       {activeTab === "reports" && renderReportsContent()}
       {activeTab === "analytics" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Analytics</h1>
+        <div className="space-y-6 mt-2">
+          <div className="mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
             <p className="text-muted-foreground">Production data insights and trends</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -659,23 +659,23 @@ ${new Date().toLocaleString()}
         </div>
       )}
       {activeTab === "employees" && (
-        <div className="space-y-6 mt-6">
+        <div className="space-y-6 mt-2">
           <EmployeeManagement />
         </div>
       )}
       {activeTab === "machines" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Equipment Management</h1>
+        <div className="space-y-6 mt-2">
+          <div className="mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Equipment Management</h1>
             <p className="text-muted-foreground">Monitor and manage production equipment</p>
           </div>
           <EquipmentDashboard />
         </div>
       )}
       {activeTab === "alerts" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">System Alerts</h1>
+        <div className="space-y-6 mt-2">
+          <div className="mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">System Alerts</h1>
             <p className="text-muted-foreground">Monitor system notifications and alerts</p>
           </div>
           <div className="text-center py-8">

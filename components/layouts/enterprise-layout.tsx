@@ -150,7 +150,7 @@ export default function EnterpriseLayout({
           </div>
 
           {/* Desktop Header - Full */}
-          <div className="hidden lg:flex items-center justify-between px-4 py-3">
+          <div className="hidden lg:flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-4">
               <div className="block">
                 <h1 className="text-2xl font-bold text-foreground">{title || 'Dashboard'}</h1>
@@ -187,7 +187,7 @@ export default function EnterpriseLayout({
 
         {/* Page Content - Scrollable area */}
         <main className="flex-1">
-          <div className="p-1 sm:p-2 lg:p-4">
+          <div className="p-1 sm:p-1 lg:p-2">
             {children}
           </div>
         </main>

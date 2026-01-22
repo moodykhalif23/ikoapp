@@ -219,8 +219,8 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
   const renderReportsContent = () => (
     <>
-      <div className="mb-6 sm:mb-8 mt-6">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1 sm:mb-2">Reports Dashboard</h1>
+      <div className="mb-4 sm:mb-6 mt-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports Dashboard</h1>
         <p className="text-xs sm:text-base text-muted-foreground">View and analyze production reports</p>
       </div>
 
@@ -556,9 +556,9 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
     >
       {activeTab === "reports" && renderReportsContent()}
       {activeTab === "analytics" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Analytics</h1>
+        <div className="space-y-6 mt-2">
+          <div className="mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
             <p className="text-muted-foreground">Production data insights and trends</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -619,9 +619,9 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
         </div>
       )}
       {activeTab === "dashboard" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Overview Dashboard</h1>
+        <div className="space-y-6 mt-2">
+          <div className="mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Overview Dashboard</h1>
             <p className="text-muted-foreground">Production reporting overview and insights</p>
           </div>
           
