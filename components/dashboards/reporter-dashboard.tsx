@@ -250,17 +250,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       {/* Show forms within the dashboard */}
       {showPowerInterruption && (
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => setShowPowerInterruption(false)}
-              className="gap-2 hover:bg-muted"
-            >
-              <ArrowBack sx={{ fontSize: 16 }} />
-              Back to Dashboard
-            </Button>
-            <h2 className="text-2xl font-bold text-brand-contrast">Power Interruption Report</h2>
-          </div>
+          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Power Interruption Report</h2>
           <StandalonePowerInterruption
             user={user}
             onBack={() => setShowPowerInterruption(false)}
@@ -271,17 +261,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showDailyProduction && (
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => setShowDailyProduction(false)}
-              className="gap-2 hover:bg-muted"
-            >
-              <ArrowBack sx={{ fontSize: 16 }} />
-              Back to Dashboard
-            </Button>
-            <h2 className="text-2xl font-bold text-brand-contrast">Daily Production Report</h2>
-          </div>
+          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Daily Production Report</h2>
           <StandaloneDailyProduction
             user={user}
             onBack={() => setShowDailyProduction(false)}
@@ -292,17 +272,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showIncidentReport && (
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => setShowIncidentReport(false)}
-              className="gap-2 hover:bg-muted"
-            >
-              <ArrowBack sx={{ fontSize: 16 }} />
-              Back to Dashboard
-            </Button>
-            <h2 className="text-2xl font-bold text-brand-contrast">Incident Report</h2>
-          </div>
+          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Incident Report</h2>
           <StandaloneIncidentReport
             user={user}
             onBack={() => setShowIncidentReport(false)}
@@ -313,17 +283,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showEmployeePlanning && (
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => setShowEmployeePlanning(false)}
-              className="gap-2 hover:bg-muted"
-            >
-              <ArrowBack sx={{ fontSize: 16 }} />
-              Back to Dashboard
-            </Button>
-            <h2 className="text-2xl font-bold text-brand-contrast">Employee Planning</h2>
-          </div>
+          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Employee Planning</h2>
           <StandaloneEmployeePlanning
             user={user}
             onBack={() => setShowEmployeePlanning(false)}
@@ -334,17 +294,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showSiteVisuals && (
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => setShowSiteVisuals(false)}
-              className="gap-2 hover:bg-muted"
-            >
-              <ArrowBack sx={{ fontSize: 16 }} />
-              Back to Dashboard
-            </Button>
-            <h2 className="text-2xl font-bold text-brand-contrast">Site Visuals</h2>
-          </div>
+          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Site Visuals</h2>
           <StandaloneSiteVisuals
             user={user}
             onBack={() => setShowSiteVisuals(false)}
@@ -355,17 +305,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showNewReport && (
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => setShowNewReport(false)}
-              className="gap-2 hover:bg-muted"
-            >
-              <ArrowBack sx={{ fontSize: 16 }} />
-              Back to Dashboard
-            </Button>
-            <h2 className="text-2xl font-bold text-brand-contrast">Comprehensive Report</h2>
-          </div>
+          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Comprehensive Report</h2>
           <ReportingFlow onSubmit={handleReportSubmit} user={user} />
         </div>
       )}
