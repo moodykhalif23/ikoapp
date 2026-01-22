@@ -38,9 +38,14 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   const [loading, setLoading] = useState(false)
 
   const fetchNotifications = async () => {
+    // Don't fetch if user is not available
+    if (!user?._id || !user?.role) {
+      return
+    }
+    
     try {
       setLoading(true)
-      const response = await fetch(`/api/notifications?role=${user?.role}&userId=${user?._id}&limit=10`)
+      const response = await fetch(`/api/notifications?role=${user.role}&userId=${user._id}&limit=10`)
       if (response.ok) {
         const data = await response.json()
         setNotifications(data.notifications || [])
@@ -105,13 +110,17 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   }
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && user?._id && user?.role) {
       fetchNotifications()
     }
-  }, [isOpen, user])
+  }, [isOpen, user?._id, user?.role])
 
-  // Poll for new notifications every 30 seconds
+  // Poll for new notifications every 30 seconds (only when user is available)
   useEffect(() => {
+    if (!user?._id || !user?.role) {
+      return
+    }
+
     const interval = setInterval(() => {
       if (!isOpen) {
         fetchNotifications()
@@ -119,7 +128,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     }, 30000)
 
     return () => clearInterval(interval)
-  }, [isOpen, user])
+  }, [user?._id, user?.role]) // Remove isOpen from dependencies to prevent recreation
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
