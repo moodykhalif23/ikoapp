@@ -5,12 +5,12 @@ import { Employee } from '@/lib/models'
 // PUT - Update employee
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
     
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     const { name, employeeId, phone, employeeType, hireDate, status } = body
 
@@ -71,12 +71,12 @@ export async function PUT(
 // DELETE - Delete employee
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
     
-    const { id } = params
+    const { id } = await params
 
     const deletedEmployee = await Employee.findByIdAndDelete(id)
 

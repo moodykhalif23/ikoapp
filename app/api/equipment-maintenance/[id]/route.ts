@@ -5,7 +5,7 @@ import { EquipmentMaintenance } from '@/lib/models'
 // Update maintenance record
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
@@ -21,8 +21,9 @@ export async function PUT(
       updates.completedDate = new Date(updates.completedDate)
     }
 
+    const resolvedParams = await params
     const maintenanceRecord = await EquipmentMaintenance.findByIdAndUpdate(
-      params.id,
+      resolvedParams.id,
       updates,
       {
         new: true,
@@ -55,12 +56,13 @@ export async function PUT(
 // Delete maintenance record
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const maintenanceRecord = await EquipmentMaintenance.findByIdAndDelete(params.id)
+    const resolvedParams = await params
+    const maintenanceRecord = await EquipmentMaintenance.findByIdAndDelete(resolvedParams.id)
 
     if (!maintenanceRecord) {
       return NextResponse.json(

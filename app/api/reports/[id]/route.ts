@@ -6,12 +6,13 @@ import { createReportNotification } from '@/lib/notification-utils'
 // GET /api/reports/[id] - Get a specific report
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const report = await Report.findOne({ id: params.id })
+    const resolvedParams = await params
+    const report = await Report.findOne({ id: resolvedParams.id })
       .populate('powerInterruptionId')
       .populate('siteVisualId')
       .populate('dailyProductionId')
@@ -38,7 +39,7 @@ export async function GET(
 // PUT /api/reports/[id] - Update a report
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
@@ -46,7 +47,8 @@ export async function PUT(
     const body = await request.json()
     const { status, reviewedBy, approvedBy, ...updateData } = body
 
-    const report = await Report.findOne({ id: params.id })
+    const resolvedParams = await params
+    const report = await Report.findOne({ id: resolvedParams.id })
 
     if (!report) {
       return NextResponse.json(
@@ -109,12 +111,13 @@ export async function PUT(
 // DELETE /api/reports/[id] - Delete a report
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const report = await Report.findOne({ id: params.id })
+    const resolvedParams = await params
+    const report = await Report.findOne({ id: resolvedParams.id })
 
     if (!report) {
       return NextResponse.json(
