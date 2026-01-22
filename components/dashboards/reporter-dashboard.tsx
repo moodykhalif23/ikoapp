@@ -33,6 +33,11 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   const [reports, setReports] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("dashboard")
+  
+  // Filter states for reports page
+  const [dateFilter, setDateFilter] = useState<string>("all")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [sortBy, setSortBy] = useState<string>("newest")
 
   // Fetch user's reports from database
   useEffect(() => {
@@ -122,7 +127,59 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
     setShowEmployeePlanning(false)
     setShowSiteVisuals(false)
     setSelectedReport(null)
+    
+    // Reset filters when switching to reports tab
+    if (tab === "reports") {
+      setDateFilter("all")
+      setStatusFilter("all")
+      setSortBy("newest")
+    }
   }
+
+  // Filter reports based on current filters
+  const filteredReports = reports.filter(report => {
+    // Status filter
+    if (statusFilter !== "all" && report.status !== statusFilter) {
+      return false
+    }
+    
+    // Date filter
+    if (dateFilter !== "all") {
+      const reportDate = new Date(report.date || report.createdAt)
+      const now = new Date()
+      
+      switch (dateFilter) {
+        case "today":
+          if (reportDate.toDateString() !== now.toDateString()) return false
+          break
+        case "week":
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+          if (reportDate < weekAgo) return false
+          break
+        case "month":
+          if (reportDate.getMonth() !== now.getMonth() || reportDate.getFullYear() !== now.getFullYear()) return false
+          break
+        case "quarter":
+          const currentQuarter = Math.floor(now.getMonth() / 3)
+          const reportQuarter = Math.floor(reportDate.getMonth() / 3)
+          if (reportQuarter !== currentQuarter || reportDate.getFullYear() !== now.getFullYear()) return false
+          break
+      }
+    }
+    
+    return true
+  }).sort((a, b) => {
+    // Sort reports based on sortBy selection
+    switch (sortBy) {
+      case "oldest":
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      case "date":
+        return new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime()
+      case "newest":
+      default:
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    }
+  })
 
   const renderReportsContent = () => (
     <>
@@ -416,12 +473,205 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       {activeTab === "reports" && (
         <div className="space-y-6 mt-6">
           <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Reports Dashboard</h1>
-            <p className="text-muted-foreground">View and analyze production reports</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Your Reports</h1>
+            <p className="text-muted-foreground">View and manage your submitted reports</p>
           </div>
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Reports functionality has been moved to the Dashboard tab.</p>
-          </div>
+
+          {/* Filters Section */}
+          <Card className="card-brand card-elevated mb-6">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                <Description sx={{ fontSize: 20 }} />
+                Filter Reports
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Date Filter */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">Date Range</label>
+                    <select
+                      value={dateFilter}
+                      onChange={(e) => setDateFilter(e.target.value)}
+                      className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">This Week</option>
+                      <option value="month">This Month</option>
+                      <option value="quarter">This Quarter</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">Status</label>
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="draft">Draft</option>
+                      <option value="submitted">Submitted</option>
+                      <option value="reviewed">Reviewed</option>
+                      <option value="approved">Approved</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">Sort By</label>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                      <option value="date">Report Date</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setDateFilter("all")
+                        setStatusFilter("all")
+                        setSortBy("newest")
+                      }}
+                      className="text-sm w-full h-10"
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Results Count */}
+              <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
+                Showing {filteredReports.length} of {reports.length} reports
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Reports Grid */}
+          {filteredReports.length === 0 ? (
+            <Card className="card-brand card-elevated">
+              <CardContent className="text-center py-12">
+                {reports.length === 0 ? (
+                  <>
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-surface mb-4">
+                      <ChevronRight sx={{ fontSize: 32, color: "var(--brand-green)" }} />
+                    </div>
+                    <h2 className="text-xl font-semibold text-brand-contrast mb-2">No reports yet</h2>
+                    <p className="text-muted-foreground mb-6">Create your first production report to get started</p>
+                    <Button
+                      onClick={() => {
+                        setActiveTab("dashboard")
+                        setShowNewReport(true)
+                      }}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg hover:shadow-xl transition-shadow"
+                    >
+                      <Add sx={{ fontSize: 16 }} />
+                      Create First Report
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-muted-foreground mb-4">No reports found matching your filters</p>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setDateFilter("all")
+                        setStatusFilter("all")
+                        setSortBy("newest")
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredReports.map((report) => (
+                <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <CardTitle className="text-primary">{report.date}</CardTitle>
+                        <CardDescription>Report #{report.id}</CardDescription>
+                      </div>
+                      <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+                        report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
+                        report.status === 'approved' ? 'bg-green-100 text-green-800' :
+                        report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
+                        report.status === 'draft' ? 'bg-gray-100 text-gray-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {report.status}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm mb-4">
+                      <p>
+                        <span className="font-medium text-brand-contrast">Power Interruptions:</span>{" "}
+                        <span className={report.powerInterruptions?.noInterruptions ? "text-green-600" : "text-orange-600"}>
+                          {report.powerInterruptions?.noInterruptions ? "None" : "Yes"}
+                        </span>
+                      </p>
+                      <p>
+                        <span className="font-medium text-brand-contrast">Submitted:</span>{" "}
+                        <span className="text-muted-foreground">
+                          {new Date(report.createdAt).toLocaleDateString()}
+                        </span>
+                      </p>
+                      <p>
+                        <span className="font-medium text-brand-contrast">Products:</span>{" "}
+                        <span className="text-primary font-medium">
+                          {report.dailyProduction?.products?.length || 0}
+                        </span>
+                      </p>
+                      {report.dailyProduction?.overallEfficiency && (
+                        <p>
+                          <span className="font-medium text-brand-contrast">Efficiency:</span>{" "}
+                          <span className="text-primary font-medium">
+                            {report.dailyProduction.overallEfficiency}%
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      onClick={() => handleViewReport(report)}
+                      variant="outline"
+                      className="w-full gap-2 bg-transparent hover:bg-primary/5 border-brand-subtle hover-brand focus-brand"
+                    >
+                      <Visibility sx={{ fontSize: 16 }} />
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Report Detail View */}
+          {selectedReport && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+              <div className="w-full max-w-6xl max-h-[90vh] bg-background rounded-lg shadow-xl overflow-hidden">
+                <ScrollableReportView 
+                  report={selectedReport} 
+                  onBack={handleBackToReports}
+                  showComments={false}
+                />
+              </div>
+            </div>
+          )}
         </div>
       )}
       {activeTab === "time-tracking" && (
