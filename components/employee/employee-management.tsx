@@ -39,8 +39,6 @@ interface Employee {
   name: string
   employeeId: string
   phone?: string
-  employeeType: 'permanent' | 'casual'
-  hireDate?: string
   status: 'active' | 'inactive'
   createdAt: string
 }
@@ -49,8 +47,6 @@ interface EmployeeFormData {
   name: string
   employeeId: string
   phone: string
-  employeeType: 'permanent' | 'casual'
-  hireDate: string
   status: 'active' | 'inactive'
 }
 
@@ -58,8 +54,6 @@ const initialFormData: EmployeeFormData = {
   name: '',
   employeeId: '',
   phone: '',
-  employeeType: 'permanent',
-  hireDate: new Date().toISOString().split('T')[0],
   status: 'active'
 }
 
@@ -102,8 +96,6 @@ export default function EmployeeManagement() {
         name: employee.name || '',
         employeeId: employee.employeeId || '',
         phone: employee.phone || '',
-        employeeType: employee.employeeType || 'permanent',
-        hireDate: employee.hireDate ? employee.hireDate.split('T')[0] : new Date().toISOString().split('T')[0],
         status: employee.status || 'active'
       })
     } else {
@@ -243,8 +235,6 @@ export default function EmployeeManagement() {
               <TableCell sx={{ minWidth: 120 }}><strong>Name</strong></TableCell>
               <TableCell sx={{ minWidth: 100, display: { xs: 'none', sm: 'table-cell' } }}><strong>Employee ID</strong></TableCell>
               <TableCell sx={{ minWidth: 120, display: { xs: 'none', md: 'table-cell' } }}><strong>Phone</strong></TableCell>
-              <TableCell sx={{ minWidth: 100, display: { xs: 'none', sm: 'table-cell' } }}><strong>Type</strong></TableCell>
-              <TableCell sx={{ minWidth: 100, display: { xs: 'none', lg: 'table-cell' } }}><strong>Hire Date</strong></TableCell>
               <TableCell sx={{ minWidth: 80 }}><strong>Status</strong></TableCell>
               <TableCell sx={{ minWidth: 100 }}><strong>Actions</strong></TableCell>
             </TableRow>
@@ -252,7 +242,7 @@ export default function EmployeeManagement() {
           <TableBody>
             {employees.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
                   <Typography variant="body1" color="text.secondary">
                     No employees found. Click "Add Employee" to get started.
                   </Typography>
@@ -289,16 +279,6 @@ export default function EmployeeManagement() {
                   </TableCell>
                   <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                     {employee.phone || 'N/A'}
-                  </TableCell>
-                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-                    <Chip 
-                      label={employee.employeeType} 
-                      size="small"
-                      color={employee.employeeType === 'permanent' ? 'primary' : 'default'}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
-                    {employee.hireDate ? new Date(employee.hireDate).toLocaleDateString() : 'N/A'}
                   </TableCell>
                   <TableCell>
                     <Chip 
@@ -376,28 +356,6 @@ export default function EmployeeManagement() {
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               fullWidth
               size="medium"
-            />
-            
-            <FormControl fullWidth size="medium">
-              <InputLabel>Employee Type</InputLabel>
-              <Select
-                value={formData.employeeType || 'permanent'}
-                onChange={(e) => setFormData({ ...formData, employeeType: e.target.value as 'permanent' | 'casual' })}
-                label="Employee Type"
-              >
-                <MenuItem value="permanent">Permanent</MenuItem>
-                <MenuItem value="casual">Casual</MenuItem>
-              </Select>
-            </FormControl>
-            
-            <TextField
-              label="Hire Date"
-              type="date"
-              value={formData.hireDate || ''}
-              onChange={(e) => setFormData({ ...formData, hireDate: e.target.value })}
-              fullWidth
-              size="medium"
-              InputLabelProps={{ shrink: true }}
             />
             
             <FormControl fullWidth size="medium">
