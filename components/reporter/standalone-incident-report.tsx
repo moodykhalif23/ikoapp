@@ -54,34 +54,20 @@ export default function StandaloneIncidentReport({ user, onBack, onSubmit }: Sta
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" onClick={onBack} className="gap-2">
-          <ArrowLeft size={16} />
-          Back to Dashboard
-        </Button>
-      </div>
-
       {/* Title */}
       <div className="text-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           Incident Report
         </h1>
-        <p className="text-muted-foreground">
-          Report safety incidents, equipment failures, or other important events
-        </p>
       </div>
 
       {/* Form */}
       <Card className="card-brand card-elevated">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2">
             <AlertTriangle size={20} className="text-orange-500" />
             Incident Details
           </CardTitle>
-          <CardDescription>
-            Provide detailed information about the incident for proper documentation and follow-up
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <IncidentReportForm

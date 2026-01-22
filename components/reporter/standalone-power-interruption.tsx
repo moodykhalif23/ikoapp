@@ -127,13 +127,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
   if (submitted) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" onClick={onBack} className="gap-2 hover:bg-muted">
-            <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
-          </Button>
-        </div>
-
         <div className="flex items-center justify-center min-h-96">
           <div className="text-center space-y-6 max-w-md">
             <div className="flex justify-center">
@@ -169,14 +162,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <Button variant="ghost" onClick={onBack} className="gap-2 hover:bg-muted">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
-        </Button>
-      </div>
-
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
@@ -185,14 +170,11 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
             </div>
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Power Interruption Report</h1>
-          <p className="text-muted-foreground">
-            Report power interruptions as they occur - no need to wait for the daily report
-          </p>
         </div>
 
         <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle className="text-primary flex items-center gap-2">
+          <CardHeader className="text-center">
+            <CardTitle className="text-primary flex items-center justify-center gap-2">
               <PowerIcon sx={{ fontSize: 20 }} />
               Power Interruption Details
             </CardTitle>

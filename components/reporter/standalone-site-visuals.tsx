@@ -54,34 +54,20 @@ export default function StandaloneSiteVisuals({ user, onBack, onSubmit }: Standa
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" onClick={onBack} className="gap-2">
-          <ArrowLeft size={16} />
-          Back to Dashboard
-        </Button>
-      </div>
-
       {/* Title */}
       <div className="text-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           Site Visual Documentation
         </h1>
-        <p className="text-muted-foreground">
-          Upload photos and videos of site conditions and equipment
-        </p>
       </div>
 
       {/* Form */}
       <Card className="card-brand card-elevated">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2">
             <Camera size={20} className="text-primary" />
             Visual Documentation
           </CardTitle>
-          <CardDescription>
-            Capture and upload images and videos to document site conditions, equipment status, and work progress
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <SiteVisualsForm
