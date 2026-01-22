@@ -6,6 +6,5 @@ export { default as DailyProduction, type IDailyProduction } from './DailyProduc
 export { default as IncidentReport, type IIncidentReport } from './IncidentReport'
 export { default as EmployeePlanning, type IEmployeePlanning } from './EmployeePlanning'
 export { default as Machine, type IMachine } from './Machine'
-export { default as EmployeeTimeEntry, type IEmployeeTimeEntry } from './EmployeeTimeEntry'
 export { default as EquipmentMaintenance, type IEquipmentMaintenance } from './EquipmentMaintenance'
 export { default as Notification, type INotification } from './Notification'

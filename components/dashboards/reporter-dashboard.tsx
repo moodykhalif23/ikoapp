@@ -12,7 +12,6 @@ import StandaloneDailyProduction from "@/components/reporter/standalone-daily-pr
 import StandaloneIncidentReport from "@/components/reporter/standalone-incident-report"
 import StandaloneEmployeePlanning from "@/components/reporter/standalone-employee-planning"
 import StandaloneSiteVisuals from "@/components/reporter/standalone-site-visuals"
-import TimeClock from "@/components/time-tracking/time-clock"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 
 interface ReporterDashboardProps {

@@ -10,7 +10,6 @@ import WarningIcon from "@mui/icons-material/Warning"
 import DownloadIcon from "@mui/icons-material/Download"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
-import TimeTrackingDashboard from "@/components/time-tracking/time-tracking-dashboard"
 import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
@@ -679,15 +678,6 @@ ${new Date().toLocaleString()}
             <p className="text-muted-foreground">Monitor and manage production equipment</p>
           </div>
           <EquipmentDashboard />
-        </div>
-      )}
-      {activeTab === "time-tracking" && (
-        <div className="space-y-6 mt-6">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Time Tracking</h1>
-            <p className="text-muted-foreground">Monitor employee time and attendance</p>
-          </div>
-          <TimeTrackingDashboard users={[]} />
         </div>
       )}
       {activeTab === "alerts" && (
