@@ -64,7 +64,7 @@ export default function ScrollableReportView({
   return (
     <div className="h-full flex flex-col">
       {/* Header - Fixed */}
-      <div className="flex-shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex-shrink-0 border-b bg-white backdrop-blur supports-[backdrop-filter]:bg-white/95">
         <div className="flex items-center justify-between gap-4 p-4 sm:p-6">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <Button 
@@ -99,8 +99,8 @@ export default function ScrollableReportView({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-4 sm:p-6 space-y-6">
+      <div className="flex-1 overflow-y-auto bg-white">
+        <div className="p-4 sm:p-6 space-y-6 pb-24">
           
           {/* Report Overview */}
           <Card className="border-border/50">

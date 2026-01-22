@@ -566,7 +566,7 @@ ${new Date().toLocaleString()}
       {/* Report Detail Modal/Panel */}
       {selectedReport && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-6xl h-[90vh] bg-background rounded-lg shadow-xl overflow-hidden">
+          <div className="w-full max-w-6xl h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden">
             <ScrollableReportView 
               report={selectedReport} 
               onBack={() => setSelectedReport(null)}
