@@ -253,7 +253,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
                     filterStatus !== "all" 
                       ? "bg-green-50 text-green-800" 
                       : "bg-background"
@@ -273,7 +273,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <select
                   value={filterReporter}
                   onChange={(e) => setFilterReporter(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
                     filterReporter !== "all" 
                       ? "bg-green-50 text-green-800" 
                       : "bg-background"
@@ -292,7 +292,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <select
                   value={filterDate}
                   onChange={(e) => setFilterDate(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
                     filterDate !== "all" 
                       ? "bg-green-50 text-green-800" 
                       : "bg-background"
