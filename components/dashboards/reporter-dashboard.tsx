@@ -137,6 +137,48 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
     }
   }
 
+  // Helper function to close all forms
+  const closeAllForms = () => {
+    setShowNewReport(false)
+    setShowPowerInterruption(false)
+    setShowDailyProduction(false)
+    setShowIncidentReport(false)
+    setShowEmployeePlanning(false)
+    setShowSiteVisuals(false)
+    setSelectedReport(null)
+  }
+
+  // Modified handlers to ensure only one form shows at a time
+  const handleShowPowerInterruption = () => {
+    closeAllForms()
+    setShowPowerInterruption(true)
+  }
+
+  const handleShowDailyProduction = () => {
+    closeAllForms()
+    setShowDailyProduction(true)
+  }
+
+  const handleShowIncidentReport = () => {
+    closeAllForms()
+    setShowIncidentReport(true)
+  }
+
+  const handleShowEmployeePlanning = () => {
+    closeAllForms()
+    setShowEmployeePlanning(true)
+  }
+
+  const handleShowSiteVisuals = () => {
+    closeAllForms()
+    setShowSiteVisuals(true)
+  }
+
+  const handleShowNewReport = () => {
+    closeAllForms()
+    setShowNewReport(true)
+  }
+
   // Filter reports based on current filters
   const filteredReports = reports.filter(report => {
     // Status filter
@@ -194,7 +236,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       {/* Quick Report Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
         <Button
-          onClick={() => setShowPowerInterruption(true)}
+          onClick={handleShowPowerInterruption}
           variant="outline"
           className="h-20 flex-col gap-2 border-orange-200 text-orange-700 hover:bg-orange-50 hover:border-orange-300"
         >
@@ -203,7 +245,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </Button>
 
         <Button
-          onClick={() => setShowDailyProduction(true)}
+          onClick={handleShowDailyProduction}
           variant="outline"
           className="h-20 flex-col gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300"
         >
@@ -212,7 +254,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </Button>
 
         <Button
-          onClick={() => setShowIncidentReport(true)}
+          onClick={handleShowIncidentReport}
           variant="outline"
           className="h-20 flex-col gap-2 border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300"
         >
@@ -221,7 +263,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </Button>
 
         <Button
-          onClick={() => setShowEmployeePlanning(true)}
+          onClick={handleShowEmployeePlanning}
           variant="outline"
           className="h-20 flex-col gap-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300"
         >
@@ -230,7 +272,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </Button>
 
         <Button
-          onClick={() => setShowSiteVisuals(true)}
+          onClick={handleShowSiteVisuals}
           variant="outline"
           className="h-20 flex-col gap-2 border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300"
         >
@@ -239,7 +281,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </Button>
 
         <Button
-          onClick={() => setShowNewReport(true)}
+          onClick={handleShowNewReport}
           className="h-20 flex-col gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
         >
           <Description sx={{ fontSize: 20 }} />
@@ -250,7 +292,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       {/* Show forms within the dashboard */}
       {showPowerInterruption && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Power Interruption Report</h2>
           <StandalonePowerInterruption
             user={user}
             onBack={() => setShowPowerInterruption(false)}
@@ -261,7 +302,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showDailyProduction && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Daily Production Report</h2>
           <StandaloneDailyProduction
             user={user}
             onBack={() => setShowDailyProduction(false)}
@@ -272,7 +312,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showIncidentReport && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Incident Report</h2>
           <StandaloneIncidentReport
             user={user}
             onBack={() => setShowIncidentReport(false)}
@@ -283,7 +322,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showEmployeePlanning && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Employee Planning</h2>
           <StandaloneEmployeePlanning
             user={user}
             onBack={() => setShowEmployeePlanning(false)}
@@ -294,7 +332,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showSiteVisuals && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Site Visuals</h2>
           <StandaloneSiteVisuals
             user={user}
             onBack={() => setShowSiteVisuals(false)}
@@ -305,7 +342,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
 
       {showNewReport && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-brand-contrast mb-6">Comprehensive Report</h2>
           <ReportingFlow onSubmit={handleReportSubmit} user={user} />
         </div>
       )}
@@ -339,7 +375,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                 <h2 className="text-xl font-semibold text-brand-contrast mb-2">No reports yet</h2>
                 <p className="text-muted-foreground mb-6">Create your first production report to get started</p>
                 <Button
-                  onClick={() => setShowNewReport(true)}
+                  onClick={handleShowNewReport}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg hover:shadow-xl transition-shadow"
                 >
                   <Add sx={{ fontSize: 16 }} />
@@ -554,7 +590,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     <Button
                       onClick={() => {
                         setActiveTab("dashboard")
-                        setShowNewReport(true)
+                        handleShowNewReport()
                       }}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg hover:shadow-xl transition-shadow"
                     >
