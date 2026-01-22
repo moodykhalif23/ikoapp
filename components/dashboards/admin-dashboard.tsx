@@ -275,9 +275,8 @@ ${new Date().toLocaleString()}
       {/* Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 pb-4 sm:pb-6">
         <Card className="card-brand card-elevated">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 text-center">
             <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">Common administrative tasks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 sm:space-y-3">
             <Button className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10" variant="outline">
@@ -296,9 +295,8 @@ ${new Date().toLocaleString()}
         </Card>
 
         <Card className="card-brand card-elevated">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 text-center">
             <CardTitle className="text-base sm:text-lg">Recent Activity</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">Latest system events</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
@@ -319,9 +317,8 @@ ${new Date().toLocaleString()}
         </Card>
 
         <Card className="card-brand card-elevated">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 text-center">
             <CardTitle className="text-base sm:text-lg">System Status</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">Current system health</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 sm:space-y-3">
