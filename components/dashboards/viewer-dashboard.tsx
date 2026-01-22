@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { TrendingUp, Download, Play, Send } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/simple-tabs"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import PeopleIcon from "@mui/icons-material/People"
 import WarningIcon from "@mui/icons-material/Warning"
 import DownloadIcon from "@mui/icons-material/Download"
@@ -239,8 +238,8 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {/* Search */}
+          <div className="space-y-4">
+            {/* Search - Full width on top */}
             <div className="relative">
               <SearchIcon sx={{ fontSize: 16 }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -251,64 +250,76 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               />
             </div>
             
-            {/* Status Filter */}
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="text-sm">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="submitted">Submitted</SelectItem>
-                <SelectItem value="reviewed">Reviewed</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Filter dropdowns in a row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Status Filter */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Status</label>
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                >
+                  <option value="all">All Status</option>
+                  <option value="draft">Draft</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="reviewed">Reviewed</option>
+                  <option value="approved">Approved</option>
+                </select>
+              </div>
 
-            {/* Reporter Filter */}
-            <Select value={filterReporter} onValueChange={setFilterReporter}>
-              <SelectTrigger className="text-sm">
-                <SelectValue placeholder="All Reporters" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Reporters</SelectItem>
-                {uniqueReporters.map(reporter => (
-                  <SelectItem key={reporter} value={reporter}>{reporter}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {/* Reporter Filter */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Reporter</label>
+                <select
+                  value={filterReporter}
+                  onChange={(e) => setFilterReporter(e.target.value)}
+                  className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                >
+                  <option value="all">All Reporters</option>
+                  {uniqueReporters.map(reporter => (
+                    <option key={reporter} value={reporter}>{reporter}</option>
+                  ))}
+                </select>
+              </div>
 
-            {/* Date Filter */}
-            <Select value={filterDate} onValueChange={setFilterDate}>
-              <SelectTrigger className="text-sm">
-                <SelectValue placeholder="All Time" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Time</SelectItem>
-                <SelectItem value="today">Today</SelectItem>
-                <SelectItem value="week">This Week</SelectItem>
-                <SelectItem value="month">This Month</SelectItem>
-              </SelectContent>
-            </Select>
+              {/* Date Filter */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Date Range</label>
+                <select
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  className="w-full h-10 px-3 text-sm border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                >
+                  <option value="all">All Time</option>
+                  <option value="today">Today</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                </select>
+              </div>
 
-            {/* Clear Filters */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setFilterStatus("all")
-                setFilterReporter("all")
-                setFilterDate("all")
-                setSearchQuery("")
-              }}
-              className="text-sm"
-            >
-              Clear Filters
-            </Button>
+              {/* Clear Filters */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setFilterStatus("all")
+                    setFilterReporter("all")
+                    setFilterDate("all")
+                    setSearchQuery("")
+                  }}
+                  className="text-sm w-full h-10"
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            </div>
           </div>
           
           {/* Results Count */}
-          <div className="mt-4 text-sm text-muted-foreground">
+          <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
             Showing {filteredReports.length} of {allReports.length} reports
           </div>
         </CardContent>
@@ -337,22 +348,22 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
           {filteredReports.map((report) => (
             <Card 
               key={report.id} 
-              className={`card-brand card-elevated cursor-pointer transition-all hover:shadow-lg ${
+              className={`card-brand card-elevated cursor-pointer transition-all hover:shadow-lg min-h-[280px] flex flex-col ${
                 selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
               }`}
               onClick={() => handleReportSelect(report)}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
+              <CardHeader className="pb-3 flex-shrink-0">
+                <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <CardTitle className="text-base font-semibold truncate">
+                    <CardTitle className="text-base font-semibold line-clamp-1">
                       Report {report.id}
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
-                      {report.reportedBy}
+                    <CardDescription className="text-sm mt-1 line-clamp-1">
+                      By {report.reportedBy}
                     </CardDescription>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
                     report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                     report.status === 'approved' ? 'bg-green-100 text-green-800' :
                     report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
@@ -362,31 +373,37 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="text-sm text-muted-foreground">
-                    <p>Date: {report.date}</p>
+              <CardContent className="flex-1 flex flex-col justify-between">
+                <div className="space-y-3 flex-1">
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    <p className="line-clamp-1">
+                      <span className="font-medium">Date:</span> {report.date}
+                    </p>
                     {report.dailyProduction?.overallEfficiency && (
-                      <p>Efficiency: {report.dailyProduction.overallEfficiency}%</p>
+                      <p className="line-clamp-1">
+                        <span className="font-medium">Efficiency:</span> {report.dailyProduction.overallEfficiency}%
+                      </p>
                     )}
                   </div>
                   
                   {/* Quick Stats */}
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-muted rounded p-2">
-                      <p className="text-muted-foreground">Products</p>
-                      <p className="font-semibold">
+                    <div className="bg-muted rounded p-2 text-center">
+                      <p className="text-muted-foreground mb-1">Products</p>
+                      <p className="font-semibold text-lg">
                         {report.dailyProduction?.products?.length || 0}
                       </p>
                     </div>
-                    <div className="bg-muted rounded p-2">
-                      <p className="text-muted-foreground">Incidents</p>
-                      <p className="font-semibold">
-                        {report.incidentReport?.incidentType !== 'None' ? '1' : '0'}
+                    <div className="bg-muted rounded p-2 text-center">
+                      <p className="text-muted-foreground mb-1">Incidents</p>
+                      <p className="font-semibold text-lg">
+                        {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
                       </p>
                     </div>
                   </div>
+                </div>
 
+                <div className="mt-4 pt-3 border-t">
                   <Button
                     size="sm"
                     variant="outline"
