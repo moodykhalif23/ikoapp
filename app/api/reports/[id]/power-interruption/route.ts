@@ -5,12 +5,13 @@ import { Report, PowerInterruption } from '@/lib/models'
 // GET /api/reports/[id]/power-interruption - Get power interruption data
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const report = await Report.findOne({ id: params.id })
+    const resolvedParams = await params
+    const report = await Report.findOne({ id: resolvedParams.id })
     if (!report) {
       return NextResponse.json(
         { error: 'Report not found' },
@@ -36,12 +37,13 @@ export async function GET(
 // POST /api/reports/[id]/power-interruption - Create/update power interruption data
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const report = await Report.findOne({ id: params.id })
+    const resolvedParams = await params
+    const report = await Report.findOne({ id: resolvedParams.id })
     if (!report) {
       return NextResponse.json(
         { error: 'Report not found' },
@@ -86,12 +88,13 @@ export async function POST(
 // DELETE /api/reports/[id]/power-interruption - Delete power interruption data
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const report = await Report.findOne({ id: params.id })
+    const resolvedParams = await params
+    const report = await Report.findOne({ id: resolvedParams.id })
     if (!report) {
       return NextResponse.json(
         { error: 'Report not found' },

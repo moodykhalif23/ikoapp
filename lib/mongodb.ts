@@ -30,7 +30,7 @@ async function connectToDatabase() {
       socketTimeoutMS: 45000,
     }
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
       console.log('Connected to MongoDB')
       return mongoose
     }).catch((error) => {

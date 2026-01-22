@@ -108,8 +108,8 @@ ReportSchema.virtual('isComplete').get(function() {
 })
 
 // Pre-save middleware to generate unique ID
-ReportSchema.pre('save', async function(next) {
-  const report = this as IReport
+ReportSchema.pre('save', async function() {
+  const report = this as unknown as IReport
   if (this.isNew && !report.id) {
     let counter = 0
     let uniqueId
@@ -119,16 +119,14 @@ ReportSchema.pre('save', async function(next) {
     } while (await mongoose.models.Report.findOne({ id: uniqueId }))
     report.id = uniqueId
   }
-  next()
 })
 
 // Update status when submitted
-ReportSchema.pre('save', function(next) {
-  const report = this as IReport
+ReportSchema.pre('save', function() {
+  const report = this as unknown as IReport
   if (report.isModified('submittedAt') && report.submittedAt && !report.status) {
     report.status = 'submitted'
   }
-  next()
 })
 
 export default mongoose.models.Report || mongoose.model<IReport>('Report', ReportSchema)

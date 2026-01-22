@@ -79,16 +79,14 @@ const DailyProductionSchema: Schema = new Schema({
 })
 
 // Calculate totals before saving
-DailyProductionSchema.pre('save', function(next) {
-  const doc = this as IDailyProduction
+DailyProductionSchema.pre('save', function() {
+  const doc = this as unknown as IDailyProduction
 
   if (doc.machineProductions && doc.machineProductions.length > 0) {
     doc.totalProduced = doc.machineProductions.reduce((sum, machine) => sum + machine.producedUnits, 0)
     doc.totalTarget = doc.machineProductions.reduce((sum, machine) => sum + machine.targetUnits, 0)
     doc.overallEfficiency = doc.totalTarget > 0 ? (doc.totalProduced / doc.totalTarget) * 100 : 0
   }
-
-  next()
 })
 
 // Index for better query performance

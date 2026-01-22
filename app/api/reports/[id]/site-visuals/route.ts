@@ -6,12 +6,13 @@ import { getReportById, handleApiError } from '@/lib/api-utils'
 // GET /api/reports/[id]/site-visuals - Get site visuals data
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const { report, error } = await getReportById(params.id)
+    const resolvedParams = await params
+    const { report, error } = await getReportById(resolvedParams.id)
     if (error) return error
 
     if (!report.siteVisualId) {
@@ -28,12 +29,13 @@ export async function GET(
 // POST /api/reports/[id]/site-visuals - Create/update site visuals data
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const { report, error } = await getReportById(params.id)
+    const resolvedParams = await params
+    const { report, error } = await getReportById(resolvedParams.id)
     if (error) return error
 
     const body = await request.json()
@@ -69,12 +71,13 @@ export async function POST(
 // DELETE /api/reports/[id]/site-visuals - Delete site visuals data
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase()
 
-    const { report, error } = await getReportById(params.id)
+    const resolvedParams = await params
+    const { report, error } = await getReportById(resolvedParams.id)
     if (error) return error
 
     if (report.siteVisualId) {
