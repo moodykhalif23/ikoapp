@@ -22,7 +22,9 @@ import {
   Settings,
   TrendingUp,
   Activity,
-  Zap
+  Zap,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -56,6 +58,7 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
   const [priorityFilter, setPriorityFilter] = useState("all")
   const [showAddMaintenance, setShowAddMaintenance] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState<MaintenanceRecord | null>(null)
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
 
   // Form states
   const [newMaintenance, setNewMaintenance] = useState({
@@ -245,104 +248,140 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
       {/* Filters Section */}
       <Card className="card-brand card-elevated mb-6">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-            <Filter size={20} />
-            Filters
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+              <Filter size={20} />
+              Filters
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFiltersExpanded(!filtersExpanded)}
+              className="gap-2"
+            >
+              {filtersExpanded ? (
+                <>
+                  <ChevronUp size={16} />
+                  <span className="hidden sm:inline">Collapse</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  <span className="hidden sm:inline">Expand</span>
+                </>
+              )}
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {/* Search - Full width on top */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search maintenance records..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 text-sm"
-              />
-            </div>
-            
-            {/* Filter dropdowns in a row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Status Filter */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Status</label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                    statusFilter !== "all" 
-                      ? "bg-green-50 text-green-800" 
-                      : "bg-background"
-                  }`}
-                >
-                  <option value="all">All Status</option>
-                  <option value="scheduled">Scheduled</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </div>
-
-              {/* Priority Filter */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Priority</label>
-                <select
-                  value={priorityFilter}
-                  onChange={(e) => setPriorityFilter(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                    priorityFilter !== "all" 
-                      ? "bg-green-50 text-green-800" 
-                      : "bg-background"
-                  }`}
-                >
-                  <option value="all">All Priority</option>
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="critical">Critical</option>
-                </select>
-              </div>
-
-              {/* Equipment Filter */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Equipment</label>
-                <select
-                  value=""
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
-                >
-                  <option value="">All Equipment</option>
-                  {machines.map(machine => (
-                    <option key={machine._id} value={machine.name}>{machine.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Clear Filters */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setStatusFilter("all")
-                    setPriorityFilter("all")
-                    setSearchTerm("")
-                  }}
-                  className="text-sm w-full h-10"
-                >
-                  Clear Filters
-                </Button>
-              </div>
-            </div>
+        
+        {/* Always visible search bar */}
+        <CardContent className="pt-0">
+          <div className="relative">
+            <Input
+              placeholder="Search maintenance records..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-10 text-sm"
+            />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           </div>
           
-          {/* Results Count */}
-          <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
-            Showing {filteredRecords.length} of {maintenanceRecords.length} maintenance records
-          </div>
+          {/* Collapsible filter section */}
+          {filtersExpanded && (
+            <div className="space-y-4 mt-4">
+              {/* Filter dropdowns in a row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Status Filter */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Status</label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      statusFilter !== "all" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Status</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                {/* Priority Filter */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Priority</label>
+                  <select
+                    value={priorityFilter}
+                    onChange={(e) => setPriorityFilter(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      priorityFilter !== "all" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                  </select>
+                </div>
+
+                {/* Equipment Filter */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Equipment</label>
+                  <select
+                    value=""
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+                  >
+                    <option value="">All Equipment</option>
+                    {machines.map(machine => (
+                      <option key={machine._id} value={machine.name}>{machine.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Clear Filters */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setStatusFilter("all")
+                      setPriorityFilter("all")
+                      setSearchTerm("")
+                    }}
+                    className="text-sm w-full h-10"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Results Count */}
+              <div className="pt-4 border-t text-sm text-muted-foreground">
+                Showing {filteredRecords.length} of {maintenanceRecords.length} maintenance records
+              </div>
+            </div>
+          )}
+          
+          {/* Compact results count when collapsed */}
+          {!filtersExpanded && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              {filteredRecords.length} of {maintenanceRecords.length} records
+              {(statusFilter !== "all" || priorityFilter !== "all" || searchTerm) && (
+                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                  Filtered
+                </span>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 

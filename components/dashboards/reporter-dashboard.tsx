@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack, Warning, People, Description } from "@mui/icons-material"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import Image from "next/image"
 import ReportingFlow from "@/components/reporter/reporting-flow"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
@@ -37,6 +38,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   const [dateFilter, setDateFilter] = useState<string>("all")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [sortBy, setSortBy] = useState<string>("newest")
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
 
   // Fetch user's reports from database
   useEffect(() => {

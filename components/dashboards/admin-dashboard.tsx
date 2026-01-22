@@ -10,6 +10,7 @@ import WarningIcon from "@mui/icons-material/Warning"
 import DownloadIcon from "@mui/icons-material/Download"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
@@ -40,6 +41,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
   const [filterReporter, setFilterReporter] = useState<string>("all")
   const [filterDate, setFilterDate] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState<string>("")
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
 
   // Fetch reports data
   useEffect(() => {
@@ -361,108 +363,144 @@ ${new Date().toLocaleString()}
       {/* Filters Section */}
       <Card className="card-brand card-elevated mb-4 sm:mb-6">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-            <FilterListIcon sx={{ fontSize: 20 }} />
-            Filters
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+              <FilterListIcon sx={{ fontSize: 20 }} />
+              Filters
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFiltersExpanded(!filtersExpanded)}
+              className="gap-2"
+            >
+              {filtersExpanded ? (
+                <>
+                  <ChevronUp size={16} />
+                  <span className="hidden sm:inline">Collapse</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  <span className="hidden sm:inline">Expand</span>
+                </>
+              )}
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {/* Search - Full width on top */}
-            <div className="relative">
-              <SearchIcon sx={{ fontSize: 16 }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search reports..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 text-sm"
-              />
-            </div>
-            
-            {/* Filter dropdowns in a row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Status Filter */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Status</label>
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                    filterStatus !== "all" 
-                      ? "bg-green-50 text-green-800" 
-                      : "bg-background"
-                  }`}
-                >
-                  <option value="all">All Status</option>
-                  <option value="draft">Draft</option>
-                  <option value="submitted">Submitted</option>
-                  <option value="reviewed">Reviewed</option>
-                  <option value="approved">Approved</option>
-                </select>
-              </div>
-
-              {/* Reporter Filter */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Reporter</label>
-                <select
-                  value={filterReporter}
-                  onChange={(e) => setFilterReporter(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                    filterReporter !== "all" 
-                      ? "bg-green-50 text-green-800" 
-                      : "bg-background"
-                  }`}
-                >
-                  <option value="all">All Reporters</option>
-                  {uniqueReporters.map(reporter => (
-                    <option key={reporter} value={reporter}>{reporter}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Date Filter */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Date Range</label>
-                <select
-                  value={filterDate}
-                  onChange={(e) => setFilterDate(e.target.value)}
-                  className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                    filterDate !== "all" 
-                      ? "bg-green-50 text-green-800" 
-                      : "bg-background"
-                  }`}
-                >
-                  <option value="all">All Time</option>
-                  <option value="today">Today</option>
-                  <option value="week">This Week</option>
-                  <option value="month">This Month</option>
-                </select>
-              </div>
-
-              {/* Clear Filters */}
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setFilterStatus("all")
-                    setFilterReporter("all")
-                    setFilterDate("all")
-                    setSearchQuery("")
-                  }}
-                  className="text-sm w-full h-10"
-                >
-                  Clear Filters
-                </Button>
-              </div>
-            </div>
+        
+        {/* Always visible search bar */}
+        <CardContent className="pt-0">
+          <div className="relative">
+            <Input
+              placeholder="Search reports..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pr-10 text-sm"
+            />
+            <SearchIcon sx={{ fontSize: 16 }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           </div>
           
-          {/* Results Count */}
-          <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
-            Showing {filteredReports.length} of {reports.length} reports
-          </div>
+          {/* Collapsible filter section */}
+          {filtersExpanded && (
+            <div className="space-y-4 mt-4">
+              {/* Filter dropdowns in a row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Status Filter */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Status</label>
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      filterStatus !== "all" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="reviewed">Reviewed</option>
+                    <option value="approved">Approved</option>
+                  </select>
+                </div>
+
+                {/* Reporter Filter */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Reporter</label>
+                  <select
+                    value={filterReporter}
+                    onChange={(e) => setFilterReporter(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      filterReporter !== "all" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Reporters</option>
+                    {uniqueReporters.map(reporter => (
+                      <option key={reporter} value={reporter}>{reporter}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Date Filter */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Date Range</label>
+                  <select
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      filterDate !== "all" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                  </select>
+                </div>
+
+                {/* Clear Filters */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setFilterStatus("all")
+                      setFilterReporter("all")
+                      setFilterDate("all")
+                      setSearchQuery("")
+                    }}
+                    className="text-sm w-full h-10"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Results Count */}
+              <div className="pt-4 border-t text-sm text-muted-foreground">
+                Showing {filteredReports.length} of {reports.length} reports
+              </div>
+            </div>
+          )}
+          
+          {/* Compact results count when collapsed */}
+          {!filtersExpanded && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              {filteredReports.length} of {reports.length} reports
+              {(filterStatus !== "all" || filterReporter !== "all" || filterDate !== "all" || searchQuery) && (
+                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                  Filtered
+                </span>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 
