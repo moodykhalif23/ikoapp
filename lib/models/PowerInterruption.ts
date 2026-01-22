@@ -60,13 +60,11 @@ const PowerInterruptionSchema: Schema = new Schema({
 })
 
 // Validation for affected machines when interruptions occurred
-PowerInterruptionSchema.pre('save', function(next) {
-  const doc = this as IPowerInterruption
+PowerInterruptionSchema.pre('save', function() {
+  const doc = this as unknown as IPowerInterruption
   if (!doc.noInterruptions && (!doc.affectedMachines || doc.affectedMachines.length === 0)) {
-    const error = new Error('Affected machines are required when interruptions occurred')
-    return next(error)
+    throw new Error('Affected machines are required when interruptions occurred')
   }
-  next()
 })
 
 // Index for better query performance

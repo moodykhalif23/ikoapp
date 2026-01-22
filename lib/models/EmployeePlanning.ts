@@ -85,10 +85,9 @@ const EmployeePlanningSchema: Schema = new Schema({
 })
 
 // Calculate absent employees before saving
-EmployeePlanningSchema.pre('save', function(next) {
-  const doc = this as IEmployeePlanning
+EmployeePlanningSchema.pre('save', function() {
+  const doc = this as unknown as IEmployeePlanning
   doc.absentEmployees = doc.totalEmployees - doc.presentEmployees
-  next()
 })
 
 // Index for better query performance

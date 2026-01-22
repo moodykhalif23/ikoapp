@@ -84,13 +84,11 @@ const IncidentReportSchema: Schema = new Schema({
 })
 
 // Validation for incidents array when incidents occurred
-IncidentReportSchema.pre('save', function(next) {
-  const doc = this as IIncidentReport
+IncidentReportSchema.pre('save', function() {
+  const doc = this as unknown as IIncidentReport
   if (!doc.noIncidents && (!doc.incidents || doc.incidents.length === 0)) {
-    const error = new Error('Incidents details are required when incidents occurred')
-    return next(error)
+    throw new Error('Incidents details are required when incidents occurred')
   }
-  next()
 })
 
 // Index for better query performance
