@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -171,9 +171,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
               <PowerIcon sx={{ fontSize: 20 }} />
               Power Interruption Details
             </CardTitle>
-            <CardDescription>
-              Report Date: {new Date(formData.date).toLocaleDateString()} | Reporter: {user?.name}
-            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center space-x-3 p-4 bg-primary/5 rounded-lg border border-primary/10">
