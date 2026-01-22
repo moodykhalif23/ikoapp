@@ -439,11 +439,6 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
   const renderReportsWithMetrics = () => (
     <>
-      <div className="mb-6 sm:mb-8 mt-6">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1 sm:mb-2">Reports Dashboard</h1>
-        <p className="text-xs sm:text-base text-muted-foreground">View and analyze production reports</p>
-      </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <Card className="card-brand card-elevated">
           <CardHeader className="pb-2 sm:pb-3">
@@ -616,55 +611,6 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
           <div className="mb-6">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-2">Overview Dashboard</h1>
             <p className="text-muted-foreground">Production reporting overview and insights</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="card-brand card-elevated">
-              <CardHeader>
-                <CardTitle className="text-lg">Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-primary">
-                  {allReports.filter(r => {
-                    const reportDate = new Date(r.createdAt)
-                    const yesterday = new Date()
-                    yesterday.setDate(yesterday.getDate() - 1)
-                    return reportDate >= yesterday
-                  }).length}
-                </div>
-                <p className="text-sm text-muted-foreground">Reports in last 24h</p>
-              </CardContent>
-            </Card>
-            <Card className="card-brand card-elevated">
-              <CardHeader>
-                <CardTitle className="text-lg">System Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600">Active</div>
-                <p className="text-sm text-muted-foreground">All systems operational</p>
-              </CardContent>
-            </Card>
-            <Card className="card-brand card-elevated">
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Access</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button 
-                  onClick={() => setActiveTab("reports")}
-                  className="w-full text-sm"
-                  size="sm"
-                >
-                  View Reports
-                </Button>
-                <Button 
-                  onClick={() => setActiveTab("analytics")}
-                  variant="outline"
-                  className="w-full text-sm"
-                  size="sm"
-                >
-                  Analytics
-                </Button>
-              </CardContent>
-            </Card>
           </div>
           
           {/* Show reports with metrics when accessed from dashboard */}
