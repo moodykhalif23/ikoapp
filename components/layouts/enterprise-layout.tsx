@@ -222,7 +222,7 @@ export default function EnterpriseLayout({
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 }`}
               >
-                <Icon size={18} />
+                <Icon sx={{ fontSize: 18 }} />
                 <span className="text-xs font-medium leading-tight">{item.label}</span>
               </Button>
             )
@@ -234,7 +234,7 @@ export default function EnterpriseLayout({
               variant="ghost"
               className="flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target text-muted-foreground hover:text-foreground hover:bg-muted"
             >
-              <Menu size={18} />
+              <MenuIcon sx={{ fontSize: 18 }} />
               <span className="text-xs font-medium leading-tight">More</span>
             </Button>
           )}
@@ -246,7 +246,7 @@ export default function EnterpriseLayout({
               onClick={onLogout}
               className="flex-1 flex-col gap-1 h-14 px-1 bottom-nav-button mobile-touch-target text-muted-foreground hover:text-foreground hover:bg-muted"
             >
-              <LogOut size={18} />
+              <LogOutIcon sx={{ fontSize: 18 }} />
               <span className="text-xs font-medium leading-tight">Logout</span>
             </Button>
           )}

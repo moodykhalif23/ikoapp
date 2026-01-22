@@ -3,16 +3,16 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  LayoutDashboard,
-  FileText,
-  Users,
-  Settings,
-  Clock,
-  AlertTriangle,
-  BarChart3,
-  ChevronLeft,
-  ChevronRight
-} from "lucide-react"
+  Dashboard as LayoutDashboardIcon,
+  Description as FileTextIcon,
+  People as UsersIcon,
+  Settings as SettingsIcon,
+  Schedule as ClockIcon,
+  Warning as AlertTriangleIcon,
+  BarChart as BarChart3Icon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon
+} from "@mui/icons-material"
 import Image from "next/image"
 
 interface SidebarProps {
@@ -38,14 +38,14 @@ export default function Sidebar({
       {
         id: "dashboard",
         label: "Dashboard",
-        icon: LayoutDashboard,
+        icon: LayoutDashboardIcon,
         badge: null,
         roles: ["admin", "reporter", "viewer"]
       },
       {
         id: "reports",
         label: "Reports",
-        icon: FileText,
+        icon: FileTextIcon,
         badge: null,
         roles: ["admin", "reporter", "viewer"]
       }
