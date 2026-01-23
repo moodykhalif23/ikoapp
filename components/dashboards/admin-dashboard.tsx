@@ -35,6 +35,8 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
   const [reports, setReports] = useState<any[]>([])
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [activeTab, setActiveTab] = useState("dashboard")
+  const [employeeCount, setEmployeeCount] = useState(0)
+  const [activeMachineCount, setActiveMachineCount] = useState(0)
   
   // Filter states for reports page
   const [filterStatus, setFilterStatus] = useState<string>("all")
@@ -47,10 +49,26 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const reportsResponse = await fetch('/api/reports?limit=100')
+        const [reportsResponse, employeesResponse, machinesResponse] = await Promise.all([
+          fetch('/api/reports?limit=100'),
+          fetch('/api/employees'),
+          fetch('/api/machines?all=true')
+        ])
+
         if (reportsResponse.ok) {
           const reportsData = await reportsResponse.json()
           setReports(reportsData.reports)
+        }
+
+        if (employeesResponse.ok) {
+          const employeesData = await employeesResponse.json()
+          setEmployeeCount(Array.isArray(employeesData.data) ? employeesData.data.length : 0)
+        }
+
+        if (machinesResponse.ok) {
+          const machinesData = await machinesResponse.json()
+          const machines = Array.isArray(machinesData) ? machinesData : []
+          setActiveMachineCount(machines.filter((machine) => machine.status === 'active').length)
         }
       } catch (error) {
         console.error('Error fetching reports:', error)
@@ -225,30 +243,30 @@ ${new Date().toLocaleString()}
         <Card className="card-brand card-elevated">
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Active Reporters
+              Employees
               <PeopleIcon sx={{ fontSize: 16, color: "var(--accent)" }} />
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl sm:text-3xl font-bold text-foreground">
-              {new Set(reports.map((r) => r.reportedBy)).size}
+              {employeeCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">This month</p>
+            <p className="text-xs text-muted-foreground mt-1">Total employees</p>
           </CardContent>
         </Card>
 
         <Card className="card-brand card-elevated">
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Avg Efficiency
-              <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
+              Active Equipment
+              <Settings size={16} className="text-primary" />
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl sm:text-3xl font-bold text-foreground">
-              {reports.length}
+              {activeMachineCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Total reports</p>
+            <p className="text-xs text-muted-foreground mt-1">Active machines</p>
           </CardContent>
         </Card>
 
