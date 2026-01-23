@@ -11,9 +11,9 @@ import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import StandalonePowerInterruption from "@/components/reporter/standalone-power-interruption"
 import StandaloneDailyProduction from "@/components/reporter/standalone-daily-production"
 import StandaloneIncidentReport from "@/components/reporter/standalone-incident-report"
-import StandaloneEmployeePlanning from "@/components/reporter/standalone-employee-planning"
 import StandaloneSiteVisuals from "@/components/reporter/standalone-site-visuals"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
+import AttendanceEntry from "@/components/reporter/attendance-entry"
 
 interface ReporterDashboardProps {
   user: any
@@ -25,7 +25,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
   const [showPowerInterruption, setShowPowerInterruption] = useState(false)
   const [showDailyProduction, setShowDailyProduction] = useState(false)
   const [showIncidentReport, setShowIncidentReport] = useState(false)
-  const [showEmployeePlanning, setShowEmployeePlanning] = useState(false)
   const [showSiteVisuals, setShowSiteVisuals] = useState(false)
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [reports, setReports] = useState<any[]>([])
@@ -193,7 +192,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     setShowPowerInterruption(false)
     setShowDailyProduction(false)
     setShowIncidentReport(false)
-    setShowEmployeePlanning(false)
     setShowSiteVisuals(false)
     setSelectedReport(null)
     
@@ -210,7 +208,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     setShowPowerInterruption(false)
     setShowDailyProduction(false)
     setShowIncidentReport(false)
-    setShowEmployeePlanning(false)
     setShowSiteVisuals(false)
     setSelectedReport(null)
   }
@@ -240,13 +237,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       .catch(() => toast.error("Unable to create draft report"))
   }
 
-  const handleShowEmployeePlanning = () => {
-    closeAllForms()
-    ensureDraftReport()
-      .then((draftId) => setActiveReportId(draftId))
-      .then(() => setShowEmployeePlanning(true))
-      .catch(() => toast.error("Unable to create draft report"))
-  }
 
   const handleShowSiteVisuals = () => {
     closeAllForms()
@@ -362,7 +352,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 mt-2">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Production Reports</h1>
-          <p className="text-muted-foreground">Submit individual reports or create a comprehensive report</p>
         </div>
       </div>
 
@@ -379,7 +368,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       )}
 
       {/* Quick Report Buttons */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <Button
           onClick={handleShowPowerInterruption}
           variant="outline"
@@ -416,14 +405,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
           <span className="text-xs">Incident</span>
         </Button>
 
-        <Button
-          onClick={handleShowEmployeePlanning}
-          variant="outline"
-          className="h-20 flex-col gap-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300"
-        >
-          <People sx={{ fontSize: 20 }} />
-          <span className="text-xs">Planning</span>
-        </Button>
       </div>
 
       {/* Show forms within the dashboard */}
@@ -460,16 +441,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         </div>
       )}
 
-      {showEmployeePlanning && (
-        <div className="mb-8">
-          <StandaloneEmployeePlanning
-            user={user}
-            onBack={() => setShowEmployeePlanning(false)}
-            reportId={activeReportId || ""}
-            onSaved={handleDraftSaved}
-          />
-        </div>
-      )}
 
       {showSiteVisuals && (
         <div className="mb-8">
@@ -495,7 +466,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       )}
 
       {/* Reports Section - only show when no forms are active */}
-      {!showPowerInterruption && !showDailyProduction && !showIncidentReport && !showEmployeePlanning && !showSiteVisuals && !selectedReport && (
+      {!showPowerInterruption && !showDailyProduction && !showIncidentReport && !showSiteVisuals && !selectedReport && (
         <>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
             <div>
@@ -773,6 +744,15 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         </div>
       )}
       {activeTab === "dashboard" && renderReportsContent()}
+      {activeTab === "attendance" && (
+        <div className="space-y-6 mt-2">
+          <div className="mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Attendance</h1>
+            <p className="text-muted-foreground">Record daily sign in/out for employees</p>
+          </div>
+          <AttendanceEntry user={user} />
+        </div>
+      )}
 
     </EnterpriseLayout>
   )

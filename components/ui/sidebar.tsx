@@ -67,6 +67,13 @@ export default function Sidebar({
         roles: ["admin"]
       },
       {
+        id: "attendance",
+        label: "Attendance",
+        icon: UsersIcon,
+        badge: null,
+        roles: ["reporter"]
+      },
+      {
         id: "analytics",
         label: "Analytics",
         icon: BarChart3Icon,
