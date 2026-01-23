@@ -131,7 +131,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     placeholder="e.g., Widget A, Component B"
                     value={product.productName}
                     onChange={(e) => updateProduct(product.id, "productName", e.target.value)}
-                    className={`bg-background/80 backdrop-blur-sm ${errors[`product-${index}-name`] ? "border-red-500" : ""}`}
+                    className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors[`product-${index}-name`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-name`] && (
                     <p className="text-xs text-red-500 mt-1">{errors[`product-${index}-name`]}</p>
@@ -157,7 +157,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     placeholder="0"
                     value={product.quantity}
                     onChange={(e) => updateProduct(product.id, "quantity", e.target.value)}
-                    className={`bg-background/80 backdrop-blur-sm ${errors[`product-${index}-quantity`] ? "border-red-500" : ""}`}
+                    className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors[`product-${index}-quantity`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-quantity`] && (
                     <p className="text-xs text-red-500">{errors[`product-${index}-quantity`]}</p>
@@ -166,7 +166,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
 
                 <div className="space-y-2">
                   <label className="text-base sm:text-lg font-semibold text-foreground">Unit</label>
-                  <div className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground">
+                  <div className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground">
                     kgs
                   </div>
                 </div>
@@ -178,7 +178,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     placeholder="0"
                     value={product.employees}
                     onChange={(e) => updateProduct(product.id, "employees", e.target.value)}
-                    className={`bg-background/80 backdrop-blur-sm ${errors[`product-${index}-employees`] ? "border-red-500" : ""}`}
+                    className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors[`product-${index}-employees`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-employees`] && (
                     <p className="text-xs text-red-500">{errors[`product-${index}-employees`]}</p>
@@ -198,7 +198,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     {machines.map((machine) => (
                       <div
                         key={machine._id.toString()}
-                        className="flex items-start space-x-3 p-3 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
+                        className="flex items-start space-x-3 p-3 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                       >
                         <Checkbox
                           id={`product-${product.id}-${machine._id}`}
@@ -243,7 +243,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         <div className="space-y-2">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Quality Issues (optional)</label>
           <textarea
-            className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             placeholder="Any quality concerns or defects..."
             value={qualityIssues}
             onChange={(e) => setQualityIssues(e.target.value)}

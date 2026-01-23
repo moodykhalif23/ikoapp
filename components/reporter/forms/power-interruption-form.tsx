@@ -117,7 +117,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   type="time"
                   value={formData.occurredAt}
                   onChange={(e) => setFormData({ ...formData, occurredAt: e.target.value })}
-                  className={`bg-background/80 backdrop-blur-sm ${errors.occurredAt ? "border-red-500" : ""}`}
+                  className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors.occurredAt ? "border-red-500" : ""}`}
                 />
                 {errors.occurredAt && <p className="text-xs text-red-500">{errors.occurredAt}</p>}
               </div>
@@ -129,7 +129,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   placeholder="30"
                   value={formData.duration}
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                  className={`bg-background/80 backdrop-blur-sm ${errors.duration ? "border-red-500" : ""}`}
+                  className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors.duration ? "border-red-500" : ""}`}
                 />
                 {errors.duration && <p className="text-xs text-red-500">{errors.duration}</p>}
               </div>
@@ -141,7 +141,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   placeholder="Enter meter reading"
                   value={formData.kplcMeter}
                   onChange={(e) => setFormData({ ...formData, kplcMeter: e.target.value })}
-                  className="bg-background/80 backdrop-blur-sm"
+                  className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
                 />
               </div>
             </div>
@@ -158,7 +158,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   {machines.map((machine) => (
                     <div
                       key={machine._id.toString()}
-                      className="flex items-start space-x-3 p-3 sm:p-4 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
+                      className="flex items-start space-x-3 p-3 sm:p-4 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                     >
                       <Checkbox
                         id={machine._id.toString()}

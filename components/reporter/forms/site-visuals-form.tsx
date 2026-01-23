@@ -137,7 +137,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
               <p className="text-lg sm:text-xl font-semibold text-foreground">Uploaded Files ({mediaFiles.length})</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {mediaFiles.map((file) => (
-                  <div key={file.id} className="relative border border-border/50 rounded-lg bg-background/40 backdrop-blur-sm group overflow-hidden">
+                  <div key={file.id} className="relative border-2 border-green-700 rounded-lg bg-background/40 backdrop-blur-sm group overflow-hidden">
                     {/* Preview Area - Full Card Coverage */}
                     <div className="aspect-video bg-muted/30 relative overflow-hidden">
                       {file.preview ? (

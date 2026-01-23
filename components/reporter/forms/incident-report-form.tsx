@@ -63,7 +63,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
               <div className="space-y-2">
                 <label className="text-lg sm:text-xl font-semibold text-foreground">Incident Type</label>
                 <select
-                  className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.incidentType}
                   onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
                 >
@@ -82,7 +82,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   type="time"
                   value={formData.incidentTime}
                   onChange={(e) => setFormData({ ...formData, incidentTime: e.target.value })}
-                  className="bg-background/80 backdrop-blur-sm"
+                  className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
                 />
               </div>
             </div>
@@ -90,7 +90,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             <div className="space-y-2">
               <label className="text-lg sm:text-xl font-semibold text-foreground">Injury Level</label>
               <select
-                className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 value={formData.injuryLevel}
                 onChange={(e) => setFormData({ ...formData, injuryLevel: e.target.value })}
               >
@@ -104,7 +104,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             <div className="space-y-2">
               <label className="text-lg sm:text-xl font-semibold text-foreground">Description</label>
               <textarea
-                className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 placeholder="Describe what happened..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -115,7 +115,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             <div className="space-y-2">
               <label className="text-lg sm:text-xl font-semibold text-foreground">Action Taken</label>
               <textarea
-                className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 placeholder="What action was taken in response..."
                 value={formData.actionTaken}
                 onChange={(e) => setFormData({ ...formData, actionTaken: e.target.value })}
