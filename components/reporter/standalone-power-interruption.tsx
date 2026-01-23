@@ -55,6 +55,35 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
     fetchMachines()
   }, [])
 
+  useEffect(() => {
+    if (!reportId) return
+    let isMounted = true
+    fetch(`/api/reports/${reportId}`)
+      .then(async (response) => {
+        if (!response.ok) return null
+        return response.json()
+      })
+      .then((report) => {
+        if (!isMounted || !report) return
+        const powerData = report.powerInterruptions || {}
+        const interruptions = Array.isArray(powerData.interruptions) ? powerData.interruptions : []
+        setNoInterruptions(!!powerData.noInterruptions)
+        setFormData((prev) => ({
+          ...prev,
+          date: report.date || prev.date,
+          reportedBy: report.reportedBy || prev.reportedBy,
+          reportedByEmail: report.reportedByEmail || prev.reportedByEmail,
+          noInterruptions: !!powerData.noInterruptions,
+          interruptions,
+          submittedAt: powerData.submittedAt || prev.submittedAt
+        }))
+      })
+      .catch(() => null)
+    return () => {
+      isMounted = false
+    }
+  }, [reportId])
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
@@ -162,7 +191,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
           </div>
           
           <div className="space-y-6">
-            <div className="flex items-start space-x-3 p-4 sm:p-6 bg-primary/10 rounded-lg border-2 border-green-700 backdrop-blur-sm">
+            <div className="flex items-start space-x-3 p-4 sm:p-6 rounded-lg border-2 border-green-700 backdrop-blur-sm">
               <Checkbox
                 id="no-interruptions"
                 checked={noInterruptions}

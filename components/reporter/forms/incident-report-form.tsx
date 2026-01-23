@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Save } from "lucide-react"
@@ -19,6 +19,17 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
     description: data?.description || "",
     actionTaken: data?.actionTaken || "",
   })
+
+  useEffect(() => {
+    setFormData({
+      hasIncident: data?.hasIncident || "no",
+      incidentType: data?.incidentType || "",
+      incidentTime: data?.incidentTime || "",
+      injuryLevel: data?.injuryLevel || "none",
+      description: data?.description || "",
+      actionTaken: data?.actionTaken || "",
+    })
+  }, [data])
 
   const handleSubmit = () => {
     onComplete(formData)

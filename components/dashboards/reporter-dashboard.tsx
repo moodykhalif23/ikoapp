@@ -179,7 +179,20 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
   }
 
   const handleViewReport = (report: any) => {
-    setSelectedReport(report)
+    if (!report?.id) {
+      setSelectedReport(report)
+      return
+    }
+    fetch(`/api/reports/${report.id}`)
+      .then(async (response) => {
+        if (response.ok) {
+          const data = await response.json()
+          setSelectedReport(data)
+        } else {
+          setSelectedReport(report)
+        }
+      })
+      .catch(() => setSelectedReport(report))
   }
 
   const handleBackToReports = () => {
@@ -286,7 +299,13 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     try {
       const existingDraft = getDraftReport()
       if (existingDraft) {
-        setSelectedReport(existingDraft)
+        const response = await fetch(`/api/reports/${existingDraft.id}`)
+        if (!response.ok) {
+          setSelectedReport(existingDraft)
+          return
+        }
+        const report = await response.json()
+        setSelectedReport(report)
         return
       }
 
@@ -355,18 +374,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         </div>
       </div>
 
-      {(draftReportId || getDraftReport()) && (
-        <div className="mb-4">
-          <Button
-            variant="outline"
-            onClick={handleContinueDraft}
-            className="gap-2 border-brand-subtle hover-brand"
-          >
-            Continue Draft
-          </Button>
-        </div>
-      )}
-
       {/* Quick Report Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <Button
@@ -406,6 +413,18 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         </Button>
 
       </div>
+
+      {(draftReportId || getDraftReport()) && (
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={handleContinueDraft}
+            className="gap-2 border-brand-subtle hover-brand"
+          >
+            Continue Draft
+          </Button>
+        </div>
+      )}
 
       {/* Show forms within the dashboard */}
       {showPowerInterruption && (

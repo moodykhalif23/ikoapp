@@ -159,6 +159,17 @@ export default function EnterpriseLayout({
               <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
             </div>
             <div className="flex items-center gap-2">
+              {onGoHome && !isAdmin && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onGoHome}
+                  className="gap-1 px-2"
+                >
+                  <HomeIcon sx={{ fontSize: 16 }} />
+                  <span className="text-xs font-medium">Home</span>
+                </Button>
+              )}
               <NotificationDropdown user={user} />
               <UserDropdown user={user} onLogout={onLogout} className="mobile-touch-target" />
             </div>
@@ -211,16 +222,6 @@ export default function EnterpriseLayout({
       {/* Bottom Navigation - Only visible on mobile */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-brand-green border-t border-brand-green/20">
         <div className="flex items-center justify-around px-1 py-2 safe-area-inset">
-          {onGoHome && !isAdmin && (
-            <Button
-              variant="ghost"
-              onClick={onGoHome}
-              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white hover:bg-white/20"
-            >
-              <HomeIcon sx={{ fontSize: 16, color: 'white' }} />
-              <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">Home</span>
-            </Button>
-          )}
           {getMenuItemsForRole(userRole).slice(0, 4).map((item) => {
             const Icon = item.icon
             const isActive = activeTab === item.id

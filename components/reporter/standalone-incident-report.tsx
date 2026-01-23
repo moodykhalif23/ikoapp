@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AlertTriangle } from "lucide-react"
 import IncidentReportForm from "./forms/incident-report-form"
 import { toast } from "sonner"
@@ -14,6 +14,25 @@ interface StandaloneIncidentReportProps {
 
 export default function StandaloneIncidentReport({ user, reportId, onBack, onSaved }: StandaloneIncidentReportProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [initialData, setInitialData] = useState<any>({})
+
+  useEffect(() => {
+    if (!reportId) return
+    let isMounted = true
+    fetch(`/api/reports/${reportId}`)
+      .then(async (response) => {
+        if (!response.ok) return null
+        return response.json()
+      })
+      .then((report) => {
+        if (!isMounted || !report) return
+        setInitialData(report.incidentReport || {})
+      })
+      .catch(() => null)
+    return () => {
+      isMounted = false
+    }
+  }, [reportId])
 
   const handleSubmit = async (incidentData: any) => {
     setIsSubmitting(true)
@@ -54,10 +73,7 @@ export default function StandaloneIncidentReport({ user, reportId, onBack, onSav
             Incident Details
           </h2>
         </div>
-        <IncidentReportForm
-          data={{}}
-          onComplete={handleSubmit}
-        />
+        <IncidentReportForm data={initialData} onComplete={handleSubmit} />
       </div>
 
       {/* Loading Overlay */}

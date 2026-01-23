@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Camera } from "lucide-react"
 import SiteVisualsForm from "./forms/site-visuals-form"
 import { toast } from "sonner"
@@ -14,6 +14,25 @@ interface StandaloneSiteVisualsProps {
 
 export default function StandaloneSiteVisuals({ user, reportId, onBack, onSaved }: StandaloneSiteVisualsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [initialData, setInitialData] = useState<any>({})
+
+  useEffect(() => {
+    if (!reportId) return
+    let isMounted = true
+    fetch(`/api/reports/${reportId}`)
+      .then(async (response) => {
+        if (!response.ok) return null
+        return response.json()
+      })
+      .then((report) => {
+        if (!isMounted || !report) return
+        setInitialData(report.siteVisuals || {})
+      })
+      .catch(() => null)
+    return () => {
+      isMounted = false
+    }
+  }, [reportId])
 
   const handleSubmit = async (visualsData: any) => {
     setIsSubmitting(true)
@@ -54,10 +73,7 @@ export default function StandaloneSiteVisuals({ user, reportId, onBack, onSaved 
             Visual Documentation
           </h2>
         </div>
-        <SiteVisualsForm
-          data={{}}
-          onComplete={handleSubmit}
-        />
+        <SiteVisualsForm data={initialData} onComplete={handleSubmit} />
       </div>
 
       {/* Loading Overlay */}

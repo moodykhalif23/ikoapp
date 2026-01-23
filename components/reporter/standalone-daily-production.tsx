@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Save } from "lucide-react"
 import DailyProductionForm from "./forms/daily-production-form"
 import { toast } from "sonner"
@@ -14,6 +14,25 @@ interface StandaloneDailyProductionProps {
 
 export default function StandaloneDailyProduction({ user, reportId, onBack, onSaved }: StandaloneDailyProductionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [initialData, setInitialData] = useState<any>({})
+
+  useEffect(() => {
+    if (!reportId) return
+    let isMounted = true
+    fetch(`/api/reports/${reportId}`)
+      .then(async (response) => {
+        if (!response.ok) return null
+        return response.json()
+      })
+      .then((report) => {
+        if (!isMounted || !report) return
+        setInitialData(report.dailyProduction || {})
+      })
+      .catch(() => null)
+    return () => {
+      isMounted = false
+    }
+  }, [reportId])
 
   const handleSubmit = async (productionData: any) => {
     setIsSubmitting(true)
@@ -54,10 +73,7 @@ export default function StandaloneDailyProduction({ user, reportId, onBack, onSa
             Production Data Entry
           </h2>
         </div>
-        <DailyProductionForm
-          data={{}}
-          onComplete={handleSubmit}
-        />
+        <DailyProductionForm data={initialData} onComplete={handleSubmit} />
       </div>
 
       {/* Loading Overlay */}

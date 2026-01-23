@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Save, Upload, X, ImageIcon, Play, Eye } from "lucide-react"
@@ -26,6 +26,10 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
   const [previewFile, setPreviewFile] = useState<MediaFile | null>(null)
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+
+  useEffect(() => {
+    setMediaFiles(data?.media || [])
+  }, [data])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}

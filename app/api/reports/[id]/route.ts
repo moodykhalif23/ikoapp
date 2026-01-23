@@ -87,6 +87,19 @@ export async function PUT(
 
     // Update other fields
     Object.assign(report, updateData)
+    const mixedFields = [
+      'powerInterruptions',
+      'dailyProduction',
+      'incidentReport',
+      'employeePlanning',
+      'attendance',
+      'siteVisuals'
+    ]
+    mixedFields.forEach((field) => {
+      if (Object.prototype.hasOwnProperty.call(updateData, field)) {
+        report.markModified(field)
+      }
+    })
 
     await report.save()
 

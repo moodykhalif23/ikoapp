@@ -50,6 +50,15 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
     fetchMachines()
   }, [])
 
+  useEffect(() => {
+    setProducts(
+      data?.products && data.products.length
+        ? data.products
+        : [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
+    )
+    setQualityIssues(data?.qualityIssues || "")
+  }, [data])
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
