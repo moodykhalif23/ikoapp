@@ -61,6 +61,11 @@ export default function EnterpriseLayout({
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  const userRole = user?.role || user?.roles?.[0] || 'viewer'
+  const isAdmin = Array.isArray(user?.roles)
+    ? user.roles.map((role: string) => role.toLowerCase()).includes("admin")
+    : String(userRole).toLowerCase() === "admin"
+
   // Define menu items based on user role (same as sidebar)
   const getMenuItemsForRole = (userRole: string) => {
     const baseItems = [
@@ -162,7 +167,7 @@ export default function EnterpriseLayout({
 
             <div className="flex items-center gap-4">
               {/* Home Button */}
-              {onGoHome && (
+              {onGoHome && !isAdmin && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -196,7 +201,17 @@ export default function EnterpriseLayout({
       {/* Bottom Navigation - Only visible on mobile */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-brand-green border-t border-brand-green/20">
         <div className="flex items-center justify-around px-1 py-2 safe-area-inset">
-          {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').slice(0, 4).map((item) => {
+          {onGoHome && !isAdmin && (
+            <Button
+              variant="ghost"
+              onClick={onGoHome}
+              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white hover:bg-white/20"
+            >
+              <HomeIcon sx={{ fontSize: 16, color: 'white' }} />
+              <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">Home</span>
+            </Button>
+          )}
+          {getMenuItemsForRole(userRole).slice(0, 4).map((item) => {
             const Icon = item.icon
             const isActive = activeTab === item.id
 
@@ -218,7 +233,7 @@ export default function EnterpriseLayout({
           })}
           
           {/* More menu for additional items if needed */}
-          {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').length > 4 && (
+          {getMenuItemsForRole(userRole).length > 4 && (
             <Button
               variant="ghost"
               className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white hover:bg-white/20"
@@ -229,7 +244,7 @@ export default function EnterpriseLayout({
           )}
           
           {/* Show logout only if we have space (less than 4 main items) */}
-          {getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer').length <= 3 && (
+          {getMenuItemsForRole(userRole).length <= 3 && (
             <Button
               variant="ghost"
               onClick={onLogout}
