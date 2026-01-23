@@ -12,6 +12,13 @@ export interface IReport extends Document {
   employeePlanning?: Record<string, unknown>
   attendance?: Record<string, unknown>
   siteVisuals?: Record<string, unknown>
+  comments?: Array<{
+    id: string
+    author: string
+    role: string
+    text: string
+    timestamp: string
+  }>
   submittedAt?: Date
   reviewedAt?: Date
   reviewedBy?: string
@@ -73,6 +80,13 @@ const ReportSchema: Schema = new Schema({
   siteVisuals: {
     type: Schema.Types.Mixed
   },
+  comments: [{
+    id: { type: String, required: true },
+    author: { type: String, required: true },
+    role: { type: String, required: true },
+    text: { type: String, required: true },
+    timestamp: { type: String, required: true }
+  }],
   submittedAt: {
     type: Date
   },

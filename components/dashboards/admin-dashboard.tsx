@@ -79,22 +79,47 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
   }, [])
 
   const handleAddComment = (reportId: string, comment: string) => {
-    const newComment: Comment = {
-      id: `${Date.now()}`,
-      author: user?.name || "Admin",
-      text: comment,
-      timestamp: new Date().toLocaleTimeString(),
-      role: "admin",
+    const submit = async () => {
+      try {
+        const response = await fetch(`/api/reports/${reportId}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            author: user?.name || 'Admin',
+            role: 'admin',
+            text: comment,
+            timestamp: new Date().toLocaleTimeString()
+          })
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setComments((prev) => ({
+            ...prev,
+            [reportId]: [...(prev[reportId] || []), data.comment],
+          }))
+        }
+      } catch (error) {
+        console.error('Error adding comment:', error)
+      }
     }
-    setComments((prev) => ({
-      ...prev,
-      [reportId]: [...(prev[reportId] || []), newComment],
-    }))
+    submit()
   }
 
   // Reset when selecting a new report
   const handleReportSelect = (report: any) => {
     setSelectedReport(report)
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`/api/reports/${report.id}/comments`)
+        if (response.ok) {
+          const data = await response.json()
+          setComments((prev) => ({ ...prev, [report.id]: data.comments || [] }))
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error)
+      }
+    }
+    fetchComments()
   }
 
   const handleTabChange = (tab: string) => {
