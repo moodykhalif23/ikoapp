@@ -10,7 +10,6 @@ import AdminDashboard from "@/components/dashboards/admin-dashboard"
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<"auth" | "roleSelection" | "dashboardSelection" | "reporter" | "viewer" | "admin">("auth")
   const [user, setUser] = useState<any>(null)
-  const [submittedReports, setSubmittedReports] = useState<any[]>([])
 
   const handleAuthSuccess = (userData: any) => {
     setUser(userData)
@@ -56,14 +55,6 @@ export default function Home() {
     }
   }
 
-  const handleReportSubmit = (reportData: any) => {
-    const newReport = {
-      ...reportData,
-      timestamp: new Date().toISOString(),
-    }
-    setSubmittedReports([newReport, ...submittedReports])
-  }
-
   const handleGoHome = () => {
     setCurrentPage("roleSelection")
   }
@@ -80,10 +71,10 @@ export default function Home() {
         <RoleSelectionPage user={user} onRoleSelect={handleRoleSelect} onLogout={handleLogout} />
       )}
       {currentPage === "reporter" && (
-        <ReporterDashboard user={user} onLogout={handleLogout} onReportSubmit={handleReportSubmit} onGoHome={handleGoHome} />
+        <ReporterDashboard user={user} onLogout={handleLogout} onGoHome={handleGoHome} />
       )}
       {currentPage === "viewer" && (
-        <ViewerDashboard user={user} onLogout={handleLogout} reports={submittedReports} onGoHome={handleGoHome} />
+        <ViewerDashboard user={user} onLogout={handleLogout} onGoHome={handleGoHome} />
       )}
       {currentPage === "admin" && (
         <AdminDashboard user={user} onLogout={handleLogout} onGoHome={handleGoHome} />

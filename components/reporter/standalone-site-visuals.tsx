@@ -1,52 +1,44 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Camera } from "lucide-react"
+import { Camera } from "lucide-react"
 import SiteVisualsForm from "./forms/site-visuals-form"
 import { toast } from "sonner"
 
 interface StandaloneSiteVisualsProps {
   user: any
+  reportId: string
   onBack: () => void
-  onSubmit?: (data: any) => void
+  onSaved?: () => void
 }
 
-export default function StandaloneSiteVisuals({ user, onBack, onSubmit }: StandaloneSiteVisualsProps) {
+export default function StandaloneSiteVisuals({ user, reportId, onBack, onSaved }: StandaloneSiteVisualsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (visualsData: any) => {
     setIsSubmitting(true)
 
     try {
-      const reportData = {
-        id: `VIS-${Date.now()}`,
-        date: new Date().toISOString().split("T")[0],
-        reportedBy: user?.name,
-        reportedByEmail: user?.email,
-        siteVisuals: visualsData,
-        status: 'submitted'
+      if (!reportId) {
+        throw new Error("Draft report not found")
       }
 
-      const response = await fetch('/api/reports', {
-        method: 'POST',
+      const response = await fetch(`/api/reports/${reportId}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reportData)
+        body: JSON.stringify({ siteVisuals: visualsData })
       })
 
       if (response.ok) {
-        toast.success('Site visuals report submitted successfully!')
-        if (onSubmit) {
-          onSubmit(reportData)
-        }
+        toast.success('Site visuals saved to draft')
+        if (onSaved) onSaved()
         onBack()
       } else {
         const error = await response.json()
-        toast.error(error.error || 'Failed to submit report')
+        toast.error(error.error || 'Failed to save draft')
       }
     } catch (error) {
-      toast.error('Network error. Please try again.')
+      toast.error(error instanceof Error ? error.message : 'Network error. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -73,7 +65,7 @@ export default function StandaloneSiteVisuals({ user, onBack, onSubmit }: Standa
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-background/95 backdrop-blur-sm border border-border/50 rounded-lg max-w-sm mx-4 p-8 text-center">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold mb-2 text-foreground">Submitting Report...</h3>
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Saving Draft...</h3>
             <p className="text-sm text-muted-foreground">
               Please wait while we save your visual documentation
             </p>

@@ -10,6 +10,8 @@ interface ScrollableReportViewProps {
   report: any
   onBack: () => void
   onPDFExport?: (report: any) => void
+  onSubmitReport?: (reportId: string) => void
+  canSubmit?: boolean
   showComments?: boolean
   user?: any
   comments?: Record<string, any[]>
@@ -28,6 +30,8 @@ export default function ScrollableReportView({
   report, 
   onBack, 
   onPDFExport,
+  onSubmitReport,
+  canSubmit,
   showComments = false,
   user,
   comments = {},
@@ -60,16 +64,25 @@ export default function ScrollableReportView({
     }
   }
 
+  const incidentData = report?.incidentReport || {}
+  const hasFormIncident = incidentData?.hasIncident === "yes"
+  const hasLegacyIncidents = Array.isArray(incidentData?.incidents)
+  const noLegacyIncidents = incidentData?.noIncidents === true
+  const showIncidentDetails = hasLegacyIncidents ? !noLegacyIncidents : hasFormIncident
+
+  const planningData = report?.employeePlanning || {}
+  const hasLegacyShifts = Array.isArray(planningData?.shifts) && planningData.shifts.length > 0
+
   return (
     <div className="h-full flex flex-col">
       {/* Header - Fixed */}
-      <div className="flex-shrink-0 border-b bg-white backdrop-blur supports-[backdrop-filter]:bg-white/95">
+      <div className="shrink-0 border-b bg-white backdrop-blur supports-backdrop-filter:bg-white/95">
         <div className="flex items-center justify-between gap-4 p-3 sm:p-4">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <Button 
               variant="outline" 
               onClick={onBack} 
-              className="gap-2 bg-transparent flex-shrink-0"
+              className="gap-2 bg-transparent shrink-0"
             >
               <ArrowBack sx={{ fontSize: 16 }} />
               <span className="hidden sm:inline">Back</span>
@@ -83,17 +96,30 @@ export default function ScrollableReportView({
               </p>
             </div>
           </div>
-          {onPDFExport && (
-            <Button
-              variant="outline"
-              onClick={() => onPDFExport(report)}
-              className="gap-2 flex-shrink-0"
-              size="sm"
-            >
-              <Download sx={{ fontSize: 16 }} />
-              <span className="hidden sm:inline">PDF</span>
-            </Button>
-          )}
+          <div className="flex items-center gap-2 shrink-0">
+            {onSubmitReport && report?.status === "draft" && (
+              <Button
+                onClick={() => onSubmitReport(report.id)}
+                className="gap-2"
+                size="sm"
+                disabled={canSubmit === false}
+              >
+                <CheckCircle sx={{ fontSize: 16 }} />
+                <span className="hidden sm:inline">Submit</span>
+              </Button>
+            )}
+            {onPDFExport && (
+              <Button
+                variant="outline"
+                onClick={() => onPDFExport(report)}
+                className="gap-2"
+                size="sm"
+              >
+                <Download sx={{ fontSize: 16 }} />
+                <span className="hidden sm:inline">PDF</span>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -248,7 +274,7 @@ export default function ScrollableReportView({
           <div className="border-b border-gray-200 pb-4">
             <div className="flex items-center gap-3 mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Incident Report</h2>
-              {report.incidentReport?.noIncidents ? (
+              {!showIncidentDetails ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">No Incidents</span>
@@ -260,36 +286,69 @@ export default function ScrollableReportView({
                 </div>
               )}
             </div>
-            {report.incidentReport?.noIncidents ? (
+            {!showIncidentDetails ? (
               <p className="text-gray-600">No incidents occurred on this day.</p>
             ) : (
               <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Incident Type</p>
-                    <p className="text-gray-900 mt-1">{report.incidentReport?.incidentType}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Severity</p>
-                    <span className={`inline-block px-2 py-1 rounded text-sm mt-1 ${
-                      report.incidentReport?.severity === 'High' ? 'bg-red-100 text-red-800' : 
-                      report.incidentReport?.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {report.incidentReport?.severity}
-                    </span>
-                  </div>
-                </div>
-                {report.incidentReport?.description && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Description</p>
-                    <p className="text-gray-900 mt-1">{report.incidentReport.description}</p>
-                  </div>
-                )}
-                {report.incidentReport?.actionsTaken && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Actions Taken</p>
-                    <p className="text-gray-900 mt-1">{report.incidentReport.actionsTaken}</p>
-                  </div>
+                {hasLegacyIncidents ? (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Incident Type</p>
+                        <p className="text-gray-900 mt-1">{report.incidentReport?.incidentType}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Severity</p>
+                        <span className={`inline-block px-2 py-1 rounded text-sm mt-1 ${
+                          report.incidentReport?.severity === 'High' ? 'bg-red-100 text-red-800' : 
+                          report.incidentReport?.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {report.incidentReport?.severity}
+                        </span>
+                      </div>
+                    </div>
+                    {report.incidentReport?.description && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Description</p>
+                        <p className="text-gray-900 mt-1">{report.incidentReport.description}</p>
+                      </div>
+                    )}
+                    {report.incidentReport?.actionsTaken && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Actions Taken</p>
+                        <p className="text-gray-900 mt-1">{report.incidentReport.actionsTaken}</p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Incident Type</p>
+                        <p className="text-gray-900 mt-1">{incidentData.incidentType || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Time of Incident</p>
+                        <p className="text-gray-900 mt-1">{incidentData.incidentTime || "N/A"}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Injury Level</p>
+                        <p className="text-gray-900 mt-1">{incidentData.injuryLevel || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Action Taken</p>
+                        <p className="text-gray-900 mt-1">{incidentData.actionTaken || "N/A"}</p>
+                      </div>
+                    </div>
+                    {incidentData.description && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Description</p>
+                        <p className="text-gray-900 mt-1">{incidentData.description}</p>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -298,7 +357,7 @@ export default function ScrollableReportView({
           {/* Employee Planning */}
           <div className="border-b border-gray-200 pb-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Employee Planning</h2>
-            {report.employeePlanning?.shifts?.length > 0 ? (
+            {hasLegacyShifts ? (
               <div className="space-y-4">
                 {report.employeePlanning.shifts.map((shift: any, index: number) => (
                   <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -332,7 +391,35 @@ export default function ScrollableReportView({
                 )}
               </div>
             ) : (
-              <p className="text-gray-600">No employee planning data was recorded for this report.</p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Employees Present</p>
+                    <p className="text-gray-900 mt-1">{planningData.employeesPresent || "0"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Employees Absent</p>
+                    <p className="text-gray-900 mt-1">{planningData.employeesAbsent || "0"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Planned Shifts</p>
+                    <p className="text-gray-900 mt-1">{planningData.plannedShifts || "N/A"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Selected Employees</p>
+                    <p className="text-gray-900 mt-1">{Array.isArray(planningData.selectedEmployees) ? planningData.selectedEmployees.length : 0}</p>
+                  </div>
+                </div>
+                {planningData.notes && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Notes</p>
+                    <p className="text-gray-900 mt-1">{planningData.notes}</p>
+                  </div>
+                )}
+                {!planningData.employeesPresent && !planningData.employeesAbsent && !planningData.plannedShifts && !planningData.notes && (
+                  <p className="text-gray-600">No employee planning data was recorded for this report.</p>
+                )}
+              </div>
             )}
           </div>
 
@@ -409,7 +496,7 @@ export default function ScrollableReportView({
                       <div key={comment.id} className="p-3 bg-white rounded-lg border border-gray-200">
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <p className="font-medium text-sm text-gray-900">{comment.author}</p>
-                          <p className="text-xs text-gray-500 flex-shrink-0">{comment.timestamp}</p>
+                          <p className="text-xs text-gray-500 shrink-0">{comment.timestamp}</p>
                         </div>
                         <p className="text-sm text-gray-700">{comment.text}</p>
                       </div>

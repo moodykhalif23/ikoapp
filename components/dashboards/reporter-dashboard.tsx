@@ -3,10 +3,9 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Logout, ChevronRight, Add, Visibility, Power, ArrowBack, Warning, People } from "@mui/icons-material"
+import { Add, Visibility, Power, Warning, People } from "@mui/icons-material"
 import { ChevronDown, ChevronUp } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import Image from "next/image"
+import { toast } from "sonner"
 
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import StandalonePowerInterruption from "@/components/reporter/standalone-power-interruption"
@@ -19,11 +18,10 @@ import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 interface ReporterDashboardProps {
   user: any
   onLogout: () => void
-  onReportSubmit?: (reportData: any) => void
   onGoHome?: () => void
 }
 
-export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGoHome }: ReporterDashboardProps) {
+export default function ReporterDashboard({ user, onLogout, onGoHome }: ReporterDashboardProps) {
   const [showPowerInterruption, setShowPowerInterruption] = useState(false)
   const [showDailyProduction, setShowDailyProduction] = useState(false)
   const [showIncidentReport, setShowIncidentReport] = useState(false)
@@ -31,7 +29,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   const [showSiteVisuals, setShowSiteVisuals] = useState(false)
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [reports, setReports] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("dashboard")
   
   // Filter states for reports page
@@ -39,12 +36,9 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [sortBy, setSortBy] = useState<string>("newest")
   const [filtersExpanded, setFiltersExpanded] = useState(false)
+  const [draftReportId, setDraftReportId] = useState<string | null>(null)
+  const [activeReportId, setActiveReportId] = useState<string | null>(null)
   
-  // Form completion tracking
-  const [completedForms, setCompletedForms] = useState<Set<string>>(new Set())
-  const [showValidationDialog, setShowValidationDialog] = useState(false)
-  const [pendingSubmission, setPendingSubmission] = useState<any>(null)
-
   // Fetch user's reports from database
   useEffect(() => {
     const fetchReports = async () => {
@@ -58,13 +52,19 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         }
       } catch (error) {
         console.error('Error fetching reports:', error)
-      } finally {
-        setLoading(false)
       }
     }
 
     if (user?.email) {
       fetchReports()
+    }
+  }, [user?.email])
+
+  useEffect(() => {
+    if (!user?.email || typeof window === "undefined") return
+    const storedId = localStorage.getItem(`ikoapp:draftReportId:${user.email}`)
+    if (storedId) {
+      setDraftReportId(storedId)
     }
   }, [user?.email])
 
@@ -81,85 +81,102 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
     }
   }
 
-  const handleReportSubmit = async (reportData: any) => {
-    // Refresh reports from database
-    await refreshReports()
-    if (onReportSubmit) {
-      onReportSubmit(reportData)
+  const persistDraftId = (reportId: string | null) => {
+    if (!user?.email || typeof window === "undefined") return
+    const key = `ikoapp:draftReportId:${user.email}`
+    if (reportId) {
+      localStorage.setItem(key, reportId)
+    } else {
+      localStorage.removeItem(key)
     }
   }
 
-  const handlePowerInterruptionSubmit = async (reportData: any) => {
-    // Refresh reports from database
-    await refreshReports()
-    if (onReportSubmit) {
-      onReportSubmit(reportData)
-    }
-    // Close the form and return to dashboard
-    setShowPowerInterruption(false)
-    setActiveTab("dashboard")
-  }
-
-  const handleFormSubmit = async (reportData: any) => {
-    // Mark the form as completed based on the report type
-    const formType = getFormTypeFromReportData(reportData)
-    setCompletedForms(prev => new Set([...prev, formType]))
-    
-    // Check if this is a comprehensive submission attempt
-    if (shouldValidateAllForms(reportData)) {
-      const missingForms = getMissingForms()
-      if (missingForms.length > 0) {
-        setPendingSubmission(reportData)
-        setShowValidationDialog(true)
-        return
+  const ensureDraftReport = async () => {
+    if (draftReportId) {
+      try {
+        const existingResponse = await fetch(`/api/reports/${draftReportId}`)
+        if (existingResponse.ok) {
+          const existingReport = await existingResponse.json()
+          if (existingReport?.status === "draft") {
+            return draftReportId
+          }
+        }
+      } catch (error) {
+        console.error("Error validating draft report:", error)
       }
+      setDraftReportId(null)
+      persistDraftId(null)
     }
-    
-    // Proceed with normal submission
-    await submitReport(reportData)
-  }
+    if (!user?.email) throw new Error("User not available")
+    try {
+      const draftResponse = await fetch(`/api/reports?reportedByEmail=${encodeURIComponent(user.email)}&status=draft&limit=1`)
+      if (draftResponse.ok) {
+        const draftData = await draftResponse.json()
+        const existingDraft = draftData.reports?.[0]
+        if (existingDraft?.id) {
+          setDraftReportId(existingDraft.id)
+          persistDraftId(existingDraft.id)
+          return existingDraft.id
+        }
+      }
 
-  const getFormTypeFromReportData = (reportData: any) => {
-    if (reportData.powerInterruptions || reportData.id?.startsWith('PWR-')) return 'power'
-    if (reportData.dailyProduction || reportData.id?.startsWith('RPT-')) return 'production'
-    if (reportData.incidentReport || reportData.id?.startsWith('INC-')) return 'incident'
-    if (reportData.employeePlanning || reportData.id?.startsWith('EMP-')) return 'planning'
-    if (reportData.siteVisuals || reportData.id?.startsWith('VIS-')) return 'visuals'
-    return 'unknown'
-  }
+      const createResponse = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: new Date().toISOString().split("T")[0],
+          reportedBy: user?.name,
+          reportedByEmail: user?.email
+        })
+      })
 
-  const shouldValidateAllForms = (reportData: any) => {
-    // Only validate for comprehensive reports, not individual form submissions
-    return false // For now, we'll validate on individual submissions
-  }
+      if (!createResponse.ok) {
+        throw new Error("Failed to create draft report")
+      }
 
-  const getMissingForms = () => {
-    const allForms = ['power', 'visuals', 'production', 'incident', 'planning']
-    return allForms.filter(form => !completedForms.has(form))
-  }
+      const createdDraft = await createResponse.json()
+      if (createdDraft?.id) {
+        setDraftReportId(createdDraft.id)
+        persistDraftId(createdDraft.id)
+        return createdDraft.id
+      }
 
-  const submitReport = async (reportData: any) => {
-    // Refresh reports from database
-    await refreshReports()
-    if (onReportSubmit) {
-      onReportSubmit(reportData)
+      throw new Error("Draft report not created")
+    } catch (error) {
+      throw error
     }
-    // Close all forms and return to dashboard
-    setShowDailyProduction(false)
-    setShowIncidentReport(false)
-    setShowEmployeePlanning(false)
-    setShowSiteVisuals(false)
-    setActiveTab("dashboard")
+  };
+
+  const isDraftComplete = (report: any) => {
+    if (!report) return false
+    const power = report.powerInterruptions
+    const powerComplete = !!power && (power.noInterruptions === true || (Array.isArray(power.interruptions) && power.interruptions.length > 0))
+
+    const production = report.dailyProduction
+    const productionComplete = !!production && Array.isArray(production.products) && production.products.length > 0
+
+    const incident = report.incidentReport
+    const incidentComplete = !!incident && (
+      incident.hasIncident === "no" ||
+      (incident.hasIncident === "yes" && incident.incidentType && incident.description)
+    )
+
+    const planning = report.employeePlanning
+    const planningComplete = !!planning && Array.isArray(planning.selectedEmployees) && planning.selectedEmployees.length > 0
+
+    const visuals = report.siteVisuals
+    const visualsComplete = !!visuals && Array.isArray(visuals.media) && visuals.media.length > 0
+
+    return powerComplete && productionComplete && incidentComplete && planningComplete && visualsComplete
   }
 
-  const handleValidationDialogSubmit = async (forceSubmit: boolean) => {
-    setShowValidationDialog(false)
-    
-    if (forceSubmit && pendingSubmission) {
-      await submitReport(pendingSubmission)
+  const getDraftReport = () => {
+    if (!reports.length) return null
+    if (draftReportId) {
+      const storedReport = reports.find((report) => report.id === draftReportId)
+      return storedReport?.status === "draft" ? storedReport : null
     }
-    
-    setPendingSubmission(null)
+    return reports.find((report) => report.status === "draft") || null
   }
 
   const handleViewReport = (report: any) => {
@@ -201,27 +218,98 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
   // Modified handlers to ensure only one form shows at a time
   const handleShowPowerInterruption = () => {
     closeAllForms()
-    setShowPowerInterruption(true)
+    ensureDraftReport()
+      .then((draftId) => setActiveReportId(draftId))
+      .then(() => setShowPowerInterruption(true))
+      .catch(() => toast.error("Unable to create draft report"))
   }
 
   const handleShowDailyProduction = () => {
     closeAllForms()
-    setShowDailyProduction(true)
+    ensureDraftReport()
+      .then((draftId) => setActiveReportId(draftId))
+      .then(() => setShowDailyProduction(true))
+      .catch(() => toast.error("Unable to create draft report"))
   }
 
   const handleShowIncidentReport = () => {
     closeAllForms()
-    setShowIncidentReport(true)
+    ensureDraftReport()
+      .then((draftId) => setActiveReportId(draftId))
+      .then(() => setShowIncidentReport(true))
+      .catch(() => toast.error("Unable to create draft report"))
   }
 
   const handleShowEmployeePlanning = () => {
     closeAllForms()
-    setShowEmployeePlanning(true)
+    ensureDraftReport()
+      .then((draftId) => setActiveReportId(draftId))
+      .then(() => setShowEmployeePlanning(true))
+      .catch(() => toast.error("Unable to create draft report"))
   }
 
   const handleShowSiteVisuals = () => {
     closeAllForms()
-    setShowSiteVisuals(true)
+    ensureDraftReport()
+      .then((draftId) => setActiveReportId(draftId))
+      .then(() => setShowSiteVisuals(true))
+      .catch(() => toast.error("Unable to create draft report"))
+  }
+
+  const handleDraftSaved = async () => {
+    await refreshReports()
+    toast.success("Saved to draft")
+  }
+
+  const handleSubmitDraft = async (reportId: string) => {
+    try {
+      const targetReport = selectedReport || reports.find((report) => report.id === reportId)
+      if (!isDraftComplete(targetReport)) {
+        toast.error("Complete all sections before submitting")
+        return
+      }
+
+      const response = await fetch(`/api/reports/${reportId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'submitted' })
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to submit report")
+      }
+
+      await refreshReports()
+      if (draftReportId === reportId) {
+        setDraftReportId(null)
+        persistDraftId(null)
+      }
+      setSelectedReport(null)
+      toast.success("Report submitted successfully")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to submit report")
+    }
+  }
+
+  const handleContinueDraft = async () => {
+    try {
+      const existingDraft = getDraftReport()
+      if (existingDraft) {
+        setSelectedReport(existingDraft)
+        return
+      }
+
+      const draftId = await ensureDraftReport()
+      const response = await fetch(`/api/reports/${draftId}`)
+      if (!response.ok) {
+        throw new Error("Failed to load draft report")
+      }
+      const report = await response.json()
+      setSelectedReport(report)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to open draft report")
+    }
   }
 
   // Filter reports based on current filters
@@ -278,6 +366,18 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
         </div>
       </div>
 
+      {(draftReportId || getDraftReport()) && (
+        <div className="mb-4">
+          <Button
+            variant="outline"
+            onClick={handleContinueDraft}
+            className="gap-2 border-brand-subtle hover-brand"
+          >
+            Continue Draft
+          </Button>
+        </div>
+      )}
+
       {/* Quick Report Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         <Button
@@ -332,7 +432,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           <StandalonePowerInterruption
             user={user}
             onBack={() => setShowPowerInterruption(false)}
-            onSubmit={handlePowerInterruptionSubmit}
+            reportId={activeReportId || ""}
+            onSaved={handleDraftSaved}
           />
         </div>
       )}
@@ -342,7 +443,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           <StandaloneDailyProduction
             user={user}
             onBack={() => setShowDailyProduction(false)}
-            onSubmit={handleFormSubmit}
+            reportId={activeReportId || ""}
+            onSaved={handleDraftSaved}
           />
         </div>
       )}
@@ -352,7 +454,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           <StandaloneIncidentReport
             user={user}
             onBack={() => setShowIncidentReport(false)}
-            onSubmit={handleFormSubmit}
+            reportId={activeReportId || ""}
+            onSaved={handleDraftSaved}
           />
         </div>
       )}
@@ -362,7 +465,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           <StandaloneEmployeePlanning
             user={user}
             onBack={() => setShowEmployeePlanning(false)}
-            onSubmit={handleFormSubmit}
+            reportId={activeReportId || ""}
+            onSaved={handleDraftSaved}
           />
         </div>
       )}
@@ -372,7 +476,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           <StandaloneSiteVisuals
             user={user}
             onBack={() => setShowSiteVisuals(false)}
-            onSubmit={handleFormSubmit}
+            reportId={activeReportId || ""}
+            onSaved={handleDraftSaved}
           />
         </div>
       )}
@@ -383,6 +488,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
             report={selectedReport} 
             onBack={handleBackToReports}
             showComments={false}
+            onSubmitReport={handleSubmitDraft}
+            canSubmit={isDraftComplete(selectedReport)}
           />
         </div>
       )}
@@ -409,8 +516,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     <div className="space-y-2 text-sm mb-4">
                       <p>
                         <span className="font-medium text-brand-contrast">Power Interruptions:</span>{" "}
-                        <span className={report.powerInterruptions?.noInterruptions ? "text-green-600" : "text-orange-600"}>
-                          {report.powerInterruptions?.noInterruptions ? "None" : "Yes"}
+                        <span className={report.powerInterruptions?.noInterruptions === true ? "text-green-600" : "text-orange-600"}>
+                          {report.powerInterruptions?.noInterruptions === true ? "None" : "Yes"}
                         </span>
                       </p>
                       <p>
@@ -497,8 +604,9 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                   {/* Date Filter */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground">Date Range</label>
+                      <label htmlFor="reporter-date-filter" className="text-xs font-medium text-muted-foreground">Date Range</label>
                       <select
+                        id="reporter-date-filter"
                         value={dateFilter}
                         onChange={(e) => setDateFilter(e.target.value)}
                         className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
@@ -516,8 +624,9 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground">Status</label>
+                      <label htmlFor="reporter-status-filter" className="text-xs font-medium text-muted-foreground">Status</label>
                       <select
+                        id="reporter-status-filter"
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
@@ -535,8 +644,9 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground">Sort By</label>
+                      <label htmlFor="reporter-sort-filter" className="text-xs font-medium text-muted-foreground">Sort By</label>
                       <select
+                        id="reporter-sort-filter"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                         className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
@@ -620,7 +730,7 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                         <CardTitle className="text-primary">{report.date}</CardTitle>
                         <CardDescription>Report #{report.id}</CardDescription>
                       </div>
-                      <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+                      <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap shrink-0 ${
                         report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                         report.status === 'approved' ? 'bg-green-100 text-green-800' :
                         report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
@@ -635,8 +745,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                     <div className="space-y-2 text-sm mb-4">
                       <p>
                         <span className="font-medium text-brand-contrast">Power Interruptions:</span>{" "}
-                        <span className={report.powerInterruptions?.noInterruptions ? "text-green-600" : "text-orange-600"}>
-                          {report.powerInterruptions?.noInterruptions ? "None" : "Yes"}
+                        <span className={report.powerInterruptions?.noInterruptions === true ? "text-green-600" : "text-orange-600"}>
+                          {report.powerInterruptions?.noInterruptions === true ? "None" : "Yes"}
                         </span>
                       </p>
                       <p>
@@ -669,11 +779,13 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           {/* Report Detail View */}
           {selectedReport && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-              <div className="w-full max-w-6xl h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden">
+              <div className="w-full max-w-6xl h-[calc(100vh-9rem)] sm:h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden">
                 <ScrollableReportView 
                   report={selectedReport} 
                   onBack={handleBackToReports}
                   showComments={false}
+                  onSubmitReport={handleSubmitDraft}
+                  canSubmit={isDraftComplete(selectedReport)}
                 />
               </div>
             </div>
@@ -682,53 +794,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
       )}
       {activeTab === "dashboard" && renderReportsContent()}
 
-      {/* Form Validation Dialog */}
-      <Dialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Warning sx={{ fontSize: 20, color: "#f59e0b" }} />
-              Incomplete Report Sections
-            </DialogTitle>
-            <DialogDescription>
-              Some report sections haven't been filled out yet. You can either:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 mt-4">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h4 className="font-medium text-yellow-800 mb-2">Missing Sections:</h4>
-              <ul className="text-sm text-yellow-700 space-y-1">
-                {getMissingForms().map(form => (
-                  <li key={form} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                    {form === 'power' && 'Power Interruptions'}
-                    {form === 'visuals' && 'Site Visuals'}
-                    {form === 'production' && 'Daily Production'}
-                    {form === 'incident' && 'Incident Report'}
-                    {form === 'planning' && 'Employee Planning'}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              <Button
-                onClick={() => handleValidationDialogSubmit(false)}
-                variant="outline"
-                className="w-full"
-              >
-                Continue Filling Forms
-              </Button>
-              <Button
-                onClick={() => handleValidationDialogSubmit(true)}
-                className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
-              >
-                Submit Anyway (Incomplete)
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </EnterpriseLayout>
   )
 }

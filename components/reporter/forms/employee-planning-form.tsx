@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -11,10 +10,9 @@ import { Check, Users } from "lucide-react"
 interface EmployeePlanningFormProps {
   data: any
   onComplete: (data: any) => void
-  onSubmit: () => void
 }
 
-export default function EmployeePlanningForm({ data, onComplete, onSubmit }: EmployeePlanningFormProps) {
+export default function EmployeePlanningForm({ data, onComplete }: EmployeePlanningFormProps) {
   const [employees, setEmployees] = useState<any[]>([])
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>(data?.selectedEmployees || [])
   const [loading, setLoading] = useState(true)
@@ -86,8 +84,6 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
   const handleSubmit = () => {
     if (validateForm()) {
       onComplete(formData)
-      // Small delay to show completion animation
-      setTimeout(onSubmit, 500)
     }
   }
 
@@ -220,16 +216,13 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
           </ul>
         </div>
 
-        <div className="flex gap-3 pt-4">
-          <Button variant="outline" onClick={onComplete} className="flex-1 bg-background/80 backdrop-blur-sm">
-            Save as Draft
-          </Button>
+        <div className="flex justify-end pt-4">
           <Button
             onClick={handleSubmit}
-            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold"
           >
             <Check className="w-4 h-4" />
-            Submit Report
+            Save Draft
           </Button>
         </div>
       </div>

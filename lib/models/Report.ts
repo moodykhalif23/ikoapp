@@ -6,6 +6,11 @@ export interface IReport extends Document {
   reportedBy: string
   reportedByEmail: string
   status: 'draft' | 'submitted' | 'reviewed' | 'approved'
+  powerInterruptions?: Record<string, unknown>
+  dailyProduction?: Record<string, unknown>
+  incidentReport?: Record<string, unknown>
+  employeePlanning?: Record<string, unknown>
+  siteVisuals?: Record<string, unknown>
   submittedAt?: Date
   reviewedAt?: Date
   reviewedBy?: string
@@ -48,6 +53,21 @@ const ReportSchema: Schema = new Schema({
     type: String,
     enum: ['draft', 'submitted', 'reviewed', 'approved'],
     default: 'draft'
+  },
+  powerInterruptions: {
+    type: Schema.Types.Mixed
+  },
+  dailyProduction: {
+    type: Schema.Types.Mixed
+  },
+  incidentReport: {
+    type: Schema.Types.Mixed
+  },
+  employeePlanning: {
+    type: Schema.Types.Mixed
+  },
+  siteVisuals: {
+    type: Schema.Types.Mixed
   },
   submittedAt: {
     type: Date

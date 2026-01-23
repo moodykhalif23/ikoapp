@@ -56,14 +56,39 @@ export async function POST(request: NextRequest) {
     await connectToDatabase()
 
     const body = await request.json()
-    const { date, reportedBy, reportedByEmail } = body
-
-    // Create the main report
-    const report = new Report({
+    const {
+      id,
       date,
       reportedBy,
       reportedByEmail,
-      status: 'draft'
+      powerInterruptions,
+      dailyProduction,
+      incidentReport,
+      employeePlanning,
+      siteVisuals
+    } = body
+
+    let reportId = id
+    if (!reportId) {
+      let counter = 0
+      do {
+        reportId = `RPT-${Date.now()}${counter > 0 ? `-${counter}` : ''}`
+        counter++
+      } while (await Report.findOne({ id: reportId }))
+    }
+
+    // Create the main report
+    const report = new Report({
+      id: reportId,
+      date,
+      reportedBy,
+      reportedByEmail,
+      status: 'draft',
+      powerInterruptions,
+      dailyProduction,
+      incidentReport,
+      employeePlanning,
+      siteVisuals
     })
 
     await report.save()

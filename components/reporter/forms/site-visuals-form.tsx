@@ -3,10 +3,9 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ChevronRight, Upload, X, ImageIcon, Play, Eye } from "lucide-react"
+import { Save, Upload, X, ImageIcon, Play, Eye } from "lucide-react"
 
 interface SiteVisualsFormProps {
   data: any
@@ -219,7 +218,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
         <div className="flex justify-end pt-4">
           <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
-            Continue <ChevronRight className="w-4 h-4" />
+            Save Draft <Save className="w-4 h-4" />
           </Button>
         </div>
       </div>

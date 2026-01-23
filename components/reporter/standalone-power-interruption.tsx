@@ -1,25 +1,23 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import PowerIcon from "@mui/icons-material/Power"
-import { ArrowLeft, Plus, Trash2 } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react"
 
 interface StandalonePowerInterruptionProps {
   user: any
+  reportId: string
   onBack: () => void
-  onSubmit?: (data: any) => void
+  onSaved?: () => void
 }
 
-export default function StandalonePowerInterruption({ user, onBack, onSubmit }: StandalonePowerInterruptionProps) {
+export default function StandalonePowerInterruption({ user, reportId, onBack, onSaved }: StandalonePowerInterruptionProps) {
   const [machines, setMachines] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
-  const [submitted, setSubmitted] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [noInterruptions, setNoInterruptions] = useState(false)
   const [formData, setFormData] = useState({
     id: `PWR-${Date.now()}`,
@@ -130,68 +128,42 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
     })
   }
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      const completeReport = {
-        ...formData,
+  const handleSubmit = async () => {
+    if (!validateForm()) return
+    if (!reportId) {
+      setErrors((prev) => ({ ...prev, submit: "Draft report not found" }))
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const payload = {
+        noInterruptions: formData.noInterruptions,
+        interruptions: formData.interruptions,
         submittedAt: new Date().toISOString(),
       }
-      setFormData(completeReport)
-      setSubmitted(true)
-      if (onSubmit) {
-        onSubmit(completeReport)
+
+      const response = await fetch(`/api/reports/${reportId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ powerInterruptions: payload })
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to save draft")
       }
+
+      if (onSaved) onSaved()
+      onBack()
+    } catch (error) {
+      setErrors((prev) => ({
+        ...prev,
+        submit: error instanceof Error ? error.message : "Failed to save draft"
+      }))
+    } finally {
+      setIsSaving(false)
     }
-  }
-
-  const handleReset = () => {
-    setSubmitted(false)
-    setFormData({
-      id: `PWR-${Date.now()}`,
-      date: new Date().toISOString().split("T")[0],
-      reportedBy: user?.name,
-      reportedByEmail: user?.email,
-      noInterruptions: false,
-      interruptions: [],
-      submittedAt: null,
-    })
-    setNoInterruptions(false)
-  }
-
-  if (submitted) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-center min-h-96">
-          <div className="text-center space-y-6 max-w-md">
-            <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircleIcon sx={{ fontSize: 40, color: "#16a34a" }} />
-              </div>
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Power Interruption Report Submitted!</h2>
-              <p className="text-muted-foreground mb-1">
-                Report ID: <span className="font-mono font-semibold">{formData.id}</span>
-              </p>
-              <p className="text-sm text-muted-foreground">Admins and viewers have been notified</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                You can submit another power interruption report anytime
-              </p>
-              <div className="flex gap-2">
-                <Button onClick={handleReset} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Report Another Interruption
-                </Button>
-                <Button variant="outline" onClick={onBack}>
-                  Back to Dashboard
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -325,12 +297,15 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
               </>
             )}
 
+            {errors.submit && (
+              <p className="text-xs text-red-500 mt-2">{errors.submit}</p>
+            )}
             <div className="flex justify-end pt-4 border-t border-border/50">
               <Button 
                 onClick={handleSubmit} 
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold"
               >
-                Submit Report
+                Save Draft
               </Button>
             </div>
           </div>

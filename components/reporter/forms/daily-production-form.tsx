@@ -1,11 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Plus, Trash2, ChevronRight } from "lucide-react"
+import { Plus, Trash2, Save } from "lucide-react"
 import { IMachine } from "@/lib/models"
 
 interface DailyProductionFormProps {
@@ -242,7 +241,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
 
         <div className="flex justify-end pt-4">
           <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
-            Continue <ChevronRight className="w-4 h-4" />
+            Save Draft <Save className="w-4 h-4" />
           </Button>
         </div>
       </div>
