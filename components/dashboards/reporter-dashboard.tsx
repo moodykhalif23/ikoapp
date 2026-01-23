@@ -748,7 +748,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         <div className="space-y-6 mt-2">
           <div className="mb-4">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Attendance</h1>
-            <p className="text-muted-foreground">Record daily sign in/out for employees</p>
           </div>
           <AttendanceEntry user={user} />
         </div>
