@@ -134,18 +134,18 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
                         {Array.isArray(employees) && employees.map((employee) => (
                           <div
                             key={employee._id}
-                            className="flex items-start space-x-3 p-3 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
+                            className="flex items-center space-x-4 p-4 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                           >
                             <Checkbox
                               id={employee._id}
                               checked={selectedEmployees.includes(employee._id)}
                               onCheckedChange={() => toggleEmployee(employee._id)}
-                              className="border-primary mt-1 flex-shrink-0"
+                              className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 flex-shrink-0 w-5 h-5"
                             />
                             <label htmlFor={employee._id} className="text-sm cursor-pointer font-medium flex-1 leading-relaxed">
                               {employee.name}
                               {employee.position && (
-                                <span className="text-xs text-muted-foreground block">
+                                <span className="text-xs text-muted-foreground block mt-1">
                                   {employee.position}
                                 </span>
                               )}

@@ -198,13 +198,13 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     {machines.map((machine) => (
                       <div
                         key={machine._id.toString()}
-                        className="flex items-start space-x-3 p-3 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
+                        className="flex items-center space-x-4 p-4 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                       >
                         <Checkbox
                           id={`product-${product.id}-${machine._id}`}
                           checked={product.machinesUsed.includes(machine.name)}
                           onCheckedChange={() => toggleMachine(product.id, machine.name)}
-                          className="border-primary mt-1 flex-shrink-0"
+                          className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 flex-shrink-0 w-5 h-5"
                         />
                         <label
                           htmlFor={`product-${product.id}-${machine._id}`}
