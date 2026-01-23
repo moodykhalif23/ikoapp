@@ -540,6 +540,15 @@
     margin-bottom: 4px !important;
   }
 
+  .card-report-compact {
+    gap: 12px !important;
+    padding: 16px !important;
+  }
+
+  .card-report-header {
+    margin-bottom: 6px !important;
+  }
+
   .text-brand-contrast {
     color: var(--brand-green-dark);
   }

@@ -521,12 +521,12 @@ ${new Date().toLocaleString()}
           {filteredReports.map((report) => (
             <Card 
               key={report.id} 
-              className={`card-brand card-elevated cursor-pointer transition-all hover:shadow-lg min-h-[280px] flex flex-col ${
+              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[260px] flex flex-col ${
                 selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
               }`}
               onClick={() => handleReportSelect(report)}
             >
-              <CardHeader className="pb-3 flex-shrink-0">
+              <CardHeader className="pb-2 flex-shrink-0 card-report-header">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-base font-semibold line-clamp-1">
@@ -547,7 +547,7 @@ ${new Date().toLocaleString()}
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col justify-between">
-                <div className="space-y-3 flex-1">
+                <div className="space-y-2 flex-1">
                   <div className="text-sm text-muted-foreground space-y-1">
                     <p className="line-clamp-1">
                       <span className="font-medium">Date:</span> {report.date}
@@ -571,7 +571,7 @@ ${new Date().toLocaleString()}
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t">
+                <div className="mt-3 pt-2 border-t">
                   <Button
                     size="sm"
                     variant="outline"
