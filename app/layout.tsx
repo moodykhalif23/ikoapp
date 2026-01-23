@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import PwaInstall from "@/components/pwa/pwa-install"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -11,22 +12,18 @@ export const metadata: Metadata = {
   title: "IKO BRIQ - Production Reporting",
   description: "Professional production reporting and management system",
   generator: "v0.app",
+  manifest: "/manifest.webmanifest",
+  themeColor: "#0C2235",
   icons: {
     icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
+      { url: "/logo.png", sizes: "150x100", type: "image/png" },
     ],
-    apple: "/apple-icon.png",
+    apple: "/logo.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "IKO BRIQ",
+    statusBarStyle: "default",
   },
 }
 
@@ -45,6 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans antialiased`}>
         {children}
+        <PwaInstall />
         <Analytics />
       </body>
     </html>

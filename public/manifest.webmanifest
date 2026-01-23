@@ -1,0 +1,17 @@
+{
+  "name": "IKO BRIQ - Production Reporting",
+  "short_name": "IKO BRIQ",
+  "description": "Professional production reporting and management system",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0C2235",
+  "theme_color": "#0C2235",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "150x100",
+      "type": "image/png"
+    }
+  ]
+}
