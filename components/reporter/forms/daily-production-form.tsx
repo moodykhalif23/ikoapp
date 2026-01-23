@@ -115,22 +115,23 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
   }
 
   return (
-    <Card className="border-border/50 animate-in fade-in duration-300">
-      <CardHeader>
-        <CardTitle className="text-primary">Daily Production Data</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Daily Production Data</h2>
+      </div>
+      
+      <div className="space-y-6">
         <div className="space-y-4">
           {products.map((product: Product, index: number) => (
-            <div key={product.id} className="p-6 border border-border rounded-lg space-y-4 bg-muted/30">
+            <div key={product.id} className="p-4 sm:p-6 border border-border/50 rounded-lg space-y-4 bg-background/40 backdrop-blur-sm">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <label className="text-sm font-medium block mb-2">Product Name</label>
+                  <label className="text-base sm:text-lg font-semibold text-foreground block mb-2">Product Name</label>
                   <Input
                     placeholder="e.g., Widget A, Component B"
                     value={product.productName}
                     onChange={(e) => updateProduct(product.id, "productName", e.target.value)}
-                    className={errors[`product-${index}-name`] ? "border-red-500" : ""}
+                    className={`bg-background/80 backdrop-blur-sm ${errors[`product-${index}-name`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-name`] && (
                     <p className="text-xs text-red-500 mt-1">{errors[`product-${index}-name`]}</p>
@@ -150,13 +151,13 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Quantity Produced</label>
+                  <label className="text-base sm:text-lg font-semibold text-foreground">Quantity Produced</label>
                   <Input
                     type="number"
                     placeholder="0"
                     value={product.quantity}
                     onChange={(e) => updateProduct(product.id, "quantity", e.target.value)}
-                    className={errors[`product-${index}-quantity`] ? "border-red-500" : ""}
+                    className={`bg-background/80 backdrop-blur-sm ${errors[`product-${index}-quantity`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-quantity`] && (
                     <p className="text-xs text-red-500">{errors[`product-${index}-quantity`]}</p>
@@ -164,20 +165,20 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Unit</label>
-                  <div className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground">
+                  <label className="text-base sm:text-lg font-semibold text-foreground">Unit</label>
+                  <div className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground">
                     kgs
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Number of Employees</label>
+                  <label className="text-base sm:text-lg font-semibold text-foreground">Number of Employees</label>
                   <Input
                     type="number"
                     placeholder="0"
                     value={product.employees}
                     onChange={(e) => updateProduct(product.id, "employees", e.target.value)}
-                    className={errors[`product-${index}-employees`] ? "border-red-500" : ""}
+                    className={`bg-background/80 backdrop-blur-sm ${errors[`product-${index}-employees`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-employees`] && (
                     <p className="text-xs text-red-500">{errors[`product-${index}-employees`]}</p>
@@ -186,9 +187,9 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
               </div>
 
               <div className="space-y-3">
-                <label className="form-label-large">Machines Used</label>
+                <label className="text-lg sm:text-xl font-semibold text-foreground">Machines Used</label>
                 {loading ? (
-                  <div className="flex items-center justify-center p-4">
+                  <div className="flex items-center justify-center p-4 bg-muted/20 rounded-lg backdrop-blur-sm">
                     <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                     <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
                   </div>
@@ -197,17 +198,17 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     {machines.map((machine) => (
                       <div
                         key={machine._id.toString()}
-                        className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                       >
                         <Checkbox
                           id={`product-${product.id}-${machine._id}`}
                           checked={product.machinesUsed.includes(machine.name)}
                           onCheckedChange={() => toggleMachine(product.id, machine.name)}
-                          className="border-primary"
+                          className="border-primary mt-1 flex-shrink-0"
                         />
                         <label
                           htmlFor={`product-${product.id}-${machine._id}`}
-                          className="text-sm cursor-pointer font-medium ml-2"
+                          className="text-sm cursor-pointer font-medium leading-relaxed"
                         >
                           {machine.name}
                         </label>
@@ -228,21 +229,21 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         <Button
           onClick={addProduct}
           variant="outline"
-          className="w-full gap-2 bg-transparent border-primary/20 hover:bg-primary/5 mb-12"
+          className="w-full gap-2 bg-background/80 backdrop-blur-sm border-primary/20 hover:bg-primary/10 mb-12 py-4 text-lg font-semibold"
         >
           <Plus className="w-4 h-4" />
           Add Product
         </Button>
 
-        <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6">
+        <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6 backdrop-blur-sm">
           <p className="text-sm text-muted-foreground mb-1">Overall Daily Efficiency</p>
           <p className="text-2xl font-bold text-accent">{getTotalEfficiency()}%</p>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Quality Issues (optional)</label>
+          <label className="text-lg sm:text-xl font-semibold text-foreground">Quality Issues (optional)</label>
           <textarea
-            className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             placeholder="Any quality concerns or defects..."
             value={qualityIssues}
             onChange={(e) => setQualityIssues(e.target.value)}
@@ -251,11 +252,11 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
             Continue <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

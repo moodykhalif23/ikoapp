@@ -90,19 +90,20 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
   }
 
   return (
-    <Card className="border-border/50 animate-in fade-in duration-300">
-      <CardHeader>
-        <CardTitle className="card-title-large text-primary">Power Interruption Report</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-center space-x-3 p-4 bg-primary/5 rounded-lg border border-primary/10">
+    <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Power Interruption Report</h2>
+      </div>
+      
+      <div className="space-y-6">
+        <div className="flex items-start space-x-3 p-4 sm:p-6 bg-primary/10 rounded-lg border border-primary/20 backdrop-blur-sm">
           <Checkbox
             id="no-interruptions"
             checked={noInterruptions}
             onCheckedChange={handleNoInterruptionsChange}
-            className="border-primary"
+            className="border-primary mt-1 flex-shrink-0"
           />
-          <label htmlFor="no-interruptions" className="text-base sm:text-lg font-semibold cursor-pointer ml-2">
+          <label htmlFor="no-interruptions" className="text-base sm:text-lg font-semibold cursor-pointer leading-relaxed">
             No power interruptions occurred today
           </label>
         </div>
@@ -111,43 +112,44 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <label className="form-label-large">Time of Interruption</label>
+                <label className="form-label-large text-foreground">Time of Interruption</label>
                 <Input
                   type="time"
                   value={formData.occurredAt}
                   onChange={(e) => setFormData({ ...formData, occurredAt: e.target.value })}
-                  className={errors.occurredAt ? "border-red-500" : ""}
+                  className={`bg-background/80 backdrop-blur-sm ${errors.occurredAt ? "border-red-500" : ""}`}
                 />
                 {errors.occurredAt && <p className="text-xs text-red-500">{errors.occurredAt}</p>}
               </div>
 
               <div className="space-y-2">
-                <label className="form-label-large">Duration (minutes)</label>
+                <label className="form-label-large text-foreground">Duration (minutes)</label>
                 <Input
                   type="number"
                   placeholder="30"
                   value={formData.duration}
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                  className={errors.duration ? "border-red-500" : ""}
+                  className={`bg-background/80 backdrop-blur-sm ${errors.duration ? "border-red-500" : ""}`}
                 />
                 {errors.duration && <p className="text-xs text-red-500">{errors.duration}</p>}
               </div>
 
               <div className="space-y-2">
-                <label className="form-label-large">KPLC Meter Reading</label>
+                <label className="form-label-large text-foreground">KPLC Meter Reading</label>
                 <Input
                   type="number"
                   placeholder="Enter meter reading"
                   value={formData.kplcMeter}
                   onChange={(e) => setFormData({ ...formData, kplcMeter: e.target.value })}
+                  className="bg-background/80 backdrop-blur-sm"
                 />
               </div>
             </div>
 
             <div className="space-y-3">
-              <label className="form-label-large">Affected Machines</label>
+              <label className="form-label-large text-foreground">Affected Machines</label>
               {loading ? (
-                <div className="flex items-center justify-center p-8">
+                <div className="flex items-center justify-center p-8 bg-muted/20 rounded-lg backdrop-blur-sm">
                   <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                   <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
                 </div>
@@ -156,15 +158,15 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   {machines.map((machine) => (
                     <div
                       key={machine._id.toString()}
-                      className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex items-start space-x-3 p-3 sm:p-4 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                     >
                       <Checkbox
                         id={machine._id.toString()}
                         checked={formData.affectedMachines.includes(machine.name)}
                         onCheckedChange={() => toggleMachine(machine.name)}
-                        className="border-primary"
+                        className="border-primary mt-1 flex-shrink-0"
                       />
-                      <label htmlFor={machine._id.toString()} className="text-sm cursor-pointer font-medium ml-2">
+                      <label htmlFor={machine._id.toString()} className="text-sm cursor-pointer font-medium leading-relaxed">
                         {machine.name}
                       </label>
                     </div>
@@ -177,11 +179,11 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
         )}
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+          <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4">
             Continue <ChevronRight className="w-5 h-5" />
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

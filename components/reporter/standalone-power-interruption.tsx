@@ -206,22 +206,23 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
           <h1 className="text-3xl font-bold text-foreground mb-2">Power Interruption Report</h1>
         </div>
 
-        <Card className="border-border/50">
-          <CardHeader className="text-center">
-            <CardTitle className="text-primary flex items-center justify-center gap-2">
-              <PowerIcon sx={{ fontSize: 20 }} />
+        <div className="bg-transparent border-border/50">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2 flex items-center justify-center gap-2">
+              <PowerIcon sx={{ fontSize: 24 }} />
               Power Interruption Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center space-x-3 p-4 bg-primary/5 rounded-lg border border-primary/10">
+            </h2>
+          </div>
+          
+          <div className="space-y-6">
+            <div className="flex items-start space-x-3 p-4 sm:p-6 bg-primary/10 rounded-lg border border-primary/20 backdrop-blur-sm">
               <Checkbox
                 id="no-interruptions"
                 checked={noInterruptions}
                 onCheckedChange={handleNoInterruptionsChange}
-                className="border-primary"
+                className="border-primary mt-1 flex-shrink-0"
               />
-              <label htmlFor="no-interruptions" className="text-sm font-medium cursor-pointer">
+              <label htmlFor="no-interruptions" className="text-base sm:text-lg font-semibold cursor-pointer leading-relaxed">
                 No power interruptions to report at this time
               </label>
             </div>
@@ -229,13 +230,13 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
             {!noInterruptions && (
               <>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium">Power Interruptions</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold text-foreground">Power Interruptions</h3>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={addInterruption}
-                    className="gap-2"
+                    className="gap-2 bg-background/80 backdrop-blur-sm"
                   >
                     <Plus size={16} />
                     Add Interruption
@@ -245,14 +246,14 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                 {errors.interruptions && <p className="text-xs text-red-500 mb-4">{errors.interruptions}</p>}
 
                 {formData.interruptions.length === 0 && (
-                  <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                  <div className="text-center py-8 border-2 border-dashed border-border/50 rounded-lg bg-background/40 backdrop-blur-sm">
                     <PowerIcon sx={{ fontSize: 32, color: "#ea580c" }} className="mx-auto mb-2 opacity-50" />
                     <p className="text-sm text-muted-foreground mb-4">No interruptions added yet</p>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={addInterruption}
-                      className="gap-2"
+                      className="gap-2 bg-background/80 backdrop-blur-sm"
                     >
                       <Plus size={16} />
                       Add First Interruption
@@ -261,66 +262,65 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                 )}
 
                 {formData.interruptions.map((interruption, index) => (
-                  <Card key={interruption.id} className="border-orange-200 bg-orange-50/30">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-orange-800">
-                          Interruption #{index + 1}
-                        </h4>
-                        {formData.interruptions.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeInterruption(interruption.id)}
-                            className="text-red-600 hover:text-red-800 hover:bg-red-100"
-                          >
-                            <Trash2 size={16} />
-                          </Button>
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
+                  <div key={interruption.id} className="border border-orange-200/50 bg-orange-50/20 backdrop-blur-sm rounded-lg p-4 sm:p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-base sm:text-lg font-semibold text-orange-800">
+                        Interruption #{index + 1}
+                      </h4>
+                      {formData.interruptions.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeInterruption(interruption.id)}
+                          className="text-red-600 hover:text-red-800 hover:bg-red-100"
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium">Time of Interruption *</label>
+                          <label className="text-base sm:text-lg font-semibold text-foreground">Time of Interruption *</label>
                           <Input
                             type="time"
                             value={interruption.occurredAt}
                             onChange={(e) => updateInterruption(interruption.id, 'occurredAt', e.target.value)}
-                            className={errors[`occurredAt_${index}`] ? "border-red-500" : ""}
+                            className={`bg-background/80 backdrop-blur-sm ${errors[`occurredAt_${index}`] ? "border-red-500" : ""}`}
                           />
                           {errors[`occurredAt_${index}`] && <p className="text-xs text-red-500">{errors[`occurredAt_${index}`]}</p>}
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium">Duration (minutes) *</label>
+                          <label className="text-base sm:text-lg font-semibold text-foreground">Duration (minutes) *</label>
                           <Input
                             type="number"
                             placeholder="30"
                             value={interruption.duration}
                             onChange={(e) => updateInterruption(interruption.id, 'duration', e.target.value)}
-                            className={errors[`duration_${index}`] ? "border-red-500" : ""}
+                            className={`bg-background/80 backdrop-blur-sm ${errors[`duration_${index}`] ? "border-red-500" : ""}`}
                           />
                           {errors[`duration_${index}`] && <p className="text-xs text-red-500">{errors[`duration_${index}`]}</p>}
                         </div>
                       </div>
 
                       <div className="space-y-3">
-                        <label className="text-sm font-medium">Affected Machines *</label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <label className="text-base sm:text-lg font-semibold text-foreground">Affected Machines *</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                           {machines.map((machine) => (
                             <div
                               key={machine}
-                              className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                              className="flex items-start space-x-3 p-3 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                             >
                               <Checkbox
                                 id={`${interruption.id}-${machine}`}
                                 checked={interruption.affectedMachines.includes(machine)}
                                 onCheckedChange={() => toggleMachine(interruption.id, machine)}
-                                className="border-primary"
+                                className="border-primary mt-1 flex-shrink-0"
                               />
-                              <label htmlFor={`${interruption.id}-${machine}`} className="text-sm cursor-pointer font-medium">
+                              <label htmlFor={`${interruption.id}-${machine}`} className="text-sm cursor-pointer font-medium leading-relaxed">
                                 {machine}
                               </label>
                             </div>
@@ -328,22 +328,22 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                         </div>
                         {errors[`affectedMachines_${index}`] && <p className="text-xs text-red-500">{errors[`affectedMachines_${index}`]}</p>}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 ))}
               </>
             )}
 
-            <div className="flex justify-end pt-4 border-t">
+            <div className="flex justify-end pt-4 border-t border-border/50">
               <Button 
                 onClick={handleSubmit} 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold"
               >
                 Submit Report
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   )

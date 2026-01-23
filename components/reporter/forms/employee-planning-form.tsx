@@ -89,32 +89,33 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
   }
 
   return (
-    <Card className="border-border/50 animate-in fade-in duration-300">
-      <CardHeader>
-        <CardTitle className="text-primary">Employee Planning</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Employee Planning</h2>
+      </div>
+      
+      <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Employees Present</label>
+            <label className="text-lg sm:text-xl font-semibold text-foreground">Employees Present</label>
             <div className="flex gap-2">
               <Input
                 type="number"
                 placeholder="0"
                 value={selectedEmployees.length}
                 InputProps={{ readOnly: true }}
-                className={`flex-1 ${errors.employeesPresent ? "border-red-500" : ""}`}
+                className={`flex-1 bg-background/80 backdrop-blur-sm ${errors.employeesPresent ? "border-red-500" : ""}`}
               />
               <Dialog open={showEmployeeDialog} onOpenChange={setShowEmployeeDialog}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="gap-2">
+                  <Button variant="outline" className="gap-2 bg-background/80 backdrop-blur-sm">
                     <Users size={16} />
                     Select
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+                <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto bg-background/95 backdrop-blur-sm">
                   <DialogHeader>
-                    <DialogTitle>Select Present Employees</DialogTitle>
+                    <DialogTitle className="text-foreground">Select Present Employees</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-3 mt-4">
                     {loading ? (
@@ -130,15 +131,15 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
                         {employees.map((employee) => (
                           <div
                             key={employee._id}
-                            className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                            className="flex items-start space-x-3 p-3 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                           >
                             <Checkbox
                               id={employee._id}
                               checked={selectedEmployees.includes(employee._id)}
                               onCheckedChange={() => toggleEmployee(employee._id)}
-                              className="border-primary"
+                              className="border-primary mt-1 flex-shrink-0"
                             />
-                            <label htmlFor={employee._id} className="text-sm cursor-pointer font-medium flex-1">
+                            <label htmlFor={employee._id} className="text-sm cursor-pointer font-medium flex-1 leading-relaxed">
                               {employee.name}
                               {employee.position && (
                                 <span className="text-xs text-muted-foreground block">
@@ -173,20 +174,21 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Employees Absent</label>
+            <label className="text-lg sm:text-xl font-semibold text-foreground">Employees Absent</label>
             <Input
               type="number"
               placeholder="0"
               value={formData.employeesAbsent}
               onChange={(e) => setFormData({ ...formData, employeesAbsent: e.target.value })}
+              className="bg-background/80 backdrop-blur-sm"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Planned Shifts</label>
+          <label className="text-lg sm:text-xl font-semibold text-foreground">Planned Shifts</label>
           <select
-            className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             value={formData.plannedShifts}
             onChange={(e) => setFormData({ ...formData, plannedShifts: e.target.value })}
           >
@@ -197,9 +199,9 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Notes (optional)</label>
+          <label className="text-lg sm:text-xl font-semibold text-foreground">Notes (optional)</label>
           <textarea
-            className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             placeholder="Any employee planning notes..."
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
@@ -207,7 +209,7 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
           />
         </div>
 
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 backdrop-blur-sm">
           <p className="text-sm text-muted-foreground mb-1">Report Summary</p>
           <ul className="text-sm space-y-1 text-foreground">
             <li>✓ All 5 sections will be completed</li>
@@ -216,18 +218,18 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
         </div>
 
         <div className="flex gap-3 pt-4">
-          <Button variant="outline" onClick={onComplete} className="flex-1 bg-transparent">
+          <Button variant="outline" onClick={onComplete} className="flex-1 bg-background/80 backdrop-blur-sm">
             Save as Draft
           </Button>
           <Button
             onClick={handleSubmit}
-            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold"
           >
             <Check className="w-4 h-4" />
             Submit Report
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

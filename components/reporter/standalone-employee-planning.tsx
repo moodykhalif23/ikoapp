@@ -79,15 +79,13 @@ export default function StandaloneEmployeePlanning({ user, onBack, onSubmit }: S
       {/* Loading Overlay */}
       {isSubmitting && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="card-brand card-elevated max-w-sm mx-4">
-            <CardContent className="text-center p-8">
-              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <h3 className="text-lg font-semibold mb-2">Submitting Report...</h3>
-              <p className="text-sm text-muted-foreground">
-                Please wait while we save your planning data
-              </p>
-            </CardContent>
-          </Card>
+          <div className="bg-background/95 backdrop-blur-sm border border-border/50 rounded-lg max-w-sm mx-4 p-8 text-center">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Submitting Report...</h3>
+            <p className="text-sm text-muted-foreground">
+              Please wait while we save your planning data
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -103,16 +103,17 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
   }
 
   return (
-    <Card className="border-border/50 animate-in fade-in duration-300">
-      <CardHeader>
-        <CardTitle className="text-primary">Site Visuals & Documentation</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Site Visuals & Documentation</h2>
+      </div>
+      
+      <div className="space-y-6">
         <div className="space-y-3">
-          <label className="text-sm font-medium">Media Files (Images & Videos)</label>
+          <label className="text-lg sm:text-xl font-semibold text-foreground">Media Files (Images & Videos)</label>
 
           {/* Upload Area */}
-          <label className={`border-2 border-dashed border-border/50 rounded-lg p-6 text-center cursor-pointer hover:bg-muted/50 transition-colors block ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}>
+          <label className={`border-2 border-dashed border-border/50 rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:bg-muted/30 transition-colors block backdrop-blur-sm bg-background/40 ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}>
             <input type="file" multiple accept="image/*,video/*" onChange={handleFileSelect} className="hidden" disabled={isProcessing} />
             {isProcessing ? (
               <>
@@ -133,12 +134,12 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
           {/* Media List */}
           {mediaFiles.length > 0 && (
             <div className="space-y-4">
-              <p className="text-sm font-medium text-foreground">Uploaded Files ({mediaFiles.length})</p>
+              <p className="text-lg sm:text-xl font-semibold text-foreground">Uploaded Files ({mediaFiles.length})</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {mediaFiles.map((file) => (
-                  <div key={file.id} className="relative border border-border rounded-lg bg-muted/30 group overflow-hidden">
+                  <div key={file.id} className="relative border border-border/50 rounded-lg bg-background/40 backdrop-blur-sm group overflow-hidden">
                     {/* Preview Area - Full Card Coverage */}
-                    <div className="aspect-video bg-muted/50 relative overflow-hidden">
+                    <div className="aspect-video bg-muted/30 relative overflow-hidden">
                       {file.preview ? (
                         <>
                           {file.type === "image" ? (
@@ -217,17 +218,17 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
             Continue <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
-      </CardContent>
+      </div>
 
       {/* Fullscreen Preview Dialog */}
       <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-background/95 backdrop-blur-sm">
           <DialogHeader className="p-6 pb-0">
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-foreground">
               {previewFile?.type === "image" ? (
                 <ImageIcon className="w-5 h-5" />
               ) : (
@@ -238,7 +239,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
           </DialogHeader>
           <div className="p-6 pt-4">
             {previewFile?.preview && (
-              <div className="flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden">
+              <div className="flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden backdrop-blur-sm">
                 {previewFile.type === "image" ? (
                   <img
                     src={previewFile.preview}
@@ -268,6 +269,6 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
           </div>
         </DialogContent>
       </Dialog>
-    </Card>
+    </div>
   )
 }

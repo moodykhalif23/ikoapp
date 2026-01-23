@@ -26,18 +26,19 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
   }
 
   return (
-    <Card className="border-border/50 animate-in fade-in duration-300">
-      <CardHeader>
-        <CardTitle className="text-primary">Incident Report</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Incident Report</h2>
+      </div>
+      
+      <div className="space-y-6">
         <div className="space-y-3">
-          <label className="text-sm font-medium">Were there any incidents today?</label>
+          <label className="text-lg sm:text-xl font-semibold text-foreground">Were there any incidents today?</label>
           <div className="flex gap-4 flex-wrap">
             {["no", "yes"].map((option) => (
               <div
                 key={option}
-                className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                className="flex items-start space-x-3 p-3 sm:p-4 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer backdrop-blur-sm bg-background/40"
               >
                 <input
                   type="radio"
@@ -46,9 +47,9 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   value={option}
                   checked={formData.hasIncident === option}
                   onChange={(e) => setFormData({ ...formData, hasIncident: e.target.value })}
-                  className="w-4 h-4 cursor-pointer accent-primary"
+                  className="w-4 h-4 cursor-pointer accent-primary mt-1 flex-shrink-0"
                 />
-                <label htmlFor={`incident-${option}`} className="text-sm cursor-pointer font-medium capitalize ml-2">
+                <label htmlFor={`incident-${option}`} className="text-sm cursor-pointer font-medium capitalize leading-relaxed">
                   {option}
                 </label>
               </div>
@@ -60,9 +61,9 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Incident Type</label>
+                <label className="text-lg sm:text-xl font-semibold text-foreground">Incident Type</label>
                 <select
-                  className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.incidentType}
                   onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
                 >
@@ -76,19 +77,20 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Time of Incident</label>
+                <label className="text-lg sm:text-xl font-semibold text-foreground">Time of Incident</label>
                 <Input
                   type="time"
                   value={formData.incidentTime}
                   onChange={(e) => setFormData({ ...formData, incidentTime: e.target.value })}
+                  className="bg-background/80 backdrop-blur-sm"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Injury Level</label>
+              <label className="text-lg sm:text-xl font-semibold text-foreground">Injury Level</label>
               <select
-                className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 value={formData.injuryLevel}
                 onChange={(e) => setFormData({ ...formData, injuryLevel: e.target.value })}
               >
@@ -100,9 +102,9 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Description</label>
+              <label className="text-lg sm:text-xl font-semibold text-foreground">Description</label>
               <textarea
-                className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 placeholder="Describe what happened..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -111,9 +113,9 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Action Taken</label>
+              <label className="text-lg sm:text-xl font-semibold text-foreground">Action Taken</label>
               <textarea
-                className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 placeholder="What action was taken in response..."
                 value={formData.actionTaken}
                 onChange={(e) => setFormData({ ...formData, actionTaken: e.target.value })}
@@ -124,11 +126,11 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
         )}
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
             Continue <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
