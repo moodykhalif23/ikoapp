@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AuthPage from "@/components/auth/auth-page"
 import RoleSelectionPage from "@/components/role-selection/role-selection-page"
 import ReporterDashboard from "@/components/dashboards/reporter-dashboard"
@@ -11,22 +11,38 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<"auth" | "roleSelection" | "dashboardSelection" | "reporter" | "viewer" | "admin">("auth")
   const [user, setUser] = useState<any>(null)
 
-  const handleAuthSuccess = (userData: any) => {
-    setUser(userData)
-    // Route based on user roles from database
+  const routeFromUser = (userData: any) => {
     if (userData.roles && userData.roles.includes("admin")) {
       setCurrentPage("admin")
     } else if (userData.roles && userData.roles.length > 0) {
-      // If user has roles assigned, go directly to the first role's dashboard
       if (userData.roles.includes("reporter")) {
         setCurrentPage("reporter")
       } else if (userData.roles.includes("viewer")) {
         setCurrentPage("viewer")
       }
     } else {
-      // If user has no roles assigned, show role selection
       setCurrentPage("roleSelection")
     }
+  }
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("ikoapp:user")
+    if (!storedUser) return
+
+    try {
+      const parsed = JSON.parse(storedUser)
+      setUser(parsed)
+      routeFromUser(parsed)
+    } catch {
+      localStorage.removeItem("ikoapp:user")
+    }
+  }, [])
+
+  const handleAuthSuccess = (userData: any) => {
+    setUser(userData)
+    localStorage.setItem("ikoapp:user", JSON.stringify(userData))
+    // Route based on user roles from database
+    routeFromUser(userData)
   }
 
   const handleRoleSelect = async (role: "reporter" | "viewer") => {
@@ -42,6 +58,7 @@ export default function Home() {
         const data = await response.json()
         // Update local user state with new role
         setUser(data.user)
+        localStorage.setItem("ikoapp:user", JSON.stringify(data.user))
       }
     } catch (error) {
       console.error('Error updating role:', error)
@@ -62,6 +79,7 @@ export default function Home() {
   const handleLogout = () => {
     setUser(null)
     setCurrentPage("auth")
+    localStorage.removeItem("ikoapp:user")
   }
 
   return (

@@ -3,6 +3,9 @@ const bcrypt = require('bcryptjs')
 require('dotenv').config()
 
 const MONGODB_URI = process.env.MONGODB_URI
+const args = new Set(process.argv.slice(2))
+const shouldReset = args.has('--reset')
+const shouldSeed = args.has('--seed')
 
 // Define models inline for migration script
 const UserSchema = new mongoose.Schema({
@@ -122,212 +125,219 @@ async function migrate() {
     await mongoose.connect(MONGODB_URI)
     console.log('Connected successfully!')
 
-    // Clear existing data (optional - comment out if you want to keep existing data)
-    console.log('Clearing existing data...')
-    await Promise.all([
-      User.deleteMany({}),
-      Report.deleteMany({}),
-      PowerInterruption.deleteMany({}),
-      SiteVisual.deleteMany({}),
-      DailyProduction.deleteMany({}),
-      IncidentReport.deleteMany({}),
-      EmployeePlanning.deleteMany({}),
-      Machine.deleteMany({}),
-      Employee.deleteMany({})
-    ])
-
-    // Seed users
-    console.log('Seeding users...')
-    const defaultPassword = 'password123'
-    const hashedPassword = await bcrypt.hash(defaultPassword, 12)
-    
-    const users = await User.insertMany([
-      {
-        name: 'Admin User',
-        email: 'admin@ikoapp.com',
-        password: hashedPassword,
-        roles: ['admin']
-      },
-      {
-        name: 'Reporter One',
-        email: 'reporter1@ikoapp.com',
-        password: hashedPassword,
-        roles: ['reporter']
-      },
-      {
-        name: 'Reporter Two',
-        email: 'reporter2@ikoapp.com',
-        password: hashedPassword,
-        roles: ['reporter']
-      },
-      {
-        name: 'Viewer User',
-        email: 'viewer@ikoapp.com',
-        password: hashedPassword,
-        roles: ['viewer']
-      }
-    ])
-
-    // Seed machines
-    console.log('Seeding machines...')
-    const machines = await Machine.insertMany([
-      { name: 'Machine A', type: 'Production', status: 'active' },
-      { name: 'Machine B', type: 'Production', status: 'active' },
-      { name: 'Machine C', type: 'Assembly', status: 'active' },
-      { name: 'Machine D', type: 'Packaging', status: 'active' },
-      { name: 'Machine E', type: 'Quality Control', status: 'active' },
-      { name: 'Machine F', type: 'Production', status: 'maintenance' },
-      { name: 'Machine G', type: 'Assembly', status: 'inactive' }
-    ])
-
-    // Seed employees
-    console.log('Seeding employees...')
-    const employees = await Employee.insertMany([
-      { name: 'John Smith', employeeId: 'EMP001', phone: '+254700123456', status: 'active' },
-      { name: 'Jane Doe', employeeId: 'EMP002', phone: '+254700123457', status: 'active' },
-      { name: 'Mike Johnson', employeeId: 'EMP003', phone: '+254700123458', status: 'active' },
-      { name: 'Sarah Wilson', employeeId: 'EMP004', phone: '+254700123459', status: 'active' },
-      { name: 'David Brown', employeeId: 'EMP005', phone: '+254700123460', status: 'active' },
-      { name: 'Lisa Davis', employeeId: 'EMP006', phone: '+254700123461', status: 'active' },
-      { name: 'Tom Anderson', employeeId: 'EMP007', phone: '+254700123462', status: 'inactive' },
-      { name: 'Emma Taylor', employeeId: 'EMP008', phone: '+254700123463', status: 'active' },
-      { name: 'Chris Martin', employeeId: 'EMP009', phone: '+254700123464', status: 'active' },
-      { name: 'Amy White', employeeId: 'EMP010', phone: '+254700123465', status: 'active' }
-    ])
-
-    // Seed sample reports with complete data
-    console.log('Seeding sample reports...')
-
-    for (const user of users.filter(u => u.roles.includes('reporter'))) {
-      // Create a complete report for each reporter
-      const reportId = `RPT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-      const report = new Report({
-        id: reportId,
-        date: new Date().toISOString().split('T')[0],
-        reportedBy: user.name,
-        reportedByEmail: user.email,
-        status: 'submitted',
-        submittedAt: new Date()
-      })
-
-      // Power Interruption
-      const powerInterruption = new PowerInterruption({
-        reportId: report._id,
-        noInterruptions: false,
-        occurredAt: '09:30',
-        duration: 45,
-        affectedMachines: ['Machine A', 'Machine C'],
-        kplcMeter: 1250.5
-      })
-      await powerInterruption.save()
-      report.powerInterruptionId = powerInterruption._id
-
-      // Site Visuals
-      const siteVisual = new SiteVisual({
-        reportId: report._id,
-        photos: ['photo1.jpg', 'photo2.jpg'],
-        notes: 'Site looks clean and well-maintained'
-      })
-      await siteVisual.save()
-      report.siteVisualId = siteVisual._id
-
-      // Daily Production
-      const dailyProduction = new DailyProduction({
-        reportId: report._id,
-        machineProductions: [
-          {
-            machineName: 'Machine A',
-            producedUnits: 450,
-            targetUnits: 500,
-            efficiency: 90,
-            downtime: 30,
-            notes: 'Minor maintenance required'
-          },
-          {
-            machineName: 'Machine B',
-            producedUnits: 380,
-            targetUnits: 400,
-            efficiency: 95,
-            downtime: 10,
-            notes: 'Running smoothly'
-          }
-        ],
-        totalProduced: 830,
-        totalTarget: 900
-      })
-      await dailyProduction.save()
-      report.dailyProductionId = dailyProduction._id
-
-      // Incident Report
-      const incidentReport = new IncidentReport({
-        reportId: report._id,
-        noIncidents: false,
-        incidents: [
-          {
-            type: 'safety',
-            severity: 'low',
-            description: 'Minor slip hazard identified',
-            occurredAt: '14:30',
-            affectedArea: 'Production Floor',
-            immediateAction: 'Placed warning signs and cleaned area',
-            reportedTo: 'Safety Officer',
-            followUpRequired: true,
-            followUpNotes: 'Monitor area for next 24 hours'
-          }
-        ]
-      })
-      await incidentReport.save()
-      report.incidentReportId = incidentReport._id
-
-      // Employee Planning
-      const employeePlanning = new EmployeePlanning({
-        reportId: report._id,
-        totalEmployees: 25,
-        presentEmployees: 23,
-        shiftDetails: [
-          {
-            shift: 'morning',
-            plannedEmployees: 12,
-            actualEmployees: 11,
-            supervisor: 'John Smith'
-          },
-          {
-            shift: 'afternoon',
-            plannedEmployees: 13,
-            actualEmployees: 12,
-            supervisor: 'Jane Doe'
-          }
-        ],
-        overtimeHours: 8,
-        trainingHours: 4,
-        notes: 'One employee on medical leave'
-      })
-      await employeePlanning.save()
-      report.employeePlanningId = employeePlanning._id
-
-      await report.save()
-      console.log(`Created complete report for ${user.name}`)
+    if (shouldReset) {
+      console.log('Clearing existing data...')
+      await Promise.all([
+        User.deleteMany({}),
+        Report.deleteMany({}),
+        PowerInterruption.deleteMany({}),
+        SiteVisual.deleteMany({}),
+        DailyProduction.deleteMany({}),
+        IncidentReport.deleteMany({}),
+        EmployeePlanning.deleteMany({}),
+        Machine.deleteMany({}),
+        Employee.deleteMany({})
+      ])
+    } else {
+      console.log('Skipping reset (use --reset to clear data).')
     }
 
-    // Create a draft report
-    const draftReportId = `RPT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    const draftReport = new Report({
-      id: draftReportId,
-      date: new Date().toISOString().split('T')[0],
-      reportedBy: users[1].name,
-      reportedByEmail: users[1].email,
-      status: 'draft'
-    })
+    if (shouldSeed) {
+      // Seed users
+      console.log('Seeding users...')
+      const defaultPassword = 'password123'
+      const hashedPassword = await bcrypt.hash(defaultPassword, 12)
+      
+      const users = await User.insertMany([
+        {
+          name: 'Admin User',
+          email: 'admin@ikoapp.com',
+          password: hashedPassword,
+          roles: ['admin']
+        },
+        {
+          name: 'Reporter One',
+          email: 'reporter1@ikoapp.com',
+          password: hashedPassword,
+          roles: ['reporter']
+        },
+        {
+          name: 'Reporter Two',
+          email: 'reporter2@ikoapp.com',
+          password: hashedPassword,
+          roles: ['reporter']
+        },
+        {
+          name: 'Viewer User',
+          email: 'viewer@ikoapp.com',
+          password: hashedPassword,
+          roles: ['viewer']
+        }
+      ])
 
-    const draftPowerInterruption = new PowerInterruption({
-      reportId: draftReport._id,
-      noInterruptions: true
-    })
-    await draftPowerInterruption.save()
-    draftReport.powerInterruptionId = draftPowerInterruption._id
+      // Seed machines
+      console.log('Seeding machines...')
+      await Machine.insertMany([
+        { name: 'Machine A', type: 'Production', status: 'active' },
+        { name: 'Machine B', type: 'Production', status: 'active' },
+        { name: 'Machine C', type: 'Assembly', status: 'active' },
+        { name: 'Machine D', type: 'Packaging', status: 'active' },
+        { name: 'Machine E', type: 'Quality Control', status: 'active' },
+        { name: 'Machine F', type: 'Production', status: 'maintenance' },
+        { name: 'Machine G', type: 'Assembly', status: 'inactive' }
+      ])
 
-    await draftReport.save()
-    console.log('Created draft report')
+      // Seed employees
+      console.log('Seeding employees...')
+      await Employee.insertMany([
+        { name: 'John Smith', employeeId: 'EMP001', phone: '+254700123456', status: 'active' },
+        { name: 'Jane Doe', employeeId: 'EMP002', phone: '+254700123457', status: 'active' },
+        { name: 'Mike Johnson', employeeId: 'EMP003', phone: '+254700123458', status: 'active' },
+        { name: 'Sarah Wilson', employeeId: 'EMP004', phone: '+254700123459', status: 'active' },
+        { name: 'David Brown', employeeId: 'EMP005', phone: '+254700123460', status: 'active' },
+        { name: 'Lisa Davis', employeeId: 'EMP006', phone: '+254700123461', status: 'active' },
+        { name: 'Tom Anderson', employeeId: 'EMP007', phone: '+254700123462', status: 'inactive' },
+        { name: 'Emma Taylor', employeeId: 'EMP008', phone: '+254700123463', status: 'active' },
+        { name: 'Chris Martin', employeeId: 'EMP009', phone: '+254700123464', status: 'active' },
+        { name: 'Amy White', employeeId: 'EMP010', phone: '+254700123465', status: 'active' }
+      ])
+
+      // Seed sample reports with complete data
+      console.log('Seeding sample reports...')
+
+      for (const user of users.filter(u => u.roles.includes('reporter'))) {
+        // Create a complete report for each reporter
+        const reportId = `RPT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        const report = new Report({
+          id: reportId,
+          date: new Date().toISOString().split('T')[0],
+          reportedBy: user.name,
+          reportedByEmail: user.email,
+          status: 'submitted',
+          submittedAt: new Date()
+        })
+
+        // Power Interruption
+        const powerInterruption = new PowerInterruption({
+          reportId: report._id,
+          noInterruptions: false,
+          occurredAt: '09:30',
+          duration: 45,
+          affectedMachines: ['Machine A', 'Machine C'],
+          kplcMeter: 1250.5
+        })
+        await powerInterruption.save()
+        report.powerInterruptionId = powerInterruption._id
+
+        // Site Visuals
+        const siteVisual = new SiteVisual({
+          reportId: report._id,
+          photos: ['photo1.jpg', 'photo2.jpg'],
+          notes: 'Site looks clean and well-maintained'
+        })
+        await siteVisual.save()
+        report.siteVisualId = siteVisual._id
+
+        // Daily Production
+        const dailyProduction = new DailyProduction({
+          reportId: report._id,
+          machineProductions: [
+            {
+              machineName: 'Machine A',
+              producedUnits: 450,
+              targetUnits: 500,
+              efficiency: 90,
+              downtime: 30,
+              notes: 'Minor maintenance required'
+            },
+            {
+              machineName: 'Machine B',
+              producedUnits: 380,
+              targetUnits: 400,
+              efficiency: 95,
+              downtime: 10,
+              notes: 'Running smoothly'
+            }
+          ],
+          totalProduced: 830,
+          totalTarget: 900
+        })
+        await dailyProduction.save()
+        report.dailyProductionId = dailyProduction._id
+
+        // Incident Report
+        const incidentReport = new IncidentReport({
+          reportId: report._id,
+          noIncidents: false,
+          incidents: [
+            {
+              type: 'safety',
+              severity: 'low',
+              description: 'Minor slip hazard identified',
+              occurredAt: '14:30',
+              affectedArea: 'Production Floor',
+              immediateAction: 'Placed warning signs and cleaned area',
+              reportedTo: 'Safety Officer',
+              followUpRequired: true,
+              followUpNotes: 'Monitor area for next 24 hours'
+            }
+          ]
+        })
+        await incidentReport.save()
+        report.incidentReportId = incidentReport._id
+
+        // Employee Planning
+        const employeePlanning = new EmployeePlanning({
+          reportId: report._id,
+          totalEmployees: 25,
+          presentEmployees: 23,
+          shiftDetails: [
+            {
+              shift: 'morning',
+              plannedEmployees: 12,
+              actualEmployees: 11,
+              supervisor: 'John Smith'
+            },
+            {
+              shift: 'afternoon',
+              plannedEmployees: 13,
+              actualEmployees: 12,
+              supervisor: 'Jane Doe'
+            }
+          ],
+          overtimeHours: 8,
+          trainingHours: 4,
+          notes: 'One employee on medical leave'
+        })
+        await employeePlanning.save()
+        report.employeePlanningId = employeePlanning._id
+
+        await report.save()
+        console.log(`Created complete report for ${user.name}`)
+      }
+
+      // Create a draft report
+      const draftReportId = `RPT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      const draftReport = new Report({
+        id: draftReportId,
+        date: new Date().toISOString().split('T')[0],
+        reportedBy: users[1].name,
+        reportedByEmail: users[1].email,
+        status: 'draft'
+      })
+
+      const draftPowerInterruption = new PowerInterruption({
+        reportId: draftReport._id,
+        noInterruptions: true
+      })
+      await draftPowerInterruption.save()
+      draftReport.powerInterruptionId = draftPowerInterruption._id
+
+      await draftReport.save()
+      console.log('Created draft report')
+    } else {
+      console.log('Skipping seed data (use --seed to insert samples).')
+    }
 
     console.log('Migration completed successfully!')
 

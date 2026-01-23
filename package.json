@@ -8,6 +8,8 @@
     "lint": "eslint .",
     "start": "next start",
     "migrate": "node scripts/migrate.js",
+    "db:reset": "node scripts/reset-db.js",
+    "db:create-admin": "node scripts/create-admin.js",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down"
   },
