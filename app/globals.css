@@ -532,6 +532,14 @@
     box-shadow: 0 20px 40px rgba(45, 106, 79, 0.2);
   }
 
+  .card-filter-tight {
+    gap: 12px !important;
+  }
+
+  .card-filter-header {
+    margin-bottom: 8px !important;
+  }
+
   .text-brand-contrast {
     color: var(--brand-green-dark);
   }

@@ -462,8 +462,8 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
           </div>
 
           {/* Filters Section */}
-          <Card className="card-brand card-elevated mb-6">
-            <CardHeader className="pb-3">
+          <Card className="card-brand card-elevated card-filter-tight mb-6">
+            <CardHeader className="card-filter-header">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base sm:text-lg">
                   Filter Reports
