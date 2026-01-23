@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronRight } from "lucide-react"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -180,7 +180,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
 
         <div className="flex justify-end pt-4">
           <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4">
-            Continue <ChevronRight className="w-5 h-5" />
+            Continue <ChevronRightIcon sx={{ fontSize: 20 }} />
           </Button>
         </div>
       </div>

@@ -1,32 +1,40 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Wrench,
-  Plus,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Calendar,
-  Search,
-  Filter,
-  Settings,
-  TrendingUp,
-  Activity,
-  Zap,
-  ChevronDown,
-  ChevronUp
-} from "lucide-react"
+import { AlertTriangle, Clock, Calendar, Settings, Plus } from "lucide-react"
 import { toast } from "sonner"
+import {
+  Box,
+  Button as MuiButton,
+  Chip,
+  Dialog as MuiDialog,
+  DialogActions,
+  DialogContent as MuiDialogContent,
+  DialogTitle as MuiDialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select as MuiSelect,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  Typography,
+  IconButton,
+  Tooltip,
+  Alert
+} from "@mui/material"
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material"
 
 interface EquipmentDashboardProps {
   machines?: any[]
@@ -49,16 +57,22 @@ interface MaintenanceRecord {
   createdAt: string
 }
 
-export default function EquipmentDashboard({ machines = [], user }: EquipmentDashboardProps) {
+export default function EquipmentDashboard({ machines: initialMachines = [], user }: EquipmentDashboardProps) {
+  const [machineList, setMachineList] = useState<any[]>(initialMachines)
+  const [machinesLoading, setMachinesLoading] = useState(true)
+  const [machineDialogOpen, setMachineDialogOpen] = useState(false)
+  const [editingMachine, setEditingMachine] = useState<any | null>(null)
+  const [machineForm, setMachineForm] = useState({
+    name: "",
+    type: "",
+    status: "active"
+  })
+  const [machineSubmitting, setMachineSubmitting] = useState(false)
+  const [machineError, setMachineError] = useState<string | null>(null)
+
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([])
-  const [filteredRecords, setFilteredRecords] = useState<MaintenanceRecord[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [priorityFilter, setPriorityFilter] = useState("all")
   const [showAddMaintenance, setShowAddMaintenance] = useState(false)
-  const [selectedRecord, setSelectedRecord] = useState<MaintenanceRecord | null>(null)
-  const [filtersExpanded, setFiltersExpanded] = useState(false)
 
   // Form states
   const [newMaintenance, setNewMaintenance] = useState({
@@ -74,11 +88,8 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
 
   useEffect(() => {
     fetchMaintenanceRecords()
+    fetchMachines()
   }, [])
-
-  useEffect(() => {
-    filterRecords()
-  }, [maintenanceRecords, searchTerm, statusFilter, priorityFilter])
 
   const fetchMaintenanceRecords = async () => {
     try {
@@ -94,29 +105,102 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
     }
   }
 
-  const filterRecords = () => {
-    let filtered = [...maintenanceRecords]
+  const fetchMachines = async () => {
+    try {
+      setMachinesLoading(true)
+      const response = await fetch('/api/machines?all=true')
+      if (response.ok) {
+        const data = await response.json()
+        setMachineList(data)
+      } else {
+        setMachineError("Failed to fetch machines")
+      }
+    } catch (error) {
+      setMachineError("Error fetching machines")
+    } finally {
+      setMachinesLoading(false)
+    }
+  }
 
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(record =>
-        record.equipmentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (record.assignedTo && record.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
+  const handleOpenMachineDialog = (machine?: any) => {
+    if (machine) {
+      setEditingMachine(machine)
+      setMachineForm({
+        name: machine.name || "",
+        type: machine.type || "",
+        status: machine.status || "active"
+      })
+    } else {
+      setEditingMachine(null)
+      setMachineForm({ name: "", type: "", status: "active" })
+    }
+    setMachineDialogOpen(true)
+    setMachineError(null)
+  }
+
+  const handleCloseMachineDialog = () => {
+    setMachineDialogOpen(false)
+    setEditingMachine(null)
+    setMachineForm({ name: "", type: "", status: "active" })
+    setMachineError(null)
+  }
+
+  const handleSaveMachine = async () => {
+    if (!machineForm.name.trim() || !machineForm.type.trim()) {
+      setMachineError("Name and type are required")
+      return
     }
 
-    // Status filter
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(record => record.status === statusFilter)
+    try {
+      setMachineSubmitting(true)
+      setMachineError(null)
+
+      const url = editingMachine
+        ? `/api/machines/${editingMachine._id}`
+        : '/api/machines'
+      const method = editingMachine ? 'PUT' : 'POST'
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: machineForm.name.trim(),
+          type: machineForm.type.trim(),
+          status: machineForm.status
+        })
+      })
+
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save machine')
+      }
+
+      toast.success(editingMachine ? "Machine updated" : "Machine created")
+      handleCloseMachineDialog()
+      fetchMachines()
+    } catch (error) {
+      setMachineError(error instanceof Error ? error.message : "Failed to save machine")
+    } finally {
+      setMachineSubmitting(false)
+    }
+  }
+
+  const handleDeleteMachine = async (machine: any) => {
+    if (!confirm(`Delete machine "${machine.name}"?`)) {
+      return
     }
 
-    // Priority filter
-    if (priorityFilter !== "all") {
-      filtered = filtered.filter(record => record.priority === priorityFilter)
+    try {
+      const response = await fetch(`/api/machines/${machine._id}`, { method: 'DELETE' })
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete machine')
+      }
+      toast.success("Machine deleted")
+      fetchMachines()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to delete machine")
     }
-
-    setFilteredRecords(filtered)
   }
 
   const handleAddMaintenance = async () => {
@@ -126,7 +210,7 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
     }
 
     try {
-      const selectedMachine = machines.find(m => m._id === newMaintenance.equipmentId)
+      const selectedMachine = machineList.find(m => m._id === newMaintenance.equipmentId)
 
       const response = await fetch('/api/equipment-maintenance', {
         method: 'POST',
@@ -185,25 +269,18 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
     }
   }
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      scheduled: { variant: "secondary" as const, color: "bg-blue-100 text-blue-800" },
-      'in-progress': { variant: "default" as const, color: "bg-yellow-100 text-yellow-800" },
-      completed: { variant: "secondary" as const, color: "bg-green-100 text-green-800" },
-      cancelled: { variant: "destructive" as const, color: "bg-red-100 text-red-800" }
-    }
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.scheduled
-    return <Badge className={`capitalize ${config.color}`}>{status.replace('-', ' ')}</Badge>
+  const getStatusChipColor = (status: string) => {
+    if (status === 'completed') return 'success'
+    if (status === 'in-progress') return 'warning'
+    if (status === 'cancelled') return 'error'
+    return 'info'
   }
 
-  const getPriorityBadge = (priority: string) => {
-    const priorityConfig = {
-      low: "bg-gray-100 text-gray-800",
-      medium: "bg-blue-100 text-blue-800",
-      high: "bg-orange-100 text-orange-800",
-      critical: "bg-red-100 text-red-800"
-    }
-    return <Badge className={`capitalize ${priorityConfig[priority as keyof typeof priorityConfig] || priorityConfig.medium}`}>{priority}</Badge>
+  const getPriorityChipColor = (priority: string) => {
+    if (priority === 'critical') return 'error'
+    if (priority === 'high') return 'warning'
+    if (priority === 'low') return 'default'
+    return 'info'
   }
 
   const getOverdueRecords = () => {
@@ -245,264 +322,98 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
 
   return (
     <div className="space-y-6">
-      {/* Filters Section */}
-      <Card className="card-brand card-elevated card-filter-tight mb-6">
-        <CardHeader className="card-filter-header">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-              <Filter size={20} />
-              Filters
-            </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setFiltersExpanded(!filtersExpanded)}
-              className="gap-2"
-            >
-              {filtersExpanded ? (
-                <>
-                  <ChevronUp size={16} />
-                  <span className="hidden sm:inline">Collapse</span>
-                </>
+      {/* Machine Management */}
+      <Box sx={{ p: { xs: 2, sm: 3 } }} className="card-brand card-elevated">
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h5" component="h2" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+            Machine Management
+          </Typography>
+          <MuiButton
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenMachineDialog()}
+            sx={{ bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' } }}
+          >
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>Add Machine</Box>
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>Add</Box>
+          </MuiButton>
+        </Box>
+
+        {machineError && (
+          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setMachineError(null)}>
+            {machineError}
+          </Alert>
+        )}
+
+        <TableContainer component={Paper} elevation={2} sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
+            <TableHead>
+              <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                <TableCell sx={{ minWidth: 140 }}><strong>Name</strong></TableCell>
+                <TableCell sx={{ minWidth: 120, display: { xs: 'none', sm: 'table-cell' } }}><strong>Type</strong></TableCell>
+                <TableCell sx={{ minWidth: 100 }}><strong>Status</strong></TableCell>
+                <TableCell sx={{ minWidth: 100 }}><strong>Actions</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {machinesLoading ? (
+                <TableRow>
+                  <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                    <Typography variant="body2" color="text.secondary">Loading machines...</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : machineList.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      No machines found. Click "Add Machine" to get started.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
               ) : (
-                <>
-                  <ChevronDown size={16} />
-                  <span className="hidden sm:inline">Expand</span>
-                </>
+                machineList.map((machine) => (
+                  <TableRow key={machine._id} hover>
+                    <TableCell>
+                      <Box>
+                        <Typography variant="body2" fontWeight="medium">{machine.name}</Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ display: { xs: 'block', sm: 'none' } }}
+                        >
+                          Type: {machine.type}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{machine.type}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={machine.status}
+                        size="small"
+                        color={machine.status === 'active' ? 'success' : machine.status === 'maintenance' ? 'warning' : 'default'}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box display="flex" gap={0.5}>
+                        <Tooltip title="Edit">
+                          <IconButton size="small" onClick={() => handleOpenMachineDialog(machine)} color="primary">
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton size="small" onClick={() => handleDeleteMachine(machine)} color="error">
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
-            </Button>
-          </div>
-        </CardHeader>
-        
-        {/* Always visible search bar */}
-        <CardContent className="pt-0">
-          <div className="relative">
-            <Input
-              placeholder="Search maintenance records..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pr-10 text-sm"
-            />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          </div>
-          
-          {/* Collapsible filter section */}
-          {filtersExpanded && (
-            <div className="space-y-4 mt-4">
-              {/* Filter dropdowns in a row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Status Filter */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Status</label>
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                      statusFilter !== "all" 
-                        ? "bg-green-50 text-green-800" 
-                        : "bg-background"
-                    }`}
-                  >
-                    <option value="all">All Status</option>
-                    <option value="scheduled">Scheduled</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-
-                {/* Priority Filter */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Priority</label>
-                  <select
-                    value={priorityFilter}
-                    onChange={(e) => setPriorityFilter(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                      priorityFilter !== "all" 
-                        ? "bg-green-50 text-green-800" 
-                        : "bg-background"
-                    }`}
-                  >
-                    <option value="all">All Priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="critical">Critical</option>
-                  </select>
-                </div>
-
-                {/* Equipment Filter */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Equipment</label>
-                  <select
-                    value=""
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
-                  >
-                    <option value="">All Equipment</option>
-                    {machines.map(machine => (
-                      <option key={machine._id} value={machine.name}>{machine.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Clear Filters */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setStatusFilter("all")
-                      setPriorityFilter("all")
-                      setSearchTerm("")
-                    }}
-                    className="text-sm w-full h-10"
-                  >
-                    Clear Filters
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Results Count */}
-              <div className="pt-4 border-t text-sm text-muted-foreground">
-                Showing {filteredRecords.length} of {maintenanceRecords.length} maintenance records
-              </div>
-            </div>
-          )}
-          
-          {/* Compact results count when collapsed */}
-          {!filtersExpanded && (
-            <div className="mt-2 text-sm text-muted-foreground">
-              {filteredRecords.length} of {maintenanceRecords.length} records
-              {(statusFilter !== "all" || priorityFilter !== "all" || searchTerm) && (
-                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                  Filtered
-                </span>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Schedule Maintenance Button */}
-      <div className="flex justify-end mb-6">
-        <Dialog open={showAddMaintenance} onOpenChange={setShowAddMaintenance}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus size={16} />
-              Schedule Maintenance
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Schedule Maintenance</DialogTitle>
-              <DialogDescription>
-                Create a new maintenance record for equipment.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="equipment">Equipment *</Label>
-                <Select value={newMaintenance.equipmentId} onValueChange={(value) => setNewMaintenance({...newMaintenance, equipmentId: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select equipment" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {machines.map((machine) => (
-                      <SelectItem key={machine._id} value={machine._id}>
-                        {machine.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="type">Maintenance Type</Label>
-                  <Select value={newMaintenance.maintenanceType} onValueChange={(value) => setNewMaintenance({...newMaintenance, maintenanceType: value})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="preventive">Preventive</SelectItem>
-                      <SelectItem value="corrective">Corrective</SelectItem>
-                      <SelectItem value="predictive">Predictive</SelectItem>
-                      <SelectItem value="emergency">Emergency</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="priority">Priority</Label>
-                  <Select value={newMaintenance.priority} onValueChange={(value) => setNewMaintenance({...newMaintenance, priority: value})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="critical">Critical</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="scheduledDate">Scheduled Date *</Label>
-                <Input
-                  id="scheduledDate"
-                  type="datetime-local"
-                  value={newMaintenance.scheduledDate}
-                  onChange={(e) => setNewMaintenance({...newMaintenance, scheduledDate: e.target.value})}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="assignedTo">Assigned To</Label>
-                <Input
-                  id="assignedTo"
-                  placeholder="Technician name"
-                  value={newMaintenance.assignedTo}
-                  onChange={(e) => setNewMaintenance({...newMaintenance, assignedTo: e.target.value})}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="estimatedHours">Estimated Hours</Label>
-                <Input
-                  id="estimatedHours"
-                  type="number"
-                  placeholder="0"
-                  value={newMaintenance.estimatedHours}
-                  onChange={(e) => setNewMaintenance({...newMaintenance, estimatedHours: e.target.value})}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description *</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Describe the maintenance work..."
-                  value={newMaintenance.description}
-                  onChange={(e) => setNewMaintenance({...newMaintenance, description: e.target.value})}
-                />
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button onClick={handleAddMaintenance} className="flex-1">
-                  Schedule Maintenance
-                </Button>
-                <Button variant="outline" onClick={() => setShowAddMaintenance(false)} className="flex-1">
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -514,7 +425,9 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{machines.length}</div>
+            <div className="text-2xl font-bold text-foreground">
+              {machineList.filter((m) => m.status === 'active').length}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Active machines</p>
           </CardContent>
         </Card>
@@ -561,77 +474,280 @@ export default function EquipmentDashboard({ machines = [], user }: EquipmentDas
         </Card>
       </div>
 
+      {/* Schedule Maintenance Button */}
+      <div className="flex justify-end">
+        <Dialog open={showAddMaintenance} onOpenChange={setShowAddMaintenance}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Plus size={16} />
+              Schedule Maintenance
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Schedule Maintenance</DialogTitle>
+              <DialogDescription>
+                Create a new maintenance record for equipment.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="equipment">Equipment *</Label>
+                <Select value={newMaintenance.equipmentId} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, equipmentId: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select equipment" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {machineList.map((machine) => (
+                      <SelectItem key={machine._id} value={machine._id}>
+                        {machine.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="type">Maintenance Type</Label>
+                  <Select value={newMaintenance.maintenanceType} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, maintenanceType: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="preventive">Preventive</SelectItem>
+                      <SelectItem value="corrective">Corrective</SelectItem>
+                      <SelectItem value="predictive">Predictive</SelectItem>
+                      <SelectItem value="emergency">Emergency</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="priority">Priority</Label>
+                  <Select value={newMaintenance.priority} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, priority: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="critical">Critical</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="scheduledDate">Scheduled Date *</Label>
+                <TextField
+                  id="scheduledDate"
+                  type="datetime-local"
+                  value={newMaintenance.scheduledDate}
+                  onChange={(e) => setNewMaintenance({ ...newMaintenance, scheduledDate: e.target.value })}
+                  fullWidth
+                  size="small"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="assignedTo">Assigned To</Label>
+                <TextField
+                  id="assignedTo"
+                  placeholder="Technician name"
+                  value={newMaintenance.assignedTo}
+                  onChange={(e) => setNewMaintenance({ ...newMaintenance, assignedTo: e.target.value })}
+                  fullWidth
+                  size="small"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="estimatedHours">Estimated Hours</Label>
+                <TextField
+                  id="estimatedHours"
+                  type="number"
+                  placeholder="0"
+                  value={newMaintenance.estimatedHours}
+                  onChange={(e) => setNewMaintenance({ ...newMaintenance, estimatedHours: e.target.value })}
+                  fullWidth
+                  size="small"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="description">Description *</Label>
+                <Textarea
+                  id="description"
+                  placeholder="Describe the maintenance work..."
+                  value={newMaintenance.description}
+                  onChange={(e) => setNewMaintenance({ ...newMaintenance, description: e.target.value })}
+                />
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button onClick={handleAddMaintenance} className="flex-1">
+                  Schedule Maintenance
+                </Button>
+                <Button variant="outline" onClick={() => setShowAddMaintenance(false)} className="flex-1">
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
       {/* Maintenance Table */}
-      <Card className="card-brand card-elevated">
-        <CardHeader>
-          <CardTitle>Maintenance Schedule</CardTitle>
-          <CardDescription>Track and manage equipment maintenance activities</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {/* Table */}
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
+      <Box className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 } }}>
+        <Typography variant="h6" component="h3" sx={{ mb: 1 }}>Maintenance Schedule</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Track and manage equipment maintenance activities
+        </Typography>
+        <TableContainer component={Paper} elevation={2} sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
+            <TableHead>
+              <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                <TableCell sx={{ minWidth: 140 }}><strong>Equipment</strong></TableCell>
+                <TableCell sx={{ minWidth: 120, display: { xs: 'none', sm: 'table-cell' } }}><strong>Type</strong></TableCell>
+                <TableCell sx={{ minWidth: 100, display: { xs: 'none', md: 'table-cell' } }}><strong>Priority</strong></TableCell>
+                <TableCell sx={{ minWidth: 140 }}><strong>Scheduled</strong></TableCell>
+                <TableCell sx={{ minWidth: 120, display: { xs: 'none', md: 'table-cell' } }}><strong>Assigned</strong></TableCell>
+                <TableCell sx={{ minWidth: 100 }}><strong>Status</strong></TableCell>
+                <TableCell sx={{ minWidth: 120 }}><strong>Actions</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {maintenanceRecords.length === 0 ? (
                 <TableRow>
-                  <TableHead>Equipment</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Scheduled Date</TableHead>
-                  <TableHead>Assigned To</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRecords.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                    <Typography variant="body2" color="text.secondary">
                       No maintenance records found
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                maintenanceRecords.map((record) => (
+                  <TableRow key={record._id} hover>
+                    <TableCell>
+                      <Box>
+                        <Typography variant="body2" fontWeight="medium">{record.equipmentName}</Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'block', sm: 'none' } }}>
+                          {record.maintenanceType} • {new Date(record.scheduledDate).toLocaleDateString()}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'block', md: 'none' } }}>
+                          Priority: {record.priority}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }} className="capitalize">
+                      {record.maintenanceType}
+                    </TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
+                      <Chip
+                        label={record.priority}
+                        size="small"
+                        color={getPriorityChipColor(record.priority) as any}
+                      />
+                    </TableCell>
+                    <TableCell>{new Date(record.scheduledDate).toLocaleDateString()}</TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
+                      {record.assignedTo || '--'}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={record.status.replace('-', ' ')}
+                        size="small"
+                        color={getStatusChipColor(record.status) as any}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box display="flex" gap={1}>
+                        {record.status === 'scheduled' && (
+                          <MuiButton
+                            size="small"
+                            variant="outlined"
+                            onClick={() => updateMaintenanceStatus(record._id, 'in-progress')}
+                          >
+                            Start
+                          </MuiButton>
+                        )}
+                        {record.status === 'in-progress' && (
+                          <MuiButton
+                            size="small"
+                            variant="outlined"
+                            onClick={() => updateMaintenanceStatus(record._id, 'completed')}
+                            sx={{ color: '#2e7d32', borderColor: '#2e7d32' }}
+                          >
+                            Complete
+                          </MuiButton>
+                        )}
+                      </Box>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredRecords.map((record) => (
-                    <TableRow key={record._id}>
-                      <TableCell className="font-medium">{record.equipmentName}</TableCell>
-                      <TableCell className="capitalize">{record.maintenanceType}</TableCell>
-                      <TableCell>{getPriorityBadge(record.priority)}</TableCell>
-                      <TableCell className="font-mono text-sm">
-                        {new Date(record.scheduledDate).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>{record.assignedTo || '--'}</TableCell>
-                      <TableCell>{getStatusBadge(record.status)}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          {record.status === 'scheduled' && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateMaintenanceStatus(record._id, 'in-progress')}
-                              className="text-xs"
-                            >
-                              Start
-                            </Button>
-                          )}
-                          {record.status === 'in-progress' && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateMaintenanceStatus(record._id, 'completed')}
-                              className="text-xs bg-green-50 text-green-700 hover:bg-green-100"
-                            >
-                              Complete
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      {/* Add/Edit Machine Dialog */}
+      <MuiDialog
+        open={machineDialogOpen}
+        onClose={handleCloseMachineDialog}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            margin: { xs: 1, sm: 2 },
+            width: { xs: 'calc(100% - 16px)', sm: 'auto' }
+          }
+        }}
+      >
+        <MuiDialogTitle>{editingMachine ? 'Edit Machine' : 'Add New Machine'}</MuiDialogTitle>
+        <MuiDialogContent>
+          <Box display="flex" flexDirection="column" gap={2} sx={{ mt: 1 }}>
+            <TextField
+              label="Machine Name *"
+              value={machineForm.name}
+              onChange={(e) => setMachineForm({ ...machineForm, name: e.target.value })}
+              fullWidth
+              size="medium"
+            />
+            <TextField
+              label="Machine Type *"
+              value={machineForm.type}
+              onChange={(e) => setMachineForm({ ...machineForm, type: e.target.value })}
+              fullWidth
+              size="medium"
+            />
+            <FormControl fullWidth size="medium">
+              <InputLabel>Status</InputLabel>
+              <MuiSelect
+                value={machineForm.status}
+                label="Status"
+                onChange={(e) => setMachineForm({ ...machineForm, status: e.target.value as string })}
+              >
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="maintenance">Maintenance</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </MuiSelect>
+            </FormControl>
+          </Box>
+        </MuiDialogContent>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <MuiButton onClick={handleCloseMachineDialog}>Cancel</MuiButton>
+          <MuiButton
+            onClick={handleSaveMachine}
+            variant="contained"
+            disabled={machineSubmitting || !machineForm.name.trim() || !machineForm.type.trim()}
+          >
+            {machineSubmitting ? 'Saving...' : (editingMachine ? 'Update' : 'Create')}
+          </MuiButton>
+        </DialogActions>
+      </MuiDialog>
     </div>
   )
 }
