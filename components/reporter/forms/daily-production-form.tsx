@@ -120,12 +120,18 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <label className="text-base sm:text-lg font-semibold text-foreground block mb-2">Product Name</label>
-                  <Input
-                    placeholder="e.g., Widget A, Component B"
+                  <select
                     value={product.productName}
                     onChange={(e) => updateProduct(product.id, "productName", e.target.value)}
-                    className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors[`product-${index}-name`] ? "border-red-500" : ""}`}
-                  />
+                    className={`w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background/80 backdrop-blur-sm ${
+                      errors[`product-${index}-name`] ? "border-red-500" : ""
+                    }`}
+                  >
+                    <option value="">Select product</option>
+                    <option value="Bagasse Briquettes">Bagasse Briquettes</option>
+                    <option value="Pellets">Pellets</option>
+                    <option value="Sawdust Briquettes">Sawdust Briquettes</option>
+                  </select>
                   {errors[`product-${index}-name`] && (
                     <p className="text-xs text-red-500 mt-1">{errors[`product-${index}-name`]}</p>
                   )}
@@ -187,27 +193,22 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <select
+                    multiple
+                    value={product.machinesUsed}
+                    onChange={(e) => {
+                      const selected = Array.from(e.target.selectedOptions).map((option) => option.value)
+                      updateProduct(product.id, "machinesUsed", selected)
+                    }}
+                    className="w-full min-h-[140px] px-3 py-2 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background/80 backdrop-blur-sm"
+                  >
                     {machines.map((machine) => (
-                      <div
-                        key={machine._id.toString()}
-                        className="flex items-center space-x-4 p-4 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
-                      >
-                        <Checkbox
-                          id={`product-${product.id}-${machine._id}`}
-                          checked={product.machinesUsed.includes(machine.name)}
-                          onCheckedChange={() => toggleMachine(product.id, machine.name)}
-                          className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 flex-shrink-0 w-5 h-5"
-                        />
-                        <label
-                          htmlFor={`product-${product.id}-${machine._id}`}
-                          className="text-sm cursor-pointer font-medium leading-relaxed"
-                        >
-                          {machine.name}
-                        </label>
-                      </div>
+                      <option key={machine._id.toString()} value={machine.name}>
+                        {machine.name}
+                      </option>
                     ))}
-                  </div>
+                  </select>
+                  <p className="text-xs text-muted-foreground">Hold Ctrl (Windows) or Cmd (Mac) to select multiple machines.</p>
                 )}
                 {errors[`product-${index}-machines`] && (
                   <p className="text-xs text-red-500">{errors[`product-${index}-machines`]}</p>
