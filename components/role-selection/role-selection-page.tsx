@@ -17,7 +17,7 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
   return (
     <div className="min-h-screen bg-app-standard">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card border-b border-border/50">
+      <header className="sticky top-0 z-50 bg-app-standard border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <div className="relative w-32 h-14">
             <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />

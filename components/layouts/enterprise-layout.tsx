@@ -145,7 +145,7 @@ export default function EnterpriseLayout({
         sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       } pb-24 sm:pb-28 lg:pb-0`}>
         {/* Top Header - Responsive */}
-        <header className="sticky top-0 z-30 bg-card border-b border-border backdrop-blur-sm">
+        <header className="sticky top-0 z-30 bg-app-standard border-b border-border">
           {/* Mobile Header - Compact */}
           <div className="lg:hidden mobile-header-compact flex items-center justify-between">
             <div className="relative w-24 h-8">

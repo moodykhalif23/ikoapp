@@ -326,7 +326,7 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
       <Box sx={{ p: { xs: 2, sm: 3 } }} className="card-brand card-elevated">
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h5" component="h2" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
-            Machine Management
+            Machines
           </Typography>
           <MuiButton
             variant="contained"
