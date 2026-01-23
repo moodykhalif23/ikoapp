@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Plus, Trash2, Save } from "lucide-react"
 import { IMachine } from "@/lib/models"
 
@@ -120,18 +119,20 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <label className="text-base sm:text-lg font-semibold text-foreground block mb-2">Product Name</label>
-                  <select
-                    value={product.productName}
-                    onChange={(e) => updateProduct(product.id, "productName", e.target.value)}
-                    className={`w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background/80 backdrop-blur-sm ${
-                      errors[`product-${index}-name`] ? "border-red-500" : ""
-                    }`}
-                  >
-                    <option value="">Select product</option>
-                    <option value="Bagasse Briquettes">Bagasse Briquettes</option>
-                    <option value="Pellets">Pellets</option>
-                    <option value="Sawdust Briquettes">Sawdust Briquettes</option>
-                  </select>
+                  <div className="bg-app-standard rounded-md p-[2px]">
+                    <select
+                      value={product.productName}
+                      onChange={(e) => updateProduct(product.id, "productName", e.target.value)}
+                      className={`w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent ${
+                        errors[`product-${index}-name`] ? "border-red-500" : ""
+                      }`}
+                    >
+                      <option value="">Select product</option>
+                      <option value="Bagasse Briquettes">Bagasse Briquettes</option>
+                      <option value="Pellets">Pellets</option>
+                      <option value="Sawdust Briquettes">Sawdust Briquettes</option>
+                    </select>
+                  </div>
                   {errors[`product-${index}-name`] && (
                     <p className="text-xs text-red-500 mt-1">{errors[`product-${index}-name`]}</p>
                   )}
@@ -194,22 +195,20 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                   </div>
                 ) : (
                   <>
-                    <select
-                      multiple
-                      value={product.machinesUsed}
-                      onChange={(e) => {
-                        const selected = Array.from(e.target.selectedOptions).map((option) => option.value)
-                        updateProduct(product.id, "machinesUsed", selected)
-                      }}
-                      className="w-full min-h-[140px] px-3 py-2 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background/80 backdrop-blur-sm"
-                    >
-                      {machines.map((machine) => (
-                        <option key={machine._id.toString()} value={machine.name}>
-                          {machine.name}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-muted-foreground">Hold Ctrl (Windows) or Cmd (Mac) to select multiple machines.</p>
+                    <div className="bg-app-standard rounded-md p-[2px]">
+                      <select
+                        value={product.machinesUsed[0] || ""}
+                        onChange={(e) => updateProduct(product.id, "machinesUsed", e.target.value ? [e.target.value] : [])}
+                        className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                      >
+                        <option value="">Select machine</option>
+                        {machines.map((machine) => (
+                          <option key={machine._id.toString()} value={machine.name}>
+                            {machine.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </>
                 )}
                 {errors[`product-${index}-machines`] && (

@@ -700,27 +700,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
           </Card>
 
           {/* Reports Grid */}
-          {filteredReports.length === 0 ? (
-            <Card className="card-brand card-elevated">
-              <CardContent className="text-center py-12">
-                {reports.length === 0 ? null : (
-                  <>
-                    <p className="text-muted-foreground mb-4">No reports found matching your filters</p>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setDateFilter("all")
-                        setStatusFilter("all")
-                        setSortBy("newest")
-                      }}
-                    >
-                      Clear Filters
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          ) : (
+          {filteredReports.length === 0 ? null : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredReports.map((report) => (
                 <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">

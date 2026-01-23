@@ -369,24 +369,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
       </Card>
 
       {/* Reports Grid */}
-      {filteredReports.length === 0 ? (
-        <Card className="card-brand card-elevated">
-          <CardContent className="text-center py-12">
-            <p className="text-muted-foreground mb-4">No reports found matching your filters</p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setFilterStatus("all")
-                setFilterReporter("all")
-                setFilterDate("all")
-                setSearchQuery("")
-              }}
-            >
-              Clear Filters
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
+      {filteredReports.length === 0 ? null : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredReports.map((report) => (
             <Card 

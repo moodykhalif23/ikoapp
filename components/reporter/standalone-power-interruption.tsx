@@ -103,22 +103,6 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
     })
   }
 
-  const toggleMachine = (interruptionId: string, machine: string) => {
-    setFormData({
-      ...formData,
-      interruptions: formData.interruptions.map(int => 
-        int.id === interruptionId 
-          ? {
-              ...int,
-              affectedMachines: int.affectedMachines.includes(machine)
-                ? int.affectedMachines.filter(m => m !== machine)
-                : [...int.affectedMachines, machine]
-            }
-          : int
-      )
-    })
-  }
-
   const handleNoInterruptionsChange = (checked: boolean) => {
     setNoInterruptions(checked)
     setFormData({
@@ -271,23 +255,19 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
 
                       <div className="space-y-3">
                         <label className="text-base sm:text-lg font-semibold text-foreground">Affected Machines *</label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                          {machines.map((machine) => (
-                            <div
-                              key={machine}
-                              className="flex items-center space-x-4 p-4 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
-                            >
-                              <Checkbox
-                                id={`${interruption.id}-${machine}`}
-                                checked={interruption.affectedMachines.includes(machine)}
-                                onCheckedChange={() => toggleMachine(interruption.id, machine)}
-                                className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 flex-shrink-0 w-5 h-5"
-                              />
-                              <label htmlFor={`${interruption.id}-${machine}`} className="text-sm cursor-pointer font-medium leading-relaxed">
+                        <div className="bg-app-standard rounded-md p-[2px]">
+                          <select
+                            value={interruption.affectedMachines[0] || ""}
+                            onChange={(e) => updateInterruption(interruption.id, 'affectedMachines', e.target.value ? [e.target.value] : [])}
+                            className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                          >
+                            <option value="">Select machine</option>
+                            {machines.map((machine) => (
+                              <option key={machine} value={machine}>
                                 {machine}
-                              </label>
-                            </div>
-                          ))}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                         {errors[`affectedMachines_${index}`] && <p className="text-xs text-red-500">{errors[`affectedMachines_${index}`]}</p>}
                       </div>

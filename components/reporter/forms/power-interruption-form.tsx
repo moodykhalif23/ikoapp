@@ -62,15 +62,6 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
     return Object.keys(newErrors).length === 0
   }
 
-  const toggleMachine = (machine: string) => {
-    setFormData({
-      ...formData,
-      affectedMachines: formData.affectedMachines.includes(machine)
-        ? formData.affectedMachines.filter((m: string) => m !== machine)
-        : [...formData.affectedMachines, machine],
-    })
-  }
-
   const handleNoInterruptionsChange = (checked: boolean) => {
     setNoInterruptions(checked)
     setFormData({
@@ -154,24 +145,22 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {machines.map((machine) => (
-                    <div
-                      key={machine._id.toString()}
-                      className="flex items-center space-x-4 p-4 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
+                <>
+                  <div className="bg-app-standard rounded-md p-[2px]">
+                    <select
+                      value={formData.affectedMachines[0] || ""}
+                      onChange={(e) => setFormData({ ...formData, affectedMachines: e.target.value ? [e.target.value] : [] })}
+                      className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
                     >
-                      <Checkbox
-                        id={machine._id.toString()}
-                        checked={formData.affectedMachines.includes(machine.name)}
-                        onCheckedChange={() => toggleMachine(machine.name)}
-                        className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 flex-shrink-0 w-5 h-5"
-                      />
-                      <label htmlFor={machine._id.toString()} className="text-sm cursor-pointer font-medium leading-relaxed">
-                        {machine.name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                      <option value="">Select machine</option>
+                      {machines.map((machine) => (
+                        <option key={machine._id.toString()} value={machine.name}>
+                          {machine.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
               )}
               {errors.affectedMachines && <p className="text-xs text-red-500">{errors.affectedMachines}</p>}
             </div>

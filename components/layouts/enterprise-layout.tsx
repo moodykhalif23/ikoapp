@@ -151,7 +151,10 @@ export default function EnterpriseLayout({
             <div className="relative w-24 h-8">
               <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
             </div>
-            <UserDropdown user={user} onLogout={onLogout} className="mobile-touch-target" />
+            <div className="flex items-center gap-2">
+              <NotificationDropdown user={user} />
+              <UserDropdown user={user} onLogout={onLogout} className="mobile-touch-target" />
+            </div>
           </div>
 
           {/* Desktop Header - Full */}
