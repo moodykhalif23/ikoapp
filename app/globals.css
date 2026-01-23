@@ -533,11 +533,11 @@
   }
 
   .card-filter-tight {
-    gap: 12px !important;
+    gap: 6px !important;
   }
 
   .card-filter-header {
-    margin-bottom: 8px !important;
+    margin-bottom: 4px !important;
   }
 
   .text-brand-contrast {
@@ -785,7 +785,7 @@
 /* Ensure content doesn't get hidden behind bottom nav on mobile */
 @media (max-width: 1023px) {
   .mobile-content-padding {
-    padding-bottom: 4rem !important;
+    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)) !important;
   }
 }
 

@@ -136,9 +136,9 @@ export default function EnterpriseLayout({
       </div>
 
       {/* Main Content - Responsive margin and bottom padding for mobile navigation */}
-      <div className={`min-h-screen transition-all duration-300 ${
+      <div className={`min-h-screen transition-all duration-300 mobile-content-padding ${
         sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
-      } pb-16 sm:pb-20 lg:pb-0`}>
+      } pb-24 sm:pb-28 lg:pb-0`}>
         {/* Top Header - Responsive */}
         <header className="sticky top-0 z-30 bg-card border-b border-border backdrop-blur-sm">
           {/* Mobile Header - Compact */}
