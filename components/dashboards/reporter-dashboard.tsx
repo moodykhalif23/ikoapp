@@ -651,14 +651,6 @@ export default function ReporterDashboard({ user, onLogout, onReportSubmit, onGo
                           {report.dailyProduction?.products?.length || 0}
                         </span>
                       </p>
-                      {report.dailyProduction?.overallEfficiency && (
-                        <p>
-                          <span className="font-medium text-brand-contrast">Efficiency:</span>{" "}
-                          <span className="text-primary font-medium">
-                            {report.dailyProduction.overallEfficiency}%
-                          </span>
-                        </p>
-                      )}
                     </div>
                     <Button
                       onClick={() => handleViewReport(report)}

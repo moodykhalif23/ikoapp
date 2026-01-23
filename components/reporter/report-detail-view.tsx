@@ -180,11 +180,6 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
       <Card className="border-border/50">
         <CardHeader>
           <CardTitle className="text-primary">Daily Production Data</CardTitle>
-          {report.dailyProduction?.overallEfficiency && (
-            <CardDescription>
-              Overall Efficiency: <span className="font-bold text-accent">{report.dailyProduction.overallEfficiency}%</span>
-            </CardDescription>
-          )}
         </CardHeader>
         <CardContent>
           {report.dailyProduction?.products?.length > 0 ? (

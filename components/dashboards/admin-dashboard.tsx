@@ -179,8 +179,6 @@ ${powerInterruptionText}
 
 DAILY PRODUCTION
 ================
-Overall Efficiency: ${report?.dailyProduction?.overallEfficiency || "0"}%
-
 ${productsText}
 
 INCIDENT REPORT
@@ -249,13 +247,9 @@ ${new Date().toLocaleString()}
           </CardHeader>
           <CardContent>
             <div className="text-2xl sm:text-3xl font-bold text-foreground">
-              {reports.length > 0 ? (
-                reports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
-                reports.length
-              ).toFixed(1) : '0.0'}
-              %
+              {reports.length}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Overall production</p>
+            <p className="text-xs text-muted-foreground mt-1">Total reports</p>
           </CardContent>
         </Card>
 
@@ -558,11 +552,6 @@ ${new Date().toLocaleString()}
                     <p className="line-clamp-1">
                       <span className="font-medium">Date:</span> {report.date}
                     </p>
-                    {report.dailyProduction?.overallEfficiency && (
-                      <p className="line-clamp-1">
-                        <span className="font-medium">Efficiency:</span> {report.dailyProduction.overallEfficiency}%
-                      </p>
-                    )}
                   </div>
                   
                   {/* Quick Stats */}
@@ -663,20 +652,6 @@ ${new Date().toLocaleString()}
                   }).length}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Reports</p>
-              </CardContent>
-            </Card>
-            <Card className="card-brand card-elevated">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-brand-contrast">Avg Efficiency</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {reports.length > 0 ? (
-                    reports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
-                    reports.length
-                  ).toFixed(1) : '0'}%
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Production</p>
               </CardContent>
             </Card>
             <Card className="card-brand card-elevated">

@@ -181,8 +181,6 @@ ${powerInterruptionText}
 
 DAILY PRODUCTION
 ================
-Overall Efficiency: ${report?.dailyProduction?.overallEfficiency || "0"}%
-
 ${productsText}
 
 INCIDENT REPORT
@@ -424,11 +422,6 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                     <p className="line-clamp-1">
                       <span className="font-medium">Date:</span> {report.date}
                     </p>
-                    {report.dailyProduction?.overallEfficiency && (
-                      <p className="line-clamp-1">
-                        <span className="font-medium">Efficiency:</span> {report.dailyProduction.overallEfficiency}%
-                      </p>
-                    )}
                   </div>
                   
                   {/* Quick Stats */}
@@ -521,19 +514,15 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
         <Card className="card-brand card-elevated">
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Avg Efficiency
+              Total Reports
               <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl sm:text-3xl font-bold text-foreground">
-              {(
-                allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
-                allReports.length
-              ).toFixed(1)}
-              %
+              {allReports.length}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Overall production</p>
+            <p className="text-xs text-muted-foreground mt-1">Submitted reports</p>
           </CardContent>
         </Card>
       </div>
@@ -631,12 +620,9 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-foreground">
-                  {allReports.length > 0 ? (
-                    allReports.reduce((sum, r) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) /
-                    allReports.length
-                  ).toFixed(1) : '0'}%
+                  {allReports.length}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Production</p>
+                <p className="text-xs text-muted-foreground mt-1">Total reports</p>
               </CardContent>
             </Card>
             <Card className="card-brand card-elevated">

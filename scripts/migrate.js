@@ -58,8 +58,7 @@ const DailyProductionSchema = new mongoose.Schema({
     notes: String
   }],
   totalProduced: Number,
-  totalTarget: Number,
-  overallEfficiency: Number
+  totalTarget: Number
 }, { timestamps: true })
 
 const IncidentReportSchema = new mongoose.Schema({
@@ -254,8 +253,7 @@ async function migrate() {
           }
         ],
         totalProduced: 830,
-        totalTarget: 900,
-        overallEfficiency: 92.2
+        totalTarget: 900
       })
       await dailyProduction.save()
       report.dailyProductionId = dailyProduction._id

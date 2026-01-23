@@ -99,17 +99,11 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
     )
   }
 
-  const getTotalEfficiency = () => {
-    const totalQuantity = products.reduce((sum: number, p: Product) => sum + Number(p.quantity || 0), 0)
-    return products.length > 0 ? ((totalQuantity / (products.length * 100)) * 100).toFixed(1) : "0"
-  }
-
   const handleSubmit = () => {
     if (validateForm()) {
       onComplete({
         products,
         qualityIssues,
-        overallEfficiency: getTotalEfficiency(),
       })
     }
   }
@@ -234,11 +228,6 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
           <Plus className="w-4 h-4" />
           Add Product
         </Button>
-
-        <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6 backdrop-blur-sm">
-          <p className="text-sm text-muted-foreground mb-1">Overall Daily Efficiency</p>
-          <p className="text-2xl font-bold text-accent">{getTotalEfficiency()}%</p>
-        </div>
 
         <div className="space-y-2">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Quality Issues (optional)</label>

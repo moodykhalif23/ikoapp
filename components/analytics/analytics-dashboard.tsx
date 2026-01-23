@@ -33,7 +33,7 @@ export default function AnalyticsDashboard({
   users = []
 }: AnalyticsDashboardProps) {
   const [timeRange, setTimeRange] = useState("30d")
-  const [selectedMetric, setSelectedMetric] = useState("efficiency")
+  const [selectedMetric, setSelectedMetric] = useState("reports")
 
   // Calculate production data from reports
   const productionData = reports.slice(-6).map((report: any, index: number) => {
@@ -41,7 +41,6 @@ export default function AnalyticsDashboard({
     const date = new Date(report.createdAt || report.date)
     return {
       month: monthNames[date.getMonth()],
-      efficiency: Number(report.dailyProduction?.overallEfficiency || 0),
       reports: 1,
       incidents: report.incidentReport?.incidents?.length || 0
     }
@@ -83,7 +82,6 @@ export default function AnalyticsDashboard({
   // Calculate KPIs
   const totalReports = reports.length
   const activeEmployees = timeEntries.filter((entry: any) => entry.status === 'active').length
-  const avgEfficiency = reports.reduce((sum: number, r: any) => sum + Number(r.dailyProduction?.overallEfficiency || 0), 0) / reports.length || 0
   const totalIncidents = reports.reduce((sum: number, r: any) => sum + (r.incidentReport?.severity ? 1 : 0), 0)
 
   const kpis = [
@@ -102,14 +100,6 @@ export default function AnalyticsDashboard({
       changeType: "positive" as const,
       icon: Users,
       description: "Currently working"
-    },
-    {
-      title: "Avg Efficiency",
-      value: `${avgEfficiency.toFixed(1)}%`,
-      change: "+3.2%",
-      changeType: "positive" as const,
-      icon: TrendingUp,
-      description: "Production efficiency"
     },
     {
       title: "Incidents",
@@ -193,9 +183,9 @@ export default function AnalyticsDashboard({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <LineChart size={20} className="text-primary" />
-              Production Efficiency Trend
+              Report Submission Trend
             </CardTitle>
-            <CardDescription>Monthly efficiency and report volume</CardDescription>
+            <CardDescription>Monthly report volume</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -206,15 +196,8 @@ export default function AnalyticsDashboard({
                 <Tooltip />
                 <Line
                   type="monotone"
-                  dataKey="efficiency"
-                  stroke="#2d6a4f"
-                  strokeWidth={2}
-                  name="Efficiency %"
-                />
-                <Line
-                  type="monotone"
                   dataKey="reports"
-                  stroke="#ff8c00"
+                  stroke="#2d6a4f"
                   strokeWidth={2}
                   name="Reports"
                 />

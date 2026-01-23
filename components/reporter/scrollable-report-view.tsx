@@ -201,14 +201,6 @@ export default function ScrollableReportView({
           <div className="border-b border-gray-200 pb-4">
             <div className="mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Daily Production Data</h2>
-              {report.dailyProduction?.overallEfficiency && (
-                <div className="mt-3">
-                  <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
-                    <span className="text-sm text-gray-600">Overall Efficiency:</span>
-                    <span className="text-xl font-bold text-blue-600">{report.dailyProduction.overallEfficiency}%</span>
-                  </div>
-                </div>
-              )}
             </div>
             {report.dailyProduction?.products?.length > 0 ? (
               <div className="space-y-4">

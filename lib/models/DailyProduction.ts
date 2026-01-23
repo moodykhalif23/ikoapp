@@ -12,7 +12,6 @@ export interface IDailyProduction extends Document {
   }>
   totalProduced: number
   totalTarget: number
-  overallEfficiency: number
   createdAt: Date
   updatedAt: Date
 }
@@ -66,11 +65,6 @@ const DailyProductionSchema: Schema = new Schema({
     type: Number,
     default: 0,
     min: [0, 'Total target cannot be negative']
-  },
-  overallEfficiency: {
-    type: Number,
-    min: [0, 'Overall efficiency cannot be less than 0%'],
-    max: [100, 'Overall efficiency cannot exceed 100%']
   }
 }, {
   timestamps: true,
@@ -85,7 +79,6 @@ DailyProductionSchema.pre('save', function() {
   if (doc.machineProductions && doc.machineProductions.length > 0) {
     doc.totalProduced = doc.machineProductions.reduce((sum, machine) => sum + machine.producedUnits, 0)
     doc.totalTarget = doc.machineProductions.reduce((sum, machine) => sum + machine.targetUnits, 0)
-    doc.overallEfficiency = doc.totalTarget > 0 ? (doc.totalProduced / doc.totalTarget) * 100 : 0
   }
 })
 
