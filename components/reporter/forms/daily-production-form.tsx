@@ -193,22 +193,24 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                     <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
                   </div>
                 ) : (
-                  <select
-                    multiple
-                    value={product.machinesUsed}
-                    onChange={(e) => {
-                      const selected = Array.from(e.target.selectedOptions).map((option) => option.value)
-                      updateProduct(product.id, "machinesUsed", selected)
-                    }}
-                    className="w-full min-h-[140px] px-3 py-2 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background/80 backdrop-blur-sm"
-                  >
-                    {machines.map((machine) => (
-                      <option key={machine._id.toString()} value={machine.name}>
-                        {machine.name}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-muted-foreground">Hold Ctrl (Windows) or Cmd (Mac) to select multiple machines.</p>
+                  <>
+                    <select
+                      multiple
+                      value={product.machinesUsed}
+                      onChange={(e) => {
+                        const selected = Array.from(e.target.selectedOptions).map((option) => option.value)
+                        updateProduct(product.id, "machinesUsed", selected)
+                      }}
+                      className="w-full min-h-[140px] px-3 py-2 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background/80 backdrop-blur-sm"
+                    >
+                      {machines.map((machine) => (
+                        <option key={machine._id.toString()} value={machine.name}>
+                          {machine.name}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-muted-foreground">Hold Ctrl (Windows) or Cmd (Mac) to select multiple machines.</p>
+                  </>
                 )}
                 {errors[`product-${index}-machines`] && (
                   <p className="text-xs text-red-500">{errors[`product-${index}-machines`]}</p>

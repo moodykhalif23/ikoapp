@@ -293,17 +293,29 @@ ${new Date().toLocaleString()}
             <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 sm:space-y-3">
-            <Button className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10" variant="outline">
-              <UserPlus size={14} className="mr-2" />
-              Add New User
-            </Button>
-            <Button className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10" variant="outline">
-              <Settings size={14} className="mr-2" />
-              System Settings
-            </Button>
-            <Button className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10" variant="outline">
+            <Button
+              className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10"
+              variant="outline"
+              onClick={() => setActiveTab("reports")}
+            >
               <Download size={14} className="mr-2" />
-              Export Reports
+              Reports
+            </Button>
+            <Button
+              className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10"
+              variant="outline"
+              onClick={() => setActiveTab("employees")}
+            >
+              <UserPlus size={14} className="mr-2" />
+              Employees
+            </Button>
+            <Button
+              className="w-full justify-start text-xs sm:text-sm h-8 sm:h-10"
+              variant="outline"
+              onClick={() => setActiveTab("machines")}
+            >
+              <Settings size={14} className="mr-2" />
+              Equipment
             </Button>
           </CardContent>
         </Card>
@@ -367,7 +379,7 @@ ${new Date().toLocaleString()}
   const renderReportsContent = () => (
     <>
       <div className="mb-3 sm:mb-4 mt-1 sm:mt-2">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports Management</h1>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports</h1>
       </div>
 
       {/* Filters Section */}
