@@ -206,7 +206,6 @@ ${new Date().toLocaleString()}
     <>
       <div className="mb-3 sm:mb-4 mt-1 sm:mt-2">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1">Admin Dashboard</h1>
-        <p className="text-xs sm:text-base text-muted-foreground">Manage reports, employees, and system settings</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
@@ -298,15 +297,15 @@ ${new Date().toLocaleString()}
           <CardContent>
             <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                <div className="w-2 h-2 bg-green-500 rounded-full shrink-0"></div>
                 <span className="line-clamp-2">New report submitted by John Doe</span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full shrink-0"></div>
                 <span className="line-clamp-2">User role updated for Jane Smith</span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+                <div className="w-2 h-2 bg-orange-500 rounded-full shrink-0"></div>
                 <span className="line-clamp-2">Equipment maintenance scheduled</span>
               </div>
             </div>
@@ -351,7 +350,6 @@ ${new Date().toLocaleString()}
     <>
       <div className="mb-3 sm:mb-4 mt-1 sm:mt-2">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports Management</h1>
-        <p className="text-xs sm:text-base text-muted-foreground">View, manage and analyze production reports</p>
       </div>
 
       {/* Filters Section */}
@@ -402,8 +400,10 @@ ${new Date().toLocaleString()}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Status Filter */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Status</label>
+                  <label htmlFor="admin-report-status" className="text-xs font-medium text-muted-foreground">Status</label>
                   <select
+                    id="admin-report-status"
+                    aria-label="Report status filter"
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
                     className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
@@ -422,8 +422,10 @@ ${new Date().toLocaleString()}
 
                 {/* Reporter Filter */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Reporter</label>
+                  <label htmlFor="admin-report-reporter" className="text-xs font-medium text-muted-foreground">Reporter</label>
                   <select
+                    id="admin-report-reporter"
+                    aria-label="Report reporter filter"
                     value={filterReporter}
                     onChange={(e) => setFilterReporter(e.target.value)}
                     className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
@@ -441,8 +443,10 @@ ${new Date().toLocaleString()}
 
                 {/* Date Filter */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Date Range</label>
+                  <label htmlFor="admin-report-date" className="text-xs font-medium text-muted-foreground">Date Range</label>
                   <select
+                    id="admin-report-date"
+                    aria-label="Report date range filter"
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
                     className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
@@ -521,12 +525,12 @@ ${new Date().toLocaleString()}
           {filteredReports.map((report) => (
             <Card 
               key={report.id} 
-              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[260px] flex flex-col ${
+              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-260px flex flex-col ${
                 selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
               }`}
               onClick={() => handleReportSelect(report)}
             >
-              <CardHeader className="pb-2 flex-shrink-0 card-report-header">
+              <CardHeader className="pb-2 shrink-0 card-report-header">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-base font-semibold line-clamp-1">
@@ -536,7 +540,7 @@ ${new Date().toLocaleString()}
                       By {report.reportedBy}
                     </CardDescription>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap shrink-0 ${
                     report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                     report.status === 'approved' ? 'bg-green-100 text-green-800' :
                     report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
@@ -626,7 +630,6 @@ ${new Date().toLocaleString()}
         <div className="space-y-6 mt-2">
           <div className="mb-4">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
-            <p className="text-muted-foreground">Production data insights and trends</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="card-brand card-elevated">
@@ -680,7 +683,6 @@ ${new Date().toLocaleString()}
         <div className="space-y-6 mt-2">
           <div className="mb-4">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Equipment Management</h1>
-            <p className="text-muted-foreground">Monitor and manage production equipment</p>
           </div>
           <EquipmentDashboard />
         </div>
@@ -689,10 +691,9 @@ ${new Date().toLocaleString()}
         <div className="space-y-6 mt-2">
           <div className="mb-4">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">System Alerts</h1>
-            <p className="text-muted-foreground">Monitor system notifications and alerts</p>
+            {/* Placeholder for alerts management */}
           </div>
           <div className="text-center py-8">
-            <p className="text-muted-foreground">Alert management interface coming soon...</p>
           </div>
         </div>
       )}
