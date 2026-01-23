@@ -51,7 +51,6 @@ const EmployeeSchema: Schema = new Schema({
 })
 
 // Indexes for better query performance
-EmployeeSchema.index({ employeeId: 1 })
 EmployeeSchema.index({ employeeType: 1 })
 EmployeeSchema.index({ status: 1 })
 

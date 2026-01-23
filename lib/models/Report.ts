@@ -107,17 +107,18 @@ ReportSchema.virtual('isComplete').get(function() {
            report.employeePlanningId)
 })
 
-// Pre-save middleware to generate unique ID
-ReportSchema.pre('save', async function() {
-  const report = this as unknown as IReport
-  if (this.isNew && !report.id) {
+// Pre-validate middleware to generate unique ID before required validation
+ReportSchema.pre('validate', async function() {
+  const reportDoc = this as unknown as IReport
+  if (this.isNew && !this.get('id')) {
     let counter = 0
-    let uniqueId
+    let uniqueId: string
+    const ReportModel = this.constructor as mongoose.Model<IReport>
     do {
       uniqueId = `RPT-${Date.now()}${counter > 0 ? `-${counter}` : ''}`
       counter++
-    } while (await mongoose.models.Report.findOne({ id: uniqueId }))
-    report.id = uniqueId
+    } while (await ReportModel.findOne({ id: uniqueId }))
+    reportDoc.set('id', uniqueId)
   }
 })
 
