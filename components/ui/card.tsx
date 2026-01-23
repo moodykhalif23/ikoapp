@@ -31,8 +31,11 @@ const StyledCardContent = styled(MuiCardContent)({
 })
 
 function Card({ className, children, ...props }: CardProps) {
+  const mergedClassName = className
+    ? `card-brand card-elevated ${className}`
+    : "card-brand card-elevated"
   return (
-    <StyledCard className={className} {...props}>
+    <StyledCard className={mergedClassName} {...props}>
       {children}
     </StyledCard>
   )

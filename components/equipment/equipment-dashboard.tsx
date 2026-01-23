@@ -322,6 +322,51 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
 
   return (
     <div className="space-y-6">
+      {/* Stats Cards */}
+      <Box className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 } }}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Box className="card-brand card-elevated p-4 sm:p-5">
+            <div className="text-sm font-medium text-brand-contrast flex items-center justify-between">
+              Total Equipment
+              <Settings size={16} className="text-primary" />
+            </div>
+            <div className="text-2xl font-bold text-foreground mt-3">
+              {machineList.filter((m) => m.status === 'active').length}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Active machines</p>
+          </Box>
+
+          <Box className="card-brand card-elevated p-4 sm:p-5">
+            <div className="text-sm font-medium text-brand-contrast flex items-center justify-between">
+              Scheduled Maintenance
+              <Calendar size={16} className="text-blue-600" />
+            </div>
+            <div className="text-2xl font-bold text-foreground mt-3">
+              {maintenanceRecords.filter(r => r.status === 'scheduled').length}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Upcoming tasks</p>
+          </Box>
+
+          <Box className="card-brand card-elevated p-4 sm:p-5">
+            <div className="text-sm font-medium text-brand-contrast flex items-center justify-between">
+              Overdue
+              <AlertTriangle size={16} className="text-red-600" />
+            </div>
+            <div className="text-2xl font-bold text-foreground mt-3">{getOverdueRecords().length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Require attention</p>
+          </Box>
+
+          <Box className="card-brand card-elevated p-4 sm:p-5">
+            <div className="text-sm font-medium text-brand-contrast flex items-center justify-between">
+              This Week
+              <Clock size={16} className="text-green-600" />
+            </div>
+            <div className="text-2xl font-bold text-foreground mt-3">{getUpcomingRecords().length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Due this week</p>
+          </Box>
+        </div>
+      </Box>
+
       {/* Machine Management */}
       <Box sx={{ p: { xs: 2, sm: 3 } }} className="card-brand card-elevated">
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -414,65 +459,6 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
           </Table>
         </TableContainer>
       </Box>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="card-brand card-elevated">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Total Equipment
-              <Settings size={16} className="text-primary" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {machineList.filter((m) => m.status === 'active').length}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Active machines</p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-brand card-elevated">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Scheduled Maintenance
-              <Calendar size={16} className="text-blue-600" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {maintenanceRecords.filter(r => r.status === 'scheduled').length}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Upcoming tasks</p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-brand card-elevated">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Overdue
-              <AlertTriangle size={16} className="text-red-600" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{getOverdueRecords().length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Require attention</p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-brand card-elevated">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-brand-contrast flex items-center justify-between">
-              This Week
-              <Clock size={16} className="text-green-600" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{getUpcomingRecords().length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Due this week</p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Schedule Maintenance Button */}
       <div className="flex justify-end">

@@ -497,25 +497,15 @@
 
   /* Enhanced card styling with brand colors */
   .card-brand {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.98) 0%,      /* Almost white */
-      rgba(240, 247, 244, 0.8) 25%,      /* Light green tint */
-      rgba(255, 248, 240, 0.8) 75%,      /* Light orange tint */
-      rgba(255, 255, 255, 0.95) 100%     /* White with transparency */
-    );
-    backdrop-filter: blur(10px);
+    background: transparent;
+    background-color: transparent !important;
     border: 1px solid rgba(45, 106, 79, 0.1);
     box-shadow: 0 10px 25px rgba(45, 106, 79, 0.08);
   }
 
   .dark .card-brand {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.95) 0%,         /* Dark card base */
-      rgba(45, 106, 79, 0.1) 25%,        /* Green tint */
-      rgba(255, 140, 0, 0.05) 75%,       /* Orange tint */
-      rgba(30, 41, 59, 0.98) 100%        /* Dark card base */
-    );
-    backdrop-filter: blur(10px);
+    background: transparent;
+    background-color: transparent !important;
     border: 1px solid rgba(45, 106, 79, 0.2);
     box-shadow: 0 10px 25px rgba(45, 106, 79, 0.15);
   }
