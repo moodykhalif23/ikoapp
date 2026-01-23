@@ -442,9 +442,10 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
 
       <Box display="flex" justifyContent="flex-end" mt={2}>
         <Button
-          variant="outlined"
+          variant="contained"
           onClick={handleSubmitAttendance}
           disabled={submittingReport}
+          sx={{ bgcolor: "#2e7d32", "&:hover": { bgcolor: "#1b5e20" } }}
         >
           {submittingReport ? "Submitting..." : "Submit Attendance"}
         </Button>
