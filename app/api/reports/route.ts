@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport, EmployeePlanning } from '@/lib/models'
+import { createReportNotification } from '@/lib/notification-utils'
 
 // GET /api/reports - Get all reports with optional filtering
 export async function GET(request: NextRequest) {
@@ -65,7 +66,9 @@ export async function POST(request: NextRequest) {
       dailyProduction,
       incidentReport,
       employeePlanning,
-      siteVisuals
+      attendance,
+      siteVisuals,
+      status
     } = body
 
     let reportId = id
@@ -83,15 +86,32 @@ export async function POST(request: NextRequest) {
       date,
       reportedBy,
       reportedByEmail,
-      status: 'draft',
+      status: status || 'draft',
       powerInterruptions,
       dailyProduction,
       incidentReport,
       employeePlanning,
+      attendance,
       siteVisuals
     })
 
+    if (status === 'submitted') {
+      report.submittedAt = new Date()
+    }
+
     await report.save()
+
+    if (status === 'submitted') {
+      try {
+        await createReportNotification(
+          report.id,
+          report.reportedBy,
+          'Attendance'
+        )
+      } catch (notificationError) {
+        console.error('Error creating notification:', notificationError)
+      }
+    }
 
     return NextResponse.json(report, { status: 201 })
   } catch (error) {

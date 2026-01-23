@@ -10,6 +10,7 @@ export interface IReport extends Document {
   dailyProduction?: Record<string, unknown>
   incidentReport?: Record<string, unknown>
   employeePlanning?: Record<string, unknown>
+  attendance?: Record<string, unknown>
   siteVisuals?: Record<string, unknown>
   submittedAt?: Date
   reviewedAt?: Date
@@ -64,6 +65,9 @@ const ReportSchema: Schema = new Schema({
     type: Schema.Types.Mixed
   },
   employeePlanning: {
+    type: Schema.Types.Mixed
+  },
+  attendance: {
     type: Schema.Types.Mixed
   },
   siteVisuals: {
