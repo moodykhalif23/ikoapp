@@ -20,6 +20,8 @@ import {
   Alert,
   Chip
 } from "@mui/material"
+import { useTheme } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery"
 
 interface AttendanceEntryProps {
   user: any
@@ -49,6 +51,8 @@ interface RowState {
 }
 
 export default function AttendanceEntry({ user }: AttendanceEntryProps) {
+  const theme = useTheme()
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"))
   const [employees, setEmployees] = useState<Employee[]>([])
   const [records, setRecords] = useState<AttendanceRecord[]>([])
   const [loading, setLoading] = useState(true)
@@ -208,98 +212,163 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
         </Alert>
       )}
 
-      <TableContainer component={Paper} elevation={2} sx={{ overflowX: "auto" }}>
-        <Table sx={{ minWidth: { xs: 320, sm: 800 } }}>
-          <TableHead>
-            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-              <TableCell sx={{ minWidth: 180 }}><strong>Employee</strong></TableCell>
-              <TableCell sx={{ minWidth: 140 }}><strong>Shift</strong></TableCell>
-              <TableCell sx={{ minWidth: 120 }}><strong>Sign In</strong></TableCell>
-              <TableCell sx={{ minWidth: 120 }}><strong>Sign Out</strong></TableCell>
-              <TableCell sx={{ minWidth: 120 }}><strong>Status</strong></TableCell>
-              <TableCell sx={{ minWidth: 120 }}><strong>Action</strong></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                  <Typography variant="body2" color="text.secondary">Loading attendance...</Typography>
-                </TableCell>
+      {isSmall ? (
+        <Box className="space-y-3">
+          {loading ? (
+            <Typography variant="body2" color="text.secondary">Loading attendance...</Typography>
+          ) : employees.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              No employees found. Add employees first.
+            </Typography>
+          ) : (
+            employees.map((employee) => {
+              const row = rowState[employee._id] || { shiftType: "morning", signInTime: "", signOutTime: "" }
+              return (
+                <Box key={employee._id} className="card-brand card-elevated p-3 space-y-3">
+                  <Box>
+                    <Typography variant="body2" fontWeight="medium">{employee.name}</Typography>
+                    <Typography variant="caption" color="text.secondary">{employee.employeeId}</Typography>
+                  </Box>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Shift</InputLabel>
+                    <Select
+                      value={row.shiftType}
+                      label="Shift"
+                      onChange={(e) => updateRow(employee._id, { shiftType: e.target.value as RowState["shiftType"] })}
+                    >
+                      <MenuItem value="morning">Morning</MenuItem>
+                      <MenuItem value="afternoon">Afternoon</MenuItem>
+                      <MenuItem value="night">Night</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    label="Sign In"
+                    type="time"
+                    value={row.signInTime}
+                    onChange={(e) => updateRow(employee._id, { signInTime: e.target.value })}
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <TextField
+                    label="Sign Out"
+                    type="time"
+                    value={row.signOutTime}
+                    onChange={(e) => updateRow(employee._id, { signOutTime: e.target.value })}
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <Box display="flex" alignItems="center" justifyContent="space-between">
+                    {renderStatusChip(row)}
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleSave(employee)}
+                      disabled={saving[employee._id] === true}
+                    >
+                      {saving[employee._id] ? "Saving..." : "Save"}
+                    </Button>
+                  </Box>
+                </Box>
+              )
+            })
+          )}
+        </Box>
+      ) : (
+        <TableContainer component={Paper} elevation={2} sx={{ overflowX: "auto" }}>
+          <Table sx={{ minWidth: 800 }}>
+            <TableHead>
+              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                <TableCell sx={{ minWidth: 180 }}><strong>Employee</strong></TableCell>
+                <TableCell sx={{ minWidth: 140 }}><strong>Shift</strong></TableCell>
+                <TableCell sx={{ minWidth: 120 }}><strong>Sign In</strong></TableCell>
+                <TableCell sx={{ minWidth: 120 }}><strong>Sign Out</strong></TableCell>
+                <TableCell sx={{ minWidth: 120 }}><strong>Status</strong></TableCell>
+                <TableCell sx={{ minWidth: 120 }}><strong>Action</strong></TableCell>
               </TableRow>
-            ) : employees.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    No employees found. Add employees first.
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              employees.map((employee) => {
-                const row = rowState[employee._id] || { shiftType: "morning", signInTime: "", signOutTime: "" }
-                return (
-                  <TableRow key={employee._id} hover>
-                    <TableCell>
-                      <Box>
-                        <Typography variant="body2" fontWeight="medium">{employee.name}</Typography>
-                        <Typography variant="caption" color="text.secondary">{employee.employeeId}</Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <FormControl fullWidth size="small">
-                        <InputLabel>Shift</InputLabel>
-                        <Select
-                          value={row.shiftType}
-                          label="Shift"
-                          onChange={(e) => updateRow(employee._id, { shiftType: e.target.value as RowState["shiftType"] })}
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
+                    <Typography variant="body2" color="text.secondary">Loading attendance...</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : employees.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      No employees found. Add employees first.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                employees.map((employee) => {
+                  const row = rowState[employee._id] || { shiftType: "morning", signInTime: "", signOutTime: "" }
+                  return (
+                    <TableRow key={employee._id} hover>
+                      <TableCell>
+                        <Box>
+                          <Typography variant="body2" fontWeight="medium">{employee.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">{employee.employeeId}</Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <FormControl fullWidth size="small">
+                          <InputLabel>Shift</InputLabel>
+                          <Select
+                            value={row.shiftType}
+                            label="Shift"
+                            onChange={(e) => updateRow(employee._id, { shiftType: e.target.value as RowState["shiftType"] })}
+                          >
+                            <MenuItem value="morning">Morning</MenuItem>
+                            <MenuItem value="afternoon">Afternoon</MenuItem>
+                            <MenuItem value="night">Night</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          type="time"
+                          value={row.signInTime}
+                          onChange={(e) => updateRow(employee._id, { signInTime: e.target.value })}
+                          size="small"
+                          fullWidth
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          type="time"
+                          value={row.signOutTime}
+                          onChange={(e) => updateRow(employee._id, { signOutTime: e.target.value })}
+                          size="small"
+                          fullWidth
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {renderStatusChip(row)}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => handleSave(employee)}
+                          disabled={saving[employee._id] === true}
                         >
-                          <MenuItem value="morning">Morning</MenuItem>
-                          <MenuItem value="afternoon">Afternoon</MenuItem>
-                          <MenuItem value="night">Night</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        type="time"
-                        value={row.signInTime}
-                        onChange={(e) => updateRow(employee._id, { signInTime: e.target.value })}
-                        size="small"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        type="time"
-                        value={row.signOutTime}
-                        onChange={(e) => updateRow(employee._id, { signOutTime: e.target.value })}
-                        size="small"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {renderStatusChip(row)}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => handleSave(employee)}
-                        disabled={saving[employee._id] === true}
-                      >
-                        {saving[employee._id] ? "Saving..." : "Save"}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                )
-              })
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                          {saving[employee._id] ? "Saving..." : "Save"}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   )
 }
