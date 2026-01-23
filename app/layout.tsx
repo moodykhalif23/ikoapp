@@ -16,9 +16,10 @@ export const metadata: Metadata = {
   themeColor: "#0C2235",
   icons: {
     icon: [
-      { url: "/logo.png", sizes: "150x100", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: "/logo.png",
+    apple: "/icon-512.png",
   },
   appleWebApp: {
     capable: true,
