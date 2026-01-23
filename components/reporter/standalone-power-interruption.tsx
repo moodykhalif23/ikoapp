@@ -197,15 +197,6 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
   return (
     <div className="space-y-6">
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
-              <PowerIcon sx={{ fontSize: 32, color: "#ea580c" }} />
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Power Interruption Report</h1>
-        </div>
-
         <div className="bg-transparent border-border/50">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2 flex items-center justify-center gap-2">

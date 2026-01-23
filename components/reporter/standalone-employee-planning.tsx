@@ -54,13 +54,6 @@ export default function StandaloneEmployeePlanning({ user, onBack, onSubmit }: S
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Title */}
-      <div className="text-center mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Employee Planning Report
-        </h1>
-      </div>
-
       {/* Form */}
       <div>
         <div className="text-center mb-6">
