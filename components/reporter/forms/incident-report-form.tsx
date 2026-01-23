@@ -38,7 +38,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             {["no", "yes"].map((option) => (
               <div
                 key={option}
-                className="flex items-start space-x-3 p-3 sm:p-4 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer backdrop-blur-sm bg-background/40"
+                className="flex items-start space-x-3 p-3 sm:p-4 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer backdrop-blur-sm bg-background/40"
               >
                 <input
                   type="radio"

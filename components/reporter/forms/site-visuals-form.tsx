@@ -113,7 +113,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
           <label className="text-lg sm:text-xl font-semibold text-foreground">Media Files (Images & Videos)</label>
 
           {/* Upload Area */}
-          <label className={`border-2 border-dashed border-border/50 rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:bg-muted/30 transition-colors block backdrop-blur-sm bg-background/40 ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}>
+          <label className={`border-2 border-green-700 rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:bg-muted/30 transition-colors block backdrop-blur-sm bg-background/40 ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}>
             <input type="file" multiple accept="image/*,video/*" onChange={handleFileSelect} className="hidden" disabled={isProcessing} />
             {isProcessing ? (
               <>

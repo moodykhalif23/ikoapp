@@ -123,7 +123,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
       <div className="space-y-6">
         <div className="space-y-4">
           {products.map((product: Product, index: number) => (
-            <div key={product.id} className="p-4 sm:p-6 border border-border/50 rounded-lg space-y-4 bg-background/40 backdrop-blur-sm">
+            <div key={product.id} className="p-4 sm:p-6 border-2 border-green-700 rounded-lg space-y-4 bg-background/40 backdrop-blur-sm">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <label className="text-base sm:text-lg font-semibold text-foreground block mb-2">Product Name</label>

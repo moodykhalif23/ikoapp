@@ -197,7 +197,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
   return (
     <div className="space-y-6">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-transparent border-border/50">
+        <div className="space-y-6">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2 flex items-center justify-center gap-2">
               <PowerIcon sx={{ fontSize: 24 }} />
@@ -206,7 +206,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
           </div>
           
           <div className="space-y-6">
-            <div className="flex items-start space-x-3 p-4 sm:p-6 bg-primary/10 rounded-lg border border-primary/20 backdrop-blur-sm">
+            <div className="flex items-start space-x-3 p-4 sm:p-6 bg-primary/10 rounded-lg border-2 border-green-700 backdrop-blur-sm">
               <Checkbox
                 id="no-interruptions"
                 checked={noInterruptions}
@@ -237,7 +237,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                 {errors.interruptions && <p className="text-xs text-red-500 mb-4">{errors.interruptions}</p>}
 
                 {formData.interruptions.length === 0 && (
-                  <div className="text-center py-8 border-2 border-dashed border-border/50 rounded-lg bg-background/40 backdrop-blur-sm">
+                  <div className="text-center py-8 border-2 border-green-700 rounded-lg bg-background/40 backdrop-blur-sm">
                     <PowerIcon sx={{ fontSize: 32, color: "#ea580c" }} className="mx-auto mb-2 opacity-50" />
                     <p className="text-sm text-muted-foreground mb-4">No interruptions added yet</p>
                     <Button
@@ -253,7 +253,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                 )}
 
                 {formData.interruptions.map((interruption, index) => (
-                  <div key={interruption.id} className="border border-orange-200/50 bg-orange-50/20 backdrop-blur-sm rounded-lg p-4 sm:p-6 space-y-4">
+                  <div key={interruption.id} className="border-2 border-green-700 bg-orange-50/20 backdrop-blur-sm rounded-lg p-4 sm:p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-base sm:text-lg font-semibold text-orange-800">
                         Interruption #{index + 1}
@@ -303,7 +303,7 @@ export default function StandalonePowerInterruption({ user, onBack, onSubmit }: 
                           {machines.map((machine) => (
                             <div
                               key={machine}
-                              className="flex items-start space-x-3 p-3 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
+                              className="flex items-start space-x-3 p-3 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                             >
                               <Checkbox
                                 id={`${interruption.id}-${machine}`}

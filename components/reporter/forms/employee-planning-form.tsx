@@ -36,12 +36,15 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
         const response = await fetch('/api/employees')
         if (response.ok) {
           const employeesData = await response.json()
-          setEmployees(employeesData)
+          // Ensure we always have an array
+          setEmployees(Array.isArray(employeesData) ? employeesData : [])
         } else {
           console.error('Failed to fetch employees')
+          setEmployees([]) // Set empty array on error
         }
       } catch (error) {
         console.error('Error fetching employees:', error)
+        setEmployees([]) // Set empty array on error
       } finally {
         setLoading(false)
       }
@@ -104,11 +107,11 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
                 placeholder="0"
                 value={selectedEmployees.length}
                 InputProps={{ readOnly: true }}
-                className={`flex-1 bg-background/80 backdrop-blur-sm ${errors.employeesPresent ? "border-red-500" : ""}`}
+                className={`flex-1 bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors.employeesPresent ? "border-red-500" : ""}`}
               />
               <Dialog open={showEmployeeDialog} onOpenChange={setShowEmployeeDialog}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="gap-2 bg-background/80 backdrop-blur-sm">
+                  <Button variant="outline" className="gap-2 bg-background/80 backdrop-blur-sm border-2 border-green-700">
                     <Users size={16} />
                     Select
                   </Button>
@@ -126,12 +129,12 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
                     ) : (
                       <>
                         <div className="text-sm text-muted-foreground mb-4">
-                          Selected: {selectedEmployees.length} of {employees.length} employees
+                          Selected: {selectedEmployees.length} of {Array.isArray(employees) ? employees.length : 0} employees
                         </div>
-                        {employees.map((employee) => (
+                        {Array.isArray(employees) && employees.map((employee) => (
                           <div
                             key={employee._id}
-                            className="flex items-start space-x-3 p-3 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
+                            className="flex items-start space-x-3 p-3 border-2 border-green-700 rounded-lg hover:bg-muted/30 transition-colors backdrop-blur-sm bg-background/40"
                           >
                             <Checkbox
                               id={employee._id}
@@ -180,7 +183,7 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
               placeholder="0"
               value={formData.employeesAbsent}
               onChange={(e) => setFormData({ ...formData, employeesAbsent: e.target.value })}
-              className="bg-background/80 backdrop-blur-sm"
+              className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
             />
           </div>
         </div>
@@ -188,7 +191,7 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
         <div className="space-y-2">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Planned Shifts</label>
           <select
-            className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             value={formData.plannedShifts}
             onChange={(e) => setFormData({ ...formData, plannedShifts: e.target.value })}
           >
@@ -201,7 +204,7 @@ export default function EmployeePlanningForm({ data, onComplete, onSubmit }: Emp
         <div className="space-y-2">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Notes (optional)</label>
           <textarea
-            className="w-full px-3 py-2 border border-border/50 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             placeholder="Any employee planning notes..."
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
