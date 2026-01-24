@@ -220,6 +220,15 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
         return
       }
 
+      await fetch("/api/attendance/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          attendanceDate: selectedDate,
+          reporterName: user?.name || "Reporter"
+        })
+      })
+
       setSuccess("Attendance submitted")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit attendance")

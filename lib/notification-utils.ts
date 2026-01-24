@@ -27,6 +27,31 @@ export async function createReportNotification(
   }
 }
 
+export async function createAttendanceNotification(
+  attendanceDate: string,
+  reporterName: string
+) {
+  try {
+    await connectToDatabase()
+
+    const notification = new Notification({
+      title: 'Attendance Submitted',
+      message: `${reporterName} has submitted attendance for ${attendanceDate}`,
+      type: 'attendance_submitted',
+      recipientRoles: ['admin', 'viewer'],
+      attendanceDate,
+      reporterName,
+      isRead: false
+    })
+
+    await notification.save()
+    return notification
+  } catch (error) {
+    console.error('Error creating attendance notification:', error)
+    throw error
+  }
+}
+
 export async function getUnreadNotificationCount(userRole: string, userId?: string) {
   try {
     await connectToDatabase()

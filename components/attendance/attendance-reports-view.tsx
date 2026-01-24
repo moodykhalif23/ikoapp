@@ -29,14 +29,20 @@ interface AttendanceRecord {
   createdBy?: string
 }
 
-export default function AttendanceReportsView() {
+interface AttendanceReportsViewProps {
+  initialDate?: string | null
+}
+
+export default function AttendanceReportsView({ initialDate }: AttendanceReportsViewProps) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"))
 
   const [records, setRecords] = useState<AttendanceRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0])
+  const [selectedDate, setSelectedDate] = useState<string>(
+    initialDate || new Date().toISOString().split("T")[0]
+  )
 
   const fetchRecords = async (date: string) => {
     try {
@@ -60,6 +66,12 @@ export default function AttendanceReportsView() {
     fetchRecords(selectedDate)
   }, [selectedDate])
 
+  useEffect(() => {
+    if (initialDate && initialDate !== selectedDate) {
+      setSelectedDate(initialDate)
+    }
+  }, [initialDate, selectedDate])
+
   const summary = useMemo(() => {
     const uniqueEmployees = new Set(records.map((record) => record.employeeId)).size
     const submittedAt = records.length
@@ -71,7 +83,7 @@ export default function AttendanceReportsView() {
           ),
         )
       : null
-    return { uniqueEmployees, submittedAt }
+    return { uniqueEmployees, submittedAt, total: records.length }
   }, [records])
 
   const reportId = selectedDate ? `ATT-${selectedDate.replace(/-/g, "")}` : "ATT-NA"

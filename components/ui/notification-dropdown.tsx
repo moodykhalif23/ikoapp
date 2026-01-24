@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -21,6 +21,7 @@ interface Notification {
   message: string
   type: string
   reportId?: string
+  attendanceDate?: string
   reporterName?: string
   isRead: boolean
   createdAt: string
@@ -36,6 +37,15 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   const [unreadCount, setUnreadCount] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const lastNotifiedAtRef = useRef<number>(0)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const stored = window.localStorage.getItem("ikoapp:lastNotificationAt")
+    if (stored) {
+      lastNotifiedAtRef.current = Number(stored) || 0
+    }
+  }, [])
 
   const fetchNotifications = async () => {
     // Don't fetch if user is not available
@@ -48,8 +58,10 @@ export default function NotificationDropdown({ user, className }: NotificationDr
       const response = await fetch(`/api/notifications?role=${user.role}&userId=${user._id}&limit=10`)
       if (response.ok) {
         const data = await response.json()
-        setNotifications(data.notifications || [])
-        setUnreadCount(data.notifications?.filter((n: Notification) => !n.isRead).length || 0)
+        const nextNotifications = data.notifications || []
+        setNotifications(nextNotifications)
+        setUnreadCount(nextNotifications.filter((n: Notification) => !n.isRead).length || 0)
+        maybeShowSystemNotification(nextNotifications)
       }
     } catch (error) {
       console.error('Error fetching notifications:', error)
@@ -98,6 +110,51 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     }
   }
 
+  const maybeShowSystemNotification = (list: Notification[]) => {
+    if (typeof window === 'undefined' || !("Notification" in window)) {
+      return
+    }
+    if (Notification.permission !== "granted") {
+      return
+    }
+
+    const newest = list
+      .filter((item) => new Date(item.createdAt).getTime() > lastNotifiedAtRef.current)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
+
+    if (!newest) {
+      return
+    }
+
+    new Notification(newest.title, {
+      body: newest.message
+    })
+    const nextTime = new Date(newest.createdAt).getTime()
+    lastNotifiedAtRef.current = nextTime
+    window.localStorage.setItem("ikoapp:lastNotificationAt", String(nextTime))
+  }
+
+  const handleNotificationClick = async (notification: Notification) => {
+    if (!notification.isRead) {
+      await markAsRead(notification._id)
+    }
+
+    const target =
+      notification.type === "report_submitted" && notification.reportId
+        ? { type: "report", reportId: notification.reportId }
+        : notification.type === "attendance_submitted" && notification.attendanceDate
+          ? { type: "attendance", attendanceDate: notification.attendanceDate }
+          : null
+
+    if (target && typeof window !== "undefined") {
+      window.localStorage.setItem("ikoapp:notificationTarget", JSON.stringify(target))
+      window.dispatchEvent(
+        new CustomEvent("ikoapp:notification-target", { detail: target })
+      )
+      setIsOpen(false)
+    }
+  }
+
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
@@ -112,6 +169,11 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   // Fetch notifications when dropdown opens
   useEffect(() => {
     if (isOpen && user?._id && user?.role) {
+      if (typeof window !== "undefined" && "Notification" in window) {
+        if (Notification.permission === "default") {
+          Notification.requestPermission().catch(() => null)
+        }
+      }
       fetchNotifications()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -180,7 +242,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
                   className={`p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
                     !notification.isRead ? 'bg-blue-50/50' : ''
                   }`}
-                  onClick={() => !notification.isRead && markAsRead(notification._id)}
+                  onClick={() => handleNotificationClick(notification)}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">

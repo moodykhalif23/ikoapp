@@ -39,6 +39,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
   const [commentText, setCommentText] = useState("")
   const [activeTab, setActiveTab] = useState("reports")
   const [reportsView, setReportsView] = useState<"production" | "attendance">("production")
+  const [attendanceFocusDate, setAttendanceFocusDate] = useState<string | null>(null)
   
   // Filter states
   const [filterStatus, setFilterStatus] = useState<string>("all")
@@ -244,6 +245,69 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
     }
   }
 
+  const handleNotificationTarget = async (target: any) => {
+    if (!target) return
+
+    if (target.type === "report" && target.reportId) {
+      setActiveTab("reports")
+      setReportsView("production")
+      setAttendanceFocusDate(null)
+
+      const existing = reports.find((report) => report.id === target.reportId)
+      if (existing) {
+        setSelectedReport(existing)
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem("ikoapp:notificationTarget")
+        }
+        return
+      }
+
+      try {
+        const response = await fetch(`/api/reports/${target.reportId}`)
+        if (response.ok) {
+          const report = await response.json()
+          setSelectedReport(report)
+        }
+      } catch (error) {
+        console.error("Error fetching report from notification:", error)
+      }
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("ikoapp:notificationTarget")
+      }
+      return
+    }
+
+    if (target.type === "attendance" && target.attendanceDate) {
+      setSelectedReport(null)
+      setActiveTab("reports")
+      setReportsView("attendance")
+      setAttendanceFocusDate(target.attendanceDate)
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("ikoapp:notificationTarget")
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const stored = window.localStorage.getItem("ikoapp:notificationTarget")
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        handleNotificationTarget(parsed)
+      } catch {
+        window.localStorage.removeItem("ikoapp:notificationTarget")
+      }
+    }
+
+    const listener = (event: Event) => {
+      const custom = event as CustomEvent
+      handleNotificationTarget(custom.detail)
+    }
+    window.addEventListener("ikoapp:notification-target", listener as EventListener)
+    return () => window.removeEventListener("ikoapp:notification-target", listener as EventListener)
+  }, [reports])
+
   const renderReportsContent = () => (
     <>
       <div className="mb-2 sm:mb-4 mt-2" />
@@ -269,7 +333,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
       </div>
 
       {reportsView === "attendance" ? (
-        <AttendanceReportsView />
+        <AttendanceReportsView initialDate={attendanceFocusDate} />
       ) : (
         <>
           {/* Filters Section */}

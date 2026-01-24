@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     await connectToDatabase()
     
     const body = await request.json()
-    const { title, message, type, recipientRoles, recipientIds, reportId, reporterName } = body
+    const { title, message, type, recipientRoles, recipientIds, reportId, reporterName, attendanceDate } = body
 
     if (!title || !message || !type || (!recipientRoles && !recipientIds)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
       recipientRoles: recipientRoles || [],
       recipientIds: recipientIds || [],
       reportId,
+      attendanceDate,
       reporterName,
       isRead: false
     })
