@@ -170,7 +170,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         </CardHeader>
         <CardContent>
           {report.siteVisuals?.photos?.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-2 sm:space-y-4">
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-2">Photos Uploaded</p>
                 <p className="text-foreground">{report.siteVisuals.photos.length} photo(s)</p>

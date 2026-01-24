@@ -130,7 +130,7 @@ export default function ScrollableReportView({
           {/* Report Overview */}
           <div className="border-b border-gray-200 pb-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Report Overview</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Report ID</p>
                 <p className="text-gray-900 font-mono mt-1">{report.id}</p>
@@ -376,14 +376,14 @@ export default function ScrollableReportView({
           <div className="border-b border-gray-200 pb-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Site Visuals</h2>
             {report.siteVisuals?.photos?.length > 0 || report.siteVisuals?.media?.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-4">
                 {/* Handle both photos and media arrays */}
                 {(report.siteVisuals?.media || report.siteVisuals?.photos)?.length > 0 && (
                   <div>
                     <p className="text-sm font-medium text-gray-600 mb-3">
                       {report.siteVisuals?.media ? 'Media Files' : 'Photos'} Uploaded
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                       {(report.siteVisuals?.media || report.siteVisuals?.photos || []).map((file: any, idx: number) => (
                         <div
                           key={idx}
