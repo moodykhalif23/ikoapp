@@ -74,7 +74,7 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>
-                  <span>Employee Planning</span>
+                  <span>Attendance</span>
                 </li>
               </ul>
               <Button

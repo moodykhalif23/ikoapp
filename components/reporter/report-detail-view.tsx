@@ -278,51 +278,6 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         </CardContent>
       </Card>
 
-      {/* Employee Planning */}
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle className="text-primary">Employee Planning</CardTitle>
-          </CardHeader>
-          <CardContent>
-          {report.employeePlanning?.shifts?.length > 0 ? (
-            <div className="space-y-4">
-              {report.employeePlanning.shifts.map((shift: any, index: number) => (
-                <div key={index} className="p-4 border border-border rounded-lg bg-muted/30">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Shift</p>
-                      <p className="text-foreground font-medium">{shift.shiftName}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Employees</p>
-                      <p className="text-foreground">{shift.employeeCount}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Supervisor</p>
-                      <p className="text-foreground">{shift.supervisor}</p>
-                    </div>
-                  </div>
-                  {shift.notes && (
-                    <div className="mt-3">
-                      <p className="text-sm font-medium text-muted-foreground">Notes</p>
-                      <p className="text-foreground">{shift.notes}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-              {report.employeePlanning?.generalNotes && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">General Notes</p>
-                  <p className="text-foreground">{report.employeePlanning.generalNotes}</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <p className="text-muted-foreground">No employee planning data was recorded for this report.</p>
-          )}
-          </CardContent>
-        </Card>
-
         {/* Attendance */}
         <Card className="border-border/50">
           <CardHeader>

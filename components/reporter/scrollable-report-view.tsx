@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { CheckCircle, Close, ArrowBack, Download, Send } from "@mui/icons-material"
 import { useState } from "react"
@@ -70,8 +69,6 @@ export default function ScrollableReportView({
   const noLegacyIncidents = incidentData?.noIncidents === true
   const showIncidentDetails = hasLegacyIncidents ? !noLegacyIncidents : hasFormIncident
 
-  const planningData = report?.employeePlanning || {}
-  const hasLegacyShifts = Array.isArray(planningData?.shifts) && planningData.shifts.length > 0
   const attendanceData = report?.attendance || {}
   const attendanceEntries = Array.isArray(attendanceData?.entries) ? attendanceData.entries : []
 
@@ -351,75 +348,6 @@ export default function ScrollableReportView({
                       </div>
                     )}
                   </>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Employee Planning */}
-          <div className="border-b border-gray-200 pb-4">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">Employee Planning</h2>
-            {hasLegacyShifts ? (
-              <div className="space-y-4">
-                {report.employeePlanning.shifts.map((shift: any, index: number) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Shift</p>
-                        <p className="text-gray-900 font-medium mt-1">{shift.shiftName}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Employees</p>
-                        <p className="text-gray-900 mt-1">{shift.employeeCount}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Supervisor</p>
-                        <p className="text-gray-900 mt-1">{shift.supervisor}</p>
-                      </div>
-                    </div>
-                    {shift.notes && (
-                      <div className="mt-3">
-                        <p className="text-sm font-medium text-gray-600">Notes</p>
-                        <p className="text-gray-900 mt-1">{shift.notes}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                {report.employeePlanning?.generalNotes && (
-                  <div className="mt-4">
-                    <p className="text-sm font-medium text-gray-600">General Notes</p>
-                    <p className="text-gray-900 mt-1">{report.employeePlanning.generalNotes}</p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Employees Present</p>
-                    <p className="text-gray-900 mt-1">{planningData.employeesPresent || "0"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Employees Absent</p>
-                    <p className="text-gray-900 mt-1">{planningData.employeesAbsent || "0"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Planned Shifts</p>
-                    <p className="text-gray-900 mt-1">{planningData.plannedShifts || "N/A"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Selected Employees</p>
-                    <p className="text-gray-900 mt-1">{Array.isArray(planningData.selectedEmployees) ? planningData.selectedEmployees.length : 0}</p>
-                  </div>
-                </div>
-                {planningData.notes && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Notes</p>
-                    <p className="text-gray-900 mt-1">{planningData.notes}</p>
-                  </div>
-                )}
-                {!planningData.employeesPresent && !planningData.employeesAbsent && !planningData.plannedShifts && !planningData.notes && (
-                  <p className="text-gray-600">No employee planning data was recorded for this report.</p>
                 )}
               </div>
             )}

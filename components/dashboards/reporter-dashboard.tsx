@@ -160,13 +160,10 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       (incident.hasIncident === "yes" && incident.incidentType && incident.description)
     )
 
-    const planning = report.employeePlanning
-    const planningComplete = !!planning && Array.isArray(planning.selectedEmployees) && planning.selectedEmployees.length > 0
-
     const visuals = report.siteVisuals
     const visualsComplete = !!visuals && Array.isArray(visuals.media) && visuals.media.length > 0
 
-    return powerComplete && productionComplete && incidentComplete && planningComplete && visualsComplete
+    return powerComplete && productionComplete && incidentComplete && visualsComplete
   }
 
   const getDraftReport = () => {
