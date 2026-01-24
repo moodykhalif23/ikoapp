@@ -93,7 +93,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
             <div className="space-y-4">
               {report.powerInterruptions?.interruptions?.length > 0 ? (
                 report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
-                  <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-none">
                     <h4 className="font-medium text-orange-800 mb-3">Interruption #{index + 1}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
@@ -105,6 +105,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                         <p className="text-foreground">{interruption.duration} minutes</p>
                       </div>
                     </div>
+                    {interruption.kplcMeter && (
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
+                        <p className="text-foreground">{interruption.kplcMeter}</p>
+                      </div>
+                    )}
                     {interruption.affectedMachines?.length > 0 && (
                       <div>
                         <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
@@ -131,6 +137,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                       <p className="text-sm font-medium text-muted-foreground">Duration</p>
                       <p className="text-foreground">{report.powerInterruptions?.duration} minutes</p>
                     </div>
+                    {report.powerInterruptions?.kplcMeter && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
+                        <p className="text-foreground">{report.powerInterruptions?.kplcMeter}</p>
+                      </div>
+                    )}
                   </div>
                   {report.powerInterruptions?.affectedMachines?.length > 0 && (
                     <div>
@@ -185,7 +197,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           {report.dailyProduction?.products?.length > 0 ? (
             <div className="space-y-4">
               {report.dailyProduction.products.map((product: any, index: number) => (
-                <div key={index} className="p-4 border border-border rounded-lg bg-muted/30">
+                <div key={index} className="p-4 border border-border rounded-none bg-muted/30">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Product Name</p>
@@ -211,7 +223,13 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                     </div>
                   </div>
                 </div>
-              ))}
+                ))}
+              {report.dailyProduction?.kplcMeter && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
+                  <p className="text-foreground">{report.dailyProduction.kplcMeter}</p>
+                </div>
+              )}
               {report.dailyProduction?.qualityIssues && (
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Quality Issues</p>
@@ -287,7 +305,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
             {Array.isArray(report.attendance?.entries) && report.attendance.entries.length > 0 ? (
               <div className="space-y-4">
                 {report.attendance.entries.map((entry: any, index: number) => (
-                  <div key={`${entry.employeeId || entry.employeeName}-${index}`} className="p-4 border border-border rounded-lg bg-muted/30">
+                  <div key={`${entry.employeeId || entry.employeeName}-${index}`} className="p-4 border border-border rounded-none bg-muted/30">
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Employee</p>

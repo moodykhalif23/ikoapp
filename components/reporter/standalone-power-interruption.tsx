@@ -29,6 +29,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       id: string
       occurredAt: string
       duration: string
+      kplcMeter: string
       affectedMachines: string[]
     }>,
     submittedAt: null as string | null,
@@ -108,6 +109,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       id: `INT-${Date.now()}-${Math.random()}`,
       occurredAt: "",
       duration: "",
+      kplcMeter: "",
       affectedMachines: [] as string[]
     }
     setFormData({
@@ -257,7 +259,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                     </div>
                     
                     <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <label className="text-base sm:text-lg font-semibold text-foreground">Time of Interruption *</label>
                           <Input
@@ -279,6 +281,17 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                             className={`bg-background/80 backdrop-blur-sm ${errors[`duration_${index}`] ? "border-red-500" : ""}`}
                           />
                           {errors[`duration_${index}`] && <p className="text-xs text-red-500">{errors[`duration_${index}`]}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Meter Reading</label>
+                          <Input
+                            type="number"
+                            placeholder="Enter meter reading"
+                            value={interruption.kplcMeter}
+                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeter', e.target.value)}
+                            className="bg-background/80 backdrop-blur-sm"
+                          />
                         </div>
                       </div>
 

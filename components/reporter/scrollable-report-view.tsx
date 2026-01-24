@@ -179,7 +179,7 @@ export default function ScrollableReportView({
               <div className="space-y-4">
                 {report.powerInterruptions?.interruptions?.length > 0 ? (
                   report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
-                    <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                    <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-none">
                       <h4 className="font-medium text-orange-800 mb-3">Interruption #{index + 1}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
@@ -191,6 +191,12 @@ export default function ScrollableReportView({
                           <p className="text-gray-900 mt-1">{interruption.duration} minutes</p>
                         </div>
                       </div>
+                      {interruption.kplcMeter && (
+                        <div className="mb-4">
+                          <p className="text-sm font-medium text-gray-600">KPLC Meter Reading</p>
+                          <p className="text-gray-900 mt-1">{interruption.kplcMeter}</p>
+                        </div>
+                      )}
                       {interruption.affectedMachines?.length > 0 && (
                         <div>
                           <p className="text-sm font-medium text-gray-600 mb-2">Affected Machines</p>
@@ -216,6 +222,12 @@ export default function ScrollableReportView({
                       <p className="text-sm font-medium text-gray-600">Duration</p>
                       <p className="text-gray-900 mt-1">{report.powerInterruptions?.duration} minutes</p>
                     </div>
+                    {report.powerInterruptions?.kplcMeter && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">KPLC Meter Reading</p>
+                        <p className="text-gray-900 mt-1">{report.powerInterruptions?.kplcMeter}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -230,7 +242,7 @@ export default function ScrollableReportView({
             {report.dailyProduction?.products?.length > 0 ? (
               <div className="space-y-4">
                 {report.dailyProduction.products.map((product: any, index: number) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-md border border-gray-200">
+                  <div key={index} className="p-4 bg-gray-50 rounded-none border border-gray-200">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-600">Product Name</p>
@@ -257,6 +269,12 @@ export default function ScrollableReportView({
                     </div>
                   </div>
                 ))}
+                {report.dailyProduction?.kplcMeter && (
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-gray-600">KPLC Meter Reading</p>
+                    <p className="text-gray-900 mt-1">{report.dailyProduction.kplcMeter}</p>
+                  </div>
+                )}
                 {report.dailyProduction?.qualityIssues && (
                   <div className="mt-4">
                     <p className="text-sm font-medium text-gray-600">Quality Issues</p>
@@ -288,7 +306,7 @@ export default function ScrollableReportView({
             {!showIncidentDetails ? (
               <p className="text-gray-600">No incidents occurred on this day.</p>
             ) : (
-              <div className="p-4 bg-gray-50 border border-gray-200 rounded-md space-y-4">
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-none space-y-4">
                 {hasLegacyIncidents ? (
                   <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -359,7 +377,7 @@ export default function ScrollableReportView({
             {attendanceEntries.length > 0 ? (
               <div className="space-y-3">
                 {attendanceEntries.map((entry: any, index: number) => (
-                  <div key={`${entry.employeeId || entry.employeeName}-${index}`} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div key={`${entry.employeeId || entry.employeeName}-${index}`} className="p-4 bg-gray-50 rounded-none border border-gray-200">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-600">Employee</p>
@@ -401,7 +419,7 @@ export default function ScrollableReportView({
                       {(report.siteVisuals?.media || report.siteVisuals?.photos || []).map((file: any, idx: number) => (
                         <div
                           key={idx}
-                          className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow"
+                          className="border border-gray-200 rounded-none overflow-hidden bg-gray-50 hover:shadow-md transition-shadow"
                         >
                           {file.type === "image" || !file.type ? (
                             <>
@@ -453,10 +471,10 @@ export default function ScrollableReportView({
             <div className="pb-4">
               <h2 className="text-lg font-semibold text-gray-900 mb-3">Comments</h2>
               <div className="space-y-4">
-                <div className="space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <div className="space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-none p-4 bg-gray-50">
                   {comments[report.id]?.length > 0 ? (
                     comments[report.id].map((comment: Comment) => (
-                      <div key={comment.id} className="p-3 bg-white rounded-lg border border-gray-200">
+                      <div key={comment.id} className="p-3 bg-white rounded-none border border-gray-200">
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <p className="font-medium text-sm text-gray-900">{comment.author}</p>
                           <p className="text-xs text-gray-500 shrink-0">{comment.timestamp}</p>
