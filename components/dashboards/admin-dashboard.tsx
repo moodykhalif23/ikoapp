@@ -621,14 +621,15 @@ ${new Date().toLocaleString()}
                       By {report.reportedBy}
                     </CardDescription>
                   </div>
-                  <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap shrink-0 ${
-                    report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
-                    report.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {report.status}
-                  </div>
+                  {report.status !== 'submitted' && (
+                    <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap shrink-0 ${
+                      report.status === 'approved' ? 'bg-green-100 text-green-800' :
+                      report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {report.status}
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col justify-between">
