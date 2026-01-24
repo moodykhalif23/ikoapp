@@ -455,37 +455,33 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                         </p>
                       </div>
                       
-                      {/* Quick Stats */}
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="bg-muted rounded p-2 text-center">
-                          <p className="text-muted-foreground mb-1">Products</p>
-                          <p className="font-semibold text-lg">
-                            {report.dailyProduction?.products?.length || 0}
-                          </p>
-                        </div>
-                        <div className="bg-muted rounded p-2 text-center">
-                          <p className="text-muted-foreground mb-1">Incidents</p>
-                          <p className="font-semibold text-lg">
-                            {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                  {/* Quick Stats */}
+                  <div className="space-y-1 text-xs">
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Products:</span>{" "}
+                      {report.dailyProduction?.products?.length || 0}
+                    </p>
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Incidents:</span>{" "}
+                      {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
+                    </p>
+                  </div>
+                </div>
 
-                    <div className="mt-3 pt-2 border-t">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full text-xs"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handlePDFExport(report)
-                        }}
-                      >
-                        <DownloadIcon sx={{ fontSize: 14, marginRight: 1 }} />
-                        Export PDF
-                      </Button>
-                    </div>
+                <div className="mt-3 pt-2 border-t">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full text-xs"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleReportSelect(report)
+                    }}
+                  >
+                    <PlayArrowIcon sx={{ fontSize: 14, marginRight: 1 }} />
+                    View Report
+                  </Button>
+                </div>
                   </CardContent>
                 </Card>
               ))}
