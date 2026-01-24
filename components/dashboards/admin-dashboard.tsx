@@ -252,7 +252,7 @@ ${new Date().toLocaleString()}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Total Reports
@@ -260,12 +260,12 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">{reports.length}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{reports.length}</div>
             <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Employees
@@ -273,14 +273,14 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {employeeCount}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Total employees</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Active Equipment
@@ -288,14 +288,14 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {activeMachineCount}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Active machines</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Submitted Reports
@@ -303,7 +303,7 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {reports.filter(r => r.status === 'submitted').length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Awaiting review</p>
@@ -687,21 +687,21 @@ ${new Date().toLocaleString()}
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="card-brand card-elevated">
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">Total Reports</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{reports.length}</div>
+                <div className="text-xl sm:text-2xl font-bold text-foreground">{reports.length}</div>
                 <p className="text-xs text-muted-foreground mt-1">All time</p>
               </CardContent>
             </Card>
-            <Card className="card-brand card-elevated">
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">This Month</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">
+                <div className="text-xl sm:text-2xl font-bold text-foreground">
                   {reports.filter(r => {
                     const reportDate = new Date(r.createdAt)
                     const thisMonth = new Date()
@@ -712,12 +712,12 @@ ${new Date().toLocaleString()}
                 <p className="text-xs text-muted-foreground mt-1">Reports</p>
               </CardContent>
             </Card>
-            <Card className="card-brand card-elevated">
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">Active Reporters</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">
+                <div className="text-xl sm:text-2xl font-bold text-foreground">
                   {new Set(reports.map((r) => r.reportedBy)).size}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Contributors</p>

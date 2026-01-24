@@ -491,7 +491,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
   const renderReportsWithMetrics = () => (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Total Reports
@@ -499,12 +499,12 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">{allReports.length}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{allReports.length}</div>
             <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Active Reporters
@@ -512,14 +512,14 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {new Set(allReports.map((r) => r.reportedBy)).size}
             </div>
             <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Total Reports
@@ -527,7 +527,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {allReports.length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Submitted reports</p>
@@ -597,21 +597,21 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             <p className="text-muted-foreground">Production data insights and trends</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="card-brand card-elevated">
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">Total Reports</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{allReports.length}</div>
+                <div className="text-xl sm:text-2xl font-bold text-foreground">{allReports.length}</div>
                 <p className="text-xs text-muted-foreground mt-1">All time</p>
               </CardContent>
             </Card>
-            <Card className="card-brand card-elevated">
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">This Month</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">
+                <div className="text-xl sm:text-2xl font-bold text-foreground">
                   {allReports.filter(r => {
                     const reportDate = new Date(r.createdAt)
                     const thisMonth = new Date()
@@ -622,23 +622,23 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <p className="text-xs text-muted-foreground mt-1">Reports</p>
               </CardContent>
             </Card>
-            <Card className="card-brand card-elevated">
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">Avg Efficiency</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">
+                <div className="text-xl sm:text-2xl font-bold text-foreground">
                   {allReports.length}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Total reports</p>
               </CardContent>
             </Card>
-            <Card className="card-brand card-elevated">
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">Active Reporters</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">
+                <div className="text-xl sm:text-2xl font-bold text-foreground">
                   {new Set(allReports.map((r) => r.reportedBy)).size}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Contributors</p>
