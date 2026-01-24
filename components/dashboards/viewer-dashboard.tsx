@@ -674,10 +674,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
       )}
       {activeTab === "dashboard" && (
         <div className="space-y-6 mt-2">
-          <div className="mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Overview Dashboard</h1>
-            <p className="text-muted-foreground">Production reporting overview and insights</p>
-          </div>
+          <div className="mb-2 sm:mb-4" />
           
           {/* Show reports with metrics when accessed from dashboard */}
           {renderReportsWithMetrics()}
