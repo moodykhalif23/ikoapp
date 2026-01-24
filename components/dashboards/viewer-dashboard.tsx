@@ -246,10 +246,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
   const renderReportsContent = () => (
     <>
-      <div className="mb-4 sm:mb-6 mt-2">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports Dashboard</h1>
-        <p className="text-xs sm:text-base text-muted-foreground">View and analyze production reports</p>
-      </div>
+      <div className="mb-2 sm:mb-4 mt-2" />
 
       <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
         <Button
