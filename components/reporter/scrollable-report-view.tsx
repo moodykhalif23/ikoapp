@@ -393,7 +393,7 @@ export default function ScrollableReportView({
                             <>
                               <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
                                 <img
-                                  src={file.url || file || "/placeholder.svg"}
+                                  src={file.preview || file.url || file || "/placeholder.svg"}
                                   alt={file.name || `Photo ${idx + 1}`}
                                   className="w-full h-full object-cover"
                                 />
@@ -405,11 +405,20 @@ export default function ScrollableReportView({
                             </>
                           ) : (
                             <>
-                              <div className="relative w-full aspect-video bg-black flex items-center justify-center">
-                                <div className="text-white/60 text-center">
-                                  <div className="text-2xl mb-2">▶</div>
-                                  <div className="text-xs">Video</div>
-                                </div>
+                              <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
+                                {file.preview || file.url ? (
+                                  <video
+                                    src={file.preview || file.url}
+                                    className="w-full h-full object-cover"
+                                    controls
+                                    preload="metadata"
+                                  />
+                                ) : (
+                                  <div className="text-white/60 text-center">
+                                    <div className="text-2xl mb-2">▶</div>
+                                    <div className="text-xs">Video</div>
+                                  </div>
+                                )}
                               </div>
                               <div className="p-3 border-t border-gray-200 bg-white">
                                 <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>

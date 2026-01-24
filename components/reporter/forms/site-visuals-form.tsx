@@ -18,6 +18,7 @@ interface MediaFile {
   type: "image" | "video"
   size: string
   preview?: string
+  url?: string
 }
 
 export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormProps) {
@@ -28,7 +29,14 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
   const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
-    setMediaFiles(data?.media || [])
+    const nextMedia = Array.isArray(data?.media) ? data.media : []
+    setMediaFiles(
+      nextMedia.map((file: MediaFile | any) => ({
+        ...file,
+        preview: file.preview || file.url || file.previewUrl || file.src,
+        url: file.url || file.previewUrl || file.src
+      })),
+    )
   }, [data])
 
   const validateForm = () => {
@@ -191,7 +199,8 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                         size="sm"
                         variant="destructive"
                         onClick={() => removeMedia(file.id)}
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 p-0"
+                        aria-label="Remove media"
+                        className="absolute top-2 right-2 opacity-100 w-8 h-8 p-0 shadow-sm"
                       >
                         <X className="w-4 h-4" />
                       </Button>
