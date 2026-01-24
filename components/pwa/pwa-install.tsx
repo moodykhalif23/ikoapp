@@ -39,9 +39,44 @@ export default function PwaInstall() {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
     window.addEventListener("appinstalled", handleAppInstalled)
 
+    let intervalId: number | null = null
+    let updateFoundHandler: (() => void) | null = null
+    let controllerChangeHandler: (() => void) | null = null
+    let swRegistration: ServiceWorkerRegistration | null = null
+
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/sw.js")
+        .then((registration) => {
+          swRegistration = registration
+
+          // Check for updates periodically in the background.
+          intervalId = window.setInterval(() => {
+            registration.update().catch(() => null)
+          }, 60 * 60 * 1000)
+
+          updateFoundHandler = () => {
+            const installingWorker = registration.installing
+            if (!installingWorker) return
+
+            installingWorker.addEventListener("statechange", () => {
+              if (
+                installingWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
+                installingWorker.postMessage({ type: "SKIP_WAITING" })
+              }
+            })
+          }
+
+          registration.addEventListener("updatefound", updateFoundHandler)
+
+          controllerChangeHandler = () => {
+            window.location.reload()
+          }
+
+          navigator.serviceWorker.addEventListener("controllerchange", controllerChangeHandler)
+        })
         .catch(() => {
           // Silent fail to avoid breaking app if SW registration fails.
         })
@@ -50,6 +85,13 @@ export default function PwaInstall() {
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
       window.removeEventListener("appinstalled", handleAppInstalled)
+      if (intervalId) window.clearInterval(intervalId)
+      if (swRegistration && updateFoundHandler) {
+        swRegistration.removeEventListener("updatefound", updateFoundHandler)
+      }
+      if (controllerChangeHandler) {
+        navigator.serviceWorker.removeEventListener("controllerchange", controllerChangeHandler)
+      }
     }
   }, [])
 
