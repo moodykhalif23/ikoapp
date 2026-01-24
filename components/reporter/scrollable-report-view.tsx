@@ -74,7 +74,7 @@ export default function ScrollableReportView({
     <div className="h-full flex flex-col">
       {/* Header - Fixed */}
       <div className="shrink-0 border-b bg-white backdrop-blur supports-backdrop-filter:bg-white/95">
-        <div className="flex items-center justify-between gap-4 p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-3 p-2 sm:p-3">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <Button 
               variant="outline" 
@@ -85,10 +85,10 @@ export default function ScrollableReportView({
               <span className="hidden sm:inline">Back</span>
             </Button>
             <div className="min-w-0 flex-1">
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground truncate">
+              <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground truncate">
                 {report.date}
               </h1>
-              <p className="text-sm text-muted-foreground truncate">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">
                 Report {report.id}
               </p>
               <p className="text-xs text-muted-foreground truncate">
@@ -177,12 +177,12 @@ export default function ScrollableReportView({
             {report.powerInterruptions?.noInterruptions ? (
               <p className="text-gray-600">No power interruptions occurred on this day.</p>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-4">
                 {report.powerInterruptions?.interruptions?.length > 0 ? (
                   report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
                     <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-none">
                       <h4 className="font-medium text-orange-800 mb-3">Interruption #{index + 1}</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-2 sm:mb-4">
                         <div>
                           <p className="text-sm font-medium text-gray-600">Time of Interruption</p>
                           <p className="text-gray-900 mt-1">{formatTime(interruption.occurredAt)}</p>
@@ -193,7 +193,7 @@ export default function ScrollableReportView({
                         </div>
                       </div>
                       {interruption.kplcMeter && (
-                        <div className="mb-4">
+                        <div className="mb-2 sm:mb-4">
                           <p className="text-sm font-medium text-gray-600">KPLC Meter Reading</p>
                           <p className="text-gray-900 mt-1">{interruption.kplcMeter}</p>
                         </div>
@@ -214,7 +214,7 @@ export default function ScrollableReportView({
                   ))
                 ) : (
                   // Fallback for old single interruption format
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Time of Interruption</p>
                       <p className="text-gray-900 mt-1">{formatTime(report.powerInterruptions?.occurredAt)}</p>

@@ -79,7 +79,7 @@ export default function StandaloneDailyProduction({ user, reportId, onBack, onSa
       {/* Loading Overlay */}
       {isSubmitting && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background/95 backdrop-blur-sm border border-border/50 rounded-lg max-w-sm mx-4 p-8 text-center">
+          <div className="bg-background/95 backdrop-blur-sm border border-border/50 rounded-none max-w-sm mx-4 p-8 text-center">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <h3 className="text-lg font-semibold mb-2 text-foreground">Saving Draft...</h3>
             <p className="text-sm text-muted-foreground">

@@ -87,7 +87,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
       </div>
       
       <div className="space-y-6">
-        <div className="flex items-start space-x-3 p-4 sm:p-6 bg-primary/10 rounded-lg border border-primary/20 backdrop-blur-sm">
+        <div className="flex items-start space-x-3 p-4 sm:p-6 bg-primary/10 rounded-none border border-primary/20 backdrop-blur-sm">
           <Checkbox
             id="no-interruptions"
             checked={noInterruptions}
@@ -140,7 +140,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
             <div className="space-y-3">
               <label className="form-label-large text-foreground">Affected Machines</label>
               {loading ? (
-                <div className="flex items-center justify-center p-8 bg-muted/20 rounded-lg backdrop-blur-sm">
+                <div className="flex items-center justify-center p-8 bg-muted/20 rounded-none backdrop-blur-sm">
                   <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                   <span className="ml-2 text-sm text-muted-foreground">Loading machines...</span>
                 </div>
