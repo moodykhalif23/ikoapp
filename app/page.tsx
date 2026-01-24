@@ -38,6 +38,39 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const applyNotificationTarget = (target: any) => {
+      if (!target || !target.type) return
+      window.localStorage.setItem("ikoapp:notificationTarget", JSON.stringify(target))
+      window.dispatchEvent(new CustomEvent("ikoapp:notification-target", { detail: target }))
+    }
+
+    const params = new URLSearchParams(window.location.search)
+    const notifyType = params.get("notify")
+    const reportId = params.get("reportId")
+    const attendanceDate = params.get("attendanceDate")
+
+    if (notifyType) {
+      applyNotificationTarget({
+        type: notifyType,
+        reportId: reportId || undefined,
+        attendanceDate: attendanceDate || undefined
+      })
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        const data = event.data
+        if (data?.type === "notification-click") {
+          applyNotificationTarget(data.payload)
+        }
+      })
+    }
+  }, [])
+
   const handleAuthSuccess = (userData: any) => {
     setUser(userData)
     localStorage.setItem("ikoapp:user", JSON.stringify(userData))

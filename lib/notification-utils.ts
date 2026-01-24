@@ -1,5 +1,6 @@
 import { Notification } from '@/lib/models'
 import connectToDatabase from '@/lib/mongodb'
+import { sendPushToRoles } from '@/lib/push-utils'
 
 export async function createReportNotification(
   reportId: string,
@@ -20,6 +21,14 @@ export async function createReportNotification(
     })
 
     await notification.save()
+    await sendPushToRoles(['admin', 'viewer'], {
+      title: notification.title,
+      body: notification.message,
+      data: {
+        type: 'report',
+        reportId
+      }
+    })
     return notification
   } catch (error) {
     console.error('Error creating report notification:', error)
@@ -45,6 +54,14 @@ export async function createAttendanceNotification(
     })
 
     await notification.save()
+    await sendPushToRoles(['admin', 'viewer'], {
+      title: notification.title,
+      body: notification.message,
+      data: {
+        type: 'attendance',
+        attendanceDate
+      }
+    })
     return notification
   } catch (error) {
     console.error('Error creating attendance notification:', error)

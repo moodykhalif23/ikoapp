@@ -38,6 +38,19 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const lastNotifiedAtRef = useRef<number>(0)
+  const userId = user?._id || user?.id
+  const userRole = user?.role || (Array.isArray(user?.roles) ? user.roles[0] : undefined)
+
+  const urlBase64ToUint8Array = (base64String: string) => {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+    const rawData = window.atob(base64)
+    const outputArray = new Uint8Array(rawData.length)
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i)
+    }
+    return outputArray
+  }
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -49,13 +62,13 @@ export default function NotificationDropdown({ user, className }: NotificationDr
 
   const fetchNotifications = async () => {
     // Don't fetch if user is not available
-    if (!user?._id || !user?.role) {
+    if (!userId || !userRole) {
       return
     }
     
     try {
       setLoading(true)
-      const response = await fetch(`/api/notifications?role=${user.role}&userId=${user._id}&limit=10`)
+      const response = await fetch(`/api/notifications?role=${userRole}&userId=${userId}&limit=10`)
       if (response.ok) {
         const data = await response.json()
         const nextNotifications = data.notifications || []
@@ -155,6 +168,51 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     }
   }
 
+  const ensurePushSubscription = async () => {
+    if (typeof window === 'undefined' || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+      return
+    }
+    if (!userId) {
+      return
+    }
+    const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+    if (!vapidPublicKey) {
+      return
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js')
+      const ready = await navigator.serviceWorker.ready
+      let subscription = await ready.pushManager.getSubscription()
+
+      if (!subscription) {
+        subscription = await ready.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+        })
+      }
+
+      const roles = Array.isArray(user?.roles)
+        ? user.roles
+        : userRole
+          ? [userRole]
+          : []
+
+      await fetch('/api/push/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          roles,
+          subscription,
+          userAgent: navigator.userAgent
+        })
+      })
+    } catch (error) {
+      console.error('Error registering push subscription:', error)
+    }
+  }
+
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
@@ -168,20 +226,29 @@ export default function NotificationDropdown({ user, className }: NotificationDr
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
-    if (isOpen && user?._id && user?.role) {
+    if (isOpen && userId && userRole) {
       if (typeof window !== "undefined" && "Notification" in window) {
         if (Notification.permission === "default") {
-          Notification.requestPermission().catch(() => null)
+          Notification.requestPermission()
+            .then((permission) => {
+              if (permission === 'granted') {
+                ensurePushSubscription()
+              }
+            })
+            .catch(() => null)
+        }
+        if (Notification.permission === 'granted') {
+          ensurePushSubscription()
         }
       }
       fetchNotifications()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, user?._id, user?.role])
+  }, [isOpen, userId, userRole])
 
   // Poll for new notifications every 30 seconds
   useEffect(() => {
-    if (!user?._id || !user?.role) {
+    if (!userId || !userRole) {
       return
     }
 
@@ -195,7 +262,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     return () => clearInterval(interval)
     // Only recreate interval when user changes, not when isOpen changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?._id, user?.role])
+  }, [userId, userRole])
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

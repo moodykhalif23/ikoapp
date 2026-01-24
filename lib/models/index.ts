@@ -7,5 +7,6 @@ export { default as IncidentReport, type IIncidentReport } from './IncidentRepor
 export { default as Machine, type IMachine } from './Machine'
 export { default as EquipmentMaintenance, type IEquipmentMaintenance } from './EquipmentMaintenance'
 export { default as Notification, type INotification } from './Notification'
+export { default as PushSubscription, type IPushSubscription } from './PushSubscription'
 export { default as Employee, type IEmployee } from './Employee'
 export { default as Attendance, type IAttendance } from './Attendance'
