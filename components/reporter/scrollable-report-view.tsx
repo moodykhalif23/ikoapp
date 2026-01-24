@@ -136,7 +136,7 @@ export default function ScrollableReportView({
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Status</p>
-                <span className="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm mt-1">{report.status}</span>
+                <span className="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded-none text-sm mt-1">{report.status}</span>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Report Date</p>
@@ -164,12 +164,12 @@ export default function ScrollableReportView({
               {report.powerInterruptions?.noInterruptions ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">No Issues</span>
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-none text-sm">No Issues</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Close sx={{ fontSize: 18, color: "#dc2626" }} />
-                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Interruption Occurred</span>
+                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded-none text-sm">Interruption Occurred</span>
                 </div>
               )}
             </div>
@@ -294,12 +294,12 @@ export default function ScrollableReportView({
               {!showIncidentDetails ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">No Incidents</span>
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-none text-sm">No Incidents</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Close sx={{ fontSize: 18, color: "#dc2626" }} />
-                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Incident Reported</span>
+                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded-none text-sm">Incident Reported</span>
                 </div>
               )}
             </div>

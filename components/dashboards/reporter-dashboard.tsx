@@ -677,7 +677,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                 <div className="text-sm text-muted-foreground">
                   {filteredReports.length} of {reports.length} reports
                   {(dateFilter !== "all" || statusFilter !== "all" || sortBy !== "newest") && (
-                    <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                    <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
                       Filtered
                     </span>
                   )}
@@ -697,7 +697,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                         <CardTitle className="text-primary">{report.date}</CardTitle>
                         <CardDescription>Report #{report.id}</CardDescription>
                       </div>
-                      <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap shrink-0 ${
+                      <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap shrink-0 ${
                         report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                         report.status === 'approved' ? 'bg-green-100 text-green-800' :
                         report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :

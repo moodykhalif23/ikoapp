@@ -501,6 +501,7 @@
     background-color: transparent !important;
     border: 1px solid rgba(45, 106, 79, 0.1);
     box-shadow: 0 10px 25px rgba(45, 106, 79, 0.08);
+    border-radius: 0 !important;
   }
 
   .dark .card-brand {
@@ -508,6 +509,7 @@
     background-color: transparent !important;
     border: 1px solid rgba(45, 106, 79, 0.2);
     box-shadow: 0 10px 25px rgba(45, 106, 79, 0.15);
+    border-radius: 0 !important;
   }
 
   .card-brand-dark {

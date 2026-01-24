@@ -384,7 +384,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
             <div className="mt-2 text-sm text-muted-foreground">
               {filteredReports.length} of {allReports.length} reports
               {(filterStatus !== "all" || filterReporter !== "all" || filterDate !== "all" || searchQuery) && (
-                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
                   Filtered
                 </span>
               )}
@@ -414,7 +414,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                       By {report.reportedBy}
                     </CardDescription>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+                  <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap flex-shrink-0 ${
                     report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                     report.status === 'approved' ? 'bg-green-100 text-green-800' :
                     report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
@@ -547,7 +547,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
               <button
                 key={report.id}
                 onClick={() => handleReportSelect(report)}
-                className={`w-full text-left p-3 rounded-lg border transition-colors touch-target ${
+                className={`w-full text-left p-3 rounded-none border transition-colors touch-target ${
                   selectedReport?.id === report.id
                     ? "bg-primary/10 border-primary"
                     : "border-brand-subtle hover-brand backdrop-blur-sm"
@@ -563,7 +563,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
         {/* Report Detail */}
         {selectedReport && (
-          <div className="card-brand lg:col-span-2 card-elevated rounded-lg overflow-hidden">
+          <div className="card-brand lg:col-span-2 card-elevated rounded-none overflow-hidden">
             <ScrollableReportView 
               report={selectedReport} 
               onBack={() => setSelectedReport(null)}

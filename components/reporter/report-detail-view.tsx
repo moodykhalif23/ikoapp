@@ -76,12 +76,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
             {report.powerInterruptions?.noInterruptions ? (
               <div className="flex items-center gap-1">
                 <CheckCircle sx={{ fontSize: 16, color: "#16a34a" }} />
-                <Badge variant="secondary">No Issues</Badge>
+                <Badge variant="secondary" className="rounded-none">No Issues</Badge>
               </div>
             ) : (
               <div className="flex items-center gap-1">
                 <Close sx={{ fontSize: 16, color: "#dc2626" }} />
-                <Badge variant="destructive">Interruption Occurred</Badge>
+                <Badge variant="destructive" className="rounded-none">Interruption Occurred</Badge>
               </div>
             )}
           </CardTitle>
@@ -251,12 +251,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
             {report.incidentReport?.noIncidents ? (
               <div className="flex items-center gap-1">
                 <CheckCircle sx={{ fontSize: 16, color: "#16a34a" }} />
-                <Badge variant="secondary">No Incidents</Badge>
+                <Badge variant="secondary" className="rounded-none">No Incidents</Badge>
               </div>
             ) : (
               <div className="flex items-center gap-1">
                 <Close sx={{ fontSize: 16, color: "#dc2626" }} />
-                <Badge variant="destructive">Incident Reported</Badge>
+                <Badge variant="destructive" className="rounded-none">Incident Reported</Badge>
               </div>
             )}
           </CardTitle>

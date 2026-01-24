@@ -352,15 +352,15 @@ ${new Date().toLocaleString()}
           <CardContent>
             <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full shrink-0"></div>
+                <div className="w-2 h-2 bg-green-500 rounded-none shrink-0"></div>
                 <span className="line-clamp-2">New report submitted by John Doe</span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full shrink-0"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-none shrink-0"></div>
                 <span className="line-clamp-2">User role updated for Jane Smith</span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-orange-500 rounded-full shrink-0"></div>
+                <div className="w-2 h-2 bg-orange-500 rounded-none shrink-0"></div>
                 <span className="line-clamp-2">Equipment maintenance scheduled</span>
               </div>
             </div>
@@ -376,21 +376,21 @@ ${new Date().toLocaleString()}
               <div className="flex items-center justify-between">
                 <span className="text-xs sm:text-sm">Database</span>
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-green-500 rounded-none"></div>
                   <span className="text-xs sm:text-sm text-green-600">Online</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs sm:text-sm">API Services</span>
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-green-500 rounded-none"></div>
                   <span className="text-xs sm:text-sm text-green-600">Healthy</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs sm:text-sm">Storage</span>
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-yellow-500 rounded-none"></div>
                   <span className="text-xs sm:text-sm text-yellow-600">75% Used</span>
                 </div>
               </div>
@@ -548,7 +548,7 @@ ${new Date().toLocaleString()}
             <div className="mt-2 text-sm text-muted-foreground">
               {filteredReports.length} of {reports.length} reports
               {(filterStatus !== "all" || filterReporter !== "all" || filterDate !== "all" || searchQuery) && (
-                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
                   Filtered
                 </span>
               )}
@@ -595,7 +595,7 @@ ${new Date().toLocaleString()}
                       By {report.reportedBy}
                     </CardDescription>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap shrink-0 ${
+                  <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap shrink-0 ${
                     report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                     report.status === 'approved' ? 'bg-green-100 text-green-800' :
                     report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
@@ -653,7 +653,7 @@ ${new Date().toLocaleString()}
       {/* Report Detail Modal/Panel */}
       {selectedReport && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-6xl h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden">
+          <div className="w-full max-w-6xl h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
             <ScrollableReportView 
               report={selectedReport} 
               onBack={() => setSelectedReport(null)}

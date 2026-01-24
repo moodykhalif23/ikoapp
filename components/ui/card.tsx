@@ -14,7 +14,7 @@ interface CardProps extends MuiCardProps {
 }
 
 const StyledCard = styled(MuiCard)(({ theme }) => ({
-  borderRadius: '12px',
+  borderRadius: 0,
   boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
   border: `1px solid ${theme.palette.divider}`,
   display: 'flex',
