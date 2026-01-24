@@ -48,7 +48,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         <CardHeader>
           <CardTitle className="text-primary">Report Overview</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
           <div>
             <p className="text-sm font-medium text-muted-foreground">Report Date</p>
             <p className="text-foreground">{report.date}</p>
@@ -95,7 +95,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                 report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
                   <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-none">
                     <h4 className="font-medium text-orange-800 mb-3">Interruption #{index + 1}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 mb-2 sm:mb-4">
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
                         <p className="text-foreground">{formatTime(interruption.occurredAt)}</p>
@@ -195,10 +195,10 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         </CardHeader>
         <CardContent>
           {report.dailyProduction?.products?.length > 0 ? (
-            <div className="space-y-4">
-              {report.dailyProduction.products.map((product: any, index: number) => (
-                <div key={index} className="p-4 border border-border rounded-none bg-muted/30">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-2 sm:space-y-4">
+                  {report.dailyProduction.products.map((product: any, index: number) => (
+                    <div key={index} className="p-4 border border-border rounded-none bg-muted/30">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Product Name</p>
                       <p className="text-foreground font-medium">{product.productName}</p>
@@ -265,8 +265,8 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           {report.incidentReport?.noIncidents ? (
             <p className="text-muted-foreground">No incidents occurred on this day.</p>
           ) : (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2 sm:space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Incident Type</p>
                   <p className="text-foreground">{report.incidentReport?.incidentType}</p>

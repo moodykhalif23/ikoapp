@@ -105,7 +105,7 @@ export default function ScrollableReportView({
                 disabled={canSubmit === false}
               >
                 <CheckCircle sx={{ fontSize: 16 }} />
-                <span className="hidden sm:inline">Submit</span>
+                <span className="hidden sm:inline">Submit Report</span>
               </Button>
             )}
             {onPDFExport && (
@@ -237,14 +237,14 @@ export default function ScrollableReportView({
 
           {/* Daily Production */}
           <div className="border-b border-gray-200 pb-4">
-            <div className="mb-3">
+            <div className="mb-2 sm:mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Daily Production Data</h2>
             </div>
             {report.dailyProduction?.products?.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-4">
                 {report.dailyProduction.products.map((product: any, index: number) => (
                   <div key={index} className="p-4 bg-gray-50 rounded-none border border-gray-200">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-600">Product Name</p>
                         <p className="text-gray-900 font-medium mt-1">{product.productName}</p>
@@ -290,7 +290,7 @@ export default function ScrollableReportView({
 
           {/* Incident Report */}
           <div className="border-b border-gray-200 pb-4">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3 mb-2 sm:mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Incident Report</h2>
               {!showIncidentDetails ? (
                 <div className="flex items-center gap-2">
@@ -307,10 +307,10 @@ export default function ScrollableReportView({
             {!showIncidentDetails ? (
               <p className="text-gray-600">No incidents occurred on this day.</p>
             ) : (
-              <div className="p-4 bg-gray-50 border border-gray-200 rounded-none space-y-4">
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-none space-y-2 sm:space-y-4">
                 {hasLegacyIncidents ? (
                   <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-600">Incident Type</p>
                         <p className="text-gray-900 mt-1">{report.incidentReport?.incidentType}</p>
@@ -340,7 +340,7 @@ export default function ScrollableReportView({
                   </>
                 ) : (
                   <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-600">Incident Type</p>
                         <p className="text-gray-900 mt-1">{incidentData.incidentType || "N/A"}</p>
@@ -350,7 +350,7 @@ export default function ScrollableReportView({
                         <p className="text-gray-900 mt-1">{incidentData.incidentTime || "N/A"}</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-600">Injury Level</p>
                         <p className="text-gray-900 mt-1">{incidentData.injuryLevel || "N/A"}</p>
