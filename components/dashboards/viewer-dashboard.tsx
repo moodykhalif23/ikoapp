@@ -616,7 +616,6 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
         <div className="space-y-6 mt-2">
           <div className="mb-4">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
-            <p className="text-muted-foreground">Production data insights and trends</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>

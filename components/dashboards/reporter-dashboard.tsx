@@ -565,7 +565,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         <div className="space-y-6 mt-2">
           <div className="mb-4">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Your Reports</h1>
-            <p className="text-muted-foreground">View and manage your submitted reports</p>
           </div>
 
           {/* Filters Section */}
