@@ -25,6 +25,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
     data?.products || [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
   )
   const [qualityIssues, setQualityIssues] = useState(data?.qualityIssues || "")
+  const [kplcMeter, setKplcMeter] = useState(data?.kplcMeter || "")
   const [machines, setMachines] = useState<IMachine[]>([])
   const [loading, setLoading] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -57,6 +58,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         : [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
     )
     setQualityIssues(data?.qualityIssues || "")
+    setKplcMeter(data?.kplcMeter || "")
   }, [data])
 
   const validateForm = () => {
@@ -111,6 +113,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
       onComplete({
         products,
         qualityIssues,
+        kplcMeter,
       })
     }
   }
@@ -238,6 +241,17 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
           <Plus className="w-4 h-4" />
           Add Product
         </Button>
+
+        <div className="space-y-2">
+          <label className="text-lg sm:text-xl font-semibold text-foreground">KPLC Meter Reading</label>
+          <Input
+            type="number"
+            placeholder="Enter meter reading"
+            value={kplcMeter}
+            onChange={(e) => setKplcMeter(e.target.value)}
+            className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+          />
+        </div>
 
         <div className="space-y-2">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Quality Issues (optional)</label>

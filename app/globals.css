@@ -533,6 +533,7 @@
   .card-report-compact {
     gap: 12px !important;
     padding: 16px !important;
+    border-radius: 8px !important;
   }
 
   .card-report-header {

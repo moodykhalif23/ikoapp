@@ -230,7 +230,7 @@ export default function ScrollableReportView({
             {report.dailyProduction?.products?.length > 0 ? (
               <div className="space-y-4">
                 {report.dailyProduction.products.map((product: any, index: number) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div key={index} className="p-4 bg-gray-50 rounded-md border border-gray-200">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-600">Product Name</p>
@@ -288,7 +288,7 @@ export default function ScrollableReportView({
             {!showIncidentDetails ? (
               <p className="text-gray-600">No incidents occurred on this day.</p>
             ) : (
-              <div className="space-y-4">
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-md space-y-4">
                 {hasLegacyIncidents ? (
                   <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
