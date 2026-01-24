@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
-import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport, EmployeePlanning } from '@/lib/models'
+import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport } from '@/lib/models'
 import { createReportNotification } from '@/lib/notification-utils'
 
 // GET /api/reports - Get all reports with optional filtering
@@ -26,7 +26,6 @@ export async function GET(request: NextRequest) {
       .populate('siteVisualId')
       .populate('dailyProductionId')
       .populate('incidentReportId')
-      .populate('employeePlanningId')
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(offset)
@@ -65,7 +64,6 @@ export async function POST(request: NextRequest) {
       powerInterruptions,
       dailyProduction,
       incidentReport,
-      employeePlanning,
       attendance,
       siteVisuals,
       status
@@ -90,7 +88,6 @@ export async function POST(request: NextRequest) {
       powerInterruptions,
       dailyProduction,
       incidentReport,
-      employeePlanning,
       attendance,
       siteVisuals
     })

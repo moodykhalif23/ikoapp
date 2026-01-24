@@ -4,7 +4,6 @@ export { default as PowerInterruption, type IPowerInterruption } from './PowerIn
 export { default as SiteVisual, type ISiteVisual } from './SiteVisual'
 export { default as DailyProduction, type IDailyProduction } from './DailyProduction'
 export { default as IncidentReport, type IIncidentReport } from './IncidentReport'
-export { default as EmployeePlanning, type IEmployeePlanning } from './EmployeePlanning'
 export { default as Machine, type IMachine } from './Machine'
 export { default as EquipmentMaintenance, type IEquipmentMaintenance } from './EquipmentMaintenance'
 export { default as Notification, type INotification } from './Notification'

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
-import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport, EmployeePlanning } from '@/lib/models'
+import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport } from '@/lib/models'
 import { createReportNotification } from '@/lib/notification-utils'
 
 // GET /api/reports/[id] - Get a specific report
@@ -17,7 +17,6 @@ export async function GET(
       .populate('siteVisualId')
       .populate('dailyProductionId')
       .populate('incidentReportId')
-      .populate('employeePlanningId')
 
     if (!report) {
       return NextResponse.json(
@@ -91,7 +90,6 @@ export async function PUT(
       'powerInterruptions',
       'dailyProduction',
       'incidentReport',
-      'employeePlanning',
       'attendance',
       'siteVisuals'
     ]
@@ -109,7 +107,6 @@ export async function PUT(
       .populate('siteVisualId')
       .populate('dailyProductionId')
       .populate('incidentReportId')
-      .populate('employeePlanningId')
 
     return NextResponse.json(updatedReport)
   } catch (error) {
@@ -152,10 +149,6 @@ export async function DELETE(
     if (report.incidentReportId) {
       await IncidentReport.findByIdAndDelete(report.incidentReportId)
     }
-    if (report.employeePlanningId) {
-      await EmployeePlanning.findByIdAndDelete(report.employeePlanningId)
-    }
-
     // Delete the main report
     await Report.findByIdAndDelete(report._id)
 

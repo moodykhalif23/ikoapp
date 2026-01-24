@@ -9,7 +9,6 @@ export interface IReport extends Document {
   powerInterruptions?: Record<string, unknown>
   dailyProduction?: Record<string, unknown>
   incidentReport?: Record<string, unknown>
-  employeePlanning?: Record<string, unknown>
   attendance?: Record<string, unknown>
   siteVisuals?: Record<string, unknown>
   comments?: Array<{
@@ -28,7 +27,6 @@ export interface IReport extends Document {
   siteVisualId?: mongoose.Types.ObjectId
   dailyProductionId?: mongoose.Types.ObjectId
   incidentReportId?: mongoose.Types.ObjectId
-  employeePlanningId?: mongoose.Types.ObjectId
   createdAt: Date
   updatedAt: Date
 }
@@ -69,9 +67,6 @@ const ReportSchema: Schema = new Schema({
     type: Schema.Types.Mixed
   },
   incidentReport: {
-    type: Schema.Types.Mixed
-  },
-  employeePlanning: {
     type: Schema.Types.Mixed
   },
   attendance: {
@@ -119,10 +114,6 @@ const ReportSchema: Schema = new Schema({
   incidentReportId: {
     type: Schema.Types.ObjectId,
     ref: 'IncidentReport'
-  },
-  employeePlanningId: {
-    type: Schema.Types.ObjectId,
-    ref: 'EmployeePlanning'
   }
 }, {
   timestamps: true,
@@ -141,8 +132,7 @@ ReportSchema.index({ createdAt: -1 })
 ReportSchema.virtual('isComplete').get(function() {
   const report = this as unknown as IReport
   return !!(report.powerInterruptionId && report.siteVisualId &&
-           report.dailyProductionId && report.incidentReportId &&
-           report.employeePlanningId)
+           report.dailyProductionId && report.incidentReportId)
 })
 
 // Pre-validate middleware to generate unique ID before required validation
