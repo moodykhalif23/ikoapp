@@ -86,10 +86,13 @@ export default function ScrollableReportView({
             </Button>
             <div className="min-w-0 flex-1">
               <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground truncate">
-                Report {report.id}
+                {report.date}
               </h1>
               <p className="text-sm text-muted-foreground truncate">
-                Submitted by {report.reportedBy} on {report.date}
+                Report {report.id}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                Submitted by {report.reportedBy}
               </p>
             </div>
           </div>
