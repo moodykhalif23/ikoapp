@@ -126,37 +126,41 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   </div>
                 ))
               ) : (
-                // Fallback for old single interruption format
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
-                      <p className="text-foreground">{formatTime(report.powerInterruptions?.occurredAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Duration</p>
-                      <p className="text-foreground">{report.powerInterruptions?.duration} minutes</p>
-                    </div>
-                    {report.powerInterruptions?.kplcMeter && (
+                report.powerInterruptions?.occurredAt || report.powerInterruptions?.duration ? (
+                  // Fallback for old single interruption format
+                  <div className="space-y-2 sm:space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
-                        <p className="text-foreground">{report.powerInterruptions?.kplcMeter}</p>
+                        <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
+                        <p className="text-foreground">{formatTime(report.powerInterruptions?.occurredAt)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Duration</p>
+                        <p className="text-foreground">{report.powerInterruptions?.duration} minutes</p>
+                      </div>
+                      {report.powerInterruptions?.kplcMeter && (
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
+                          <p className="text-foreground">{report.powerInterruptions?.kplcMeter}</p>
+                        </div>
+                      )}
+                    </div>
+                    {report.powerInterruptions?.affectedMachines?.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
+                        <div className="flex flex-wrap gap-2">
+                          {report.powerInterruptions.affectedMachines.map((machine: string) => (
+                            <Badge key={machine} variant="outline">
+                              {machine}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
-                  {report.powerInterruptions?.affectedMachines?.length > 0 && (
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
-                      <div className="flex flex-wrap gap-2">
-                        {report.powerInterruptions.affectedMachines.map((machine: string) => (
-                          <Badge key={machine} variant="outline">
-                            {machine}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                ) : (
+                  <p className="text-muted-foreground">No interruptions were recorded for this report.</p>
+                )
               )}
             </div>
           )}
@@ -195,35 +199,42 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         </CardHeader>
         <CardContent>
           {report.dailyProduction?.products?.length > 0 ? (
-                <div className="space-y-2 sm:space-y-4">
+            <div className="space-y-2 sm:space-y-4">
+              <div className="p-4 border border-border rounded-none bg-muted/30">
+                <div className="space-y-3">
                   {report.dailyProduction.products.map((product: any, index: number) => (
-                    <div key={index} className="p-4 border border-border rounded-none bg-muted/30">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Product Name</p>
-                      <p className="text-foreground font-medium">{product.productName}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Quantity</p>
-                      <p className="text-foreground">{product.quantity} {product.unit}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Employees</p>
-                      <p className="text-foreground">{product.employees}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Machines Used</p>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {product.machinesUsed?.map((machine: string) => (
-                          <Badge key={machine} variant="outline">
-                            {machine}
-                          </Badge>
-                        ))}
+                    <div
+                      key={index}
+                      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 ${
+                        index < report.dailyProduction.products.length - 1 ? "pb-3 border-b border-border" : ""
+                      }`}
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Product Name</p>
+                        <p className="text-foreground font-medium">{product.productName}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Quantity</p>
+                        <p className="text-foreground">{product.quantity} {product.unit}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Employees</p>
+                        <p className="text-foreground">{product.employees}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Machines Used</p>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {product.machinesUsed?.map((machine: string) => (
+                            <Badge key={machine} variant="outline">
+                              {machine}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-                ))}
+              </div>
               {report.dailyProduction?.kplcMeter && (
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>

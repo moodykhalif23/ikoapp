@@ -213,23 +213,27 @@ export default function ScrollableReportView({
                     </div>
                   ))
                 ) : (
-                  // Fallback for old single interruption format
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Time of Interruption</p>
-                      <p className="text-gray-900 mt-1">{formatTime(report.powerInterruptions?.occurredAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Duration</p>
-                      <p className="text-gray-900 mt-1">{report.powerInterruptions?.duration} minutes</p>
-                    </div>
-                    {report.powerInterruptions?.kplcMeter && (
+                  report.powerInterruptions?.occurredAt || report.powerInterruptions?.duration ? (
+                    // Fallback for old single interruption format
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                       <div>
-                        <p className="text-sm font-medium text-gray-600">KPLC Meter Reading</p>
-                        <p className="text-gray-900 mt-1">{report.powerInterruptions?.kplcMeter}</p>
+                        <p className="text-sm font-medium text-gray-600">Time of Interruption</p>
+                        <p className="text-gray-900 mt-1">{formatTime(report.powerInterruptions?.occurredAt)}</p>
                       </div>
-                    )}
-                  </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Duration</p>
+                        <p className="text-gray-900 mt-1">{report.powerInterruptions?.duration} minutes</p>
+                      </div>
+                      {report.powerInterruptions?.kplcMeter && (
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">KPLC Meter Reading</p>
+                          <p className="text-gray-900 mt-1">{report.powerInterruptions?.kplcMeter}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600">No interruptions were recorded for this report.</p>
+                  )
                 )}
               </div>
             )}
@@ -242,42 +246,49 @@ export default function ScrollableReportView({
             </div>
             {report.dailyProduction?.products?.length > 0 ? (
               <div className="space-y-2 sm:space-y-4">
-                {report.dailyProduction.products.map((product: any, index: number) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-none border border-gray-200">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Product Name</p>
-                        <p className="text-gray-900 font-medium mt-1">{product.productName}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Quantity</p>
-                        <p className="text-gray-900 mt-1">{product.quantity} {product.unit}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Employees</p>
-                        <p className="text-gray-900 mt-1">{product.employees}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Machines Used</p>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {product.machinesUsed?.map((machine: string) => (
-                            <span key={machine} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
-                              {machine}
-                            </span>
-                          ))}
+                <div className="p-4 bg-gray-50 rounded-none border border-gray-200">
+                  <div className="space-y-3">
+                    {report.dailyProduction.products.map((product: any, index: number) => (
+                      <div
+                        key={index}
+                        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 ${
+                          index < report.dailyProduction.products.length - 1 ? "pb-3 border-b border-gray-200" : ""
+                        }`}
+                      >
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">Product Name</p>
+                          <p className="text-gray-900 font-medium mt-1">{product.productName}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">Quantity</p>
+                          <p className="text-gray-900 mt-1">{product.quantity} {product.unit}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">Employees</p>
+                          <p className="text-gray-900 mt-1">{product.employees}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">Machines Used</p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {product.machinesUsed?.map((machine: string) => (
+                              <span key={machine} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
+                                {machine}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
                 {report.dailyProduction?.kplcMeter && (
-                  <div className="mt-4">
+                  <div className="mt-2 sm:mt-4">
                     <p className="text-sm font-medium text-gray-600">KPLC Meter Reading</p>
                     <p className="text-gray-900 mt-1">{report.dailyProduction.kplcMeter}</p>
                   </div>
                 )}
                 {report.dailyProduction?.qualityIssues && (
-                  <div className="mt-4">
+                  <div className="mt-2 sm:mt-4">
                     <p className="text-sm font-medium text-gray-600">Quality Issues</p>
                     <p className="text-gray-900 mt-1">{report.dailyProduction.qualityIssues}</p>
                   </div>
