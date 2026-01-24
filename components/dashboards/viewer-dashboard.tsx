@@ -113,7 +113,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
     }
     
     return true
-  })
+  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   // Get unique reporters for filter dropdown
   const uniqueReporters = [...new Set(allReports.map(r => r.reportedBy))].filter(Boolean)
@@ -585,7 +585,7 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
         {/* Report Detail */}
         {selectedReport && (
-          <div className="card-brand lg:col-span-2 card-elevated rounded-none overflow-hidden">
+          <div className="card-brand lg:col-span-2 card-elevated rounded-none overflow-hidden max-h-[calc(100vh-12rem)] overflow-y-auto">
             <ScrollableReportView 
               report={selectedReport} 
               onBack={() => setSelectedReport(null)}

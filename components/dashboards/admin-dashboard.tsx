@@ -174,7 +174,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
     }
     
     return true
-  })
+  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   // Get unique reporters for filter dropdown
   const uniqueReporters = [...new Set(reports.map(r => r.reportedBy))].filter(Boolean)
