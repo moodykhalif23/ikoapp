@@ -162,15 +162,10 @@ export default function ScrollableReportView({
           <div className="border-b border-gray-200 pb-4">
             <div className="flex items-center gap-3 mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Power Interruptions</h2>
-              {report.powerInterruptions?.noInterruptions ? (
+              {report.powerInterruptions?.noInterruptions && (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded-none text-sm">No Issues</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Close sx={{ fontSize: 18, color: "#dc2626" }} />
-                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded-none text-sm">Interruption Occurred</span>
                 </div>
               )}
             </div>
@@ -303,15 +298,10 @@ export default function ScrollableReportView({
           <div className="border-b border-gray-200 pb-4">
             <div className="flex items-center gap-3 mb-2 sm:mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Incident Report</h2>
-              {!showIncidentDetails ? (
+              {!showIncidentDetails && (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded-none text-sm">No Incidents</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Close sx={{ fontSize: 18, color: "#dc2626" }} />
-                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded-none text-sm">Incident Reported</span>
                 </div>
               )}
             </div>
