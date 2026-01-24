@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -43,6 +44,7 @@ export default function PwaInstall() {
     let updateFoundHandler: (() => void) | null = null
     let controllerChangeHandler: (() => void) | null = null
     let swRegistration: ServiceWorkerRegistration | null = null
+    let updateToastShown = false
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -64,7 +66,18 @@ export default function PwaInstall() {
                 installingWorker.state === "installed" &&
                 navigator.serviceWorker.controller
               ) {
-                installingWorker.postMessage({ type: "SKIP_WAITING" })
+                if (!updateToastShown) {
+                  updateToastShown = true
+                  toast("Update available", {
+                    description: "Tap to refresh and load the latest version.",
+                    action: {
+                      label: "Refresh",
+                      onClick: () => {
+                        installingWorker.postMessage({ type: "SKIP_WAITING" })
+                      }
+                    }
+                  })
+                }
               }
             })
           }
@@ -72,7 +85,7 @@ export default function PwaInstall() {
           registration.addEventListener("updatefound", updateFoundHandler)
 
           controllerChangeHandler = () => {
-            window.location.reload()
+            // No auto-reload. User triggers refresh from the toast action.
           }
 
           navigator.serviceWorker.addEventListener("controllerchange", controllerChangeHandler)
