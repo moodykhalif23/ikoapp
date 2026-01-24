@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
         await createReportNotification(
           report.id,
           report.reportedBy,
-          'Attendance'
+          'Daily Report'
         )
       } catch (notificationError) {
         console.error('Error creating notification:', notificationError)

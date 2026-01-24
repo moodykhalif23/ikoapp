@@ -220,29 +220,9 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
         return
       }
 
-      const response = await fetch("/api/reports", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          date: selectedDate,
-          reportedBy: user?.name || "Reporter",
-          reportedByEmail: user?.email || "",
-          status: "submitted",
-          attendance: {
-            date: selectedDate,
-            entries
-          }
-        })
-      })
-
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to submit attendance report")
-      }
-
-      setSuccess("Attendance report submitted")
+      setSuccess("Attendance submitted")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit attendance report")
+      setError(err instanceof Error ? err.message : "Failed to submit attendance")
     } finally {
       setSubmittingReport(false)
     }

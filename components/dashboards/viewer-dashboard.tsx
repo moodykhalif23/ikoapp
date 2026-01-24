@@ -14,6 +14,7 @@ import FilterListIcon from "@mui/icons-material/FilterList"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
+import AttendanceReportsView from "@/components/attendance/attendance-reports-view"
 
 interface ViewerDashboardProps {
   user: any
@@ -37,6 +38,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [commentText, setCommentText] = useState("")
   const [activeTab, setActiveTab] = useState("reports")
+  const [reportsView, setReportsView] = useState<"production" | "attendance">("production")
   
   // Filter states
   const [filterStatus, setFilterStatus] = useState<string>("all")
@@ -249,241 +251,267 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
         <p className="text-xs sm:text-base text-muted-foreground">View and analyze production reports</p>
       </div>
 
-      {/* Filters Section */}
-      <Card className="card-brand card-elevated card-filter-tight mb-6">
-        <CardHeader className="card-filter-header">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-              <FilterListIcon sx={{ fontSize: 20 }} />
-              Filters
-            </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setFiltersExpanded(!filtersExpanded)}
-              className="gap-2"
-            >
-              {filtersExpanded ? (
-                <>
-                  <ChevronUp size={16} />
-                  <span className="hidden sm:inline">Collapse</span>
-                </>
-              ) : (
-                <>
-                  <ChevronDown size={16} />
-                  <span className="hidden sm:inline">Expand</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </CardHeader>
-        
-        {/* Always visible search bar */}
-        <CardContent className="pt-0">
-          <div className="relative">
-            <Input
-              placeholder="Search reports..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-10 text-sm"
-            />
-            <SearchIcon sx={{ fontSize: 16 }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-          </div>
-          
-          {/* Collapsible filter section */}
-          {filtersExpanded && (
-            <div className="space-y-4 mt-4">
-              {/* Filter dropdowns in a row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Status Filter */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Status</label>
-                  <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                      filterStatus !== "all" 
-                        ? "bg-green-50 text-green-800" 
-                        : "bg-background"
-                    }`}
-                  >
-                    <option value="all">All Status</option>
-                    <option value="draft">Draft</option>
-                    <option value="submitted">Submitted</option>
-                    <option value="reviewed">Reviewed</option>
-                    <option value="approved">Approved</option>
-                  </select>
-                </div>
+      <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
+        <Button
+          variant={reportsView === "production" ? "default" : "outline"}
+          onClick={() => setReportsView("production")}
+          className="text-xs sm:text-sm"
+        >
+          Production Reports
+        </Button>
+        <Button
+          variant={reportsView === "attendance" ? "default" : "outline"}
+          onClick={() => {
+            setSelectedReport(null)
+            setReportsView("attendance")
+          }}
+          className="text-xs sm:text-sm"
+        >
+          Attendance
+        </Button>
+      </div>
 
-                {/* Reporter Filter */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Reporter</label>
-                  <select
-                    value={filterReporter}
-                    onChange={(e) => setFilterReporter(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                      filterReporter !== "all" 
-                        ? "bg-green-50 text-green-800" 
-                        : "bg-background"
-                    }`}
-                  >
-                    <option value="all">All Reporters</option>
-                    {uniqueReporters.map(reporter => (
-                      <option key={reporter} value={reporter}>{reporter}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Date Filter */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Date Range</label>
-                  <select
-                    value={filterDate}
-                    onChange={(e) => setFilterDate(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
-                      filterDate !== "all" 
-                        ? "bg-green-50 text-green-800" 
-                        : "bg-background"
-                    }`}
-                  >
-                    <option value="all">All Time</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                  </select>
-                </div>
-
-                {/* Clear Filters */}
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setFilterStatus("all")
-                      setFilterReporter("all")
-                      setFilterDate("all")
-                      setSearchQuery("")
-                    }}
-                    className="text-sm w-full h-10"
-                  >
-                    Clear Filters
-                  </Button>
-                </div>
+      {reportsView === "attendance" ? (
+        <AttendanceReportsView />
+      ) : (
+        <>
+          {/* Filters Section */}
+          <Card className="card-brand card-elevated card-filter-tight mb-6">
+            <CardHeader className="card-filter-header">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <FilterListIcon sx={{ fontSize: 20 }} />
+                  Filters
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFiltersExpanded(!filtersExpanded)}
+                  className="gap-2"
+                >
+                  {filtersExpanded ? (
+                    <>
+                      <ChevronUp size={16} />
+                      <span className="hidden sm:inline">Collapse</span>
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown size={16} />
+                      <span className="hidden sm:inline">Expand</span>
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardHeader>
+            
+            {/* Always visible search bar */}
+            <CardContent className="pt-0">
+              <div className="relative">
+                <Input
+                  placeholder="Search reports..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pr-10 text-sm"
+                />
+                <SearchIcon sx={{ fontSize: 16 }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               </div>
               
-              {/* Results Count */}
-              <div className="pt-4 border-t text-sm text-muted-foreground">
-                Showing {filteredReports.length} of {allReports.length} reports
+              {/* Collapsible filter section */}
+              {filtersExpanded && (
+                <div className="space-y-4 mt-4">
+                  {/* Filter dropdowns in a row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Status Filter */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground">Status</label>
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                          filterStatus !== "all" 
+                            ? "bg-green-50 text-green-800" 
+                            : "bg-background"
+                        }`}
+                      >
+                        <option value="all">All Status</option>
+                        <option value="draft">Draft</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="reviewed">Reviewed</option>
+                        <option value="approved">Approved</option>
+                      </select>
+                    </div>
+
+                    {/* Reporter Filter */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground">Reporter</label>
+                      <select
+                        value={filterReporter}
+                        onChange={(e) => setFilterReporter(e.target.value)}
+                        className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                          filterReporter !== "all" 
+                            ? "bg-green-50 text-green-800" 
+                            : "bg-background"
+                        }`}
+                      >
+                        <option value="all">All Reporters</option>
+                        {uniqueReporters.map(reporter => (
+                          <option key={reporter} value={reporter}>{reporter}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Date Filter */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground">Date Range</label>
+                      <select
+                        value={filterDate}
+                        onChange={(e) => setFilterDate(e.target.value)}
+                        className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                          filterDate !== "all" 
+                            ? "bg-green-50 text-green-800" 
+                            : "bg-background"
+                        }`}
+                      >
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                      </select>
+                    </div>
+
+                    {/* Clear Filters */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setFilterStatus("all")
+                          setFilterReporter("all")
+                          setFilterDate("all")
+                          setSearchQuery("")
+                        }}
+                        className="text-sm w-full h-10"
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Results Count */}
+                  <div className="pt-4 border-t text-sm text-muted-foreground">
+                    Showing {filteredReports.length} of {allReports.length} reports
+                  </div>
+                </div>
+              )}
+              
+              {/* Compact results count when collapsed */}
+              {!filtersExpanded && (
+                <div className="mt-2 text-sm text-muted-foreground">
+                  {filteredReports.length} of {allReports.length} reports
+                  {(filterStatus !== "all" || filterReporter !== "all" || filterDate !== "all" || searchQuery) && (
+                    <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
+                      Filtered
+                    </span>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Reports Grid */}
+          {filteredReports.length === 0 ? null : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredReports.map((report) => (
+                <Card 
+                  key={report.id} 
+                  className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[260px] flex flex-col ${
+                    selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
+                  }`}
+                  onClick={() => handleReportSelect(report)}
+                >
+                  <CardHeader className="pb-2 flex-shrink-0 card-report-header">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <CardTitle className="text-base font-semibold line-clamp-1">
+                          Report {report.id}
+                        </CardTitle>
+                        <CardDescription className="text-sm mt-1 line-clamp-1">
+                          By {report.reportedBy}
+                        </CardDescription>
+                      </div>
+                      <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+                        report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
+                        report.status === 'approved' ? 'bg-green-100 text-green-800' :
+                        report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {report.status}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="text-sm text-muted-foreground space-y-1">
+                        <p className="line-clamp-1">
+                          <span className="font-medium">Date:</span> {report.date}
+                        </p>
+                      </div>
+                      
+                      {/* Quick Stats */}
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-muted rounded p-2 text-center">
+                          <p className="text-muted-foreground mb-1">Products</p>
+                          <p className="font-semibold text-lg">
+                            {report.dailyProduction?.products?.length || 0}
+                          </p>
+                        </div>
+                        <div className="bg-muted rounded p-2 text-center">
+                          <p className="text-muted-foreground mb-1">Incidents</p>
+                          <p className="font-semibold text-lg">
+                            {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-2 border-t">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full text-xs"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handlePDFExport(report)
+                        }}
+                      >
+                        <DownloadIcon sx={{ fontSize: 14, marginRight: 1 }} />
+                        Export PDF
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Report Detail Modal/Panel */}
+          {selectedReport && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+              <div className="w-full max-w-6xl h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
+                <ScrollableReportView 
+                  report={selectedReport} 
+                  onBack={() => setSelectedReport(null)}
+                  onPDFExport={handlePDFExport}
+                  showComments={true}
+                  user={user}
+                  comments={comments}
+                  onAddComment={handleAddComment}
+                />
               </div>
             </div>
           )}
-          
-          {/* Compact results count when collapsed */}
-          {!filtersExpanded && (
-            <div className="mt-2 text-sm text-muted-foreground">
-              {filteredReports.length} of {allReports.length} reports
-              {(filterStatus !== "all" || filterReporter !== "all" || filterDate !== "all" || searchQuery) && (
-                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
-                  Filtered
-                </span>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Reports Grid */}
-      {filteredReports.length === 0 ? null : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredReports.map((report) => (
-            <Card 
-              key={report.id} 
-              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[260px] flex flex-col ${
-                selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
-              }`}
-              onClick={() => handleReportSelect(report)}
-            >
-              <CardHeader className="pb-2 flex-shrink-0 card-report-header">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <CardTitle className="text-base font-semibold line-clamp-1">
-                      Report {report.id}
-                    </CardTitle>
-                    <CardDescription className="text-sm mt-1 line-clamp-1">
-                      By {report.reportedBy}
-                    </CardDescription>
-                  </div>
-                  <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap flex-shrink-0 ${
-                    report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
-                    report.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {report.status}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col justify-between">
-                <div className="space-y-2 flex-1">
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    <p className="line-clamp-1">
-                      <span className="font-medium">Date:</span> {report.date}
-                    </p>
-                  </div>
-                  
-                  {/* Quick Stats */}
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-muted rounded p-2 text-center">
-                      <p className="text-muted-foreground mb-1">Products</p>
-                      <p className="font-semibold text-lg">
-                        {report.dailyProduction?.products?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-muted rounded p-2 text-center">
-                      <p className="text-muted-foreground mb-1">Incidents</p>
-                      <p className="font-semibold text-lg">
-                        {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-3 pt-2 border-t">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full text-xs"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handlePDFExport(report)
-                    }}
-                  >
-                    <DownloadIcon sx={{ fontSize: 14, marginRight: 1 }} />
-                    Export PDF
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {/* Report Detail Modal/Panel */}
-      {selectedReport && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-6xl h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
-            <ScrollableReportView 
-              report={selectedReport} 
-              onBack={() => setSelectedReport(null)}
-              onPDFExport={handlePDFExport}
-              showComments={true}
-              user={user}
-              comments={comments}
-              onAddComment={handleAddComment}
-            />
-          </div>
-        </div>
+        </>
       )}
     </>
   )

@@ -296,42 +296,6 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         </CardContent>
       </Card>
 
-        {/* Attendance */}
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle className="text-primary">Attendance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {Array.isArray(report.attendance?.entries) && report.attendance.entries.length > 0 ? (
-              <div className="space-y-4">
-                {report.attendance.entries.map((entry: any, index: number) => (
-                  <div key={`${entry.employeeId || entry.employeeName}-${index}`} className="p-4 border border-border rounded-none bg-muted/30">
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Employee</p>
-                        <p className="text-foreground">{entry.employeeName || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Shift</p>
-                        <p className="text-foreground capitalize">{entry.shiftType || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Sign In</p>
-                        <p className="text-foreground">{entry.signInTime || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Sign Out</p>
-                        <p className="text-foreground">{entry.signOutTime || "N/A"}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">No attendance data was recorded for this report.</p>
-            )}
-          </CardContent>
-        </Card>
     </div>
   )
 }

@@ -15,6 +15,7 @@ import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 import EmployeeManagement from "@/components/employee/employee-management"
+import AttendanceReportsView from "@/components/attendance/attendance-reports-view"
 
 interface AdminDashboardProps {
   user: any
@@ -44,6 +45,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
   const [filterDate, setFilterDate] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState<string>("")
   const [filtersExpanded, setFiltersExpanded] = useState(false)
+  const [reportsView, setReportsView] = useState<"production" | "attendance">("production")
 
   // Fetch reports data
   useEffect(() => {
@@ -407,6 +409,30 @@ ${new Date().toLocaleString()}
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports</h1>
       </div>
 
+      <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
+        <Button
+          variant={reportsView === "production" ? "default" : "outline"}
+          onClick={() => setReportsView("production")}
+          className="text-xs sm:text-sm"
+        >
+          Production Reports
+        </Button>
+        <Button
+          variant={reportsView === "attendance" ? "default" : "outline"}
+          onClick={() => {
+            setSelectedReport(null)
+            setReportsView("attendance")
+          }}
+          className="text-xs sm:text-sm"
+        >
+          Attendance
+        </Button>
+      </div>
+
+      {reportsView === "attendance" ? (
+        <AttendanceReportsView />
+      ) : (
+        <>
       {/* Filters Section */}
       <Card className="card-brand card-elevated card-filter-tight mb-4 sm:mb-6">
         <CardHeader className="card-filter-header">
@@ -665,6 +691,8 @@ ${new Date().toLocaleString()}
             />
           </div>
         </div>
+      )}
+        </>
       )}
     </>
   )

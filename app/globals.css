@@ -535,7 +535,7 @@
   .card-report-compact {
     gap: 12px !important;
     padding: 16px !important;
-    border-radius: 8px !important;
+    border-radius: 0 !important;
   }
 
   .card-report-header {
@@ -658,6 +658,24 @@
       min-width: 60px !important;
       padding: 6px 8px !important;
       font-size: 0.75rem !important;
+    }
+
+    .card-filter-tight {
+      gap: 4px !important;
+      padding: 12px !important;
+    }
+
+    .card-filter-header {
+      margin-bottom: 2px !important;
+    }
+
+    .card-report-compact {
+      gap: 8px !important;
+      padding: 12px !important;
+    }
+
+    .card-report-header {
+      margin-bottom: 4px !important;
     }
   }
 }

@@ -69,8 +69,6 @@ export default function ScrollableReportView({
   const noLegacyIncidents = incidentData?.noIncidents === true
   const showIncidentDetails = hasLegacyIncidents ? !noLegacyIncidents : hasFormIncident
 
-  const attendanceData = report?.attendance || {}
-  const attendanceEntries = Array.isArray(attendanceData?.entries) ? attendanceData.entries : []
 
   return (
     <div className="h-full flex flex-col">
@@ -368,39 +366,6 @@ export default function ScrollableReportView({
                   </>
                 )}
               </div>
-            )}
-          </div>
-
-          {/* Attendance */}
-          <div className="border-b border-gray-200 pb-4">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">Attendance</h2>
-            {attendanceEntries.length > 0 ? (
-              <div className="space-y-3">
-                {attendanceEntries.map((entry: any, index: number) => (
-                  <div key={`${entry.employeeId || entry.employeeName}-${index}`} className="p-4 bg-gray-50 rounded-none border border-gray-200">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Employee</p>
-                        <p className="text-gray-900 mt-1">{entry.employeeName || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Shift</p>
-                        <p className="text-gray-900 mt-1">{entry.shiftType || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Sign In</p>
-                        <p className="text-gray-900 mt-1">{entry.signInTime || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Sign Out</p>
-                        <p className="text-gray-900 mt-1">{entry.signOutTime || "N/A"}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-600">No attendance data was recorded for this report.</p>
             )}
           </div>
 
