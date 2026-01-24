@@ -61,11 +61,25 @@ export default function AttendanceReportsView() {
   }, [selectedDate])
 
   const summary = useMemo(() => {
-    const total = records.length
-    const signedOut = records.filter((record) => record.signOutTime).length
-    const signedInOnly = records.filter((record) => record.signInTime && !record.signOutTime).length
-    return { total, signedOut, signedInOnly }
+    const uniqueEmployees = new Set(records.map((record) => record.employeeId)).size
+    const submittedAt = records.length
+      ? new Date(
+          Math.max(
+            ...records.map((record) =>
+              record.createdAt ? new Date(record.createdAt).getTime() : 0,
+            ),
+          ),
+        )
+      : null
+    return { uniqueEmployees, submittedAt }
   }, [records])
+
+  const reportId = selectedDate ? `ATT-${selectedDate.replace(/-/g, "")}` : "ATT-NA"
+  const formatDate = (value: string | Date | null) => {
+    if (!value) return "N/A"
+    const date = typeof value === "string" ? new Date(value) : value
+    return date.toLocaleDateString()
+  }
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -96,32 +110,30 @@ export default function AttendanceReportsView() {
             </Typography>
           </Box>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast">Total Entries</CardTitle>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+            <Card className="card-brand card-elevated card-report-compact">
+              <CardHeader className="pb-2 card-report-header">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-base font-semibold">{selectedDate}</CardTitle>
+                    <p className="text-sm text-muted-foreground">Report #{reportId}</p>
+                  </div>
+                  <div className="px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap bg-green-100 text-green-800">
+                    Attendance
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-xl sm:text-2xl font-bold text-foreground">{summary.total}</div>
-                <p className="text-xs text-muted-foreground mt-1">For selected date</p>
-              </CardContent>
-            </Card>
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast">Signed Out</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl sm:text-2xl font-bold text-foreground">{summary.signedOut}</div>
-                <p className="text-xs text-muted-foreground mt-1">Completed shifts</p>
-              </CardContent>
-            </Card>
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast">Signed In</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl sm:text-2xl font-bold text-foreground">{summary.signedInOnly}</div>
-                <p className="text-xs text-muted-foreground mt-1">No sign-out yet</p>
+                <div className="space-y-2 text-sm">
+                  <p>
+                    <span className="font-medium text-brand-contrast">Attendance:</span>{" "}
+                    <span className="text-primary font-medium">{summary.uniqueEmployees}</span>
+                  </p>
+                  <p>
+                    <span className="font-medium text-brand-contrast">Submitted:</span>{" "}
+                    <span className="text-muted-foreground">{formatDate(summary.submittedAt)}</span>
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </div>
