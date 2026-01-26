@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -434,49 +433,53 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
             <div className="space-y-4">
               <div>
                 <Label htmlFor="equipment">Equipment *</Label>
-                <Select value={newMaintenance.equipmentId} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, equipmentId: value })}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select equipment" />
-                  </SelectTrigger>
-                  <SelectContent className="w-[--radix-select-trigger-width] max-h-60">
+                <div className="bg-app-standard rounded-md p-[2px]">
+                  <select
+                    value={newMaintenance.equipmentId}
+                    onChange={(e) => setNewMaintenance({ ...newMaintenance, equipmentId: e.target.value })}
+                    className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                  >
+                    <option value="">Select equipment</option>
                     {machineList.map((machine) => (
-                      <SelectItem key={machine._id} value={machine._id}>
+                      <option key={machine._id} value={machine._id}>
                         {machine.name}
-                      </SelectItem>
+                      </option>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="type">Maintenance Type</Label>
-                  <Select value={newMaintenance.maintenanceType} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, maintenanceType: value })}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="w-[--radix-select-trigger-width]">
-                      <SelectItem value="preventive">Preventive</SelectItem>
-                      <SelectItem value="corrective">Corrective</SelectItem>
-                      <SelectItem value="predictive">Predictive</SelectItem>
-                      <SelectItem value="emergency">Emergency</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="bg-app-standard rounded-md p-[2px]">
+                    <select
+                      value={newMaintenance.maintenanceType}
+                      onChange={(e) => setNewMaintenance({ ...newMaintenance, maintenanceType: e.target.value })}
+                      className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                    >
+                      <option value="preventive">Preventive</option>
+                      <option value="corrective">Corrective</option>
+                      <option value="predictive">Predictive</option>
+                      <option value="emergency">Emergency</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div>
                   <Label htmlFor="priority">Priority</Label>
-                  <Select value={newMaintenance.priority} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, priority: value })}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="w-[--radix-select-trigger-width]">
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="critical">Critical</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="bg-app-standard rounded-md p-[2px]">
+                    <select
+                      value={newMaintenance.priority}
+                      onChange={(e) => setNewMaintenance({ ...newMaintenance, priority: e.target.value })}
+                      className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="critical">Critical</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
