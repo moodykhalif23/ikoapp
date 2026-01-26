@@ -19,6 +19,7 @@ interface MediaFile {
   size: string
   preview?: string
   url?: string
+  file?: File
 }
 
 export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormProps) {
@@ -43,17 +44,42 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
     const newErrors: Record<string, string> = {}
 
     if (mediaFiles.length === 0) newErrors.media = "Upload at least one image or video"
+    if (mediaFiles.some((file) => file.file && !file.url)) {
+      newErrors.media = "Please wait for uploads to finish"
+    }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadMediaFiles = async (files: MediaFile[]) => {
+    const formData = new FormData()
+    files.forEach((file) => {
+      if (file.file) {
+        formData.append("files", file.file)
+      }
+    })
+
+    const response = await fetch("/api/uploads", {
+      method: "POST",
+      body: formData
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
+      throw new Error(error.error || "Failed to upload files")
+    }
+
+    const data = await response.json()
+    return Array.isArray(data.files) ? data.files : []
+  }
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files
     if (files) {
       setIsProcessing(true)
       const fileArray = Array.from(files)
-      let processedCount = 0
+      const nextMedia: MediaFile[] = []
 
       fileArray.forEach((file) => {
         const isImage = file.type.startsWith("image/")
@@ -65,29 +91,48 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
             name: file.name,
             type: isImage ? "image" : "video",
             size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+            file,
           }
 
-          // Create preview for both images and videos
+          nextMedia.push(newFile)
+
           const reader = new FileReader()
-          reader.onload = (e) => {
+          reader.onload = (event) => {
             setMediaFiles((prev) =>
-              prev.map((f) => (f.id === newFile.id ? { ...f, preview: e.target?.result as string } : f)),
+              prev.map((f) => (f.id === newFile.id ? { ...f, preview: event.target?.result as string } : f)),
             )
-            processedCount++
-            if (processedCount === fileArray.length) {
-              setIsProcessing(false)
-            }
           }
           reader.readAsDataURL(file)
-
-          setMediaFiles((prev) => [...prev, newFile])
-        } else {
-          processedCount++
-          if (processedCount === fileArray.length) {
-            setIsProcessing(false)
-          }
         }
       })
+
+      if (nextMedia.length) {
+        setMediaFiles((prev) => [...prev, ...nextMedia])
+      }
+
+      try {
+        if (nextMedia.length) {
+          const uploaded = await uploadMediaFiles(nextMedia)
+          setMediaFiles((prev) =>
+            prev.map((item) => {
+              const index = nextMedia.findIndex((media) => media.id === item.id)
+              if (index === -1) return item
+              const uploadedFile = uploaded[index]
+              return uploadedFile ? { ...item, url: uploadedFile.url } : item
+            }),
+          )
+        }
+      } catch (error) {
+        setErrors((prev) => ({
+          ...prev,
+          media: error instanceof Error ? error.message : "Failed to upload files"
+        }))
+      } finally {
+        setIsProcessing(false)
+        e.currentTarget.value = ""
+      }
+    } else {
+      e.currentTarget.value = ""
     }
   }
 
@@ -107,8 +152,16 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
   const handleSubmit = () => {
     if (validateForm()) {
+      const sanitizedMedia = mediaFiles.map(({ id, name, type, size, url, preview }) => ({
+        id,
+        name,
+        type,
+        size,
+        url,
+        preview: url ? undefined : preview
+      }))
       onComplete({
-        media: mediaFiles,
+        media: sanitizedMedia,
       })
     }
   }
