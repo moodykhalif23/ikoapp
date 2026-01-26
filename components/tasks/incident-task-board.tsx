@@ -5,7 +5,6 @@ import {
   Box,
   Chip,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   Table,
@@ -16,10 +15,14 @@ import {
   TableRow,
   Paper,
   Typography,
-  Button,
   Alert
 } from "@mui/material"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import SearchIcon from "@mui/icons-material/Search"
+import FilterListIcon from "@mui/icons-material/FilterList"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 interface IncidentTask {
   _id: string
@@ -39,13 +42,17 @@ export default function IncidentTaskBoard() {
   const [tasks, setTasks] = useState<IncidentTask[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [statusFilter, setStatusFilter] = useState<string>("open")
+  const [filterStatus, setFilterStatus] = useState<string>("all")
+  const [filterAssignee, setFilterAssignee] = useState<string>("all")
+  const [filterDate, setFilterDate] = useState<string>("all")
+  const [searchQuery, setSearchQuery] = useState<string>("")
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
 
   const fetchTasks = async () => {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch(`/api/tasks?status=${encodeURIComponent(statusFilter)}&limit=100`)
+      const response = await fetch(`/api/tasks?status=all&limit=200`)
       if (!response.ok) {
         throw new Error("Failed to fetch tasks")
       }
@@ -60,7 +67,7 @@ export default function IncidentTaskBoard() {
 
   useEffect(() => {
     fetchTasks()
-  }, [statusFilter])
+  }, [])
 
   const updateTaskStatus = async (taskId: string, status: IncidentTask["status"]) => {
     try {
@@ -85,6 +92,13 @@ export default function IncidentTaskBoard() {
     return "default"
   }
 
+  const uniqueAssignees = useMemo(() => {
+    const names = tasks
+      .map((task) => task.assignedToName || task.assignedToId)
+      .filter(Boolean)
+    return Array.from(new Set(names))
+  }, [tasks])
+
   const overdueIds = useMemo(() => {
     const now = new Date()
     return new Set(
@@ -94,37 +108,196 @@ export default function IncidentTaskBoard() {
     )
   }, [tasks])
 
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      if (filterStatus !== "all" && task.status !== filterStatus) {
+        return false
+      }
+
+      const assignee = task.assignedToName || task.assignedToId
+      if (filterAssignee !== "all" && assignee !== filterAssignee) {
+        return false
+      }
+
+      if (filterDate !== "all") {
+        const dueDate = new Date(task.dueDate)
+        const now = new Date()
+        switch (filterDate) {
+          case "today":
+            if (dueDate.toDateString() !== now.toDateString()) return false
+            break
+          case "week":
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+            if (dueDate < weekAgo) return false
+            break
+          case "month":
+            if (dueDate.getMonth() !== now.getMonth() || dueDate.getFullYear() !== now.getFullYear()) return false
+            break
+        }
+      }
+
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase()
+        return (
+          task.title?.toLowerCase().includes(query) ||
+          task.description?.toLowerCase().includes(query) ||
+          task.reportId?.toLowerCase().includes(query) ||
+          task.incidentType?.toLowerCase().includes(query) ||
+          task.status?.toLowerCase().includes(query) ||
+          (task.assignedToName || "").toLowerCase().includes(query)
+        )
+      }
+
+      return true
+    })
+  }, [tasks, filterStatus, filterAssignee, filterDate, searchQuery])
+
   return (
     <Card className="card-brand card-elevated">
       <CardHeader className="pb-2">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-base sm:text-lg">Incident Tasks</CardTitle>
-          <div className="flex items-center gap-2">
-            <FormControl size="small" sx={{ minWidth: 160 }}>
-              <InputLabel>Status</InputLabel>
-              <Select
-                value={statusFilter}
-                label="Status"
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <MenuItem value="open">Open</MenuItem>
-                <MenuItem value="in-progress">In Progress</MenuItem>
-                <MenuItem value="closed">Closed</MenuItem>
-                <MenuItem value="all">All</MenuItem>
-              </Select>
-            </FormControl>
-            <Button variant="outlined" size="small" onClick={fetchTasks}>
-              Refresh
-            </Button>
-          </div>
-        </div>
+        <CardTitle className="text-base sm:text-lg">Incident Tasks</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         {error && (
           <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
             {error}
           </Alert>
         )}
+
+        <Card className="card-brand card-elevated card-filter-tight mb-4">
+          <CardHeader className="card-filter-header">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                <FilterListIcon sx={{ fontSize: 20 }} />
+                Filters
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setFiltersExpanded(!filtersExpanded)}
+                className="gap-2"
+              >
+                {filtersExpanded ? (
+                  <>
+                    <ChevronUp size={16} />
+                    <span className="hidden sm:inline">Collapse</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown size={16} />
+                    <span className="hidden sm:inline">Expand</span>
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+
+          <CardContent className="pt-0">
+            <div className="relative">
+              <Input
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pr-10 text-sm"
+              />
+              <SearchIcon
+                sx={{ fontSize: 16 }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+              />
+            </div>
+
+            {filtersExpanded && (
+              <div className="space-y-4 mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">Status</label>
+                    <select
+                      value={filterStatus}
+                      onChange={(e) => setFilterStatus(e.target.value)}
+                      aria-label="Filter by status"
+                      className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                        filterStatus !== "all" ? "bg-green-50 text-green-800" : "bg-background"
+                      }`}
+                    >
+                      <option value="all">All Status</option>
+                      <option value="open">Open</option>
+                      <option value="in-progress">In Progress</option>
+                      <option value="closed">Closed</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">Assignee</label>
+                    <select
+                      value={filterAssignee}
+                      onChange={(e) => setFilterAssignee(e.target.value)}
+                      aria-label="Filter by assignee"
+                      className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                        filterAssignee !== "all" ? "bg-green-50 text-green-800" : "bg-background"
+                      }`}
+                    >
+                      <option value="all">All Assignees</option>
+                      {uniqueAssignees.map((assignee) => (
+                        <option key={assignee} value={assignee}>
+                          {assignee}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">Due Date</label>
+                    <select
+                      value={filterDate}
+                      onChange={(e) => setFilterDate(e.target.value)}
+                      aria-label="Filter by due date"
+                      className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                        filterDate !== "all" ? "bg-green-50 text-green-800" : "bg-background"
+                      }`}
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">This Week</option>
+                      <option value="month">This Month</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setFilterStatus("all")
+                        setFilterAssignee("all")
+                        setFilterDate("all")
+                        setSearchQuery("")
+                      }}
+                      className="text-sm w-full h-10"
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t text-sm text-muted-foreground">
+                  Showing {filteredTasks.length} of {tasks.length} tasks
+                </div>
+              </div>
+            )}
+
+            {!filtersExpanded && (
+              <div className="mt-2 text-sm text-muted-foreground">
+                {filteredTasks.length} of {tasks.length} tasks
+                {(filterStatus !== "all" || filterAssignee !== "all" || filterDate !== "all" || searchQuery) && (
+                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
+                    Filtered
+                  </span>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <TableContainer component={Paper} elevation={2} sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 900 }}>
@@ -146,16 +319,16 @@ export default function IncidentTaskBoard() {
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : tasks.length === 0 ? (
+              ) : filteredTasks.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
                     <Typography variant="body2" color="text.secondary">
-                      No tasks found for this filter.
+                      No tasks found matching your filters.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                tasks.map((task) => (
+                filteredTasks.map((task) => (
                   <TableRow key={task._id} hover>
                     <TableCell sx={{ minWidth: 280 }}>
                       <Box>
