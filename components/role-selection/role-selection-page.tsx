@@ -74,7 +74,7 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
               </ul>
               <Button
                 onClick={() => onRoleSelect("reporter")}
-                className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="w-full mt-6 bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground"
               >
                 Go to Reporter Dashboard
               </Button>

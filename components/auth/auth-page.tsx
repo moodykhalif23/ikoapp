@@ -130,7 +130,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium touch-target"
+                className="w-full bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground font-medium touch-target"
               >
                 {loading ? "Processing..." : isSignUp ? "Create Account" : "Sign In"}
               </Button>

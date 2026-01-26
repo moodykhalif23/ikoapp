@@ -27,7 +27,7 @@ export default function UserDropdown({ user, onLogout, className }: UserDropdown
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className={`p-0 h-auto hover:bg-transparent ${className}`}>
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-[var(--brand-green-dark)] transition-colors">
             <span className="text-sm font-medium text-primary-foreground">
               {user?.name?.charAt(0)?.toUpperCase() || 'U'}
             </span>

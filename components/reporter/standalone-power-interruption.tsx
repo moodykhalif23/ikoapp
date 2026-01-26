@@ -356,7 +356,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
             <div className="flex justify-end pt-4 border-t border-border/50">
               <Button 
                 onClick={handleSubmit} 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold"
+                className="bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground px-8 py-4 text-lg font-semibold"
               >
                 Save Draft
               </Button>

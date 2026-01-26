@@ -437,8 +437,8 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <Button
           onClick={handleShowPowerInterruption}
-          variant="outline"
-          className="h-20 flex-col gap-2 border-orange-200 text-orange-700 hover:bg-orange-50 hover:border-orange-300"
+          variant="default"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
         >
           <Power sx={{ fontSize: 20 }} />
           <span className="text-xs">Power Issue</span>
@@ -446,8 +446,8 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
         <Button
           onClick={handleShowSiteVisuals}
-          variant="outline"
-          className="h-20 flex-col gap-2 border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300"
+          variant="default"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
         >
           <Visibility sx={{ fontSize: 20 }} />
           <span className="text-xs">Visuals</span>
@@ -455,8 +455,8 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
         <Button
           onClick={handleShowDailyProduction}
-          variant="outline"
-          className="h-20 flex-col gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300"
+          variant="default"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
         >
           <Add sx={{ fontSize: 20 }} />
           <span className="text-xs">Production</span>
@@ -464,8 +464,8 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
         <Button
           onClick={handleShowIncidentReport}
-          variant="outline"
-          className="h-20 flex-col gap-2 border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300"
+          variant="default"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
         >
           <Warning sx={{ fontSize: 20 }} />
           <span className="text-xs">Incident</span>

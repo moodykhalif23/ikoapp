@@ -411,7 +411,13 @@ export default function EmployeeManagement() {
                         <IconButton
                           size="small"
                           onClick={() => handleOpenDialog(employee)}
-                          color="primary"
+                          sx={{
+                            color: "var(--primary)",
+                            "&:hover": {
+                              bgcolor: "var(--brand-green-dark)",
+                              color: "var(--primary-foreground)"
+                            }
+                          }}
                         >
                           <EditIcon fontSize="small" />
                         </IconButton>

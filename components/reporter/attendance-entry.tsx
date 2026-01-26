@@ -438,7 +438,11 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
           variant="contained"
           onClick={handleSubmitAttendance}
           disabled={submittingReport}
-          sx={{ bgcolor: "#2e7d32", "&:hover": { bgcolor: "#1b5e20" } }}
+          sx={{
+            bgcolor: "var(--primary)",
+            color: "var(--primary-foreground)",
+            "&:hover": { bgcolor: "var(--brand-green-dark)" }
+          }}
         >
           {submittingReport ? "Submitting..." : "Submit Attendance"}
         </Button>

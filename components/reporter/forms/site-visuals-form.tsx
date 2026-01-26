@@ -279,7 +279,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
+          <Button onClick={handleSubmit} className="bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
             Save Draft <Save className="w-4 h-4" />
           </Button>
         </div>

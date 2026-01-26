@@ -197,7 +197,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
         )}
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 py-4">
+          <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground gap-2 px-8 py-4">
             Continue <ChevronRightIcon sx={{ fontSize: 20 }} />
           </Button>
         </div>

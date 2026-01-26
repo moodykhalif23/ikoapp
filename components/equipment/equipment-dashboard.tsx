@@ -331,7 +331,11 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => handleOpenMachineDialog()}
-            sx={{ bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' } }}
+            sx={{
+              bgcolor: "var(--primary)",
+              color: "var(--primary-foreground)",
+              "&:hover": { bgcolor: "var(--brand-green-dark)" }
+            }}
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>Add Machine</Box>
             <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>Add</Box>
@@ -395,12 +399,26 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                     <TableCell>
                       <Box display="flex" gap={0.5}>
                         <Tooltip title="Edit">
-                          <IconButton size="small" onClick={() => handleOpenMachineDialog(machine)} color="primary">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenMachineDialog(machine)}
+                            sx={{
+                              color: "var(--primary)",
+                              "&:hover": {
+                                bgcolor: "var(--brand-green-dark)",
+                                color: "var(--primary-foreground)"
+                              }
+                            }}
+                          >
                             <EditIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                          <IconButton size="small" onClick={() => handleDeleteMachine(machine)} color="error">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDeleteMachine(machine)}
+                            color="error"
+                          >
                             <DeleteIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
@@ -613,6 +631,15 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                             size="small"
                             variant="outlined"
                             onClick={() => updateMaintenanceStatus(record._id, 'in-progress')}
+                            sx={{
+                              color: "var(--primary)",
+                              borderColor: "var(--primary)",
+                              "&:hover": {
+                                bgcolor: "var(--brand-green-dark)",
+                                color: "var(--primary-foreground)",
+                                borderColor: "var(--brand-green-dark)"
+                              }
+                            }}
                           >
                             Start
                           </MuiButton>
@@ -622,7 +649,15 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                             size="small"
                             variant="outlined"
                             onClick={() => updateMaintenanceStatus(record._id, 'completed')}
-                            sx={{ color: '#2e7d32', borderColor: '#2e7d32' }}
+                            sx={{
+                              color: "var(--primary)",
+                              borderColor: "var(--primary)",
+                              "&:hover": {
+                                bgcolor: "var(--brand-green-dark)",
+                                color: "var(--primary-foreground)",
+                                borderColor: "var(--brand-green-dark)"
+                              }
+                            }}
                           >
                             Complete
                           </MuiButton>
