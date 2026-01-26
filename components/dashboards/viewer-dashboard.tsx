@@ -621,7 +621,98 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          {allReports.map((report) => (
+            <Card
+              key={report.id}
+              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col ${
+                selectedReport?.id === report.id ? "ring-2 ring-primary" : ""
+              }`}
+              onClick={() => handleReportSelect(report)}
+            >
+              <CardHeader className="pb-1 flex-shrink-0 card-report-header">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
+                      Report {report.id}
+                    </CardTitle>
+                    <CardDescription className="text-xs sm:text-sm mt-1 line-clamp-1">
+                      By {report.reportedBy}
+                    </CardDescription>
+                  </div>
+                  {report.status !== "submitted" && (
+                    <div
+                      className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap flex-shrink-0 ${
+                        report.status === "approved"
+                          ? "bg-green-100 text-green-800"
+                          : report.status === "reviewed"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {report.status}
+                    </div>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col justify-between">
+                <div className="space-y-1.5 flex-1">
+                  <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                    <p className="line-clamp-1">
+                      <span className="font-medium">Date:</span> {report.date}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 text-[10px] sm:text-xs">
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Products:</span>{" "}
+                      {report.dailyProduction?.products?.length || 0}
+                    </p>
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Incidents:</span>{" "}
+                      {report.incidentReport?.incidentType && report.incidentReport.incidentType !== "None" ? "1" : "0"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-2 pt-2 border-t">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full text-[10px] sm:text-xs h-8"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleReportSelect(report)
+                    }}
+                  >
+                    <PlayArrowIcon sx={{ fontSize: 14, marginRight: 1 }} />
+                    View Report
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {selectedReport && (
+        <div className="lg:hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="w-full max-w-6xl h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
+            <ScrollableReportView
+              report={selectedReport}
+              onBack={() => setSelectedReport(null)}
+              onPDFExport={handlePDFExport}
+              showComments={true}
+              user={user}
+              comments={comments}
+              onAddComment={handleAddComment}
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="hidden lg:grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Reports List */}
         <div className="lg:col-span-1">
           <div className="mb-3">
@@ -650,8 +741,8 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
         {/* Report Detail */}
         {selectedReport && (
           <div className="card-brand lg:col-span-2 card-elevated rounded-none overflow-hidden max-h-[calc(100vh-12rem)] overflow-y-auto">
-            <ScrollableReportView 
-              report={selectedReport} 
+            <ScrollableReportView
+              report={selectedReport}
               onBack={() => setSelectedReport(null)}
               onPDFExport={handlePDFExport}
               showComments={true}
