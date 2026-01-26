@@ -219,7 +219,7 @@ export default function EnterpriseLayout({
         </header>
 
         {/* Page Content - Scrollable area */}
-        <main className="flex-1">
+        <main className="flex-1 bg-white">
           <div className="p-1 sm:p-1 lg:p-2">
             {children}
           </div>
