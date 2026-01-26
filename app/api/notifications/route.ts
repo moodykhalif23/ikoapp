@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { Notification } from '@/lib/models'
 import { sendPushToRoles } from '@/lib/push-utils'
+import { publishNotification } from '@/lib/notifications-sse'
 
 // GET - Fetch notifications for a user
 export async function GET(request: NextRequest) {
@@ -67,6 +68,8 @@ export async function POST(request: NextRequest) {
     })
 
     await notification.save()
+
+    publishNotification(notification)
 
     await sendPushToRoles(
       notification.recipientRoles || [],

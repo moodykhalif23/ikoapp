@@ -38,6 +38,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const lastNotifiedAtRef = useRef<number>(0)
+  const eventSourceRef = useRef<EventSource | null>(null)
   const userId = user?._id || user?.id
   const userRole = user?.role || (Array.isArray(user?.roles) ? user.roles[0] : undefined)
 
@@ -60,6 +61,23 @@ export default function NotificationDropdown({ user, className }: NotificationDr
     }
   }, [])
 
+  const applyNotifications = (nextNotifications: Notification[]) => {
+    setNotifications(nextNotifications)
+    setUnreadCount(nextNotifications.filter((n: Notification) => !n.isRead).length || 0)
+  }
+
+  const handleIncomingNotification = (incoming: Notification) => {
+    setNotifications((prev) => {
+      if (prev.some((item) => item._id === incoming._id)) {
+        return prev
+      }
+      const next = [incoming, ...prev].slice(0, 10)
+      setUnreadCount(next.filter((n) => !n.isRead).length || 0)
+      return next
+    })
+    maybeShowSystemNotification([incoming])
+  }
+
   const fetchNotifications = async () => {
     // Don't fetch if user is not available
     if (!userId || !userRole) {
@@ -72,8 +90,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
       if (response.ok) {
         const data = await response.json()
         const nextNotifications = data.notifications || []
-        setNotifications(nextNotifications)
-        setUnreadCount(nextNotifications.filter((n: Notification) => !n.isRead).length || 0)
+        applyNotifications(nextNotifications)
         maybeShowSystemNotification(nextNotifications)
       }
     } catch (error) {
@@ -227,6 +244,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
   // Fetch notifications when dropdown opens
   useEffect(() => {
     if (isOpen && userId && userRole) {
+      setLoading(true)
       if (typeof window !== "undefined" && "Notification" in window) {
         if (Notification.permission === "default") {
           Notification.requestPermission()
@@ -241,28 +259,66 @@ export default function NotificationDropdown({ user, className }: NotificationDr
           ensurePushSubscription()
         }
       }
-      fetchNotifications()
+      if (typeof window !== "undefined" && "EventSource" in window) {
+        if (eventSourceRef.current) {
+          eventSourceRef.current.close()
+          eventSourceRef.current = null
+        }
+        const params = new URLSearchParams({
+          role: String(userRole),
+          userId: String(userId),
+          limit: "10"
+        })
+        const eventSource = new EventSource(`/api/notifications/stream?${params.toString()}`)
+        eventSourceRef.current = eventSource
+
+        const initFallback = setTimeout(() => {
+          if (eventSourceRef.current === eventSource) {
+            fetchNotifications()
+          }
+        }, 3000)
+
+        eventSource.addEventListener("init", (event) => {
+          const data = JSON.parse((event as MessageEvent).data || "{}")
+          applyNotifications(data.notifications || [])
+          setLoading(false)
+          clearTimeout(initFallback)
+        })
+
+        eventSource.addEventListener("notification", (event) => {
+          const data = JSON.parse((event as MessageEvent).data || "{}")
+          const nextNotification = data.notification || data
+          if (nextNotification?._id) {
+            handleIncomingNotification(nextNotification)
+          }
+        })
+
+        eventSource.onerror = () => {
+          setLoading(false)
+        }
+      } else {
+        fetchNotifications()
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, userId, userRole])
 
-  // Poll for new notifications every 30 seconds
   useEffect(() => {
-    if (!userId || !userRole) {
-      return
+    if (!isOpen && eventSourceRef.current) {
+      eventSourceRef.current.close()
+      eventSourceRef.current = null
+      setLoading(false)
     }
+  }, [isOpen])
 
-    const interval = setInterval(() => {
-      // Only fetch when dropdown is closed to avoid conflicts
-      if (!isOpen) {
-        fetchNotifications()
+  useEffect(() => {
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close()
+        eventSourceRef.current = null
       }
-    }, 30000)
-
-    return () => clearInterval(interval)
-    // Only recreate interval when user changes, not when isOpen changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, userRole])
+    }
+  }, [])
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
