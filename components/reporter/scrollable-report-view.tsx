@@ -175,7 +175,7 @@ export default function ScrollableReportView({
               <div className="space-y-2 sm:space-y-4">
                 {report.powerInterruptions?.interruptions?.length > 0 ? (
                   report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
-                    <div key={interruption.id || index} className="p-3 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
+                    <div key={interruption.id || index} className="p-2 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
                       <h4 className="font-medium text-orange-800 mb-2 sm:mb-3">Interruption #{index + 1}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-2 sm:mb-4">
                         <div>
@@ -210,7 +210,7 @@ export default function ScrollableReportView({
                 ) : (
                   report.powerInterruptions?.occurredAt || report.powerInterruptions?.duration ? (
                     // Fallback for old single interruption format
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                     <div>
                       <p className="text-xs sm:text-sm font-medium text-gray-600">Time of Interruption</p>
                       <p className="text-gray-900 mt-0.5 sm:mt-1">{formatTime(report.powerInterruptions?.occurredAt)}</p>
@@ -241,7 +241,7 @@ export default function ScrollableReportView({
             </div>
             {report.dailyProduction?.products?.length > 0 ? (
               <div className="space-y-2 sm:space-y-4">
-                <div className="p-3 sm:p-4 bg-gray-50 rounded-none border border-gray-200">
+                <div className="p-2 sm:p-4 bg-gray-50 rounded-none border border-gray-200">
                   <div className="space-y-2 sm:space-y-3">
                     {report.dailyProduction.products.map((product: any, index: number) => (
                       <div
@@ -308,7 +308,7 @@ export default function ScrollableReportView({
             {!showIncidentDetails ? (
               <p className="text-gray-600">No incidents occurred on this day.</p>
             ) : (
-              <div className="p-3 sm:p-4 bg-gray-50 border border-gray-200 rounded-none space-y-2 sm:space-y-4">
+              <div className="p-2 sm:p-4 bg-gray-50 border border-gray-200 rounded-none space-y-2 sm:space-y-4">
                 {hasLegacyIncidents ? (
                   <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
