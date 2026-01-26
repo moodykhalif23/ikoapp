@@ -6,16 +6,15 @@ import Sidebar from "@/components/ui/sidebar"
 import UserDropdown from "@/components/ui/user-dropdown"
 import NotificationDropdown from "@/components/ui/notification-dropdown"
 import { 
-  Menu as MenuIcon, 
-  Notifications as BellIcon, 
-  Home as HomeIcon, 
-  Logout as LogOutIcon, 
-  Dashboard as LayoutDashboardIcon, 
-  Description as FileTextIcon, 
-  People as UsersIcon, 
-  Settings as SettingsIcon, 
-  BarChart as BarChart3Icon, 
-  Warning as AlertTriangleIcon 
+  Menu as MenuIcon,
+  Notifications as BellIcon,
+  Home as HomeIcon,
+  Logout as LogOutIcon,
+  Dashboard as LayoutDashboardIcon,
+  Description as FileTextIcon,
+  People as UsersIcon,
+  Settings as SettingsIcon,
+  BarChart as BarChart3Icon
 } from "@mui/icons-material"
 import Image from "next/image"
 
@@ -73,7 +72,6 @@ export default function EnterpriseLayout({
     machines: "Equipment",
     attendance: "Attendance",
     analytics: "Analytics",
-    alerts: "Alerts",
   }
 
   const headerTitle = activeTab ? (tabTitleMap[activeTab] || title || "Dashboard") : (title || "Dashboard")
@@ -135,11 +133,6 @@ export default function EnterpriseLayout({
         roles: ["admin", "viewer"]
       },
       {
-        id: "alerts",
-        label: "Alerts",
-        icon: AlertTriangleIcon,
-        badge: null,
-        roles: ["admin"]
       }
     ]
 

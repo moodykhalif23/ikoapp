@@ -780,15 +780,6 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
           <EquipmentDashboard />
         </div>
       )}
-      {activeTab === "alerts" && (
-        <div className="space-y-6 mt-2">
-          <div className="mb-4">
-            {/* Placeholder for alerts management */}
-          </div>
-          <div className="text-center py-8">
-          </div>
-        </div>
-      )}
     </EnterpriseLayout>
   )
 }

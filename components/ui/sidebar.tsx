@@ -7,7 +7,6 @@ import {
   Description as FileTextIcon,
   People as UsersIcon,
   Settings as SettingsIcon,
-  Warning as AlertTriangleIcon,
   BarChart as BarChart3Icon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon
@@ -81,11 +80,6 @@ export default function Sidebar({
         roles: ["admin", "viewer"]
       },
       {
-        id: "alerts",
-        label: "Alerts",
-        icon: AlertTriangleIcon,
-        badge: null,
-        roles: ["admin"]
       }
     ]
 
