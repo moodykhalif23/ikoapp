@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Add, Visibility, Power, Warning, People } from "@mui/icons-material"
@@ -29,6 +29,10 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [reports, setReports] = useState<any[]>([])
   const [activeTab, setActiveTab] = useState("dashboard")
+  const powerInterruptionRef = useRef<HTMLDivElement | null>(null)
+  const dailyProductionRef = useRef<HTMLDivElement | null>(null)
+  const incidentReportRef = useRef<HTMLDivElement | null>(null)
+  const siteVisualsRef = useRef<HTMLDivElement | null>(null)
   
   // Filter states for reports page
   const [dateFilter, setDateFilter] = useState<string>("all")
@@ -227,7 +231,10 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     closeAllForms()
     ensureDraftReport()
       .then((draftId) => setActiveReportId(draftId))
-      .then(() => setShowPowerInterruption(true))
+      .then(() => {
+        setShowPowerInterruption(true)
+        requestAnimationFrame(() => powerInterruptionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+      })
       .catch(() => toast.error("Unable to create draft report"))
   }
 
@@ -235,7 +242,10 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     closeAllForms()
     ensureDraftReport()
       .then((draftId) => setActiveReportId(draftId))
-      .then(() => setShowDailyProduction(true))
+      .then(() => {
+        setShowDailyProduction(true)
+        requestAnimationFrame(() => dailyProductionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+      })
       .catch(() => toast.error("Unable to create draft report"))
   }
 
@@ -243,7 +253,10 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     closeAllForms()
     ensureDraftReport()
       .then((draftId) => setActiveReportId(draftId))
-      .then(() => setShowIncidentReport(true))
+      .then(() => {
+        setShowIncidentReport(true)
+        requestAnimationFrame(() => incidentReportRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+      })
       .catch(() => toast.error("Unable to create draft report"))
   }
 
@@ -252,7 +265,10 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     closeAllForms()
     ensureDraftReport()
       .then((draftId) => setActiveReportId(draftId))
-      .then(() => setShowSiteVisuals(true))
+      .then(() => {
+        setShowSiteVisuals(true)
+        requestAnimationFrame(() => siteVisualsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+      })
       .catch(() => toast.error("Unable to create draft report"))
   }
 
@@ -425,7 +441,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
       {/* Show forms within the dashboard */}
       {showPowerInterruption && (
-        <div className="mb-8">
+        <div className="mb-8 scroll-mt-24" ref={powerInterruptionRef}>
           <StandalonePowerInterruption
             user={user}
             onBack={() => setShowPowerInterruption(false)}
@@ -436,7 +452,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       )}
 
       {showDailyProduction && (
-        <div className="mb-8">
+        <div className="mb-8 scroll-mt-24" ref={dailyProductionRef}>
           <StandaloneDailyProduction
             user={user}
             onBack={() => setShowDailyProduction(false)}
@@ -447,7 +463,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       )}
 
       {showIncidentReport && (
-        <div className="mb-8">
+        <div className="mb-8 scroll-mt-24" ref={incidentReportRef}>
           <StandaloneIncidentReport
             user={user}
             onBack={() => setShowIncidentReport(false)}
@@ -459,7 +475,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
 
       {showSiteVisuals && (
-        <div className="mb-8">
+        <div className="mb-8 scroll-mt-24" ref={siteVisualsRef}>
           <StandaloneSiteVisuals
             user={user}
             onBack={() => setShowSiteVisuals(false)}
