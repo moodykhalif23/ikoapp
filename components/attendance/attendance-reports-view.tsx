@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
-  Box,
   Paper,
   Table,
   TableBody,
@@ -15,6 +15,9 @@ import {
   TextField,
   Typography
 } from "@mui/material"
+import SearchIcon from "@mui/icons-material/Search"
+import FilterListIcon from "@mui/icons-material/FilterList"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import { useTheme } from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery"
 
@@ -27,6 +30,7 @@ interface AttendanceRecord {
   signInTime: string
   signOutTime?: string
   createdBy?: string
+  createdAt?: string
 }
 
 interface AttendanceReportsViewProps {
@@ -41,6 +45,9 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showReport, setShowReport] = useState(false)
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [shiftFilter, setShiftFilter] = useState("all")
   const [selectedDate, setSelectedDate] = useState<string>(
     initialDate || new Date().toISOString().split("T")[0]
   )
@@ -79,19 +86,38 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
     }
   }, [initialDate])
 
+  const filteredRecords = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    return records.filter((record) => {
+      if (shiftFilter !== "all" && record.shiftType !== shiftFilter) {
+        return false
+      }
+      if (query) {
+        return (
+          record.employeeName?.toLowerCase().includes(query) ||
+          record.employeeId?.toLowerCase().includes(query) ||
+          record.shiftType?.toLowerCase().includes(query) ||
+          record.signInTime?.toLowerCase().includes(query) ||
+          record.signOutTime?.toLowerCase().includes(query)
+        )
+      }
+      return true
+    })
+  }, [records, searchQuery, shiftFilter])
+
   const summary = useMemo(() => {
-    const uniqueEmployees = new Set(records.map((record) => record.employeeId)).size
-    const submittedAt = records.length
+    const uniqueEmployees = new Set(filteredRecords.map((record) => record.employeeId)).size
+    const submittedAt = filteredRecords.length
       ? new Date(
           Math.max(
-            ...records.map((record) =>
+            ...filteredRecords.map((record) =>
               record.createdAt ? new Date(record.createdAt).getTime() : 0,
             ),
           ),
         )
       : null
-    return { uniqueEmployees, submittedAt, total: records.length }
-  }, [records])
+    return { uniqueEmployees, submittedAt, total: filteredRecords.length }
+  }, [filteredRecords])
 
   const reportId = selectedDate ? `ATT-${selectedDate.replace(/-/g, "")}` : "ATT-NA"
   const formatDate = (value: string | Date | null) => {
@@ -104,60 +130,148 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
     <div className="space-y-4 sm:space-y-6">
       <Card className="card-brand card-elevated card-filter-tight">
         <CardHeader className="card-filter-header">
-          <CardTitle className="text-base sm:text-lg">Attendance Filters</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 sm:space-y-4">
-          <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} gap={2} alignItems={{ xs: "stretch", sm: "center" }}>
-            <TextField
-              label="Date"
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              size="small"
-              InputLabelProps={{ shrink: true }}
-              sx={{ maxWidth: { xs: "100%", sm: 240 } }}
-            />
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+              <FilterListIcon sx={{ fontSize: 20 }} />
+              Filters
+            </CardTitle>
             <Button
-              variant="outline"
-              onClick={() => fetchRecords(selectedDate)}
-              className="text-xs sm:text-sm"
+              variant="ghost"
+              size="sm"
+              onClick={() => setFiltersExpanded(!filtersExpanded)}
+              className="gap-2"
             >
-              Refresh
+              {filtersExpanded ? (
+                <>
+                  <ChevronUp size={16} />
+                  <span className="hidden sm:inline">Collapse</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  <span className="hidden sm:inline">Expand</span>
+                </>
+              )}
             </Button>
-            <Typography variant="caption" color="text.secondary">
-              {loading ? "Loading..." : `${summary.total} records`}
-            </Typography>
-          </Box>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-            <Card className="card-brand card-elevated card-report-compact">
-              <CardHeader className="pb-2 card-report-header">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <CardTitle className="text-base font-semibold">{selectedDate}</CardTitle>
-                    <p className="text-sm text-muted-foreground">Report #{reportId}</p>
-                  </div>
-                  <div className="px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap bg-green-100 text-green-800">
-                    Attendance
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <span className="font-medium text-brand-contrast">Attendance:</span>{" "}
-                    <span className="text-primary font-medium">{summary.uniqueEmployees}</span>
-                  </p>
-                  <p>
-                    <span className="font-medium text-brand-contrast">Submitted:</span>{" "}
-                    <span className="text-muted-foreground">{formatDate(summary.submittedAt)}</span>
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
           </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="relative">
+            <Input
+              placeholder="Search attendance..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pr-10 text-sm"
+            />
+            <SearchIcon sx={{ fontSize: 16 }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          </div>
+
+          {filtersExpanded && (
+            <div className="space-y-4 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Date</label>
+                  <TextField
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ width: "100%" }}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Shift</label>
+                  <select
+                    value={shiftFilter}
+                    onChange={(e) => setShiftFilter(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      shiftFilter !== "all"
+                        ? "bg-green-50 text-green-800"
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Shifts</option>
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="night">Night</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                  <Button
+                    variant="outline"
+                    onClick={() => fetchRecords(selectedDate)}
+                    className="text-sm w-full h-10"
+                  >
+                    Refresh
+                  </Button>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setSearchQuery("")
+                      setShiftFilter("all")
+                      setSelectedDate(new Date().toISOString().split("T")[0])
+                    }}
+                    className="text-sm w-full h-10"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t text-sm text-muted-foreground">
+                {loading ? "Loading..." : `Showing ${summary.total} records`}
+              </div>
+            </div>
+          )}
+
+          {!filtersExpanded && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              {loading ? "Loading..." : `${summary.total} records`}
+              {(shiftFilter !== "all" || searchQuery) && (
+                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
+                  Filtered
+                </span>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+        <Card className="card-brand card-elevated card-report-compact">
+          <CardHeader className="pb-2 card-report-header">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <CardTitle className="text-base font-semibold">{selectedDate}</CardTitle>
+                <p className="text-sm text-muted-foreground">Report #{reportId}</p>
+              </div>
+              <div className="px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap bg-green-100 text-green-800">
+                Attendance
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 text-sm">
+              <p>
+                <span className="font-medium text-brand-contrast">Attendance:</span>{" "}
+                <span className="text-primary font-medium">{summary.uniqueEmployees}</span>
+              </p>
+              <p>
+                <span className="font-medium text-brand-contrast">Submitted:</span>{" "}
+                <span className="text-muted-foreground">{formatDate(summary.submittedAt)}</span>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {error && (
         <div className="text-sm text-red-600">{error}</div>
@@ -198,10 +312,10 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
                 <div className="space-y-3">
                   {loading ? (
                     <div className="text-sm text-muted-foreground">Loading attendance...</div>
-                  ) : records.length === 0 ? (
+                  ) : filteredRecords.length === 0 ? (
                     <div className="text-sm text-muted-foreground">No attendance records for this date.</div>
                   ) : (
-                    records.map((record) => (
+                    filteredRecords.map((record) => (
                       <div key={record._id} className="card-brand card-elevated p-3 space-y-2">
                         <div>
                           <p className="text-sm font-medium text-foreground">{record.employeeName}</p>
@@ -239,14 +353,14 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
                             <Typography variant="body2" color="text.secondary">Loading attendance...</Typography>
                           </TableCell>
                         </TableRow>
-                      ) : records.length === 0 ? (
+                      ) : filteredRecords.length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                             <Typography variant="body2" color="text.secondary">No attendance records for this date.</Typography>
                           </TableCell>
                         </TableRow>
                       ) : (
-                        records.map((record) => (
+                        filteredRecords.map((record) => (
                           <TableRow key={record._id} hover>
                             <TableCell>
                               <Typography variant="body2" fontWeight="medium">{record.employeeName}</Typography>
