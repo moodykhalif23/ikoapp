@@ -233,7 +233,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       .then((draftId) => setActiveReportId(draftId))
       .then(() => {
         setShowPowerInterruption(true)
-        requestAnimationFrame(() => powerInterruptionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+        requestAnimationFrame(() => powerInterruptionRef.current?.scrollIntoView({ behavior: "auto", block: "start" }))
       })
       .catch(() => toast.error("Unable to create draft report"))
   }
@@ -244,7 +244,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       .then((draftId) => setActiveReportId(draftId))
       .then(() => {
         setShowDailyProduction(true)
-        requestAnimationFrame(() => dailyProductionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+        requestAnimationFrame(() => dailyProductionRef.current?.scrollIntoView({ behavior: "auto", block: "start" }))
       })
       .catch(() => toast.error("Unable to create draft report"))
   }
@@ -255,7 +255,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       .then((draftId) => setActiveReportId(draftId))
       .then(() => {
         setShowIncidentReport(true)
-        requestAnimationFrame(() => incidentReportRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+        requestAnimationFrame(() => incidentReportRef.current?.scrollIntoView({ behavior: "auto", block: "start" }))
       })
       .catch(() => toast.error("Unable to create draft report"))
   }
@@ -267,7 +267,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       .then((draftId) => setActiveReportId(draftId))
       .then(() => {
         setShowSiteVisuals(true)
-        requestAnimationFrame(() => siteVisualsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+        requestAnimationFrame(() => siteVisualsRef.current?.scrollIntoView({ behavior: "auto", block: "start" }))
       })
       .catch(() => toast.error("Unable to create draft report"))
   }
