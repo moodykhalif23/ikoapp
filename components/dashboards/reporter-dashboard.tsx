@@ -411,12 +411,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
   const renderReportsContent = () => (
     <>
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 mt-2">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Production Reports</h1>
-        </div>
-      </div>
-
       {/* Quick Report Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <Button
@@ -537,13 +531,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       {/* Reports Section - only show when no forms are active */}
       {!showPowerInterruption && !showDailyProduction && !showIncidentReport && !showSiteVisuals && !selectedReport && (
         <>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-brand-contrast mb-1">Your Reports</h2>
-              <p className="text-muted-foreground">Manage your submitted reports</p>
-            </div>
-          </div>
-
           {reports.length === 0 ? null : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {reports.map((report) => (
@@ -616,10 +603,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     >
       {activeTab === "reports" && (
         <div className="space-y-6 mt-2">
-          <div className="mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Your Reports</h1>
-          </div>
-
           {/* Filters Section */}
           <Card className="card-brand card-elevated card-filter-tight mb-6">
             <CardHeader className="card-filter-header">
@@ -827,9 +810,6 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       {activeTab === "dashboard" && renderReportsContent()}
       {activeTab === "attendance" && (
         <div className="space-y-6 mt-2">
-          <div className="mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Attendance</h1>
-          </div>
           <AttendanceEntry user={user} />
         </div>
       )}
