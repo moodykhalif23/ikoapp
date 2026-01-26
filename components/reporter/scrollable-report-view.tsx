@@ -451,10 +451,11 @@ export default function ScrollableReportView({
                                     <div className="text-xs">Video</div>
                                   </div>
                                 )}
-                              </div>
-                              <div className="p-2 sm:p-3 border-t border-gray-200 bg-white">
-                                <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                                <p className="text-[10px] sm:text-xs text-gray-600">Video</p>
+                                <div className="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1">
+                                  <p className="text-[10px] sm:text-xs text-white/90 truncate">
+                                    {file.name || `Video ${idx + 1}`}
+                                  </p>
+                                </div>
                               </div>
                             </>
                           )}

@@ -779,7 +779,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
       )}
       {activeTab === "tasks" && (
         <div className="space-y-6 mt-2">
-          <IncidentTaskBoard />
+          <IncidentTaskBoard user={user} scope="all" />
         </div>
       )}
       {activeTab === "employees" && (

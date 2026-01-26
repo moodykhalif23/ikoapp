@@ -47,10 +47,10 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
         const response = await fetch("/api/users")
         if (!response.ok) return
         const users = await response.json()
-        const admins = Array.isArray(users)
-          ? users.filter((user: any) => Array.isArray(user.roles) && user.roles.includes("admin"))
+        const candidates = Array.isArray(users)
+          ? users.filter((user: any) => Array.isArray(user.roles) && (user.roles.includes("admin") || user.roles.includes("viewer")))
           : []
-        setAssignees(admins.map((user: any) => ({
+        setAssignees(candidates.map((user: any) => ({
           _id: user._id || user.id,
           name: user.name,
           email: user.email,

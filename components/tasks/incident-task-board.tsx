@@ -40,9 +40,16 @@ interface IncidentTask {
   createdByName?: string
 }
 
-export default function IncidentTaskBoard() {
+interface IncidentTaskBoardProps {
+  user?: any
+  scope?: "all" | "assigned"
+}
+
+export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskBoardProps) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"))
+  const userId = user?._id || user?.id
+  const restrictToAssignee = scope === "assigned" && userId
   const [tasks, setTasks] = useState<IncidentTask[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -56,7 +63,14 @@ export default function IncidentTaskBoard() {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch(`/api/tasks?status=all&limit=200`)
+      const params = new URLSearchParams({
+        status: "all",
+        limit: "200"
+      })
+      if (restrictToAssignee && userId) {
+        params.set("assigneeId", String(userId))
+      }
+      const response = await fetch(`/api/tasks?${params.toString()}`)
       if (!response.ok) {
         throw new Error("Failed to fetch tasks")
       }
@@ -71,7 +85,7 @@ export default function IncidentTaskBoard() {
 
   useEffect(() => {
     fetchTasks()
-  }, [])
+  }, [restrictToAssignee, userId])
 
   const updateTaskStatus = async (taskId: string, status: IncidentTask["status"]) => {
     try {

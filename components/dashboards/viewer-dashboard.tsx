@@ -17,6 +17,7 @@ import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import AttendanceReportsView from "@/components/attendance/attendance-reports-view"
 import { printReportElement } from "@/lib/report-print"
 import AnalyticsDashboard from "@/components/analytics/analytics-dashboard"
+import IncidentTaskBoard from "@/components/tasks/incident-task-board"
 
 interface ViewerDashboardProps {
   user: any
@@ -232,6 +233,14 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
 
   const handleNotificationTarget = async (target: any) => {
     if (!target) return
+
+    if (target.type === "tasks") {
+      setActiveTab("tasks")
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("ikoapp:notificationTarget")
+      }
+      return
+    }
 
     if (target.type === "report" && target.reportId) {
       setActiveTab("reports")
@@ -770,6 +779,11 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
       {activeTab === "analytics" && (
         <div className="space-y-6 mt-2">
           <AnalyticsDashboard reports={allReports} />
+        </div>
+      )}
+      {activeTab === "tasks" && (
+        <div className="space-y-6 mt-2">
+          <IncidentTaskBoard user={user} scope="assigned" />
         </div>
       )}
       {activeTab === "dashboard" && (

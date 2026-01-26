@@ -118,7 +118,7 @@ export default function EnterpriseLayout({
         label: "Tasks",
         icon: AssignmentIcon,
         badge: null,
-        roles: ["admin"]
+        roles: ["admin", "reporter", "viewer"]
       },
       {
         id: "machines",

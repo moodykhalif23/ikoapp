@@ -14,6 +14,7 @@ import StandaloneIncidentReport from "@/components/reporter/standalone-incident-
 import StandaloneSiteVisuals from "@/components/reporter/standalone-site-visuals"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 import AttendanceEntry from "@/components/reporter/attendance-entry"
+import IncidentTaskBoard from "@/components/tasks/incident-task-board"
 
 interface ReporterDashboardProps {
   user: any
@@ -838,6 +839,11 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         </div>
       )}
       {activeTab === "dashboard" && renderReportsContent()}
+      {activeTab === "tasks" && (
+        <div className="space-y-6 mt-2">
+          <IncidentTaskBoard user={user} scope="all" />
+        </div>
+      )}
       {activeTab === "attendance" && (
         <div className="space-y-6 mt-2">
           <AttendanceEntry user={user} />
