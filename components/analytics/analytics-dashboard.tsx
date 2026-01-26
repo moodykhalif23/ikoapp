@@ -1,10 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   TrendingUp,
   TrendingDown,
@@ -16,8 +13,7 @@ import {
   BarChart3,
   PieChart,
   LineChart,
-  Calendar,
-  Download
+  Calendar
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart as RechartsLineChart, Line, PieChart as RechartsPieChart, Cell, Pie } from 'recharts'
 
@@ -32,9 +28,6 @@ export default function AnalyticsDashboard({
   timeEntries = [],
   users = []
 }: AnalyticsDashboardProps) {
-  const [timeRange, setTimeRange] = useState("30d")
-  const [selectedMetric, setSelectedMetric] = useState("reports")
-
   // Calculate production data from reports
   const productionData = reports.slice(-6).map((report: any, index: number) => {
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -112,54 +105,48 @@ export default function AnalyticsDashboard({
   ]
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">Analytics Dashboard</h2>
-          <p className="text-muted-foreground">Production insights and performance metrics</p>
-        </div>
-        <div className="flex gap-2">
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 3 months</SelectItem>
-              <SelectItem value="1y">Last year</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="sm" className="gap-2">
-            <Download size={16} />
-            Export
-          </Button>
+    <div className="space-y-6 sm:space-y-8">
+      {/* Hero Header */}
+      <div className="relative overflow-hidden border bg-gradient-to-br from-emerald-50 via-white to-slate-50 p-6 sm:p-8">
+        <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-100/60" />
+        <div className="absolute -left-16 bottom-0 h-40 w-40 rounded-full bg-slate-100/70" />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="mt-2 text-2xl sm:text-3xl font-semibold text-foreground">
+              Production performance at a glance
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground max-w-xl">
+              Track reports, workforce activity, and incident patterns with quick, data-rich snapshots.
+            </p>
+          </div>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
         {kpis.map((kpi, index) => {
           const Icon = kpi.icon
           return (
-            <Card key={index} className="card-brand card-elevated">
-              <CardHeader className="pb-3">
+            <Card key={index} className="card-brand card-elevated relative overflow-hidden border">
+              <div className="absolute right-0 top-0 h-16 w-16 rounded-bl-full bg-emerald-50" />
+              <CardHeader className="pb-3 relative">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-medium text-brand-contrast">
                     {kpi.title}
                   </CardTitle>
-                  <Icon size={20} className="text-primary" />
+                  <div className="h-9 w-9 rounded-full bg-emerald-100/70 flex items-center justify-center">
+                    <Icon size={18} className="text-emerald-700" />
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground mb-1">
+              <CardContent className="relative">
+                <div className="text-2xl font-semibold text-foreground mb-1">
                   {kpi.value}
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge
                     variant={kpi.changeType === 'positive' ? 'default' : 'destructive'}
-                    className="text-xs"
+                    className="text-[11px] px-2 py-0.5 rounded-none"
                   >
                     {kpi.changeType === 'positive' ? (
                       <TrendingUp size={12} className="mr-1" />
@@ -177,12 +164,12 @@ export default function AnalyticsDashboard({
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Production Efficiency Trend */}
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <LineChart size={20} className="text-primary" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <LineChart size={18} className="text-emerald-700" />
               Report Submission Trend
             </CardTitle>
             <CardDescription>Monthly report volume</CardDescription>
@@ -190,15 +177,15 @@ export default function AnalyticsDashboard({
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <RechartsLineChart data={productionData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} />
                 <Tooltip />
                 <Line
                   type="monotone"
                   dataKey="reports"
-                  stroke="#2d6a4f"
-                  strokeWidth={2}
+                  stroke="#047857"
+                  strokeWidth={2.5}
                   name="Reports"
                 />
               </RechartsLineChart>
@@ -207,10 +194,10 @@ export default function AnalyticsDashboard({
         </Card>
 
         {/* Incident Distribution */}
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <PieChart size={20} className="text-primary" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <PieChart size={18} className="text-emerald-700" />
               Incident Distribution
             </CardTitle>
             <CardDescription>Types of incidents reported</CardDescription>
@@ -249,10 +236,10 @@ export default function AnalyticsDashboard({
         </Card>
 
         {/* Weekly Hours */}
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock size={20} className="text-primary" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Clock size={18} className="text-emerald-700" />
               Weekly Hours Overview
             </CardTitle>
             <CardDescription>Average hours worked per day</CardDescription>
@@ -260,39 +247,26 @@ export default function AnalyticsDashboard({
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={timeData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} />
                 <Tooltip />
-                <Bar dataKey="hours" fill="#2d6a4f" name="Hours Worked" />
+                <Bar dataKey="hours" fill="#059669" name="Hours Worked" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Performance Metrics */}
-        <Card className="card-brand card-elevated">
+        <Card className="card-brand card-elevated border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity size={20} className="text-primary" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Activity size={18} className="text-emerald-700" />
               Key Performance Indicators
             </CardTitle>
             <CardDescription>Current system status</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <CheckCircle size={20} className="text-green-600" />
-                <div>
-                  <p className="font-medium">System Health</p>
-                  <p className="text-sm text-muted-foreground">All systems operational</p>
-                </div>
-              </div>
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                99.9%
-              </Badge>
-            </div>
-
+          <CardContent className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-3">
                 <Users size={20} className="text-blue-600" />
@@ -335,38 +309,6 @@ export default function AnalyticsDashboard({
         </Card>
       </div>
 
-      {/* Recent Activity */}
-      <Card className="card-brand card-elevated">
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest system events and updates</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[
-              { time: "2 minutes ago", event: "Employee John Doe clocked in", type: "time" },
-              { time: "15 minutes ago", event: "New production report submitted", type: "report" },
-              { time: "1 hour ago", event: "Equipment maintenance completed", type: "maintenance" },
-              { time: "2 hours ago", event: "Safety incident reported", type: "incident" },
-              { time: "4 hours ago", event: "New employee registered", type: "user" }
-            ].map((activity, index) => (
-              <div key={index} className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
-                <div className={`w-2 h-2 rounded-full ${
-                  activity.type === 'time' ? 'bg-green-500' :
-                  activity.type === 'report' ? 'bg-blue-500' :
-                  activity.type === 'maintenance' ? 'bg-purple-500' :
-                  activity.type === 'incident' ? 'bg-red-500' :
-                  'bg-gray-500'
-                }`} />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{activity.event}</p>
-                  <p className="text-xs text-muted-foreground">{activity.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
