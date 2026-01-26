@@ -4,7 +4,7 @@ export interface INotification {
   _id?: string
   title: string
   message: string
-  type: 'report_submitted' | 'attendance_submitted' | 'system' | 'alert'
+  type: 'report_submitted' | 'attendance_submitted' | 'task_assigned' | 'system' | 'alert'
   recipientRoles: string[] // ['admin', 'viewer'] for report notifications
   recipientIds?: string[] // specific user IDs if needed
   reportId?: string // reference to the report that triggered this notification
@@ -26,7 +26,7 @@ const NotificationSchema = new mongoose.Schema<INotification>({
   },
   type: {
     type: String,
-    enum: ['report_submitted', 'attendance_submitted', 'system', 'alert'],
+    enum: ['report_submitted', 'attendance_submitted', 'task_assigned', 'system', 'alert'],
     required: true
   },
   recipientRoles: [{

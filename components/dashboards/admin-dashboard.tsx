@@ -17,6 +17,7 @@ import EmployeeManagement from "@/components/employee/employee-management"
 import AttendanceReportsView from "@/components/attendance/attendance-reports-view"
 import { printReportElement } from "@/lib/report-print"
 import AnalyticsDashboard from "@/components/analytics/analytics-dashboard"
+import IncidentTaskBoard from "@/components/tasks/incident-task-board"
 
 interface AdminDashboardProps {
   user: any
@@ -171,6 +172,14 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
 
   const handleNotificationTarget = async (target: any) => {
     if (!target) return
+
+    if (target.type === "tasks") {
+      setActiveTab("tasks")
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("ikoapp:notificationTarget")
+      }
+      return
+    }
 
     if (target.type === "report" && target.reportId) {
       setActiveTab("reports")
@@ -766,6 +775,11 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
       {activeTab === "analytics" && (
         <div className="space-y-6 mt-2">
           <AnalyticsDashboard reports={reports} />
+        </div>
+      )}
+      {activeTab === "tasks" && (
+        <div className="space-y-6 mt-2">
+          <IncidentTaskBoard />
         </div>
       )}
       {activeTab === "employees" && (

@@ -1,6 +1,7 @@
 import { Notification } from '@/lib/models'
 import connectToDatabase from '@/lib/mongodb'
-import { sendPushToRoles } from '@/lib/push-utils'
+import { sendPushToRoles, sendPushToUsers } from '@/lib/push-utils'
+import { publishNotification } from '@/lib/notifications-sse'
 
 export async function createReportNotification(
   reportId: string,
@@ -86,5 +87,51 @@ export async function getUnreadNotificationCount(userRole: string, userId?: stri
   } catch (error) {
     console.error('Error getting unread notification count:', error)
     return 0
+  }
+}
+
+export async function createIncidentTaskNotification({
+  assigneeId,
+  assigneeName,
+  reportId,
+  taskTitle,
+  dueDate
+}: {
+  assigneeId: string
+  assigneeName?: string
+  reportId: string
+  taskTitle: string
+  dueDate: string
+}) {
+  try {
+    await connectToDatabase()
+
+    const displayName = assigneeName ? ` for ${assigneeName}` : ""
+    const notification = new Notification({
+      title: "Incident task assigned",
+      message: `${taskTitle}${displayName} (due ${dueDate})`,
+      type: "task_assigned",
+      recipientRoles: [],
+      recipientIds: [assigneeId],
+      reportId,
+      isRead: false
+    })
+
+    await notification.save()
+    publishNotification(notification)
+
+    await sendPushToUsers([assigneeId], {
+      title: notification.title,
+      body: notification.message,
+      data: {
+        type: "tasks",
+        reportId
+      }
+    })
+
+    return notification
+  } catch (error) {
+    console.error("Error creating task notification:", error)
+    throw error
   }
 }

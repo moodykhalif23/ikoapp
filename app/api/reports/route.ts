@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport } from '@/lib/models'
 import { createReportNotification } from '@/lib/notification-utils'
+import { createIncidentTasksFromReport } from '@/lib/task-utils'
 
 // GET /api/reports - Get all reports with optional filtering
 export async function GET(request: NextRequest) {
@@ -110,6 +111,7 @@ export async function POST(request: NextRequest) {
           report.reportedBy,
           'Daily Report'
         )
+        await createIncidentTasksFromReport(report)
       } catch (notificationError) {
         console.error('Error creating notification:', notificationError)
       }

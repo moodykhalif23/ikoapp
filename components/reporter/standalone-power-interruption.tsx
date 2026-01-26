@@ -16,7 +16,6 @@ interface StandalonePowerInterruptionProps {
 
 export default function StandalonePowerInterruption({ user, reportId, onBack, onSaved }: StandalonePowerInterruptionProps) {
   const [machines, setMachines] = useState<string[]>([])
-  const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [noInterruptions, setNoInterruptions] = useState(false)
   const [formData, setFormData] = useState({
@@ -45,12 +44,18 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
         const response = await fetch('/api/machines')
         if (response.ok) {
           const machinesData = await response.json()
-          setMachines(machinesData.map((m: any) => m.name))
+          const machineNames = machinesData.map((m: any) => m.name)
+          setMachines(machineNames)
+          setFormData((prev) => ({
+            ...prev,
+            interruptions: prev.interruptions.map((interruption) => ({
+              ...interruption,
+              affectedMachines: machineNames.length > 0 ? [...machineNames] : interruption.affectedMachines
+            }))
+          }))
         }
       } catch (error) {
         console.error('Error fetching machines:', error)
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -102,7 +107,9 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
         formData.interruptions.forEach((interruption, index) => {
           if (!interruption.occurredAt) newErrors[`occurredAt_${index}`] = "Time is required"
           if (!interruption.duration) newErrors[`duration_${index}`] = "Duration is required"
-          if (interruption.affectedMachines.length === 0) newErrors[`affectedMachines_${index}`] = "Select at least one machine"
+          if (machines.length > 0 && interruption.affectedMachines.length === 0) {
+            newErrors[`affectedMachines_${index}`] = "Machines list missing"
+          }
         })
       }
     }
@@ -118,7 +125,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       duration: "",
       kplcMeterStart: "",
       kplcMeterEnd: "",
-      affectedMachines: [] as string[]
+      affectedMachines: machines.length > 0 ? [...machines] : ([] as string[])
     }
     setFormData({
       ...formData,
@@ -162,7 +169,10 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
     try {
       const payload = {
         noInterruptions: formData.noInterruptions,
-        interruptions: formData.interruptions,
+        interruptions: formData.interruptions.map((interruption) => ({
+          ...interruption,
+          affectedMachines: machines.length > 0 ? [...machines] : interruption.affectedMachines
+        }))
       }
 
       const response = await fetch(`/api/reports/${reportId}`, {
@@ -315,19 +325,22 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
 
                       <div className="space-y-3">
                         <label className="text-base sm:text-lg font-semibold text-foreground">Affected Machines *</label>
-                        <div className="rounded-md border border-border bg-white">
-                          <select
-                            value={interruption.affectedMachines[0] || ""}
-                            onChange={(e) => updateInterruption(interruption.id, 'affectedMachines', e.target.value ? [e.target.value] : [])}
-                            className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
-                          >
-                            <option value="">Select machine</option>
-                            {machines.map((machine) => (
-                              <option key={machine} value={machine}>
+                        <p className="text-xs text-muted-foreground">
+                          Power outages affect all machines. These are auto-selected.
+                        </p>
+                        <div className="flex flex-wrap gap-2 rounded-md border border-border bg-white p-3">
+                          {machines.length === 0 ? (
+                            <span className="text-xs text-muted-foreground">Loading machines...</span>
+                          ) : (
+                            machines.map((machine) => (
+                              <span
+                                key={machine}
+                                className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-[10px] sm:text-xs"
+                              >
                                 {machine}
-                              </option>
-                            ))}
-                          </select>
+                              </span>
+                            ))
+                          )}
                         </div>
                         {errors[`affectedMachines_${index}`] && <p className="text-xs text-red-500">{errors[`affectedMachines_${index}`]}</p>}
                       </div>

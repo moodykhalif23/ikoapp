@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { Report, PowerInterruption, SiteVisual, DailyProduction, IncidentReport } from '@/lib/models'
 import { createReportNotification } from '@/lib/notification-utils'
+import { createIncidentTasksFromReport } from '@/lib/task-utils'
 
 // GET /api/reports/[id] - Get a specific report
 export async function GET(
@@ -57,12 +58,15 @@ export async function PUT(
     }
 
     // Update status-related fields
+    let shouldCreateTasks = false
+
     if (status) {
       const previousStatus = report.status
       report.status = status
 
       if (status === 'submitted' && !report.submittedAt) {
         report.submittedAt = new Date()
+        shouldCreateTasks = previousStatus !== "submitted"
         
         // Create notification for admins and viewers when report is submitted
         try {
@@ -107,6 +111,14 @@ export async function PUT(
       .populate('siteVisualId')
       .populate('dailyProductionId')
       .populate('incidentReportId')
+
+    if (shouldCreateTasks) {
+      try {
+        await createIncidentTasksFromReport(updatedReport || report)
+      } catch (taskError) {
+        console.error("Error creating incident tasks:", taskError)
+      }
+    }
 
     return NextResponse.json(updatedReport)
   } catch (error) {

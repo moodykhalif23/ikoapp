@@ -8,6 +8,7 @@ import {
   People as UsersIcon,
   Settings as SettingsIcon,
   BarChart as BarChart3Icon,
+  Assignment as AssignmentIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon
 } from "@mui/icons-material"
@@ -55,6 +56,13 @@ export default function Sidebar({
         id: "employees",
         label: "Employees",
         icon: UsersIcon,
+        badge: null,
+        roles: ["admin"]
+      },
+      {
+        id: "tasks",
+        label: "Tasks",
+        icon: AssignmentIcon,
         badge: null,
         roles: ["admin"]
       },

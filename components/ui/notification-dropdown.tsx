@@ -175,6 +175,8 @@ export default function NotificationDropdown({ user, className }: NotificationDr
         ? { type: "report", reportId: notification.reportId }
         : notification.type === "attendance_submitted" && notification.attendanceDate
           ? { type: "attendance", attendanceDate: notification.attendanceDate }
+          : notification.type === "task_assigned"
+            ? { type: "tasks" }
           : null
 
     if (target && typeof window !== "undefined") {

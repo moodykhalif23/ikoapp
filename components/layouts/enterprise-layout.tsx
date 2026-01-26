@@ -14,7 +14,8 @@ import {
   Description as FileTextIcon,
   People as UsersIcon,
   Settings as SettingsIcon,
-  BarChart as BarChart3Icon
+  BarChart as BarChart3Icon,
+  Assignment as AssignmentIcon
 } from "@mui/icons-material"
 import Image from "next/image"
 
@@ -72,6 +73,7 @@ export default function EnterpriseLayout({
     machines: "Equipment",
     attendance: "Attendance",
     analytics: "Analytics",
+    tasks: "Tasks",
   }
 
   const headerTitle = activeTab ? (tabTitleMap[activeTab] || title || "Dashboard") : (title || "Dashboard")
@@ -108,6 +110,13 @@ export default function EnterpriseLayout({
         id: "employees",
         label: "Employees",
         icon: UsersIcon,
+        badge: null,
+        roles: ["admin"]
+      },
+      {
+        id: "tasks",
+        label: "Tasks",
+        icon: AssignmentIcon,
         badge: null,
         roles: ["admin"]
       },

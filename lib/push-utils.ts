@@ -65,3 +65,43 @@ export async function sendPushToRoles(roles: string[], payload: PushPayload) {
 
   await Promise.allSettled(sendPromises)
 }
+
+export async function sendPushToUsers(userIds: string[], payload: PushPayload) {
+  if (!pushEnabled || userIds.length === 0) {
+    return
+  }
+
+  await connectToDatabase()
+
+  const subscriptions = await PushSubscription.find({
+    userId: { $in: userIds }
+  }).lean()
+
+  const uniqueByEndpoint = new Map<string, typeof subscriptions[number]>()
+  subscriptions.forEach((sub) => {
+    if (sub.endpoint) {
+      uniqueByEndpoint.set(sub.endpoint, sub)
+    }
+  })
+
+  const sendPromises = Array.from(uniqueByEndpoint.values()).map(async (sub) => {
+    try {
+      await webpush.sendNotification(
+        {
+          endpoint: sub.endpoint,
+          keys: sub.keys
+        },
+        JSON.stringify(payload)
+      )
+    } catch (error: any) {
+      const statusCode = error?.statusCode
+      if (statusCode === 404 || statusCode === 410) {
+        await PushSubscription.deleteOne({ endpoint: sub.endpoint })
+      } else {
+        console.error('Error sending push notification:', error)
+      }
+    }
+  })
+
+  await Promise.allSettled(sendPromises)
+}

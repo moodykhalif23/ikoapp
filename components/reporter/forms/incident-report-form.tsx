@@ -11,12 +11,19 @@ interface IncidentReportFormProps {
 }
 
 export default function IncidentReportForm({ data, onComplete }: IncidentReportFormProps) {
+  const [assignees, setAssignees] = useState<Array<{ _id: string; name: string; email?: string; roles?: string[] }>>([])
+  const [assigneeLoading, setAssigneeLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [formData, setFormData] = useState({
     hasIncident: data?.hasIncident || "no",
     incidentType: data?.incidentType || "",
     incidentTime: data?.incidentTime || "",
     description: data?.description || "",
     actionTaken: data?.actionTaken || "",
+    taskOwnerId: data?.taskOwnerId || "",
+    taskOwnerName: data?.taskOwnerName || "",
+    taskOwnerEmail: data?.taskOwnerEmail || "",
+    taskDueDate: data?.taskDueDate || ""
   })
 
   useEffect(() => {
@@ -26,10 +33,54 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
       incidentTime: data?.incidentTime || "",
       description: data?.description || "",
       actionTaken: data?.actionTaken || "",
+      taskOwnerId: data?.taskOwnerId || "",
+      taskOwnerName: data?.taskOwnerName || "",
+      taskOwnerEmail: data?.taskOwnerEmail || "",
+      taskDueDate: data?.taskDueDate || ""
     })
   }, [data])
 
+  useEffect(() => {
+    const fetchAssignees = async () => {
+      try {
+        setAssigneeLoading(true)
+        const response = await fetch("/api/users")
+        if (!response.ok) return
+        const users = await response.json()
+        const admins = Array.isArray(users)
+          ? users.filter((user: any) => Array.isArray(user.roles) && user.roles.includes("admin"))
+          : []
+        setAssignees(admins.map((user: any) => ({
+          _id: user._id || user.id,
+          name: user.name,
+          email: user.email,
+          roles: user.roles
+        })))
+      } catch {
+        setAssignees([])
+      } finally {
+        setAssigneeLoading(false)
+      }
+    }
+
+    fetchAssignees()
+  }, [])
+
   const handleSubmit = () => {
+    const nextErrors: Record<string, string> = {}
+
+    if (formData.hasIncident === "yes") {
+      if (!formData.incidentType) nextErrors.incidentType = "Incident type is required"
+      if (!formData.description) nextErrors.description = "Description is required"
+      if (!formData.taskOwnerId) nextErrors.taskOwnerId = "Assign an owner"
+      if (!formData.taskDueDate) nextErrors.taskDueDate = "Due date is required"
+    }
+
+    setErrors(nextErrors)
+    if (Object.keys(nextErrors).length > 0) {
+      return
+    }
+
     onComplete(formData)
   }
 
@@ -54,7 +105,26 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   name="hasIncident"
                   value={option}
                   checked={formData.hasIncident === option}
-                  onChange={(e) => setFormData({ ...formData, hasIncident: e.target.value })}
+                  onChange={(e) => {
+                    const nextValue = e.target.value
+                    if (nextValue === "no") {
+                      setFormData({
+                        ...formData,
+                        hasIncident: nextValue,
+                        incidentType: "",
+                        incidentTime: "",
+                        description: "",
+                        actionTaken: "",
+                        taskOwnerId: "",
+                        taskOwnerName: "",
+                        taskOwnerEmail: "",
+                        taskDueDate: ""
+                      })
+                      setErrors({})
+                      return
+                    }
+                    setFormData({ ...formData, hasIncident: nextValue })
+                  }}
                   className="w-5 h-5 cursor-pointer accent-green-700 border-2 border-green-700 mt-1 flex-shrink-0"
                 />
                 <label htmlFor={`incident-${option}`} className="text-sm cursor-pointer font-medium capitalize leading-relaxed">
@@ -81,6 +151,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   <option value="environmental">Environmental</option>
                   <option value="other">Other</option>
                 </select>
+                {errors.incidentType && <p className="text-xs text-red-500">{errors.incidentType}</p>}
               </div>
 
               <div className="space-y-2">
@@ -103,6 +174,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
               />
+              {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
             </div>
 
             <div className="space-y-2">
@@ -114,6 +186,45 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                 onChange={(e) => setFormData({ ...formData, actionTaken: e.target.value })}
                 rows={2}
               />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-lg sm:text-xl font-semibold text-foreground">Assign Owner</label>
+                <select
+                  className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={formData.taskOwnerId}
+                  onChange={(e) => {
+                    const selected = assignees.find((user) => user._id === e.target.value)
+                    setFormData({
+                      ...formData,
+                      taskOwnerId: e.target.value,
+                      taskOwnerName: selected?.name || "",
+                      taskOwnerEmail: selected?.email || ""
+                    })
+                  }}
+                  disabled={assigneeLoading}
+                >
+                  <option value="">{assigneeLoading ? "Loading assignees..." : "Select an owner"}</option>
+                  {assignees.map((user) => (
+                    <option key={user._id} value={user._id}>
+                      {user.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.taskOwnerId && <p className="text-xs text-red-500">{errors.taskOwnerId}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-lg sm:text-xl font-semibold text-foreground">Task Due Date</label>
+                <Input
+                  type="date"
+                  value={formData.taskDueDate}
+                  onChange={(e) => setFormData({ ...formData, taskDueDate: e.target.value })}
+                  className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+                />
+                {errors.taskDueDate && <p className="text-xs text-red-500">{errors.taskDueDate}</p>}
+              </div>
             </div>
           </>
         )}
