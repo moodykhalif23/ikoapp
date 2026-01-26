@@ -4,7 +4,7 @@ export interface IAttendance extends Document {
   employeeId: mongoose.Types.ObjectId
   employeeName: string
   date: Date
-  shiftType: 'morning' | 'afternoon' | 'night'
+  shiftType: 'day' | 'night'
   signInTime: string
   signOutTime?: string
   createdBy?: string
@@ -29,7 +29,7 @@ const AttendanceSchema: Schema = new Schema({
   },
   shiftType: {
     type: String,
-    enum: ['morning', 'afternoon', 'night'],
+    enum: ['day', 'night'],
     required: [true, 'Shift type is required']
   },
   signInTime: {

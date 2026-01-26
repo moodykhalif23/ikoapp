@@ -26,7 +26,7 @@ interface AttendanceRecord {
   employeeId: string
   employeeName: string
   date: string
-  shiftType: "morning" | "afternoon" | "night"
+  shiftType: "day" | "night"
   signInTime: string
   signOutTime?: string
   createdBy?: string
@@ -86,17 +86,22 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
     }
   }, [initialDate])
 
+  const normalizeShiftType = (value?: string) => {
+    return value === "night" ? "night" : "day"
+  }
+
   const filteredRecords = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
     return records.filter((record) => {
-      if (shiftFilter !== "all" && record.shiftType !== shiftFilter) {
+      const normalizedShift = normalizeShiftType(record.shiftType)
+      if (shiftFilter !== "all" && normalizedShift !== shiftFilter) {
         return false
       }
       if (query) {
         return (
           record.employeeName?.toLowerCase().includes(query) ||
           record.employeeId?.toLowerCase().includes(query) ||
-          record.shiftType?.toLowerCase().includes(query) ||
+          normalizedShift.includes(query) ||
           record.signInTime?.toLowerCase().includes(query) ||
           record.signOutTime?.toLowerCase().includes(query)
         )
@@ -193,8 +198,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
                     }`}
                   >
                     <option value="all">All Shifts</option>
-                    <option value="morning">Morning</option>
-                    <option value="afternoon">Afternoon</option>
+                    <option value="day">Day</option>
                     <option value="night">Night</option>
                   </select>
                 </div>
@@ -319,7 +323,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
                       <div key={record._id} className="card-brand card-elevated p-3 space-y-2">
                         <div>
                           <p className="text-sm font-medium text-foreground">{record.employeeName}</p>
-                          <p className="text-xs text-muted-foreground">{record.shiftType}</p>
+                          <p className="text-xs text-muted-foreground">{normalizeShiftType(record.shiftType)}</p>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div>
@@ -365,7 +369,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
                             <TableCell>
                               <Typography variant="body2" fontWeight="medium">{record.employeeName}</Typography>
                             </TableCell>
-                            <TableCell>{record.shiftType}</TableCell>
+                            <TableCell>{normalizeShiftType(record.shiftType)}</TableCell>
                             <TableCell>{record.signInTime || "N/A"}</TableCell>
                             <TableCell>{record.signOutTime || "N/A"}</TableCell>
                           </TableRow>

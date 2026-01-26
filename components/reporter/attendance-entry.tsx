@@ -33,19 +33,21 @@ interface Employee {
   employeeId: string
 }
 
+type ShiftType = "day" | "night"
+
 interface AttendanceRecord {
   _id: string
   employeeId: string
   employeeName: string
   date: string
-  shiftType: "morning" | "afternoon" | "night"
+  shiftType: ShiftType
   signInTime: string
   signOutTime?: string
 }
 
 interface RowState {
   recordId?: string
-  shiftType: "morning" | "afternoon" | "night"
+  shiftType: ShiftType
   signInTime: string
   signOutTime: string
 }
@@ -53,6 +55,10 @@ interface RowState {
 export default function AttendanceEntry({ user }: AttendanceEntryProps) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"))
+
+  const normalizeShiftType = (value?: string): ShiftType => {
+    return value === "night" ? "night" : "day"
+  }
 
   const [employees, setEmployees] = useState<Employee[]>([])
   const [records, setRecords] = useState<AttendanceRecord[]>([])
@@ -115,7 +121,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
       const record = recordsByEmployee.get(employee._id)
       nextState[employee._id] = {
         recordId: record?._id,
-        shiftType: record?.shiftType || "morning",
+        shiftType: normalizeShiftType(record?.shiftType),
         signInTime: record?.signInTime || "",
         signOutTime: record?.signOutTime || ""
       }
@@ -127,7 +133,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
     setRowState((prev) => ({
       ...prev,
       [employeeId]: {
-        ...(prev[employeeId] || { shiftType: "morning", signInTime: "", signOutTime: "" }),
+        ...(prev[employeeId] || { shiftType: "day", signInTime: "", signOutTime: "" }),
         ...updates
       }
     }))
@@ -292,7 +298,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
             </Typography>
           ) : (
             employees.map((employee) => {
-              const row = rowState[employee._id] || { shiftType: "morning", signInTime: "", signOutTime: "" }
+              const row = rowState[employee._id] || { shiftType: "day", signInTime: "", signOutTime: "" }
               return (
                 <Box key={employee._id} className="card-brand card-elevated p-3 space-y-3">
                   <Box>
@@ -307,8 +313,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                         label="Shift"
                         onChange={(e) => updateRow(employee._id, { shiftType: e.target.value as RowState["shiftType"] })}
                       >
-                        <MenuItem value="morning">Morning</MenuItem>
-                        <MenuItem value="afternoon">Afternoon</MenuItem>
+                        <MenuItem value="day">Day</MenuItem>
                         <MenuItem value="night">Night</MenuItem>
                       </Select>
                     </FormControl>
@@ -374,7 +379,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                 </TableRow>
               ) : (
                 employees.map((employee) => {
-                  const row = rowState[employee._id] || { shiftType: "morning", signInTime: "", signOutTime: "" }
+                  const row = rowState[employee._id] || { shiftType: "day", signInTime: "", signOutTime: "" }
                   return (
                     <TableRow key={employee._id} hover>
                       <TableCell>
@@ -391,8 +396,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                             label="Shift"
                             onChange={(e) => updateRow(employee._id, { shiftType: e.target.value as RowState["shiftType"] })}
                           >
-                            <MenuItem value="morning">Morning</MenuItem>
-                            <MenuItem value="afternoon">Afternoon</MenuItem>
+                            <MenuItem value="day">Day</MenuItem>
                             <MenuItem value="night">Night</MenuItem>
                           </Select>
                         </FormControl>
