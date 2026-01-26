@@ -141,7 +141,7 @@ export default function EnterpriseLayout({
   }
 
   return (
-    <div className="min-h-screen bg-app-standard">
+    <div className="min-h-screen bg-[#F5F7FA]">
       {/* Sidebar - Only visible on large screens */}
       <div className="hidden lg:block fixed left-0 top-0 h-full z-40">
         <Sidebar
@@ -159,7 +159,7 @@ export default function EnterpriseLayout({
         sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       } pb-24 sm:pb-28 lg:pb-0`}>
         {/* Top Header - Responsive */}
-        <header className="sticky top-0 z-30 bg-app-standard border-b border-border">
+        <header className="sticky top-0 z-30 bg-[#F5F7FA] border-b border-border">
           {/* Mobile Header - Compact */}
           <div className="lg:hidden mobile-header-compact flex items-center justify-between">
             <div className="relative w-24 h-8">
