@@ -317,7 +317,6 @@ ${new Date().toLocaleString()}
   const renderDashboardContent = () => (
     <>
       <div className="mb-3 sm:mb-4 mt-1 sm:mt-2">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-1">Admin Dashboard</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">

@@ -424,7 +424,7 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
               Schedule Maintenance
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-full max-w-2xl sm:max-w-lg md:max-w-2xl">
+          <DialogContent className="w-full max-w-2xl sm:max-w-lg md:max-w-2xl overflow-visible">
             <DialogHeader>
               <DialogTitle>Schedule Maintenance</DialogTitle>
               <DialogDescription>
@@ -435,10 +435,10 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
               <div>
                 <Label htmlFor="equipment">Equipment *</Label>
                 <Select value={newMaintenance.equipmentId} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, equipmentId: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select equipment" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="w-[--radix-select-trigger-width] max-h-60">
                     {machineList.map((machine) => (
                       <SelectItem key={machine._id} value={machine._id}>
                         {machine.name}
@@ -452,10 +452,10 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                 <div>
                   <Label htmlFor="type">Maintenance Type</Label>
                   <Select value={newMaintenance.maintenanceType} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, maintenanceType: value })}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="w-[--radix-select-trigger-width]">
                       <SelectItem value="preventive">Preventive</SelectItem>
                       <SelectItem value="corrective">Corrective</SelectItem>
                       <SelectItem value="predictive">Predictive</SelectItem>
@@ -467,10 +467,10 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                 <div>
                   <Label htmlFor="priority">Priority</Label>
                   <Select value={newMaintenance.priority} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, priority: value })}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="w-[--radix-select-trigger-width]">
                       <SelectItem value="low">Low</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="high">High</SelectItem>
