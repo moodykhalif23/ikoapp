@@ -235,7 +235,14 @@ export default function EmployeeManagement() {
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3 } }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        gap={2}
+        mb={2}
+      >
         <Typography variant="h5" component="h1" sx={{ 
           display: 'flex', 
           alignItems: 'center', 
@@ -245,25 +252,25 @@ export default function EmployeeManagement() {
           <PersonIcon />
           Employee Management
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-          sx={{ 
-            bgcolor: '#2e7d32', 
-            '&:hover': { bgcolor: '#1b5e20' },
-            px: { xs: 2, sm: 3 }
-          }}
-          size="medium"
-        >
-          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
-            Add Employee
-          </Box>
-          <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-            Add
-          </Box>
-        </Button>
-        <Box display="flex" alignItems="center">
+        <Box display="flex" flexWrap="wrap" alignItems="center" gap={1} justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenDialog()}
+            sx={{ 
+              bgcolor: '#2e7d32', 
+              '&:hover': { bgcolor: '#1b5e20' },
+              px: { xs: 2, sm: 3 }
+            }}
+            size="medium"
+          >
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+              Add Employee
+            </Box>
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+              Add
+            </Box>
+          </Button>
           <input
             id="employee-csv-upload"
             type="file"
@@ -278,10 +285,14 @@ export default function EmployeeManagement() {
             }}
           />
           <Button
-            variant="text"
+            variant="contained"
             startIcon={<DownloadIcon />}
             onClick={handleDownloadTemplate}
-            sx={{ ml: { xs: 0, sm: 1 } }}
+            sx={{ 
+              bgcolor: '#2e7d32', 
+              '&:hover': { bgcolor: '#1b5e20' },
+              px: { xs: 2, sm: 3 }
+            }}
             size="medium"
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
@@ -292,13 +303,17 @@ export default function EmployeeManagement() {
             </Box>
           </Button>
           <Button
-            variant="outlined"
+            variant="contained"
             startIcon={<UploadFileIcon />}
             onClick={() => {
               const input = document.getElementById('employee-csv-upload') as HTMLInputElement | null
               input?.click()
             }}
-            sx={{ ml: 1, px: { xs: 2, sm: 3 } }}
+            sx={{ 
+              bgcolor: '#2e7d32', 
+              '&:hover': { bgcolor: '#1b5e20' },
+              px: { xs: 2, sm: 3 }
+            }}
             size="medium"
             disabled={importing}
           >
