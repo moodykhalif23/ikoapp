@@ -128,9 +128,9 @@ export default function ScrollableReportView({
         <div className="p-2 sm:p-4 space-y-3 sm:space-y-4 pb-20 sm:pb-24">
           
           {/* Report Overview */}
-          <div className="border-b border-gray-200 pb-3 sm:pb-4">
+          <div className="border-b border-gray-200 pb-2 sm:pb-4">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Report Overview</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4">
               <div>
                 <p className="text-xs sm:text-sm font-medium text-gray-600">Status</p>
                 <span className="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded-none text-xs sm:text-sm mt-0.5 sm:mt-1">{report.status}</span>
