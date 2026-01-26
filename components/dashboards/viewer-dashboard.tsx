@@ -321,6 +321,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
                       <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
+                        aria-label="Filter by status"
                         className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
                           filterStatus !== "all" 
                             ? "bg-green-50 text-green-800" 
@@ -341,6 +342,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
                       <select
                         value={filterReporter}
                         onChange={(e) => setFilterReporter(e.target.value)}
+                        aria-label="Filter by reporter"
                         className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
                           filterReporter !== "all" 
                             ? "bg-green-50 text-green-800" 
@@ -360,6 +362,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
                       <select
                         value={filterDate}
                         onChange={(e) => setFilterDate(e.target.value)}
+                        aria-label="Filter by date range"
                         className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
                           filterDate !== "all" 
                             ? "bg-green-50 text-green-800" 
@@ -419,12 +422,12 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
               {filteredReports.map((report) => (
                 <Card 
                   key={report.id} 
-                  className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col ${
+                  className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-55 flex flex-col ${
                     selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
                   }`}
                   onClick={() => handleReportSelect(report)}
                 >
-                  <CardHeader className="p-3 sm:p-4 pb-1 flex-shrink-0 card-report-header">
+                  <CardHeader className="p-3 sm:p-4 pb-1 shrink-0 card-report-header">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
@@ -435,7 +438,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
                         </CardDescription>
                       </div>
                   {report.status !== 'submitted' && (
-                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap flex-shrink-0 ${
+                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap shrink-0 ${
                       report.status === 'approved' ? 'bg-green-100 text-green-800' :
                       report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-gray-100 text-gray-800'
@@ -559,12 +562,12 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
           {allReports.map((report) => (
             <Card
               key={report.id}
-              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col ${
+              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-55 flex flex-col ${
                 selectedReport?.id === report.id ? "ring-2 ring-primary" : ""
               }`}
               onClick={() => handleReportSelect(report)}
             >
-                  <CardHeader className="p-3 sm:p-4 pb-1 flex-shrink-0 card-report-header">
+                  <CardHeader className="p-3 sm:p-4 pb-1 shrink-0 card-report-header">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
@@ -576,7 +579,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
                   </div>
                   {report.status !== "submitted" && (
                     <div
-                      className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap flex-shrink-0 ${
+                      className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap shrink-0 ${
                         report.status === "approved"
                           ? "bg-green-100 text-green-800"
                           : report.status === "reviewed"
