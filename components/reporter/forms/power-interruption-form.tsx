@@ -82,6 +82,11 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
     }
   }
 
+  const affectedValue =
+    machines.length > 0 && formData.affectedMachines.length === machines.length
+      ? "__all__"
+      : formData.affectedMachines[0] || ""
+
   return (
     <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
       <div className="text-center mb-6">
@@ -103,7 +108,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
 
         {!noInterruptions && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <label className="form-label-large text-foreground">Time of Interruption</label>
                 <Input
@@ -161,11 +166,22 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                 <>
                   <div className="rounded-md border border-border bg-white">
                     <select
-                      value={formData.affectedMachines[0] || ""}
-                      onChange={(e) => setFormData({ ...formData, affectedMachines: e.target.value ? [e.target.value] : [] })}
+                      value={affectedValue}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        if (value === "__all__") {
+                          setFormData({
+                            ...formData,
+                            affectedMachines: machines.map((machine) => machine.name),
+                          })
+                          return
+                        }
+                        setFormData({ ...formData, affectedMachines: value ? [value] : [] })
+                      }}
                       className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
                     >
                       <option value="">Select machine</option>
+                      <option value="__all__">All machines</option>
                       {machines.map((machine) => (
                         <option key={machine._id.toString()} value={machine.name}>
                           {machine.name}

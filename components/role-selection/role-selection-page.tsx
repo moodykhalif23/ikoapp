@@ -33,12 +33,7 @@ export default function RoleSelectionPage({ user, onRoleSelect, onLogout }: Role
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Choose Your Dashboard</h1>
-          <p className="text-muted-foreground">Select the dashboard you want to access</p>
-        </div>
-
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-2xl mx-auto">
           {/* Reporter Role */}
           <Card className="group cursor-pointer hover:shadow-lg transition-all-smooth border-border/50 overflow-hidden bg-gradient-to-br from-green-100 to-green-200 hover:border-primary/50">
