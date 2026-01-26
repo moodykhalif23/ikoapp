@@ -257,7 +257,7 @@ export default function EmployeeManagement() {
           gap={1}
           sx={{
             width: { xs: '100%', sm: 'auto' },
-            gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', sm: 'repeat(3, auto)' }
+            gridTemplateColumns: { xs: 'repeat(3, minmax(0, 1fr))', sm: 'repeat(3, auto)' }
           }}
         >
           <Button
