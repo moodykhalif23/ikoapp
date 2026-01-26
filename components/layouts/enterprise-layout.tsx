@@ -66,6 +66,13 @@ export default function EnterpriseLayout({
     ? user.roles.map((role: string) => role.toLowerCase()).includes("admin")
     : String(userRole).toLowerCase() === "admin"
 
+  const handleTabChange = (tab: string) => {
+    onTabChange?.(tab)
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }
+
   // Define menu items based on user role (same as sidebar)
   const getMenuItemsForRole = (userRole: string) => {
     const baseItems = [
@@ -139,7 +146,7 @@ export default function EnterpriseLayout({
       <div className="hidden lg:block fixed left-0 top-0 h-full z-40">
         <Sidebar
           activeTab={activeTab}
-          onTabChange={onTabChange}
+          onTabChange={handleTabChange}
           user={user}
           onLogout={onLogout}
           collapsed={sidebarCollapsed}
@@ -230,7 +237,7 @@ export default function EnterpriseLayout({
               <Button
                 key={item.id}
                 variant="ghost"
-                onClick={() => onTabChange?.(item.id)}
+                onClick={() => handleTabChange(item.id)}
                 className={`flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white ${
                   isActive
                     ? 'bg-brand-orange hover:bg-brand-orange'
