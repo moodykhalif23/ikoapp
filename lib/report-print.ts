@@ -31,9 +31,8 @@ export const printReportElement = (element: HTMLElement | null, title: string) =
     printDocument.head.appendChild(node.cloneNode(true))
   })
 
-  const wrapper = printDocument.createElement("div")
-  wrapper.innerHTML = element.outerHTML
-  printDocument.body.appendChild(wrapper)
+  const cloned = element.cloneNode(true)
+  printDocument.body.appendChild(cloned)
 
   const images = Array.from(printDocument.images)
   const waitForImages = images.map(
@@ -48,11 +47,19 @@ export const printReportElement = (element: HTMLElement | null, title: string) =
       }),
   )
 
-  Promise.all(waitForImages).then(() => {
-    setTimeout(() => {
-      printWindow.focus()
-      printWindow.print()
-      printWindow.close()
-    }, 250)
+  const fontsReady =
+    "fonts" in printDocument ? (printDocument as Document & { fonts: FontFaceSet }).fonts.ready : Promise.resolve()
+
+  printWindow.onafterprint = () => {
+    printWindow.close()
+  }
+
+  Promise.all([Promise.all(waitForImages), fontsReady]).then(() => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        printWindow.focus()
+        printWindow.print()
+      }, 500)
+    })
   })
 }
