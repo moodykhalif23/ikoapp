@@ -378,18 +378,18 @@ export default function ScrollableReportView({
                         <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.incidentTime || "N/A"}</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
-                      <div>
-                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Action Taken</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.actionTaken || "N/A"}</p>
-                      </div>
-                    </div>
                     {incidentData.description && (
                       <div>
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Description</p>
                         <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.description}</p>
                       </div>
                     )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
+                      <div>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Action Taken</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.actionTaken || "N/A"}</p>
+                      </div>
+                    </div>
                   </>
                 )}
               </div>

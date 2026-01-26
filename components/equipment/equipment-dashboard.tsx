@@ -424,7 +424,7 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
               Schedule Maintenance
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="w-full max-w-2xl sm:max-w-lg md:max-w-2xl">
             <DialogHeader>
               <DialogTitle>Schedule Maintenance</DialogTitle>
               <DialogDescription>
@@ -448,7 +448,7 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="type">Maintenance Type</Label>
                   <Select value={newMaintenance.maintenanceType} onValueChange={(value) => setNewMaintenance({ ...newMaintenance, maintenanceType: value })}>
