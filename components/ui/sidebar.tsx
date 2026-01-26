@@ -108,7 +108,7 @@ export default function Sidebar({
       <div className="p-4 border-b border-brand-green/20 flex-shrink-0">
         <div className="flex items-center justify-between">
           {/* Logo - hidden when collapsed on mobile, always visible on large screens */}
-          <div className={`relative w-32 h-10 lg:w-40 lg:h-12 ${collapsed ? 'hidden lg:block' : 'block'}`}>
+          <div className={`relative w-32 h-10 lg:w-48 lg:h-16 ${collapsed ? 'hidden lg:block' : 'block'}`}>
             <Image src="/logo.png" alt="IKO BRIQ Logo" fill className="object-contain" />
           </div>
           {/* Toggle button - hidden on large screens */}
@@ -124,7 +124,7 @@ export default function Sidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 pt-6 space-y-2 overflow-y-auto">
+      <nav className="flex-1 p-4 pt-8 lg:pt-10 space-y-2 overflow-y-auto">
         {menuItems.map((item) => {
           const Icon = item.icon
           const isActive = activeTab === item.id
