@@ -12,12 +12,17 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status')
     const reportedByEmail = searchParams.get('reportedByEmail')
     const date = searchParams.get('date')
+    const includeDrafts = searchParams.get('includeDrafts') === 'true'
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
 
     const query: any = {}
 
-    if (status) query.status = status
+    if (status) {
+      query.status = status
+    } else if (!reportedByEmail && !includeDrafts) {
+      query.status = { $ne: 'draft' }
+    }
     if (reportedByEmail) query.reportedByEmail = reportedByEmail
     if (date) query.date = date
 

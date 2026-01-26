@@ -6,8 +6,7 @@ import { TrendingUp, Users, Settings, UserPlus, Download } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/simple-tabs"
 import { Input } from "@/components/ui/input"
 import PeopleIcon from "@mui/icons-material/People"
-import WarningIcon from "@mui/icons-material/Warning"
-import DownloadIcon from "@mui/icons-material/Download"
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
 import { ChevronDown, ChevronUp } from "lucide-react"
@@ -60,7 +59,10 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
 
         if (reportsResponse.ok) {
           const reportsData = await reportsResponse.json()
-          setReports(reportsData.reports)
+          const nonDraftReports = Array.isArray(reportsData.reports)
+            ? reportsData.reports.filter((report: any) => report.status !== 'draft')
+            : []
+          setReports(nonDraftReports)
         }
 
         if (employeesResponse.ok) {
@@ -418,18 +420,29 @@ ${new Date().toLocaleString()}
           </CardHeader>
           <CardContent>
             <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-none shrink-0"></div>
-                <span className="line-clamp-2">New report submitted by John Doe</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-none shrink-0"></div>
-                <span className="line-clamp-2">User role updated for Jane Smith</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-orange-500 rounded-none shrink-0"></div>
-                <span className="line-clamp-2">Equipment maintenance scheduled</span>
-              </div>
+              {reports
+                .filter((report) => report.status !== 'draft')
+                .sort((a, b) => {
+                  const aTime = new Date(a.submittedAt || a.createdAt).getTime()
+                  const bTime = new Date(b.submittedAt || b.createdAt).getTime()
+                  return bTime - aTime
+                })
+                .slice(0, 3)
+                .map((report, index) => {
+                  const submittedAt = new Date(report.submittedAt || report.createdAt)
+                  const statusLabel = report.status === 'submitted' ? 'submitted' : report.status
+                  return (
+                    <div key={report.id || index} className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-none shrink-0"></div>
+                      <span className="line-clamp-2">
+                        Report {report.id} {statusLabel} by {report.reportedBy} • {submittedAt.toLocaleDateString()}
+                      </span>
+                    </div>
+                  )
+                })}
+              {reports.filter((report) => report.status !== 'draft').length === 0 && (
+                <div className="text-xs sm:text-sm text-muted-foreground">No recent report submissions</div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -559,10 +572,9 @@ ${new Date().toLocaleString()}
                     }`}
                   >
                     <option value="all">All Status</option>
-                    <option value="draft">Draft</option>
-                    <option value="submitted">Submitted</option>
-                    <option value="reviewed">Reviewed</option>
-                    <option value="approved">Approved</option>
+        <option value="submitted">Submitted</option>
+        <option value="reviewed">Reviewed</option>
+        <option value="approved">Approved</option>
                   </select>
                 </div>
 
@@ -667,7 +679,7 @@ ${new Date().toLocaleString()}
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 pb-4 sm:pb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
           {filteredReports.map((report) => (
             <Card 
               key={report.id} 
@@ -676,7 +688,7 @@ ${new Date().toLocaleString()}
               }`}
               onClick={() => handleReportSelect(report)}
             >
-              <CardHeader className="p-3 sm:p-4 pb-1 shrink-0 card-report-header">
+              <CardHeader className="p-3 sm:p-4 pb-1 flex-shrink-0 card-report-header">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
@@ -687,7 +699,7 @@ ${new Date().toLocaleString()}
                     </CardDescription>
                   </div>
                   {report.status !== 'submitted' && (
-                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap shrink-0 ${
+                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap flex-shrink-0 ${
                       report.status === 'approved' ? 'bg-green-100 text-green-800' :
                       report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-gray-100 text-gray-800'
@@ -705,20 +717,15 @@ ${new Date().toLocaleString()}
                     </p>
                   </div>
                   
-                  {/* Quick Stats */}
-                  <div className="grid grid-cols-2 gap-2 text-[10px]">
-                    <div className="bg-muted rounded p-1.5 text-center">
-                      <p className="text-muted-foreground mb-1">Products</p>
-                      <p className="font-semibold text-sm sm:text-base">
-                        {report.dailyProduction?.products?.length || 0}
-                      </p>
-                    </div>
-                    <div className="bg-muted rounded p-1.5 text-center">
-                      <p className="text-muted-foreground mb-1">Incidents</p>
-                      <p className="font-semibold text-sm sm:text-base">
-                        {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
-                      </p>
-                    </div>
+                  <div className="space-y-1 text-[10px] sm:text-xs">
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Products:</span>{" "}
+                      {report.dailyProduction?.products?.length || 0}
+                    </p>
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Incidents:</span>{" "}
+                      {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
+                    </p>
                   </div>
                 </div>
 
@@ -729,11 +736,11 @@ ${new Date().toLocaleString()}
                     className="w-full text-[10px] sm:text-xs h-8"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handlePDFExport(report)
+                      handleReportSelect(report)
                     }}
                   >
-                    <DownloadIcon sx={{ fontSize: 14, marginRight: 1 }} />
-                    Export PDF
+                    <PlayArrowIcon sx={{ fontSize: 14, marginRight: 1 }} />
+                    View Report
                   </Button>
                 </div>
               </CardContent>
