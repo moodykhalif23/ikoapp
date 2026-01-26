@@ -276,9 +276,6 @@ export default function EmployeeManagement() {
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
               Add Employee
             </Box>
-            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-              Add
-            </Box>
           </Button>
           <input
             id="employee-csv-upload"
@@ -309,9 +306,6 @@ export default function EmployeeManagement() {
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
               Download CSV Template
             </Box>
-            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-              Template
-            </Box>
           </Button>
           <Button
             variant="contained"
@@ -332,9 +326,6 @@ export default function EmployeeManagement() {
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
               {importing ? 'Importing...' : 'Import CSV'}
-            </Box>
-            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-              {importing ? 'Importing' : 'Import'}
             </Box>
           </Button>
         </Box>
