@@ -27,7 +27,6 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const sanitizeDigits = (value: string) => value.replace(/[^\d]/g, "")
 
   // Fetch machines from database
   useEffect(() => {
@@ -130,11 +129,9 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                 <label className="form-label-large text-foreground">KPLC Meter Reading</label>
                 <Input
                   type="text"
-                  inputMode="numeric"
-                  pattern="\d*"
                   placeholder="Enter meter reading"
                   value={formData.kplcMeter}
-                  onChange={(e) => setFormData({ ...formData, kplcMeter: sanitizeDigits(e.target.value) })}
+                  onChange={(e) => setFormData({ ...formData, kplcMeter: e.target.value })}
                   className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
                 />
               </div>
