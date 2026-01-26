@@ -250,16 +250,38 @@ export default function EnterpriseLayout({
             )
           })}
           
-          {/* More menu for additional items if needed */}
-          {getMenuItemsForRole(userRole).length > 4 && (
-            <Button
-              variant="ghost"
-              className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white hover:bg-white/20"
-            >
-              <MenuIcon sx={{ fontSize: 16, color: 'white' }} />
-              <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">More</span>
-            </Button>
-          )}
+          {/* More / Analytics button for additional items */}
+          {getMenuItemsForRole(userRole).length > 4 && (() => {
+            const analyticsItem = getMenuItemsForRole(userRole).find((item) => item.id === "analytics")
+            if (isAdmin && analyticsItem) {
+              const Icon = analyticsItem.icon
+              const isActive = activeTab === analyticsItem.id
+              return (
+                <Button
+                  key={analyticsItem.id}
+                  variant="ghost"
+                  onClick={() => handleTabChange(analyticsItem.id)}
+                  className={`flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white ${
+                    isActive
+                      ? 'bg-brand-orange hover:bg-brand-orange'
+                      : 'hover:bg-white/20'
+                  }`}
+                >
+                  <Icon sx={{ fontSize: 16, color: 'white' }} />
+                  <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">{analyticsItem.label}</span>
+                </Button>
+              )
+            }
+            return (
+              <Button
+                variant="ghost"
+                className="flex-1 flex-col gap-0.5 h-12 sm:h-14 px-1 mobile-touch-target text-white hover:bg-white/20"
+              >
+                <MenuIcon sx={{ fontSize: 16, color: 'white' }} />
+                <span className="text-[10px] sm:text-xs font-medium leading-tight text-white">More</span>
+              </Button>
+            )
+          })()}
           
           {/* Show logout only if we have space (less than 4 main items) */}
           {getMenuItemsForRole(userRole).length <= 3 && (
