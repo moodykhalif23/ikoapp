@@ -155,7 +155,6 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       const payload = {
         noInterruptions: formData.noInterruptions,
         interruptions: formData.interruptions,
-        submittedAt: new Date().toISOString(),
       }
 
       const response = await fetch(`/api/reports/${reportId}`, {
