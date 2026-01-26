@@ -770,7 +770,6 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
       {activeTab === "analytics" && (
         <div className="space-y-6 mt-2">
           <div className="mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>

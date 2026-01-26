@@ -484,7 +484,6 @@ ${new Date().toLocaleString()}
   const renderReportsContent = () => (
     <>
       <div className="mb-3 sm:mb-4 mt-1 sm:mt-2">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Reports</h1>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
@@ -785,7 +784,6 @@ ${new Date().toLocaleString()}
       {activeTab === "analytics" && (
         <div className="space-y-6 mt-2">
           <div className="mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
@@ -838,7 +836,6 @@ ${new Date().toLocaleString()}
       {activeTab === "machines" && (
         <div className="space-y-6 mt-2">
           <div className="mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Equipment Management</h1>
           </div>
           <EquipmentDashboard />
         </div>
@@ -846,7 +843,6 @@ ${new Date().toLocaleString()}
       {activeTab === "alerts" && (
         <div className="space-y-6 mt-2">
           <div className="mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">System Alerts</h1>
             {/* Placeholder for alerts management */}
           </div>
           <div className="text-center py-8">
