@@ -69,6 +69,16 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
       card: "bg-gradient-to-br from-sky-50 via-white to-teal-50 border-sky-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-teal-950/40 dark:border-teal-900/40",
       bubble: "bg-sky-100/60 dark:bg-sky-900/40",
       bubble2: "bg-teal-100/60 dark:bg-teal-900/30"
+    },
+    {
+      card: "bg-gradient-to-br from-orange-50 via-white to-amber-50 border-orange-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-orange-950/40 dark:border-orange-900/40",
+      bubble: "bg-orange-100/70 dark:bg-orange-900/40",
+      bubble2: "bg-amber-100/60 dark:bg-amber-900/30"
+    },
+    {
+      card: "bg-gradient-to-br from-green-50 via-white to-emerald-50 border-green-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-green-950/40 dark:border-green-900/40",
+      bubble: "bg-green-100/70 dark:bg-green-900/40",
+      bubble2: "bg-emerald-100/60 dark:bg-emerald-900/30"
     }
   ]
 
@@ -559,40 +569,46 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
   const renderReportsWithMetrics = () => (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
-          <CardHeader className="pb-2 sm:pb-3">
+        <Card className={`card-brand card-elevated relative overflow-hidden border ${reportCardStyles[4].card}`} sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
+          <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${reportCardStyles[4].bubble}`} />
+          <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${reportCardStyles[4].bubble2}`} />
+          <CardHeader className="pb-2 sm:pb-3 relative z-10">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Attendance
               <PeopleIcon sx={{ fontSize: 16, color: "var(--accent)" }} />
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative z-10">
             <div className="text-base sm:text-lg font-bold text-foreground">{weeklyReportsCount}</div>
             <p className="text-xs text-muted-foreground mt-1">This week</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
-          <CardHeader className="pb-2 sm:pb-3">
+        <Card className={`card-brand card-elevated relative overflow-hidden border ${reportCardStyles[3].card}`} sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
+          <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${reportCardStyles[3].bubble}`} />
+          <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${reportCardStyles[3].bubble2}`} />
+          <CardHeader className="pb-2 sm:pb-3 relative z-10">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Incidents
               <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative z-10">
             <div className="text-base sm:text-lg font-bold text-foreground">{incidentsCount}</div>
             <p className="text-xs text-muted-foreground mt-1">All reports</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
-          <CardHeader className="pb-2 sm:pb-3">
+        <Card className={`card-brand card-elevated relative overflow-hidden border ${reportCardStyles[0].card}`} sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
+          <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${reportCardStyles[0].bubble}`} />
+          <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${reportCardStyles[0].bubble2}`} />
+          <CardHeader className="pb-2 sm:pb-3 relative z-10">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Total Reports
               <TrendingUp size={16} className="text-primary" />
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative z-10">
             <div className="text-base sm:text-lg font-bold text-foreground">
               {allReports.length}
             </div>
