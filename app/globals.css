@@ -870,6 +870,15 @@
   }
 }
 
+/* Rounded buttons on small screens */
+@media (max-width: 640px) {
+  button,
+  .MuiButton-root,
+  .MuiIconButton-root {
+    border-radius: 12px !important;
+  }
+}
+
 /* Line clamp utility for text truncation */
 .line-clamp-1 {
   overflow: hidden;

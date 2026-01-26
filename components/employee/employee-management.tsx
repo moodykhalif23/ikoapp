@@ -31,7 +31,8 @@ import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Person as PersonIcon
+  Person as PersonIcon,
+  UploadFile as UploadFileIcon
 } from '@mui/icons-material'
 
 interface Employee {
@@ -64,6 +65,7 @@ export default function EmployeeManagement() {
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null)
   const [formData, setFormData] = useState<EmployeeFormData>(initialFormData)
   const [submitting, setSubmitting] = useState(false)
+  const [importing, setImporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
@@ -149,6 +151,35 @@ export default function EmployeeManagement() {
     }
   }
 
+  const handleImportCsv = async (file: File) => {
+    try {
+      setImporting(true)
+      setError(null)
+      setSuccess(null)
+
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await fetch('/api/employees/import', {
+        method: 'POST',
+        body: formData
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setSuccess(data.message || 'Employees imported successfully')
+        await fetchEmployees()
+      } else {
+        setError(data.error || 'Failed to import employees')
+      }
+    } catch (error) {
+      setError('Error importing employees')
+    } finally {
+      setImporting(false)
+    }
+  }
+
   const handleDelete = async (employee: Employee) => {
     if (!confirm(`Are you sure you want to delete ${employee.name}?`)) {
       return
@@ -214,6 +245,39 @@ export default function EmployeeManagement() {
             Add
           </Box>
         </Button>
+        <Box>
+          <input
+            id="employee-csv-upload"
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) {
+                handleImportCsv(file)
+              }
+              e.currentTarget.value = ''
+            }}
+          />
+          <Button
+            variant="outlined"
+            startIcon={<UploadFileIcon />}
+            onClick={() => {
+              const input = document.getElementById('employee-csv-upload') as HTMLInputElement | null
+              input?.click()
+            }}
+            sx={{ ml: 1, px: { xs: 2, sm: 3 } }}
+            size="medium"
+            disabled={importing}
+          >
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+              {importing ? 'Importing...' : 'Import CSV'}
+            </Box>
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+              {importing ? 'Importing' : 'Import'}
+            </Box>
+          </Button>
+        </Box>
       </Box>
 
       {error && (
