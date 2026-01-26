@@ -155,18 +155,8 @@ export default function ScrollableReportView({
 
       {/* Print Header */}
       <div className="print-only border-b border-gray-200 bg-white">
-        <div className="flex items-center justify-between gap-4 px-4 py-3">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="IKO BRIQ" className="h-10 w-auto" />
-            <div>
-              <p className="text-sm font-semibold text-gray-900">Production Report</p>
-              <p className="text-xs text-gray-500">Report {report.id}</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-gray-600">{report.date}</p>
-            <p className="text-xs text-gray-500">Submitted by {report.reportedBy}</p>
-          </div>
+        <div className="flex items-center justify-center px-4 py-4">
+          <img src="/logo.png" alt="IKO BRIQ" className="h-10 w-auto" />
         </div>
       </div>
 
@@ -415,7 +405,7 @@ export default function ScrollableReportView({
           </div>
 
           {/* Site Visuals */}
-          <div className="border-b border-gray-200 pb-3 sm:pb-4">
+          <div className="border-b border-gray-200 pb-3 sm:pb-4 print-hidden">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Site Visuals</h2>
             {report.siteVisuals?.photos?.length > 0 || report.siteVisuals?.media?.length > 0 ? (
               <div className="space-y-2 sm:space-y-4">
@@ -487,7 +477,7 @@ export default function ScrollableReportView({
 
           {/* Comments Section - Only show if enabled */}
           {showComments && (
-            <div className="pb-3 sm:pb-4">
+            <div className="pb-3 sm:pb-4 print-hidden">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Comments</h2>
               <div className="space-y-4">
                 <div className="space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-none p-4 bg-gray-50">
