@@ -52,12 +52,28 @@ export default function AnalyticsDashboard({
 
   // Calculate incident types from reports
   const incidentCounts = reports.reduce((acc: Record<string, number>, report: any) => {
-    if (report.incidentReport?.incidents) {
-      report.incidentReport.incidents.forEach((incident: any) => {
-        const type = incident.type || 'Other'
+    const incidentReport = report.incidentReport
+    if (!incidentReport) return acc
+
+    if (Array.isArray(incidentReport.incidents) && incidentReport.incidents.length > 0) {
+      incidentReport.incidents.forEach((incident: any) => {
+        const type = incident.type || incidentReport.incidentType || "Other"
         acc[type] = (acc[type] || 0) + 1
       })
+      return acc
     }
+
+    const type = incidentReport.incidentType
+    if (type && type !== "None") {
+      acc[type] = (acc[type] || 0) + 1
+      return acc
+    }
+
+    if (incidentReport.hasIncident === "yes") {
+      const fallbackType = incidentReport.severity || "Incident"
+      acc[fallbackType] = (acc[fallbackType] || 0) + 1
+    }
+
     return acc
   }, {} as Record<string, number>)
 
@@ -72,8 +88,23 @@ export default function AnalyticsDashboard({
 
   // Calculate KPIs
   const totalReports = reports.length
-  const activeEmployees = timeEntries.filter((entry: any) => entry.status === 'active').length
-  const totalIncidents = reports.reduce((sum: number, r: any) => sum + (r.incidentReport?.severity ? 1 : 0), 0)
+  const activeEmployees = timeEntries.length
+    ? timeEntries.filter((entry: any) => entry.status === "active").length
+    : new Set(reports.map((report: any) => report.reportedBy).filter(Boolean)).size
+  const totalIncidents = reports.reduce((sum: number, report: any) => {
+    const incidentReport = report.incidentReport
+    if (!incidentReport) return sum
+    if (Array.isArray(incidentReport.incidents) && incidentReport.incidents.length > 0) {
+      return sum + incidentReport.incidents.length
+    }
+    if (incidentReport.incidentType && incidentReport.incidentType !== "None") {
+      return sum + 1
+    }
+    if (incidentReport.hasIncident === "yes") {
+      return sum + 1
+    }
+    return sum
+  }, 0)
 
   const kpis = [
     {
@@ -105,9 +136,9 @@ export default function AnalyticsDashboard({
   return (
     <div className="space-y-5 sm:space-y-8">
       {/* Hero Header */}
-      <div className="relative overflow-hidden border bg-gradient-to-br from-emerald-50 via-white to-slate-50 p-4 sm:p-8">
-        <div className="absolute -right-16 -top-16 h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-emerald-100/60" />
-        <div className="absolute -left-16 bottom-0 h-32 w-32 sm:h-40 sm:w-40 rounded-full bg-slate-100/70" />
+      <div className="relative overflow-hidden border bg-gradient-to-br from-emerald-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-950/40 dark:border-emerald-900/40 p-4 sm:p-8">
+        <div className="absolute -right-16 -top-16 h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-emerald-100/60 dark:bg-emerald-900/30" />
+        <div className="absolute -left-16 bottom-0 h-32 w-32 sm:h-40 sm:w-40 rounded-full bg-slate-100/70 dark:bg-slate-800/40" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="mt-1 text-xl sm:text-3xl font-semibold text-foreground">

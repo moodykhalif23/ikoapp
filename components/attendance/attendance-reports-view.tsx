@@ -51,6 +51,23 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
   const [selectedDate, setSelectedDate] = useState<string>(
     initialDate || new Date().toISOString().split("T")[0]
   )
+  const reportCardStyles = [
+    {
+      card: "bg-gradient-to-br from-sky-50 via-white to-emerald-50 border-sky-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-950/40 dark:border-emerald-900/40",
+      bubble: "bg-sky-100/70 dark:bg-sky-900/40",
+      bubble2: "bg-emerald-100/60 dark:bg-emerald-900/30"
+    },
+    {
+      card: "bg-gradient-to-br from-cyan-50 via-white to-blue-50 border-cyan-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-blue-950/40 dark:border-blue-900/40",
+      bubble: "bg-cyan-100/70 dark:bg-cyan-900/40",
+      bubble2: "bg-blue-100/60 dark:bg-blue-900/30"
+    },
+    {
+      card: "bg-gradient-to-br from-teal-50 via-white to-indigo-50 border-teal-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950/40 dark:border-indigo-900/40",
+      bubble: "bg-teal-100/70 dark:bg-teal-900/40",
+      bubble2: "bg-indigo-100/60 dark:bg-indigo-900/30"
+    }
+  ]
 
   const fetchRecords = async (date: string) => {
     try {
@@ -250,8 +267,10 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
       </Card>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-        <Card className="card-brand card-elevated card-report-compact">
-          <CardHeader className="pb-2 card-report-header">
+        <Card className={`card-brand card-elevated card-report-compact relative overflow-hidden border ${reportCardStyles[0].card}`}>
+          <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${reportCardStyles[0].bubble}`} />
+          <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${reportCardStyles[0].bubble2}`} />
+          <CardHeader className="pb-2 card-report-header relative z-10">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <CardTitle className="text-base font-semibold">{selectedDate}</CardTitle>
@@ -262,7 +281,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
               </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative z-10">
             <div className="space-y-2 text-sm">
               <p>
                 <span className="font-medium text-brand-contrast">Attendance:</span>{" "}
@@ -319,8 +338,12 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
                   ) : filteredRecords.length === 0 ? (
                     <div className="text-sm text-muted-foreground">No attendance records for this date.</div>
                   ) : (
-                    filteredRecords.map((record) => (
-                      <div key={record._id} className="card-brand card-elevated p-3 space-y-2">
+                    filteredRecords.map((record, index) => {
+                      const style = reportCardStyles[index % reportCardStyles.length]
+                      return (
+                      <div key={record._id} className={`card-brand card-elevated p-3 space-y-2 relative overflow-hidden border ${style.card}`}>
+                        <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
+                        <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
                         <div>
                           <p className="text-sm font-medium text-foreground">{record.employeeName}</p>
                           <p className="text-xs text-muted-foreground">{normalizeShiftType(record.shiftType)}</p>
@@ -336,7 +359,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
                           </div>
                         </div>
                       </div>
-                    ))
+                    )})
                   )}
                 </div>
               ) : (

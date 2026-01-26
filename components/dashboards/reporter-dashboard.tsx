@@ -42,10 +42,26 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
   const [draftReportId, setDraftReportId] = useState<string | null>(null)
   const [activeReportId, setActiveReportId] = useState<string | null>(null)
   const reportCardStyles = [
-    { card: "bg-gradient-to-br from-sky-50 via-white to-emerald-50 border-sky-100/70", bubble: "bg-sky-100/70", bubble2: "bg-emerald-100/60" },
-    { card: "bg-gradient-to-br from-cyan-50 via-white to-blue-50 border-cyan-100/70", bubble: "bg-cyan-100/70", bubble2: "bg-blue-100/60" },
-    { card: "bg-gradient-to-br from-teal-50 via-white to-indigo-50 border-teal-100/70", bubble: "bg-teal-100/70", bubble2: "bg-indigo-100/60" },
-    { card: "bg-gradient-to-br from-sky-50 via-white to-teal-50 border-sky-100/70", bubble: "bg-sky-100/60", bubble2: "bg-teal-100/60" }
+    {
+      card: "bg-gradient-to-br from-sky-50 via-white to-emerald-50 border-sky-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-950/40 dark:border-emerald-900/40",
+      bubble: "bg-sky-100/70 dark:bg-sky-900/40",
+      bubble2: "bg-emerald-100/60 dark:bg-emerald-900/30"
+    },
+    {
+      card: "bg-gradient-to-br from-cyan-50 via-white to-blue-50 border-cyan-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-blue-950/40 dark:border-blue-900/40",
+      bubble: "bg-cyan-100/70 dark:bg-cyan-900/40",
+      bubble2: "bg-blue-100/60 dark:bg-blue-900/30"
+    },
+    {
+      card: "bg-gradient-to-br from-teal-50 via-white to-indigo-50 border-teal-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950/40 dark:border-indigo-900/40",
+      bubble: "bg-teal-100/70 dark:bg-teal-900/40",
+      bubble2: "bg-indigo-100/60 dark:bg-indigo-900/30"
+    },
+    {
+      card: "bg-gradient-to-br from-sky-50 via-white to-teal-50 border-sky-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-teal-950/40 dark:border-teal-900/40",
+      bubble: "bg-sky-100/60 dark:bg-sky-900/40",
+      bubble2: "bg-teal-100/60 dark:bg-teal-900/30"
+    }
   ]
   
   // Fetch user's reports from database
