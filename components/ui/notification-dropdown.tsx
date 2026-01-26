@@ -276,15 +276,15 @@ export default function NotificationDropdown({ user, className }: NotificationDr
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 p-0">
-        <div className="flex items-center justify-between p-4 border-b">
+      <DropdownMenuContent className="w-[92vw] max-w-sm p-0 sm:w-96">
+        <div className="flex flex-col gap-2 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="font-semibold">Notifications</h3>
           {unreadCount > 0 && (
             <Button
               variant="ghost"
               size="sm"
               onClick={markAllAsRead}
-              className="text-xs h-auto p-1"
+              className="h-auto w-full justify-start gap-1 px-2 py-1 text-xs sm:w-auto sm:justify-center"
             >
               <CheckCheckIcon sx={{ fontSize: 14, marginRight: 0.5 }} />
               Mark all read
@@ -292,7 +292,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
           )}
         </div>
         
-        <ScrollArea className="h-96">
+        <ScrollArea className="h-[60vh] max-h-96">
           {loading ? (
             <div className="p-4 text-center text-muted-foreground">
               Loading notifications...
