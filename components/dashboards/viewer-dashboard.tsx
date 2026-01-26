@@ -623,12 +623,12 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Reports List */}
-        <Card className="card-brand lg:col-span-1 card-elevated">
-          <CardHeader>
-            <CardTitle className="text-base sm:text-lg">Reports</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">All submissions</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2 max-h-96 sm:max-h-none overflow-y-auto">
+        <div className="lg:col-span-1">
+          <div className="mb-3">
+            <h3 className="text-base sm:text-lg font-semibold text-brand-contrast">Reports</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">All submissions</p>
+          </div>
+          <div className="space-y-2 max-h-96 sm:max-h-none overflow-y-auto">
             {allReports.map((report) => (
               <button
                 key={report.id}
@@ -644,8 +644,8 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                 <p className="text-xs text-muted-foreground">{report.date}</p>
               </button>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Report Detail */}
         {selectedReport && (
