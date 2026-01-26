@@ -40,6 +40,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
   const [records, setRecords] = useState<AttendanceRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showReport, setShowReport] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string>(
     initialDate || new Date().toISOString().split("T")[0]
   )
@@ -71,6 +72,12 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
       setSelectedDate(initialDate)
     }
   }, [initialDate, selectedDate])
+
+  useEffect(() => {
+    if (initialDate) {
+      setShowReport(true)
+    }
+  }, [initialDate])
 
   const summary = useMemo(() => {
     const uniqueEmployees = new Set(records.map((record) => record.employeeId)).size
@@ -156,72 +163,107 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
         <div className="text-sm text-red-600">{error}</div>
       )}
 
-      {isSmall ? (
-        <div className="space-y-3">
-          {loading ? (
-            <div className="text-sm text-muted-foreground">Loading attendance...</div>
-          ) : records.length === 0 ? (
-            <div className="text-sm text-muted-foreground">No attendance records for this date.</div>
-          ) : (
-            records.map((record) => (
-              <div key={record._id} className="card-brand card-elevated p-3 space-y-2">
-                <div>
-                  <p className="text-sm font-medium text-foreground">{record.employeeName}</p>
-                  <p className="text-xs text-muted-foreground">{record.shiftType}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <p className="text-muted-foreground">Sign In</p>
-                    <p className="text-foreground">{record.signInTime || "N/A"}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Sign Out</p>
-                    <p className="text-foreground">{record.signOutTime || "N/A"}</p>
-                  </div>
-                </div>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <Button
+          variant="outline"
+          className="text-xs sm:text-sm"
+          onClick={() => setShowReport(true)}
+        >
+          View Attendance Report
+        </Button>
+      </div>
+
+      {showReport && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setShowReport(false)
+            }
+          }}
+        >
+          <div className="w-full max-w-5xl h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between border-b px-4 py-3">
+              <div>
+                <p className="text-xs text-muted-foreground">Attendance Report</p>
+                <h3 className="text-base sm:text-lg font-semibold">{selectedDate}</h3>
               </div>
-            ))
-          )}
-        </div>
-      ) : (
-        <TableContainer component={Paper} elevation={2} square sx={{ overflowX: "auto", borderRadius: 0 }}>
-          <Table sx={{ minWidth: 800 }}>
-            <TableHead>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell><strong>Employee</strong></TableCell>
-                <TableCell><strong>Shift</strong></TableCell>
-                <TableCell><strong>Sign In</strong></TableCell>
-                <TableCell><strong>Sign Out</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" color="text.secondary">Loading attendance...</Typography>
-                  </TableCell>
-                </TableRow>
-              ) : records.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" color="text.secondary">No attendance records for this date.</Typography>
-                  </TableCell>
-                </TableRow>
+              <Button variant="outline" size="sm" onClick={() => setShowReport(false)}>
+                Close
+              </Button>
+            </div>
+
+            <div className="h-[calc(90vh-72px)] overflow-y-auto p-4 sm:p-6">
+              {isSmall ? (
+                <div className="space-y-3">
+                  {loading ? (
+                    <div className="text-sm text-muted-foreground">Loading attendance...</div>
+                  ) : records.length === 0 ? (
+                    <div className="text-sm text-muted-foreground">No attendance records for this date.</div>
+                  ) : (
+                    records.map((record) => (
+                      <div key={record._id} className="card-brand card-elevated p-3 space-y-2">
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{record.employeeName}</p>
+                          <p className="text-xs text-muted-foreground">{record.shiftType}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-muted-foreground">Sign In</p>
+                            <p className="text-foreground">{record.signInTime || "N/A"}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Sign Out</p>
+                            <p className="text-foreground">{record.signOutTime || "N/A"}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               ) : (
-                records.map((record) => (
-                  <TableRow key={record._id} hover>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="medium">{record.employeeName}</Typography>
-                    </TableCell>
-                    <TableCell>{record.shiftType}</TableCell>
-                    <TableCell>{record.signInTime || "N/A"}</TableCell>
-                    <TableCell>{record.signOutTime || "N/A"}</TableCell>
-                  </TableRow>
-                ))
+                <TableContainer component={Paper} elevation={2} square sx={{ overflowX: "auto", borderRadius: 0 }}>
+                  <Table sx={{ minWidth: 800 }}>
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                        <TableCell><strong>Employee</strong></TableCell>
+                        <TableCell><strong>Shift</strong></TableCell>
+                        <TableCell><strong>Sign In</strong></TableCell>
+                        <TableCell><strong>Sign Out</strong></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {loading ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                            <Typography variant="body2" color="text.secondary">Loading attendance...</Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : records.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                            <Typography variant="body2" color="text.secondary">No attendance records for this date.</Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        records.map((record) => (
+                          <TableRow key={record._id} hover>
+                            <TableCell>
+                              <Typography variant="body2" fontWeight="medium">{record.employeeName}</Typography>
+                            </TableCell>
+                            <TableCell>{record.shiftType}</TableCell>
+                            <TableCell>{record.signInTime || "N/A"}</TableCell>
+                            <TableCell>{record.signOutTime || "N/A"}</TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
