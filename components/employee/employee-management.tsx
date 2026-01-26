@@ -265,8 +265,9 @@ export default function EmployeeManagement() {
             startIcon={<AddIcon />}
             onClick={() => handleOpenDialog()}
             sx={{ 
-              bgcolor: '#2e7d32', 
-              '&:hover': { bgcolor: '#1b5e20' },
+              bgcolor: 'var(--primary)', 
+              color: 'var(--primary-foreground)',
+              '&:hover': { bgcolor: 'var(--brand-green-dark)' },
               px: { xs: 2, sm: 2.5 },
               py: { xs: 0.75, sm: 0.85 }
             }}
@@ -295,8 +296,9 @@ export default function EmployeeManagement() {
             startIcon={<DownloadIcon />}
             onClick={handleDownloadTemplate}
             sx={{ 
-              bgcolor: '#2e7d32', 
-              '&:hover': { bgcolor: '#1b5e20' },
+              bgcolor: 'var(--primary)', 
+              color: 'var(--primary-foreground)',
+              '&:hover': { bgcolor: 'var(--brand-green-dark)' },
               px: { xs: 2, sm: 2.5 },
               py: { xs: 0.75, sm: 0.85 }
             }}
@@ -315,8 +317,9 @@ export default function EmployeeManagement() {
               input?.click()
             }}
             sx={{ 
-              bgcolor: '#2e7d32', 
-              '&:hover': { bgcolor: '#1b5e20' },
+              bgcolor: 'var(--primary)', 
+              color: 'var(--primary-foreground)',
+              '&:hover': { bgcolor: 'var(--brand-green-dark)' },
               px: { xs: 2, sm: 2.5 },
               py: { xs: 0.75, sm: 0.85 }
             }}

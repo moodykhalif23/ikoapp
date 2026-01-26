@@ -17,6 +17,8 @@ import {
   Typography,
   Alert
 } from "@mui/material"
+import { useTheme } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -39,6 +41,8 @@ interface IncidentTask {
 }
 
 export default function IncidentTaskBoard() {
+  const theme = useTheme()
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"))
   const [tasks, setTasks] = useState<IncidentTask[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -300,89 +304,145 @@ export default function IncidentTaskBoard() {
         </Card>
 
         <TableContainer component={Paper} elevation={2} sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 900 }}>
-            <TableHead>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell><strong>Task</strong></TableCell>
-                <TableCell sx={{ minWidth: 140 }}><strong>Assignee</strong></TableCell>
-                <TableCell sx={{ minWidth: 120 }}><strong>Due Date</strong></TableCell>
-                <TableCell sx={{ minWidth: 120 }}><strong>Status</strong></TableCell>
-                <TableCell sx={{ minWidth: 140 }}><strong>Report</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+          {isSmall ? (
+            <Box className="space-y-3 p-3">
               {loading ? (
-                <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      Loading tasks...
-                    </Typography>
-                  </TableCell>
-                </TableRow>
+                <Typography variant="body2" color="text.secondary">
+                  Loading tasks...
+                </Typography>
               ) : filteredTasks.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      No tasks found matching your filters.
-                    </Typography>
-                  </TableCell>
-                </TableRow>
+                <Typography variant="body2" color="text.secondary">
+                  No tasks found matching your filters.
+                </Typography>
               ) : (
                 filteredTasks.map((task) => (
-                  <TableRow key={task._id} hover>
-                    <TableCell sx={{ minWidth: 280 }}>
-                      <Box>
-                        <Typography variant="body2" fontWeight="medium">
-                          {task.title}
-                        </Typography>
-                        {task.description && (
-                          <Typography variant="caption" color="text.secondary">
-                            {task.description}
-                          </Typography>
-                        )}
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      {task.assignedToName || task.assignedToId}
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={new Date(task.dueDate).toLocaleDateString()}
-                        size="small"
-                        color={overdueIds.has(task._id) ? "error" : "default"}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <FormControl size="small" sx={{ minWidth: 140 }}>
-                        <Select
-                          value={task.status}
-                          onChange={(e) => updateTaskStatus(task._id, e.target.value as IncidentTask["status"])}
-                        >
-                          <MenuItem value="open">Open</MenuItem>
-                          <MenuItem value="in-progress">In Progress</MenuItem>
-                          <MenuItem value="closed">Closed</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <Chip
-                        label={task.status.replace("-", " ")}
-                        size="small"
-                        color={getStatusColor(task.status) as any}
-                        sx={{ ml: 1 }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">{task.reportId}</Typography>
-                      {task.reportDate && (
-                        <Typography variant="caption" color="text.secondary">
-                          {task.reportDate}
-                        </Typography>
+                  <div key={task._id} className="card-brand card-elevated p-3 space-y-2">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{task.title}</p>
+                      {task.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-2">{task.description}</p>
                       )}
-                    </TableCell>
-                  </TableRow>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <p className="text-muted-foreground">Assignee</p>
+                        <p className="text-foreground">{task.assignedToName || task.assignedToId}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Due</p>
+                        <Chip
+                          label={new Date(task.dueDate).toLocaleDateString()}
+                          size="small"
+                          color={overdueIds.has(task._id) ? "error" : "default"}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Report</p>
+                        <p className="text-foreground">{task.reportId}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Status</p>
+                        <FormControl size="small" fullWidth>
+                          <Select
+                            value={task.status}
+                            onChange={(e) => updateTaskStatus(task._id, e.target.value as IncidentTask["status"])}
+                          >
+                            <MenuItem value="open">Open</MenuItem>
+                            <MenuItem value="in-progress">In Progress</MenuItem>
+                            <MenuItem value="closed">Closed</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </div>
+                  </div>
                 ))
               )}
-            </TableBody>
-          </Table>
+            </Box>
+          ) : (
+            <Table sx={{ minWidth: 900 }}>
+              <TableHead>
+                <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                  <TableCell><strong>Task</strong></TableCell>
+                  <TableCell sx={{ minWidth: 140 }}><strong>Assignee</strong></TableCell>
+                  <TableCell sx={{ minWidth: 120 }}><strong>Due Date</strong></TableCell>
+                  <TableCell sx={{ minWidth: 120 }}><strong>Status</strong></TableCell>
+                  <TableCell sx={{ minWidth: 140 }}><strong>Report</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Loading tasks...
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : filteredTasks.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        No tasks found matching your filters.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredTasks.map((task) => (
+                    <TableRow key={task._id} hover>
+                      <TableCell sx={{ minWidth: 280 }}>
+                        <Box>
+                          <Typography variant="body2" fontWeight="medium">
+                            {task.title}
+                          </Typography>
+                          {task.description && (
+                            <Typography variant="caption" color="text.secondary">
+                              {task.description}
+                            </Typography>
+                          )}
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        {task.assignedToName || task.assignedToId}
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={new Date(task.dueDate).toLocaleDateString()}
+                          size="small"
+                          color={overdueIds.has(task._id) ? "error" : "default"}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <FormControl size="small" sx={{ minWidth: 140 }}>
+                          <Select
+                            value={task.status}
+                            onChange={(e) => updateTaskStatus(task._id, e.target.value as IncidentTask["status"])}
+                          >
+                            <MenuItem value="open">Open</MenuItem>
+                            <MenuItem value="in-progress">In Progress</MenuItem>
+                            <MenuItem value="closed">Closed</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <Chip
+                          label={task.status.replace("-", " ")}
+                          size="small"
+                          color={getStatusColor(task.status) as any}
+                          sx={{ ml: 1 }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{task.reportId}</Typography>
+                        {task.reportDate && (
+                          <Typography variant="caption" color="text.secondary">
+                            {task.reportDate}
+                          </Typography>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          )}
         </TableContainer>
       </CardContent>
     </Card>
