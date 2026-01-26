@@ -319,7 +319,7 @@ ${new Date().toLocaleString()}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Total Reports
@@ -327,12 +327,12 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-foreground">{reports.length}</div>
+            <div className="text-base sm:text-lg font-bold text-foreground">{reports.length}</div>
             <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Employees
@@ -340,14 +340,14 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-foreground">
+            <div className="text-base sm:text-lg font-bold text-foreground">
               {employeeCount}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Total employees</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Active Equipment
@@ -355,14 +355,14 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-foreground">
+            <div className="text-base sm:text-lg font-bold text-foreground">
               {activeMachineCount}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Active machines</p>
           </CardContent>
         </Card>
 
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Submitted Reports
@@ -370,7 +370,7 @@ ${new Date().toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-foreground">
+            <div className="text-base sm:text-lg font-bold text-foreground">
               {reports.filter(r => r.status === 'submitted').length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Awaiting review</p>
@@ -671,23 +671,23 @@ ${new Date().toLocaleString()}
           {filteredReports.map((report) => (
             <Card 
               key={report.id} 
-              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-260px flex flex-col ${
+              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col ${
                 selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
               }`}
               onClick={() => handleReportSelect(report)}
             >
-              <CardHeader className="pb-2 shrink-0 card-report-header">
+              <CardHeader className="pb-1 shrink-0 card-report-header">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <CardTitle className="text-base font-semibold line-clamp-1">
+                    <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
                       Report {report.id}
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1 line-clamp-1">
+                    <CardDescription className="text-xs sm:text-sm mt-1 line-clamp-1">
                       By {report.reportedBy}
                     </CardDescription>
                   </div>
                   {report.status !== 'submitted' && (
-                    <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap shrink-0 ${
+                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap shrink-0 ${
                       report.status === 'approved' ? 'bg-green-100 text-green-800' :
                       report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-gray-100 text-gray-800'
@@ -698,35 +698,35 @@ ${new Date().toLocaleString()}
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col justify-between">
-                <div className="space-y-2 flex-1">
-                  <div className="text-sm text-muted-foreground space-y-1">
+                <div className="space-y-1.5 flex-1">
+                  <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
                     <p className="line-clamp-1">
                       <span className="font-medium">Date:</span> {report.date}
                     </p>
                   </div>
                   
                   {/* Quick Stats */}
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-muted rounded p-2 text-center">
+                  <div className="grid grid-cols-2 gap-2 text-[10px]">
+                    <div className="bg-muted rounded p-1.5 text-center">
                       <p className="text-muted-foreground mb-1">Products</p>
-                      <p className="font-semibold text-lg">
+                      <p className="font-semibold text-sm sm:text-base">
                         {report.dailyProduction?.products?.length || 0}
                       </p>
                     </div>
-                    <div className="bg-muted rounded p-2 text-center">
+                    <div className="bg-muted rounded p-1.5 text-center">
                       <p className="text-muted-foreground mb-1">Incidents</p>
-                      <p className="font-semibold text-lg">
+                      <p className="font-semibold text-sm sm:text-base">
                         {report.incidentReport?.incidentType && report.incidentReport.incidentType !== 'None' ? '1' : '0'}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2 border-t">
+                <div className="mt-2 pt-2 border-t">
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full text-xs"
+                    className="w-full text-[10px] sm:text-xs h-8"
                     onClick={(e) => {
                       e.stopPropagation()
                       handlePDFExport(report)
@@ -781,21 +781,21 @@ ${new Date().toLocaleString()}
             <h1 className="text-3xl md:text-4xl font-bold text-brand-contrast mb-1">Analytics</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">Total Reports</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-xl sm:text-2xl font-bold text-foreground">{reports.length}</div>
+                <div className="text-base sm:text-lg font-bold text-foreground">{reports.length}</div>
                 <p className="text-xs text-muted-foreground mt-1">All time</p>
               </CardContent>
             </Card>
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">This Month</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-xl sm:text-2xl font-bold text-foreground">
+                <div className="text-base sm:text-lg font-bold text-foreground">
                   {reports.filter(r => {
                     const reportDate = new Date(r.createdAt)
                     const thisMonth = new Date()
@@ -806,12 +806,12 @@ ${new Date().toLocaleString()}
                 <p className="text-xs text-muted-foreground mt-1">Reports</p>
               </CardContent>
             </Card>
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 }, gap: { xs: 1.5, sm: 2 } }}>
+            <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-brand-contrast">Active Reporters</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-xl sm:text-2xl font-bold text-foreground">
+                <div className="text-base sm:text-lg font-bold text-foreground">
                   {new Set(reports.map((r) => r.reportedBy)).size}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Contributors</p>

@@ -482,27 +482,27 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
 
           {/* Reports Grid */}
           {filteredReports.length === 0 ? null : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
               {filteredReports.map((report) => (
                 <Card 
                   key={report.id} 
-                  className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[260px] flex flex-col ${
+                  className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col ${
                     selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
                   }`}
                   onClick={() => handleReportSelect(report)}
                 >
-                  <CardHeader className="pb-2 flex-shrink-0 card-report-header">
+                  <CardHeader className="pb-1 flex-shrink-0 card-report-header">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <CardTitle className="text-base font-semibold line-clamp-1">
+                        <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
                           Report {report.id}
                         </CardTitle>
-                        <CardDescription className="text-sm mt-1 line-clamp-1">
+                        <CardDescription className="text-xs sm:text-sm mt-1 line-clamp-1">
                           By {report.reportedBy}
                         </CardDescription>
                       </div>
                   {report.status !== 'submitted' && (
-                    <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap flex-shrink-0 ${
                       report.status === 'approved' ? 'bg-green-100 text-green-800' :
                       report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-gray-100 text-gray-800'
@@ -513,15 +513,15 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 flex flex-col justify-between">
-                    <div className="space-y-2 flex-1">
-                      <div className="text-sm text-muted-foreground space-y-1">
+                    <div className="space-y-1.5 flex-1">
+                      <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
                         <p className="line-clamp-1">
                           <span className="font-medium">Date:</span> {report.date}
                         </p>
                       </div>
                       
                   {/* Quick Stats */}
-                  <div className="space-y-1 text-xs">
+                  <div className="space-y-1 text-[10px] sm:text-xs">
                     <p className="text-muted-foreground">
                       <span className="font-medium text-foreground">Products:</span>{" "}
                       {report.dailyProduction?.products?.length || 0}
@@ -533,11 +533,11 @@ For more information, visit the IKO BRIQ Production Reporting Portal.
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2 border-t">
+                <div className="mt-2 pt-2 border-t">
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full text-xs"
+                    className="w-full text-[10px] sm:text-xs h-8"
                     onClick={(e) => {
                       e.stopPropagation()
                       handleReportSelect(report)
