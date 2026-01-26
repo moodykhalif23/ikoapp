@@ -177,28 +177,28 @@ export default function ScrollableReportView({
                   report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
                     <div key={interruption.id || index} className="p-2 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
                       <h4 className="font-medium text-orange-800 mb-2 sm:mb-3">Interruption #{index + 1}</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-2 sm:mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3 mb-2 sm:mb-4">
                         <div>
-                          <p className="text-xs sm:text-sm font-medium text-gray-600">Time of Interruption</p>
-                          <p className="text-gray-900 mt-0.5 sm:mt-1">{formatTime(interruption.occurredAt)}</p>
+                          <p className="text-[11px] sm:text-xs font-medium text-gray-600">Time of Interruption</p>
+                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatTime(interruption.occurredAt)}</p>
                         </div>
                         <div>
-                          <p className="text-xs sm:text-sm font-medium text-gray-600">Duration</p>
-                          <p className="text-gray-900 mt-0.5 sm:mt-1">{interruption.duration} minutes</p>
+                          <p className="text-[11px] sm:text-xs font-medium text-gray-600">Duration</p>
+                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{interruption.duration} minutes</p>
                         </div>
                       </div>
                       {interruption.kplcMeter && (
                         <div className="mb-2 sm:mb-4">
-                          <p className="text-xs sm:text-sm font-medium text-gray-600">KPLC Meter Reading</p>
-                          <p className="text-gray-900 mt-0.5 sm:mt-1">{interruption.kplcMeter}</p>
+                          <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter Reading</p>
+                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{interruption.kplcMeter}</p>
                         </div>
                       )}
                       {interruption.affectedMachines?.length > 0 && (
                         <div>
-                          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1.5 sm:mb-2">Affected Machines</p>
-                          <div className="flex flex-wrap gap-2">
+                          <p className="text-[11px] sm:text-xs font-medium text-gray-600 mb-1 sm:mb-2">Affected Machines</p>
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2">
                             {interruption.affectedMachines.map((machine: string) => (
-                              <span key={machine} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs sm:text-sm">
+                              <span key={machine} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-[10px] sm:text-xs">
                                 {machine}
                               </span>
                             ))}
@@ -210,19 +210,19 @@ export default function ScrollableReportView({
                 ) : (
                   report.powerInterruptions?.occurredAt || report.powerInterruptions?.duration ? (
                     // Fallback for old single interruption format
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                     <div>
-                      <p className="text-xs sm:text-sm font-medium text-gray-600">Time of Interruption</p>
-                      <p className="text-gray-900 mt-0.5 sm:mt-1">{formatTime(report.powerInterruptions?.occurredAt)}</p>
+                      <p className="text-[11px] sm:text-xs font-medium text-gray-600">Time of Interruption</p>
+                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatTime(report.powerInterruptions?.occurredAt)}</p>
                     </div>
                     <div>
-                      <p className="text-xs sm:text-sm font-medium text-gray-600">Duration</p>
-                      <p className="text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.duration} minutes</p>
+                      <p className="text-[11px] sm:text-xs font-medium text-gray-600">Duration</p>
+                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.duration} minutes</p>
                     </div>
                     {report.powerInterruptions?.kplcMeter && (
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">KPLC Meter Reading</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.kplcMeter}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter Reading</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.kplcMeter}</p>
                       </div>
                     )}
                   </div>
@@ -242,31 +242,31 @@ export default function ScrollableReportView({
             {report.dailyProduction?.products?.length > 0 ? (
               <div className="space-y-2 sm:space-y-4">
                 <div className="p-2 sm:p-4 bg-gray-50 rounded-none border border-gray-200">
-                  <div className="space-y-2 sm:space-y-3">
-                    {report.dailyProduction.products.map((product: any, index: number) => (
-                      <div
-                        key={index}
-                        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 ${
-                          index < report.dailyProduction.products.length - 1 ? "pb-3 border-b border-gray-200" : ""
-                        }`}
-                      >
-                        <div>
-                          <p className="text-xs sm:text-sm font-medium text-gray-600">Product Name</p>
-                          <p className="text-gray-900 font-medium mt-0.5 sm:mt-1">{product.productName}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs sm:text-sm font-medium text-gray-600">Quantity</p>
-                          <p className="text-gray-900 mt-0.5 sm:mt-1">{product.quantity} {product.unit}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs sm:text-sm font-medium text-gray-600">Employees</p>
-                          <p className="text-gray-900 mt-0.5 sm:mt-1">{product.employees}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs sm:text-sm font-medium text-gray-600">Machines Used</p>
-                          <div className="flex flex-wrap gap-1 mt-0.5 sm:mt-1">
-                            {product.machinesUsed?.map((machine: string) => (
-                              <span key={machine} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-[10px] sm:text-xs">
+                    <div className="space-y-1.5 sm:space-y-3">
+                      {report.dailyProduction.products.map((product: any, index: number) => (
+                        <div
+                          key={index}
+                          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-3 ${
+                            index < report.dailyProduction.products.length - 1 ? "pb-2.5 sm:pb-3 border-b border-gray-200" : ""
+                          }`}
+                        >
+                          <div>
+                            <p className="text-[11px] sm:text-xs font-medium text-gray-600">Product Name</p>
+                            <p className="text-xs sm:text-sm text-gray-900 font-medium mt-0.5 sm:mt-1">{product.productName}</p>
+                          </div>
+                          <div>
+                            <p className="text-[11px] sm:text-xs font-medium text-gray-600">Quantity</p>
+                            <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{product.quantity} {product.unit}</p>
+                          </div>
+                          <div>
+                            <p className="text-[11px] sm:text-xs font-medium text-gray-600">Employees</p>
+                            <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{product.employees}</p>
+                          </div>
+                          <div>
+                            <p className="text-[11px] sm:text-xs font-medium text-gray-600">Machines Used</p>
+                            <div className="flex flex-wrap gap-1 mt-0.5 sm:mt-1">
+                              {product.machinesUsed?.map((machine: string) => (
+                                <span key={machine} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-[10px] sm:text-xs">
                                 {machine}
                               </span>
                             ))}
@@ -278,14 +278,14 @@ export default function ScrollableReportView({
                 </div>
                 {report.dailyProduction?.kplcMeter && (
                 <div className="mt-2 sm:mt-4">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">KPLC Meter Reading</p>
-                  <p className="text-gray-900 mt-0.5 sm:mt-1">{report.dailyProduction.kplcMeter}</p>
+                  <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter Reading</p>
+                  <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.dailyProduction.kplcMeter}</p>
                 </div>
               )}
               {report.dailyProduction?.qualityIssues && (
                 <div className="mt-2 sm:mt-4">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Quality Issues</p>
-                  <p className="text-gray-900 mt-0.5 sm:mt-1">{report.dailyProduction.qualityIssues}</p>
+                  <p className="text-[11px] sm:text-xs font-medium text-gray-600">Quality Issues</p>
+                  <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.dailyProduction.qualityIssues}</p>
                 </div>
               )}
             </div>
@@ -311,13 +311,13 @@ export default function ScrollableReportView({
               <div className="p-2 sm:p-4 bg-gray-50 border border-gray-200 rounded-none space-y-2 sm:space-y-4">
                 {hasLegacyIncidents ? (
                   <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Incident Type</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport?.incidentType}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Incident Type</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport?.incidentType}</p>
                       </div>
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Severity</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Severity</p>
                         <span className={`inline-block px-2 py-1 rounded text-xs sm:text-sm mt-0.5 sm:mt-1 ${
                           report.incidentReport?.severity === 'High' ? 'bg-red-100 text-red-800' : 
                           report.incidentReport?.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
@@ -328,43 +328,43 @@ export default function ScrollableReportView({
                     </div>
                     {report.incidentReport?.description && (
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Description</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport.description}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Description</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport.description}</p>
                       </div>
                     )}
                     {report.incidentReport?.actionsTaken && (
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Actions Taken</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport.actionsTaken}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Actions Taken</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport.actionsTaken}</p>
                       </div>
                     )}
                   </>
                 ) : (
                   <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Incident Type</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{incidentData.incidentType || "N/A"}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Incident Type</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.incidentType || "N/A"}</p>
                       </div>
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Time of Incident</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{incidentData.incidentTime || "N/A"}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Time of Incident</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.incidentTime || "N/A"}</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Injury Level</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{incidentData.injuryLevel || "N/A"}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Injury Level</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.injuryLevel || "N/A"}</p>
                       </div>
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Action Taken</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{incidentData.actionTaken || "N/A"}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Action Taken</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.actionTaken || "N/A"}</p>
                       </div>
                     </div>
                     {incidentData.description && (
                       <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-600">Description</p>
-                        <p className="text-gray-900 mt-0.5 sm:mt-1">{incidentData.description}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Description</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.description}</p>
                       </div>
                     )}
                   </>
