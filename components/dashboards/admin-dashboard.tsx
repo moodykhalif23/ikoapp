@@ -48,6 +48,12 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
   const [searchQuery, setSearchQuery] = useState<string>("")
   const [filtersExpanded, setFiltersExpanded] = useState(false)
   const [reportsView, setReportsView] = useState<"production" | "attendance">("production")
+  const reportCardStyles = [
+    { card: "bg-gradient-to-br from-sky-50 via-white to-emerald-50 border-sky-100/70", bubble: "bg-sky-100/70", bubble2: "bg-emerald-100/60" },
+    { card: "bg-gradient-to-br from-cyan-50 via-white to-blue-50 border-cyan-100/70", bubble: "bg-cyan-100/70", bubble2: "bg-blue-100/60" },
+    { card: "bg-gradient-to-br from-teal-50 via-white to-indigo-50 border-teal-100/70", bubble: "bg-teal-100/70", bubble2: "bg-indigo-100/60" },
+    { card: "bg-gradient-to-br from-sky-50 via-white to-teal-50 border-sky-100/70", bubble: "bg-sky-100/60", bubble2: "bg-teal-100/60" }
+  ]
 
   // Fetch reports data
   useEffect(() => {
@@ -617,15 +623,19 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
         </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
-          {filteredReports.map((report) => (
+          {filteredReports.map((report, index) => {
+            const style = reportCardStyles[index % reportCardStyles.length]
+            return (
             <Card 
               key={report.id} 
-              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col ${
+              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col relative overflow-hidden border ${style.card} ${
                 selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
               }`}
               onClick={() => handleReportSelect(report)}
             >
-              <CardHeader className="p-3 sm:p-4 pb-1 flex-shrink-0 card-report-header">
+              <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
+              <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
+              <CardHeader className="p-3 sm:p-4 pb-1 flex-shrink-0 card-report-header relative z-10">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
@@ -646,7 +656,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-2 flex-1 flex flex-col justify-between">
+              <CardContent className="p-3 sm:p-4 pt-2 flex-1 flex flex-col justify-between relative z-10">
                 <div className="space-y-1.5 flex-1">
                   <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
                     <p className="line-clamp-1">
@@ -682,7 +692,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )})}
         </div>
       )}
 

@@ -41,6 +41,12 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
   const [filtersExpanded, setFiltersExpanded] = useState(false)
   const [draftReportId, setDraftReportId] = useState<string | null>(null)
   const [activeReportId, setActiveReportId] = useState<string | null>(null)
+  const reportCardStyles = [
+    { card: "bg-gradient-to-br from-sky-50 via-white to-emerald-50 border-sky-100/70", bubble: "bg-sky-100/70", bubble2: "bg-emerald-100/60" },
+    { card: "bg-gradient-to-br from-cyan-50 via-white to-blue-50 border-cyan-100/70", bubble: "bg-cyan-100/70", bubble2: "bg-blue-100/60" },
+    { card: "bg-gradient-to-br from-teal-50 via-white to-indigo-50 border-teal-100/70", bubble: "bg-teal-100/70", bubble2: "bg-indigo-100/60" },
+    { card: "bg-gradient-to-br from-sky-50 via-white to-teal-50 border-sky-100/70", bubble: "bg-sky-100/60", bubble2: "bg-teal-100/60" }
+  ]
   
   // Fetch user's reports from database
   useEffect(() => {
@@ -533,9 +539,13 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         <>
           {reports.length === 0 ? null : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {reports.map((report) => (
-                <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">
-                  <CardHeader className="p-3 sm:p-4 pb-2">
+              {reports.map((report, index) => {
+                const style = reportCardStyles[index % reportCardStyles.length]
+                return (
+                <Card key={report.id} className={`card-brand hover:shadow-lg transition-all duration-300 hover-brand relative overflow-hidden border ${style.card}`}>
+                  <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
+                  <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
+                  <CardHeader className="p-3 sm:p-4 pb-2 relative z-10">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <CardTitle className="text-primary text-base sm:text-lg">{report.date}</CardTitle>
@@ -552,7 +562,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-3 sm:p-4 pt-2">
+                  <CardContent className="p-3 sm:p-4 pt-2 relative z-10">
                     <div className="space-y-1.5 text-xs sm:text-sm mb-3">
                       <p>
                         <span className="font-medium text-brand-contrast">Power Interruptions:</span>{" "}
@@ -583,7 +593,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                     </Button>
                   </CardContent>
                 </Card>
-              ))}
+              )})}
             </div>
           )}
         </>
@@ -737,9 +747,13 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
           {/* Reports Grid */}
           {filteredReports.length === 0 ? null : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredReports.map((report) => (
-                <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">
-                  <CardHeader className="p-3 sm:p-4 pb-2">
+              {filteredReports.map((report, index) => {
+                const style = reportCardStyles[index % reportCardStyles.length]
+                return (
+                <Card key={report.id} className={`card-brand hover:shadow-lg transition-all duration-300 hover-brand relative overflow-hidden border ${style.card}`}>
+                  <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
+                  <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
+                  <CardHeader className="p-3 sm:p-4 pb-2 relative z-10">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <CardTitle className="text-primary text-base sm:text-lg">{report.date}</CardTitle>
@@ -756,7 +770,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-3 sm:p-4 pt-2">
+                  <CardContent className="p-3 sm:p-4 pt-2 relative z-10">
                     <div className="space-y-1.5 text-xs sm:text-sm mb-3">
                       <p>
                         <span className="font-medium text-brand-contrast">Power Interruptions:</span>{" "}
@@ -787,7 +801,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                     </Button>
                   </CardContent>
                 </Card>
-              ))}
+              )})}
             </div>
           )}
 
