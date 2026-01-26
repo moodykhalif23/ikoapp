@@ -134,11 +134,11 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <label className="text-base sm:text-lg font-semibold text-foreground block mb-2">Product Name</label>
-                  <div className="bg-app-standard rounded-md p-[2px]">
+                  <div className="rounded-md border border-border bg-white">
                     <select
                       value={product.productName}
                       onChange={(e) => updateProduct(product.id, "productName", e.target.value)}
-                      className={`w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent ${
+                      className={`w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white ${
                         errors[`product-${index}-name`] ? "border-red-500" : ""
                       }`}
                     >
@@ -210,11 +210,11 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                   </div>
                 ) : (
                   <>
-                    <div className="bg-app-standard rounded-md p-[2px]">
+                    <div className="rounded-md border border-border bg-white">
                       <select
                         value={product.machinesUsed[0] || ""}
                         onChange={(e) => updateProduct(product.id, "machinesUsed", e.target.value ? [e.target.value] : [])}
-                        className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                        className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
                       >
                         <option value="">Select machine</option>
                         {machines.map((machine) => (

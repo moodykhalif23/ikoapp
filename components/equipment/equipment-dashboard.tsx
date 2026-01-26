@@ -433,11 +433,11 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
             <div className="space-y-4">
               <div>
                 <Label htmlFor="equipment">Equipment *</Label>
-                <div className="bg-app-standard rounded-md p-[2px]">
+                <div className="rounded-md border border-border bg-white">
                   <select
                     value={newMaintenance.equipmentId}
                     onChange={(e) => setNewMaintenance({ ...newMaintenance, equipmentId: e.target.value })}
-                    className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                    className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
                   >
                     <option value="">Select equipment</option>
                     {machineList.map((machine) => (
@@ -452,11 +452,11 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="type">Maintenance Type</Label>
-                  <div className="bg-app-standard rounded-md p-[2px]">
+                  <div className="rounded-md border border-border bg-white">
                     <select
                       value={newMaintenance.maintenanceType}
                       onChange={(e) => setNewMaintenance({ ...newMaintenance, maintenanceType: e.target.value })}
-                      className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                      className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
                     >
                       <option value="preventive">Preventive</option>
                       <option value="corrective">Corrective</option>
@@ -468,11 +468,11 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
 
                 <div>
                   <Label htmlFor="priority">Priority</Label>
-                  <div className="bg-app-standard rounded-md p-[2px]">
+                  <div className="rounded-md border border-border bg-white">
                     <select
                       value={newMaintenance.priority}
                       onChange={(e) => setNewMaintenance({ ...newMaintenance, priority: e.target.value })}
-                      className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                      className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>

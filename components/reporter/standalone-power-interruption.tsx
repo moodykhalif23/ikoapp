@@ -315,11 +315,11 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
 
                       <div className="space-y-3">
                         <label className="text-base sm:text-lg font-semibold text-foreground">Affected Machines *</label>
-                        <div className="bg-app-standard rounded-md p-[2px]">
+                        <div className="rounded-md border border-border bg-white">
                           <select
                             value={interruption.affectedMachines[0] || ""}
                             onChange={(e) => updateInterruption(interruption.id, 'affectedMachines', e.target.value ? [e.target.value] : [])}
-                            className="w-full h-12 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-transparent"
+                            className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
                           >
                             <option value="">Select machine</option>
                             {machines.map((machine) => (
