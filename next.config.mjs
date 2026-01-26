@@ -14,6 +14,10 @@ const nextConfig = {
           source: "/api/:path*",
           destination: "https://ikobriqapp.duckdns.org/api/:path*",
         },
+        {
+          source: "/uploads/:path*",
+          destination: "https://ikobriqapp.duckdns.org/uploads/:path*",
+        },
       ]
     }
     return []

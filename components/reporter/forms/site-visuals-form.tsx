@@ -258,22 +258,18 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                         <X className="w-4 h-4" />
                       </Button>
                       
-                      {/* File Info Overlay - Only show for images or when video is not playing */}
-                      <div className={`absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 transform transition-transform duration-200 ${
-                        file.type === "video" ? "translate-y-full group-hover:translate-y-0" : "translate-y-full group-hover:translate-y-0"
-                      }`}>
-                        <div className="flex items-center gap-2">
-                          {file.type === "image" ? (
+                      {/* File Info Overlay - Images only (keep video controls unobstructed) */}
+                      {file.type === "image" && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 transform transition-transform duration-200 translate-y-full group-hover:translate-y-0">
+                          <div className="flex items-center gap-2">
                             <ImageIcon className="w-3 h-3 flex-shrink-0" />
-                          ) : (
-                            <Play className="w-3 h-3 flex-shrink-0" />
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <p className="text-xs font-medium truncate" title={file.name}>{file.name}</p>
-                            <p className="text-xs opacity-75">{file.size}</p>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-medium truncate" title={file.name}>{file.name}</p>
+                              <p className="text-xs opacity-75">{file.size}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 ))}
