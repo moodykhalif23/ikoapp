@@ -79,19 +79,19 @@ export default function ScrollableReportView({
             <Button 
               variant="outline" 
               onClick={onBack} 
-              className="gap-2 bg-transparent shrink-0"
+              className="gap-2 bg-transparent shrink-0 h-9 sm:h-10 px-2 sm:px-3"
             >
               <ArrowBack sx={{ fontSize: 16 }} />
               <span className="hidden sm:inline">Back</span>
             </Button>
             <div className="min-w-0 flex-1">
-              <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground truncate">
+              <h1 className="text-sm sm:text-lg md:text-xl font-bold text-foreground truncate">
                 {report.date}
               </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground truncate">
+              <p className="text-[10px] sm:text-sm text-muted-foreground truncate">
                 Report {report.id}
               </p>
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                 Submitted by {report.reportedBy}
               </p>
             </div>
@@ -112,7 +112,7 @@ export default function ScrollableReportView({
               <Button
                 variant="outline"
                 onClick={() => onPDFExport(report)}
-                className="gap-2"
+                className="gap-2 h-9 sm:h-10 px-2 sm:px-3"
                 size="sm"
               >
                 <Download sx={{ fontSize: 16 }} />
@@ -132,16 +132,8 @@ export default function ScrollableReportView({
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Report Overview</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-4">
               <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Report ID</p>
-                <p className="text-gray-900 font-mono mt-0.5 sm:mt-1">{report.id}</p>
-              </div>
-              <div>
                 <p className="text-xs sm:text-sm font-medium text-gray-600">Status</p>
                 <span className="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded-none text-xs sm:text-sm mt-0.5 sm:mt-1">{report.status}</span>
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Report Date</p>
-                <p className="text-gray-900 mt-0.5 sm:mt-1">{report.date}</p>
               </div>
               <div>
                 <p className="text-xs sm:text-sm font-medium text-gray-600">Submitted At</p>
