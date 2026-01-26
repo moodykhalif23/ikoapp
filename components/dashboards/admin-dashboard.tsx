@@ -16,6 +16,7 @@ import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 import EmployeeManagement from "@/components/employee/employee-management"
 import AttendanceReportsView from "@/components/attendance/attendance-reports-view"
 import { printReportElement } from "@/lib/report-print"
+import AnalyticsDashboard from "@/components/analytics/analytics-dashboard"
 
 interface AdminDashboardProps {
   user: any
@@ -720,49 +721,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
       {activeTab === "reports" && renderReportsContent()}
       {activeTab === "analytics" && (
         <div className="space-y-6 mt-2">
-          <div className="mb-4">
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-brand-contrast">Total Reports</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-base sm:text-lg font-bold text-foreground">{reports.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">All time</p>
-              </CardContent>
-            </Card>
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-brand-contrast">This Month</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-base sm:text-lg font-bold text-foreground">
-                  {reports.filter(r => {
-                    const reportDate = new Date(r.createdAt)
-                    const thisMonth = new Date()
-                    return reportDate.getMonth() === thisMonth.getMonth() && 
-                           reportDate.getFullYear() === thisMonth.getFullYear()
-                  }).length}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Reports</p>
-              </CardContent>
-            </Card>
-            <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-brand-contrast">Active Reporters</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-base sm:text-lg font-bold text-foreground">
-                  {new Set(reports.map((r) => r.reportedBy)).size}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Contributors</p>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Detailed analytics charts coming soon...</p>
-          </div>
+          <AnalyticsDashboard reports={reports} />
         </div>
       )}
       {activeTab === "employees" && (
