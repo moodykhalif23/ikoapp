@@ -334,6 +334,36 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     }
   }
 
+  const handleDeleteDraft = async () => {
+    const existingDraft = getDraftReport()
+    const targetId = existingDraft?.id || draftReportId
+    if (!targetId) {
+      toast.error("No draft report found")
+      return
+    }
+    if (typeof window !== "undefined" && !window.confirm("Delete this draft report? This cannot be undone.")) {
+      return
+    }
+    try {
+      const response = await fetch(`/api/reports/${targetId}`, {
+        method: "DELETE",
+      })
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to delete draft report")
+      }
+      setDraftReportId(null)
+      persistDraftId(null)
+      setSelectedReport(null)
+      setActiveReportId(null)
+      closeAllForms()
+      await refreshReports()
+      toast.success("Draft report deleted")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to delete draft report")
+    }
+  }
+
   // Filter reports based on current filters
   const filteredReports = reports.filter(report => {
     // Status filter
@@ -428,13 +458,20 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       </div>
 
       {(draftReportId || getDraftReport()) && (
-        <div className="mb-6">
+        <div className="mb-6 flex flex-wrap gap-2">
           <Button
             variant="outline"
             onClick={handleContinueDraft}
             className="gap-2 border-brand-subtle hover-brand"
           >
             Continue Draft
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleDeleteDraft}
+            className="gap-2 border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300"
+          >
+            Delete Draft
           </Button>
         </div>
       )}
