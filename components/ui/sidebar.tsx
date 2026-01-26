@@ -101,7 +101,7 @@ export default function Sidebar({
   const menuItems = getMenuItemsForRole(user?.role || user?.roles?.[0] || 'viewer')
 
   return (
-    <div className={`sidebar-no-scroll bg-brand-green border-r border-brand-green/20 transition-all duration-300 ${
+    <div className={`sidebar-no-scroll bg-brand-green border-r border-brand-green/20 transition-all duration-300 rounded-r-[12px] ${
       collapsed ? 'w-16' : 'w-64'
     } flex flex-col sidebar-force-white`}>
       {/* Header */}

@@ -66,6 +66,18 @@ export default function EnterpriseLayout({
     ? user.roles.map((role: string) => role.toLowerCase()).includes("admin")
     : String(userRole).toLowerCase() === "admin"
 
+  const tabTitleMap: Record<string, string> = {
+    dashboard: "Dashboard",
+    reports: "Reports",
+    employees: "Employees",
+    machines: "Equipment",
+    attendance: "Attendance",
+    analytics: "Analytics",
+    alerts: "Alerts",
+  }
+
+  const headerTitle = activeTab ? (tabTitleMap[activeTab] || title || "Dashboard") : (title || "Dashboard")
+
   const handleTabChange = (tab: string) => {
     onTabChange?.(tab)
     if (typeof window !== "undefined") {
@@ -186,10 +198,7 @@ export default function EnterpriseLayout({
           <div className="hidden lg:flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-4">
               <div className="block">
-                <h1 className="text-2xl font-bold text-foreground">{title || 'Dashboard'}</h1>
-                {subtitle && (
-                  <p className="text-sm text-muted-foreground">{subtitle}</p>
-                )}
+                <h1 className="text-2xl font-bold text-foreground">{headerTitle}</h1>
               </div>
             </div>
 
