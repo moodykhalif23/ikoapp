@@ -6,6 +6,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://ikobriqapp.duckdns.org/api/:path*',
+      },
+    ]
+  },
 }
 
 export default nextConfig
