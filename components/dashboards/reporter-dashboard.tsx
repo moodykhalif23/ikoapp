@@ -492,16 +492,16 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
           </div>
 
           {reports.length === 0 ? null : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {reports.map((report) => (
                 <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">
-                  <CardHeader>
+                  <CardHeader className="p-3 sm:p-4 pb-2">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <CardTitle className="text-primary">{report.date}</CardTitle>
-                        <CardDescription>Report #{report.id}</CardDescription>
+                        <CardTitle className="text-primary text-base sm:text-lg">{report.date}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">Report #{report.id}</CardDescription>
                       </div>
-                      <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap shrink-0 ${
+                      <div className={`px-1.5 py-0.5 rounded-none text-[10px] sm:text-xs font-medium whitespace-nowrap shrink-0 ${
                         report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                         report.status === 'approved' ? 'bg-green-100 text-green-800' :
                         report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
@@ -512,8 +512,8 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm mb-4">
+                  <CardContent className="p-3 sm:p-4 pt-2">
+                    <div className="space-y-1.5 text-xs sm:text-sm mb-3">
                       <p>
                         <span className="font-medium text-brand-contrast">Power Interruptions:</span>{" "}
                         <span className={report.powerInterruptions?.noInterruptions === true ? "text-green-600" : "text-orange-600"}>
@@ -536,7 +536,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                     <Button
                       onClick={() => handleViewReport(report)}
                       variant="outline"
-                      className="w-full gap-2 bg-transparent hover:bg-primary/5 border-brand-subtle hover-brand focus-brand"
+                      className="w-full gap-2 bg-transparent hover:bg-primary/5 border-brand-subtle hover-brand focus-brand text-xs sm:text-sm h-9"
                     >
                       <Visibility sx={{ fontSize: 16 }} />
                       View Details
@@ -700,16 +700,16 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
           {/* Reports Grid */}
           {filteredReports.length === 0 ? null : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredReports.map((report) => (
                 <Card key={report.id} className="card-brand hover:shadow-lg transition-all duration-300 hover-brand">
-                  <CardHeader>
+                  <CardHeader className="p-3 sm:p-4 pb-2">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <CardTitle className="text-primary">{report.date}</CardTitle>
-                        <CardDescription>Report #{report.id}</CardDescription>
+                        <CardTitle className="text-primary text-base sm:text-lg">{report.date}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">Report #{report.id}</CardDescription>
                       </div>
-                      <div className={`px-2 py-1 rounded-none text-xs font-medium whitespace-nowrap shrink-0 ${
+                      <div className={`px-1.5 py-0.5 rounded-none text-[10px] sm:text-xs font-medium whitespace-nowrap shrink-0 ${
                         report.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                         report.status === 'approved' ? 'bg-green-100 text-green-800' :
                         report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
@@ -720,8 +720,8 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm mb-4">
+                  <CardContent className="p-3 sm:p-4 pt-2">
+                    <div className="space-y-1.5 text-xs sm:text-sm mb-3">
                       <p>
                         <span className="font-medium text-brand-contrast">Power Interruptions:</span>{" "}
                         <span className={report.powerInterruptions?.noInterruptions === true ? "text-green-600" : "text-orange-600"}>
@@ -744,7 +744,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                     <Button
                       onClick={() => handleViewReport(report)}
                       variant="outline"
-                      className="w-full gap-2 bg-transparent hover:bg-primary/5 border-brand-subtle hover-brand focus-brand"
+                      className="w-full gap-2 bg-transparent hover:bg-primary/5 border-brand-subtle hover-brand focus-brand text-xs sm:text-sm h-9"
                     >
                       <Visibility sx={{ fontSize: 16 }} />
                       View Details

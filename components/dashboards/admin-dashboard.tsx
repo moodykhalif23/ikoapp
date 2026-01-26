@@ -676,7 +676,7 @@ ${new Date().toLocaleString()}
               }`}
               onClick={() => handleReportSelect(report)}
             >
-              <CardHeader className="pb-1 shrink-0 card-report-header">
+              <CardHeader className="p-3 sm:p-4 pb-1 shrink-0 card-report-header">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
@@ -697,7 +697,7 @@ ${new Date().toLocaleString()}
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col justify-between">
+              <CardContent className="p-3 sm:p-4 pt-2 flex-1 flex flex-col justify-between">
                 <div className="space-y-1.5 flex-1">
                   <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
                     <p className="line-clamp-1">
