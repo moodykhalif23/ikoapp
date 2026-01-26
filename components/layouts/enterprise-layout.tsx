@@ -131,8 +131,6 @@ export default function EnterpriseLayout({
         icon: BarChart3Icon,
         badge: null,
         roles: ["admin", "viewer"]
-      },
-      {
       }
     ]
 

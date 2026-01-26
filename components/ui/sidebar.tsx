@@ -78,8 +78,6 @@ export default function Sidebar({
         icon: BarChart3Icon,
         badge: null,
         roles: ["admin", "viewer"]
-      },
-      {
       }
     ]
 
