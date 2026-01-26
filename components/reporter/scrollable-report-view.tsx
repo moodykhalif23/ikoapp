@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CheckCircle, Close, ArrowBack, Download, Send } from "@mui/icons-material"
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 interface ScrollableReportViewProps {
   report: any
   onBack: () => void
-  onPDFExport?: (report: any) => void
+  onPDFExport?: (report: any, element: HTMLElement | null) => void
   onSubmitReport?: (reportId: string) => void
   canSubmit?: boolean
   showComments?: boolean
@@ -37,6 +37,7 @@ export default function ScrollableReportView({
   onAddComment
 }: ScrollableReportViewProps) {
   const [commentText, setCommentText] = useState("")
+  const printRef = useRef<HTMLDivElement | null>(null)
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -100,9 +101,9 @@ export default function ScrollableReportView({
 
 
   return (
-    <div className="h-full flex flex-col">
+    <div ref={printRef} className="h-full flex flex-col print-auto-height">
       {/* Header - Fixed */}
-      <div className="shrink-0 border-b bg-white backdrop-blur supports-backdrop-filter:bg-white/95">
+      <div className="shrink-0 border-b bg-white backdrop-blur supports-backdrop-filter:bg-white/95 print-hidden">
         <div className="flex items-center justify-between gap-3 p-2 sm:p-3">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <Button 
@@ -140,7 +141,7 @@ export default function ScrollableReportView({
             {onPDFExport && (
               <Button
                 variant="outline"
-                onClick={() => onPDFExport(report)}
+                onClick={() => onPDFExport(report, printRef.current)}
                 className="gap-2 h-9 sm:h-10 px-2 sm:px-3"
                 size="sm"
               >
@@ -152,9 +153,26 @@ export default function ScrollableReportView({
         </div>
       </div>
 
+      {/* Print Header */}
+      <div className="print-only border-b border-gray-200 bg-white">
+        <div className="flex items-center justify-between gap-4 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="IKO BRIQ" className="h-10 w-auto" />
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Production Report</p>
+              <p className="text-xs text-gray-500">Report {report.id}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-gray-600">{report.date}</p>
+            <p className="text-xs text-gray-500">Submitted by {report.reportedBy}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto bg-white">
-        <div className="p-2 sm:p-4 space-y-3 sm:space-y-4 pb-20 sm:pb-24">
+      <div className="flex-1 overflow-y-auto bg-white print-overflow-visible print-bg-white">
+        <div className="p-2 sm:p-4 space-y-3 sm:space-y-4 pb-20 sm:pb-24 print-p-0 print-space-tight">
           
           {/* Report Overview */}
           <div className="border-b border-gray-200 pb-2 sm:pb-4">
