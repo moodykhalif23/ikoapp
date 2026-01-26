@@ -237,9 +237,6 @@ export default function AnalyticsDashboard({
             <h2 className="mt-1 text-lg sm:text-3xl font-semibold text-foreground">
               Production performance at a glance
             </h2>
-            <p className="mt-1 text-[11px] sm:text-sm text-muted-foreground max-w-xl">
-              Track reports, workforce activity, and incident patterns with quick, data-rich snapshots.
-            </p>
           </div>
         </div>
       </div>
@@ -251,18 +248,18 @@ export default function AnalyticsDashboard({
           return (
             <Card key={index} className="card-brand card-elevated relative overflow-hidden border">
               <div className="absolute right-0 top-0 h-10 w-10 sm:h-16 sm:w-16 rounded-bl-full bg-emerald-50" />
-              <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-5 pt-2.5 sm:pt-4 relative">
+              <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-5 pt-3 sm:pt-4 relative">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-[11px] sm:text-sm font-medium text-brand-contrast">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast">
                     {kpi.title}
                   </CardTitle>
-                  <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-emerald-100/70 flex items-center justify-center">
-                    <Icon size={14} className="text-emerald-700" />
+                  <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-emerald-100/70 flex items-center justify-center">
+                    <Icon size={16} className="text-emerald-700" />
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative px-3 sm:px-5 pb-2.5 sm:pb-4">
-                <div className="text-lg sm:text-2xl font-semibold text-foreground mb-1">
+              <CardContent className="relative px-3 sm:px-5 pb-3 sm:pb-4">
+                <div className="text-base sm:text-2xl font-semibold text-foreground mb-1">
                   {kpi.value}
                 </div>
                 <div className="flex items-center gap-2">
@@ -274,7 +271,7 @@ export default function AnalyticsDashboard({
                           ? "destructive"
                           : "secondary"
                     }
-                    className="text-[9px] sm:text-[11px] px-2 py-0.5 rounded-none"
+                    className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-none"
                   >
                     {kpi.changeType === "positive" ? (
                       <TrendingUp size={12} className="mr-1" />
@@ -283,7 +280,7 @@ export default function AnalyticsDashboard({
                     ) : null}
                     {kpi.change}
                   </Badge>
-                  <span className="text-[10px] sm:text-xs text-muted-foreground">{kpi.description}</span>
+                  <span className="text-xs sm:text-xs text-muted-foreground">{kpi.description}</span>
                 </div>
               </CardContent>
             </Card>
