@@ -1,38 +1,32 @@
 export const printReportElement = (element: HTMLElement | null, title: string) => {
   if (!element || typeof window === "undefined") return
 
-  const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1024,height=768")
+  const printWindow = window.open("", "_blank", "width=1024,height=768")
   if (!printWindow) return
 
   const { document: printDocument } = printWindow
+  const styles = Array.from(document.querySelectorAll("style, link[rel='stylesheet']"))
+    .map((node) => node.outerHTML)
+    .join("")
+  const htmlClass = document.documentElement.className
+  const content = element.outerHTML
 
   printDocument.open()
-  printDocument.write("<!doctype html><html><head></head><body></body></html>")
-  printDocument.close()
-
-  const base = printDocument.createElement("base")
-  base.href = window.location.origin
-  printDocument.head.appendChild(base)
-
-  const titleTag = printDocument.createElement("title")
-  titleTag.textContent = title
-  printDocument.head.appendChild(titleTag)
-
-  const styleOverride = printDocument.createElement("style")
-  styleOverride.textContent = `
+  printDocument.write(`<!doctype html>
+    <html class="${htmlClass}">
+      <head>
+        <base href="${window.location.origin}">
+        <title>${title}</title>
+        ${styles}
+        <style>
     body { background: white !important; }
     .print-hidden { display: none !important; }
     .print-only { display: block !important; }
-  `
-  printDocument.head.appendChild(styleOverride)
-
-  const styles = document.querySelectorAll("style, link[rel='stylesheet']")
-  styles.forEach((node) => {
-    printDocument.head.appendChild(node.cloneNode(true))
-  })
-
-  const cloned = element.cloneNode(true)
-  printDocument.body.appendChild(cloned)
+        </style>
+      </head>
+      <body>${content}</body>
+    </html>`)
+  printDocument.close()
 
   const images = Array.from(printDocument.images)
   const waitForImages = images.map(
@@ -54,12 +48,20 @@ export const printReportElement = (element: HTMLElement | null, title: string) =
     printWindow.close()
   }
 
-  Promise.all([Promise.all(waitForImages), fontsReady]).then(() => {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        printWindow.focus()
-        printWindow.print()
-      }, 500)
+  const runPrint = () => {
+    Promise.all([Promise.all(waitForImages), fontsReady]).then(() => {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          printWindow.focus()
+          printWindow.print()
+        }, 300)
+      })
     })
-  })
+  }
+
+  if (printDocument.readyState === "complete") {
+    runPrint()
+  } else {
+    printWindow.addEventListener("load", runPrint, { once: true })
+  }
 }
