@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { User } from '@/lib/models'
+import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,13 +28,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase())
-    const expectedHeaders = ['name', 'email', 'role', 'employeetype', 'employeeid', 'department', 'phone', 'hiredate']
+    const normalizeHeader = (header: string) => header.trim().toLowerCase().replace(/\s+/g, '')
+    const rawHeaders = lines[0].split(',').map(h => h.trim())
+    const headers = rawHeaders.map(normalizeHeader)
+    const expectedHeaders = ['name', 'employeeid', 'phone']
 
-    // Validate headers (at least name and email are required)
-    if (!headers.includes('name') || !headers.includes('email')) {
+    // Validate headers (name, employee id, phone required)
+    if (!headers.includes('name') || !headers.includes('employeeid') || !headers.includes('phone')) {
       return NextResponse.json(
-        { error: 'CSV must contain at least "name" and "email" columns' },
+        { error: 'CSV must contain "Name", "Employee ID", and "Phone" columns' },
         { status: 400 }
       )
     }
@@ -98,9 +101,20 @@ export async function POST(request: NextRequest) {
       })
 
       // Validate required fields
-      if (!employeeData.name || !employeeData.email) {
-        errors.push(`Row ${i + 1}: Missing required fields (name or email)`)
+      if (!employeeData.name || !employeeData.employeeId || !employeeData.phone) {
+        errors.push(`Row ${i + 1}: Missing required fields (name, employee id, or phone)`)
         continue
+      }
+
+      if (!employeeData.email) {
+        const base = String(employeeData.employeeId).trim().toLowerCase().replace(/\s+/g, '')
+        let generated = `${base}@iko.local`
+        let suffix = 1
+        while (existingEmails.has(generated)) {
+          generated = `${base}-${suffix}@iko.local`
+          suffix += 1
+        }
+        employeeData.email = generated
       }
 
       // Check for duplicate emails
@@ -113,6 +127,7 @@ export async function POST(request: NextRequest) {
       employeeData.employeeType = employeeData.employeeType || 'permanent'
       employeeData.role = employeeData.role || 'viewer'
       employeeData.status = 'active'
+      employeeData.password = crypto.randomBytes(12).toString('hex')
 
       employees.push(employeeData)
       existingEmails.add(employeeData.email)

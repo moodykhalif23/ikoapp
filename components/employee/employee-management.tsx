@@ -32,7 +32,8 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Person as PersonIcon,
-  UploadFile as UploadFileIcon
+  UploadFile as UploadFileIcon,
+  Download as DownloadIcon
 } from '@mui/icons-material'
 
 interface Employee {
@@ -180,6 +181,23 @@ export default function EmployeeManagement() {
     }
   }
 
+  const handleDownloadTemplate = () => {
+    const csvContent = [
+      'Name,Employee ID,Phone',
+      'John Doe,EMP001,0712345678'
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'employees-template.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   const handleDelete = async (employee: Employee) => {
     if (!confirm(`Are you sure you want to delete ${employee.name}?`)) {
       return
@@ -245,7 +263,7 @@ export default function EmployeeManagement() {
             Add
           </Box>
         </Button>
-        <Box>
+        <Box display="flex" alignItems="center">
           <input
             id="employee-csv-upload"
             type="file"
@@ -259,6 +277,20 @@ export default function EmployeeManagement() {
               e.currentTarget.value = ''
             }}
           />
+          <Button
+            variant="text"
+            startIcon={<DownloadIcon />}
+            onClick={handleDownloadTemplate}
+            sx={{ ml: { xs: 0, sm: 1 } }}
+            size="medium"
+          >
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+              Download CSV Template
+            </Box>
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+              Template
+            </Box>
+          </Button>
           <Button
             variant="outlined"
             startIcon={<UploadFileIcon />}
