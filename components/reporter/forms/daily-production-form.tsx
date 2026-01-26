@@ -29,6 +29,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
   const [machines, setMachines] = useState<IMachine[]>([])
   const [loading, setLoading] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const sanitizeDigits = (value: string) => value.replace(/[^\d]/g, "")
 
   // Fetch machines from database
   useEffect(() => {
@@ -245,10 +246,12 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         <div className="space-y-2">
           <label className="text-lg sm:text-xl font-semibold text-foreground">KPLC Meter Reading</label>
           <Input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="\d*"
             placeholder="Enter meter reading"
             value={kplcMeter}
-            onChange={(e) => setKplcMeter(e.target.value)}
+            onChange={(e) => setKplcMeter(sanitizeDigits(e.target.value))}
             className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
           />
         </div>

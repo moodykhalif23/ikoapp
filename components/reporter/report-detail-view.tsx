@@ -29,6 +29,25 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
     })
   }
 
+  const formatIncidentType = (type?: string) => {
+    if (!type) return "N/A"
+    const normalized = type.toLowerCase()
+    const map: Record<string, string> = {
+      equipment: "Equipment Failure",
+      injury: "Injury",
+      "near-miss": "Near Miss",
+      environmental: "Environmental",
+      security: "Security",
+      other: "Other",
+      safety: "Safety",
+    }
+    if (map[normalized]) return map[normalized]
+    return normalized
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -270,7 +289,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Incident Type</p>
-                  <p className="text-foreground">{report.incidentReport?.incidentType}</p>
+                  <p className="text-foreground">{formatIncidentType(report.incidentReport?.incidentType)}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Severity</p>

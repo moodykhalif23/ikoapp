@@ -36,6 +36,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const sanitizeDigits = (value: string) => value.replace(/[^\d]/g, "")
 
   // Fetch machines from database
   useEffect(() => {
@@ -285,10 +286,12 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                         <div className="space-y-2">
                           <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Meter Reading</label>
                           <Input
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="\d*"
                             placeholder="Enter meter reading"
                             value={interruption.kplcMeter}
-                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeter', e.target.value)}
+                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeter', sanitizeDigits(e.target.value))}
                             className="bg-background/80 backdrop-blur-sm"
                           />
                         </div>

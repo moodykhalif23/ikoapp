@@ -15,7 +15,6 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
     hasIncident: data?.hasIncident || "no",
     incidentType: data?.incidentType || "",
     incidentTime: data?.incidentTime || "",
-    injuryLevel: data?.injuryLevel || "none",
     description: data?.description || "",
     actionTaken: data?.actionTaken || "",
   })
@@ -25,7 +24,6 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
       hasIncident: data?.hasIncident || "no",
       incidentType: data?.incidentType || "",
       incidentTime: data?.incidentTime || "",
-      injuryLevel: data?.injuryLevel || "none",
       description: data?.description || "",
       actionTaken: data?.actionTaken || "",
     })
@@ -80,7 +78,6 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   <option value="">Select incident type</option>
                   <option value="equipment">Equipment Failure</option>
                   <option value="injury">Injury</option>
-                  <option value="near-miss">Near Miss</option>
                   <option value="environmental">Environmental</option>
                   <option value="other">Other</option>
                 </select>
@@ -95,20 +92,6 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
                 />
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-lg sm:text-xl font-semibold text-foreground">Injury Level</label>
-              <select
-                className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                value={formData.injuryLevel}
-                onChange={(e) => setFormData({ ...formData, injuryLevel: e.target.value })}
-              >
-                <option value="none">No Injury</option>
-                <option value="minor">Minor</option>
-                <option value="moderate">Moderate</option>
-                <option value="severe">Severe</option>
-              </select>
             </div>
 
             <div className="space-y-2">

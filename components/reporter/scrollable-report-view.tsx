@@ -56,6 +56,25 @@ export default function ScrollableReportView({
     })
   }
 
+  const formatIncidentType = (type?: string) => {
+    if (!type) return "N/A"
+    const normalized = type.toLowerCase()
+    const map: Record<string, string> = {
+      equipment: "Equipment Failure",
+      injury: "Injury",
+      "near-miss": "Near Miss",
+      environmental: "Environmental",
+      security: "Security",
+      other: "Other",
+      safety: "Safety",
+    }
+    if (map[normalized]) return map[normalized]
+    return normalized
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  }
+
   const handleAddComment = () => {
     if (commentText.trim() && onAddComment) {
       onAddComment(report.id, commentText.trim())
@@ -306,7 +325,7 @@ export default function ScrollableReportView({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                       <div>
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Incident Type</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport?.incidentType}</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatIncidentType(report.incidentReport?.incidentType)}</p>
                       </div>
                       <div>
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Severity</p>
@@ -336,7 +355,7 @@ export default function ScrollableReportView({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                       <div>
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Incident Type</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.incidentType || "N/A"}</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatIncidentType(incidentData.incidentType)}</p>
                       </div>
                       <div>
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Time of Incident</p>
@@ -344,10 +363,6 @@ export default function ScrollableReportView({
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
-                      <div>
-                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">Injury Level</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.injuryLevel || "N/A"}</p>
-                      </div>
                       <div>
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Action Taken</p>
                         <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.actionTaken || "N/A"}</p>
