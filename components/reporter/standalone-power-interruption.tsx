@@ -29,7 +29,8 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       id: string
       occurredAt: string
       duration: string
-      kplcMeter: string
+      kplcMeterStart: string
+      kplcMeterEnd: string
       affectedMachines: string[]
     }>,
     submittedAt: null as string | null,
@@ -67,7 +68,13 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       .then((report) => {
         if (!isMounted || !report) return
         const powerData = report.powerInterruptions || {}
-        const interruptions = Array.isArray(powerData.interruptions) ? powerData.interruptions : []
+        const interruptions = Array.isArray(powerData.interruptions)
+          ? powerData.interruptions.map((item: any) => ({
+              ...item,
+              kplcMeterStart: item.kplcMeterStart || item.kplcMeter || "",
+              kplcMeterEnd: item.kplcMeterEnd || "",
+            }))
+          : []
         setNoInterruptions(!!powerData.noInterruptions)
         setFormData((prev) => ({
           ...prev,
@@ -109,7 +116,8 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       id: `INT-${Date.now()}-${Math.random()}`,
       occurredAt: "",
       duration: "",
-      kplcMeter: "",
+      kplcMeterStart: "",
+      kplcMeterEnd: "",
       affectedMachines: [] as string[]
     }
     setFormData({
@@ -283,12 +291,23 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Meter Reading</label>
+                          <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Meter Start</label>
                           <Input
                             type="text"
-                            placeholder="Enter meter reading"
-                            value={interruption.kplcMeter}
-                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeter', e.target.value)}
+                            placeholder="Enter start reading"
+                            value={interruption.kplcMeterStart}
+                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeterStart', e.target.value)}
+                            className="bg-background/80 backdrop-blur-sm"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Meter End</label>
+                          <Input
+                            type="text"
+                            placeholder="Enter end reading"
+                            value={interruption.kplcMeterEnd}
+                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeterEnd', e.target.value)}
                             className="bg-background/80 backdrop-blur-sm"
                           />
                         </div>

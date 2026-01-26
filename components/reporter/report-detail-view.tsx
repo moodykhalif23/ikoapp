@@ -29,6 +29,15 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
     })
   }
 
+  const formatMeterRange = (start?: string, end?: string, legacy?: string) => {
+    if (start || end) {
+      return `Start: ${start || "N/A"} · End: ${end || "N/A"}`
+    }
+    if (legacy) {
+      return `Reading: ${legacy}`
+    }
+    return null
+  }
   const formatIncidentType = (type?: string) => {
     if (!type) return "N/A"
     const normalized = type.toLowerCase()
@@ -119,10 +128,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                         <p className="text-foreground">{interruption.duration} minutes</p>
                       </div>
                     </div>
-                    {interruption.kplcMeter && (
+                    {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter) && (
                       <div className="mb-4">
-                        <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
-                        <p className="text-foreground">{interruption.kplcMeter}</p>
+                        <p className="text-sm font-medium text-muted-foreground">KPLC Meter</p>
+                        <p className="text-foreground">
+                          {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter)}
+                        </p>
                       </div>
                     )}
                     {interruption.affectedMachines?.length > 0 && (
@@ -152,10 +163,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                         <p className="text-sm font-medium text-muted-foreground">Duration</p>
                         <p className="text-foreground">{report.powerInterruptions?.duration} minutes</p>
                       </div>
-                      {report.powerInterruptions?.kplcMeter && (
+                      {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined) && (
                         <div>
-                          <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
-                          <p className="text-foreground">{report.powerInterruptions?.kplcMeter}</p>
+                          <p className="text-sm font-medium text-muted-foreground">KPLC Meter</p>
+                          <p className="text-foreground">
+                            {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined)}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -249,10 +262,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   ))}
                 </div>
               </div>
-              {report.dailyProduction?.kplcMeter && (
+              {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined) && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">KPLC Meter Reading</p>
-                  <p className="text-foreground">{report.dailyProduction.kplcMeter}</p>
+                  <p className="text-sm font-medium text-muted-foreground">KPLC Meter</p>
+                  <p className="text-foreground">
+                    {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined)}
+                  </p>
                 </div>
               )}
               {report.dailyProduction?.qualityIssues && (

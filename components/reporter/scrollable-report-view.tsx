@@ -75,6 +75,16 @@ export default function ScrollableReportView({
       .join(" ")
   }
 
+  const formatMeterRange = (start?: string, end?: string, legacy?: string) => {
+    if (start || end) {
+      return `Start: ${start || "N/A"} · End: ${end || "N/A"}`
+    }
+    if (legacy) {
+      return `Reading: ${legacy}`
+    }
+    return null
+  }
+
   const handleAddComment = () => {
     if (commentText.trim() && onAddComment) {
       onAddComment(report.id, commentText.trim())
@@ -198,10 +208,12 @@ export default function ScrollableReportView({
                           <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{interruption.duration} minutes</p>
                         </div>
                       </div>
-                      {interruption.kplcMeter && (
+                      {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter) && (
                         <div className="mb-2 sm:mb-4">
-                          <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter Reading</p>
-                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{interruption.kplcMeter}</p>
+                          <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter</p>
+                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">
+                            {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter)}
+                          </p>
                         </div>
                       )}
                       {interruption.affectedMachines?.length > 0 && (
@@ -230,10 +242,12 @@ export default function ScrollableReportView({
                       <p className="text-[11px] sm:text-xs font-medium text-gray-600">Duration</p>
                       <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.duration} minutes</p>
                     </div>
-                    {report.powerInterruptions?.kplcMeter && (
+                    {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined) && (
                       <div>
-                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter Reading</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.kplcMeter}</p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">
+                          {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined)}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -287,10 +301,12 @@ export default function ScrollableReportView({
                     ))}
                   </div>
                 </div>
-                {report.dailyProduction?.kplcMeter && (
+                {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined) && (
                 <div className="mt-2 sm:mt-4">
-                  <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter Reading</p>
-                  <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.dailyProduction.kplcMeter}</p>
+                  <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter</p>
+                  <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">
+                    {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined)}
+                  </p>
                 </div>
               )}
               {report.dailyProduction?.qualityIssues && (

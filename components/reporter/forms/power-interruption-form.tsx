@@ -23,7 +23,8 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
     occurredAt: data?.occurredAt || "",
     duration: data?.duration || "",
     affectedMachines: data?.affectedMachines || [],
-    kplcMeter: data?.kplcMeter || "",
+    kplcMeterStart: data?.kplcMeterStart || data?.kplcMeter || "",
+    kplcMeterEnd: data?.kplcMeterEnd || "",
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -70,7 +71,8 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
       occurredAt: "",
       duration: "",
       affectedMachines: [],
-      kplcMeter: "",
+      kplcMeterStart: "",
+      kplcMeterEnd: "",
     })
   }
 
@@ -126,12 +128,23 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
               </div>
 
               <div className="space-y-2">
-                <label className="form-label-large text-foreground">KPLC Meter Reading</label>
+                <label className="form-label-large text-foreground">KPLC Meter Start</label>
                 <Input
                   type="text"
-                  placeholder="Enter meter reading"
-                  value={formData.kplcMeter}
-                  onChange={(e) => setFormData({ ...formData, kplcMeter: e.target.value })}
+                  placeholder="Enter start reading"
+                  value={formData.kplcMeterStart}
+                  onChange={(e) => setFormData({ ...formData, kplcMeterStart: e.target.value })}
+                  className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="form-label-large text-foreground">KPLC Meter End</label>
+                <Input
+                  type="text"
+                  placeholder="Enter end reading"
+                  value={formData.kplcMeterEnd}
+                  onChange={(e) => setFormData({ ...formData, kplcMeterEnd: e.target.value })}
                   className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
                 />
               </div>

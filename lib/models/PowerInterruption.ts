@@ -6,6 +6,8 @@ export interface IPowerInterruption extends Document {
   occurredAt?: string
   duration?: number
   affectedMachines?: string[]
+  kplcMeterStart?: string
+  kplcMeterEnd?: string
   kplcMeter?: number
   createdAt: Date
   updatedAt: Date
@@ -49,6 +51,14 @@ const PowerInterruptionSchema: Schema = new Schema({
     type: String,
     trim: true
   }],
+  kplcMeterStart: {
+    type: String,
+    trim: true
+  },
+  kplcMeterEnd: {
+    type: String,
+    trim: true
+  },
   kplcMeter: {
     type: Number,
     min: [0, 'KPLC meter reading cannot be negative']

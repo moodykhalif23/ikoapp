@@ -25,7 +25,8 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
     data?.products || [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
   )
   const [qualityIssues, setQualityIssues] = useState(data?.qualityIssues || "")
-  const [kplcMeter, setKplcMeter] = useState(data?.kplcMeter || "")
+  const [kplcMeterStart, setKplcMeterStart] = useState(data?.kplcMeterStart || data?.kplcMeter || "")
+  const [kplcMeterEnd, setKplcMeterEnd] = useState(data?.kplcMeterEnd || "")
   const [machines, setMachines] = useState<IMachine[]>([])
   const [loading, setLoading] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -58,7 +59,8 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         : [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
     )
     setQualityIssues(data?.qualityIssues || "")
-    setKplcMeter(data?.kplcMeter || "")
+    setKplcMeterStart(data?.kplcMeterStart || data?.kplcMeter || "")
+    setKplcMeterEnd(data?.kplcMeterEnd || "")
   }, [data])
 
   const validateForm = () => {
@@ -113,7 +115,8 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
       onComplete({
         products,
         qualityIssues,
-        kplcMeter,
+        kplcMeterStart,
+        kplcMeterEnd,
       })
     }
   }
@@ -243,12 +246,23 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         </Button>
 
         <div className="space-y-2">
-          <label className="text-lg sm:text-xl font-semibold text-foreground">KPLC Meter Reading</label>
+          <label className="text-lg sm:text-xl font-semibold text-foreground">KPLC Meter Start</label>
           <Input
             type="text"
-            placeholder="Enter meter reading"
-            value={kplcMeter}
-            onChange={(e) => setKplcMeter(e.target.value)}
+            placeholder="Enter start reading"
+            value={kplcMeterStart}
+            onChange={(e) => setKplcMeterStart(e.target.value)}
+            className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-lg sm:text-xl font-semibold text-foreground">KPLC Meter End</label>
+          <Input
+            type="text"
+            placeholder="Enter end reading"
+            value={kplcMeterEnd}
+            onChange={(e) => setKplcMeterEnd(e.target.value)}
             className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
           />
         </div>
