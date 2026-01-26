@@ -26,16 +26,54 @@ export default function AnalyticsDashboard({
   timeEntries = [],
   users = []
 }: AnalyticsDashboardProps) {
+  const now = new Date()
+  const rangeDays = 30
+  const rangeStart = new Date(now)
+  rangeStart.setDate(rangeStart.getDate() - rangeDays)
+  const prevRangeStart = new Date(rangeStart)
+  prevRangeStart.setDate(prevRangeStart.getDate() - rangeDays)
+
+  const inRange = (value?: string | Date) => {
+    if (!value) return false
+    const date = new Date(value)
+    return date >= rangeStart && date < now
+  }
+
+  const inPrevRange = (value?: string | Date) => {
+    if (!value) return false
+    const date = new Date(value)
+    return date >= prevRangeStart && date < rangeStart
+  }
+
+  const getReportDate = (report: any) => report.createdAt || report.date
+
   // Calculate production data from reports
-  const productionData = reports.slice(-6).map((report: any, index: number) => {
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    const date = new Date(report.createdAt || report.date)
-    return {
-      month: monthNames[date.getMonth()],
-      reports: 1,
-      incidents: report.incidentReport?.incidents?.length || 0
-    }
-  })
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const productionData = (() => {
+    const buckets = new Map<string, { month: string; reports: number; incidents: number }>()
+    const sorted = [...reports].sort((a, b) => new Date(getReportDate(a)).getTime() - new Date(getReportDate(b)).getTime())
+    sorted.forEach((report) => {
+      const date = new Date(getReportDate(report))
+      if (Number.isNaN(date.getTime())) return
+      const key = `${date.getFullYear()}-${date.getMonth()}`
+      const monthLabel = monthNames[date.getMonth()]
+      const incidents = Array.isArray(report.incidentReport?.incidents)
+        ? report.incidentReport.incidents.length
+        : report.incidentReport?.incidentType && report.incidentReport.incidentType !== "None"
+          ? 1
+          : report.incidentReport?.hasIncident === "yes"
+            ? 1
+            : 0
+      const existing = buckets.get(key)
+      if (existing) {
+        existing.reports += 1
+        existing.incidents += incidents
+      } else {
+        buckets.set(key, { month: monthLabel, reports: 1, incidents })
+      }
+    })
+    return Array.from(buckets.values()).slice(-6)
+  })()
 
   // Calculate time data from time entries
   const timeData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => {
@@ -88,9 +126,9 @@ export default function AnalyticsDashboard({
 
   // Calculate KPIs
   const totalReports = reports.length
-  const activeEmployees = timeEntries.length
-    ? timeEntries.filter((entry: any) => entry.status === "active").length
-    : new Set(reports.map((report: any) => report.reportedBy).filter(Boolean)).size
+  const reportsInRange = reports.filter((report) => inRange(getReportDate(report))).length
+  const reportsPrevRange = reports.filter((report) => inPrevRange(getReportDate(report))).length
+
   const totalIncidents = reports.reduce((sum: number, report: any) => {
     const incidentReport = report.incidentReport
     if (!incidentReport) return sum
@@ -106,28 +144,105 @@ export default function AnalyticsDashboard({
     return sum
   }, 0)
 
+  const incidentsInRange = reports.reduce((sum: number, report: any) => {
+    if (!inRange(getReportDate(report))) return sum
+    const incidentReport = report.incidentReport
+    if (!incidentReport) return sum
+    if (Array.isArray(incidentReport.incidents) && incidentReport.incidents.length > 0) {
+      return sum + incidentReport.incidents.length
+    }
+    if (incidentReport.incidentType && incidentReport.incidentType !== "None") {
+      return sum + 1
+    }
+    if (incidentReport.hasIncident === "yes") {
+      return sum + 1
+    }
+    return sum
+  }, 0)
+
+  const incidentsPrevRange = reports.reduce((sum: number, report: any) => {
+    if (!inPrevRange(getReportDate(report))) return sum
+    const incidentReport = report.incidentReport
+    if (!incidentReport) return sum
+    if (Array.isArray(incidentReport.incidents) && incidentReport.incidents.length > 0) {
+      return sum + incidentReport.incidents.length
+    }
+    if (incidentReport.incidentType && incidentReport.incidentType !== "None") {
+      return sum + 1
+    }
+    if (incidentReport.hasIncident === "yes") {
+      return sum + 1
+    }
+    return sum
+  }, 0)
+
+  const hasTimeEntries = timeEntries.length > 0
+  const activeTitle = hasTimeEntries ? "Active Employees" : "Active Reporters"
+  const activeDescription = hasTimeEntries ? "Currently working" : "Reports in last 30 days"
+  const activeEmployees = hasTimeEntries
+    ? timeEntries.filter((entry: any) => entry.status === "active").length
+    : new Set(
+        reports
+          .filter((report) => inRange(getReportDate(report)))
+          .map((report: any) => report.reportedBy)
+          .filter(Boolean),
+      ).size
+  const activePrev = hasTimeEntries
+    ? new Set(
+        timeEntries
+          .filter((entry: any) => inPrevRange(entry.clockInTime))
+          .map((entry: any) => entry.employeeId || entry.employeeName)
+          .filter(Boolean),
+      ).size
+    : new Set(
+        reports
+          .filter((report) => inPrevRange(getReportDate(report)))
+          .map((report: any) => report.reportedBy)
+          .filter(Boolean),
+      ).size
+
+  const formatChange = (current: number, previous: number) => {
+    if (!previous) return { label: "N/A", type: "neutral" as const }
+    const delta = ((current - previous) / previous) * 100
+    const label = `${delta >= 0 ? "+" : ""}${delta.toFixed(1)}%`
+    return { label, type: delta >= 0 ? ("positive" as const) : ("negative" as const) }
+  }
+
+  const reportChange = formatChange(reportsInRange, reportsPrevRange)
+  const activeChange = formatChange(activeEmployees, activePrev)
+  const incidentChange = formatChange(incidentsInRange, incidentsPrevRange)
+
+  const timeEntriesInRange = timeEntries.filter((entry: any) => inRange(entry.clockInTime))
+  const avgHours =
+    timeEntriesInRange.length > 0
+      ? timeEntriesInRange.reduce((sum: number, entry: any) => sum + (entry.hoursWorked || 0), 0) /
+        timeEntriesInRange.length
+      : null
+  const reportsPerDay = rangeDays ? reportsInRange / rangeDays : null
+  const incidentRate = reportsInRange ? incidentsInRange / reportsInRange : null
+
   const kpis = [
     {
       title: "Total Reports",
       value: totalReports.toString(),
-      change: "+12%",
-      changeType: "positive" as const,
+      change: reportChange.label,
+      changeType: reportChange.type,
       icon: BarChart3,
       description: "This month"
     },
     {
-      title: "Active Employees",
+      title: activeTitle,
       value: activeEmployees.toString(),
-      change: "+2",
-      changeType: "positive" as const,
+      change: activeChange.label,
+      changeType: activeChange.type,
       icon: Users,
-      description: "Currently working"
+      description: activeDescription
     },
     {
       title: "Incidents",
       value: totalIncidents.toString(),
-      change: "-15%",
-      changeType: "negative" as const,
+      change: incidentChange.label,
+      changeType: incidentChange.type,
       icon: AlertTriangle,
       description: "This month"
     }
@@ -174,14 +289,20 @@ export default function AnalyticsDashboard({
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge
-                    variant={kpi.changeType === 'positive' ? 'default' : 'destructive'}
+                    variant={
+                      kpi.changeType === "positive"
+                        ? "default"
+                        : kpi.changeType === "negative"
+                          ? "destructive"
+                          : "secondary"
+                    }
                     className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-none"
                   >
-                    {kpi.changeType === 'positive' ? (
+                    {kpi.changeType === "positive" ? (
                       <TrendingUp size={12} className="mr-1" />
-                    ) : (
+                    ) : kpi.changeType === "negative" ? (
                       <TrendingDown size={12} className="mr-1" />
-                    )}
+                    ) : null}
                     {kpi.change}
                   </Badge>
                   <span className="text-[11px] sm:text-xs text-muted-foreground">{kpi.description}</span>
@@ -304,14 +425,14 @@ export default function AnalyticsDashboard({
           <CardContent className="space-y-2 sm:space-y-3 px-4 sm:px-6 pb-4 sm:pb-6">
             <div className="flex items-center justify-between p-2.5 sm:p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-3">
-                <Users size={18} className="text-blue-600" />
+                <Clock size={18} className="text-blue-600" />
                 <div>
-                  <p className="text-sm sm:text-base font-medium">Employee Attendance</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">On-time rate</p>
+                  <p className="text-sm sm:text-base font-medium">Avg Hours / Shift</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Last 30 days</p>
                 </div>
               </div>
               <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-[11px] sm:text-xs">
-                94.2%
+                {avgHours !== null ? `${avgHours.toFixed(1)}h` : "N/A"}
               </Badge>
             </div>
 
@@ -319,12 +440,12 @@ export default function AnalyticsDashboard({
               <div className="flex items-center gap-3">
                 <TrendingUp size={18} className="text-purple-600" />
                 <div>
-                  <p className="text-sm sm:text-base font-medium">Productivity Score</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">vs last month</p>
+                  <p className="text-sm sm:text-base font-medium">Reports / Day</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Last 30 days</p>
                 </div>
               </div>
               <Badge variant="secondary" className="bg-purple-100 text-purple-800 text-[11px] sm:text-xs">
-                +5.3%
+                {reportsPerDay !== null ? reportsPerDay.toFixed(2) : "N/A"}
               </Badge>
             </div>
 
@@ -332,12 +453,12 @@ export default function AnalyticsDashboard({
               <div className="flex items-center gap-3">
                 <AlertTriangle size={18} className="text-orange-600" />
                 <div>
-                  <p className="text-sm sm:text-base font-medium">Safety Incidents</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">This quarter</p>
+                  <p className="text-sm sm:text-base font-medium">Incident Rate</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Per report (30 days)</p>
                 </div>
               </div>
               <Badge variant="secondary" className="bg-orange-100 text-orange-800 text-[11px] sm:text-xs">
-                2
+                {incidentRate !== null ? incidentRate.toFixed(2) : "N/A"}
               </Badge>
             </div>
           </CardContent>
