@@ -252,7 +252,14 @@ export default function EmployeeManagement() {
           <PersonIcon />
           Employee Management
         </Typography>
-        <Box display="flex" flexWrap="wrap" alignItems="center" gap={1} justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}>
+        <Box
+          display="grid"
+          gap={1}
+          sx={{
+            width: { xs: '100%', sm: 'auto' },
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, auto)' }
+          }}
+        >
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -260,9 +267,11 @@ export default function EmployeeManagement() {
             sx={{ 
               bgcolor: '#2e7d32', 
               '&:hover': { bgcolor: '#1b5e20' },
-              px: { xs: 2, sm: 3 }
+              px: { xs: 2, sm: 2.5 },
+              py: { xs: 0.75, sm: 0.85 }
             }}
-            size="medium"
+            size="small"
+            fullWidth
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
               Add Employee
@@ -291,9 +300,11 @@ export default function EmployeeManagement() {
             sx={{ 
               bgcolor: '#2e7d32', 
               '&:hover': { bgcolor: '#1b5e20' },
-              px: { xs: 2, sm: 3 }
+              px: { xs: 2, sm: 2.5 },
+              py: { xs: 0.75, sm: 0.85 }
             }}
-            size="medium"
+            size="small"
+            fullWidth
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
               Download CSV Template
@@ -312,10 +323,12 @@ export default function EmployeeManagement() {
             sx={{ 
               bgcolor: '#2e7d32', 
               '&:hover': { bgcolor: '#1b5e20' },
-              px: { xs: 2, sm: 3 }
+              px: { xs: 2, sm: 2.5 },
+              py: { xs: 0.75, sm: 0.85 }
             }}
-            size="medium"
+            size="small"
             disabled={importing}
+            fullWidth
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
               {importing ? 'Importing...' : 'Import CSV'}
