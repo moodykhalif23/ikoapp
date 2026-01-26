@@ -128,3 +128,23 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to update notifications' }, { status: 500 })
   }
 }
+
+// DELETE - Remove a notification
+export async function DELETE(request: NextRequest) {
+  try {
+    await connectToDatabase()
+    const body = await request.json()
+    const { notificationId } = body
+
+    if (!notificationId) {
+      return NextResponse.json({ error: 'Notification ID is required' }, { status: 400 })
+    }
+
+    await Notification.deleteOne({ _id: notificationId })
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting notification:', error)
+    return NextResponse.json({ error: 'Failed to delete notification' }, { status: 500 })
+  }
+}

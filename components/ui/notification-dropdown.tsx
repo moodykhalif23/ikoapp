@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { 
   Notifications as BellIcon, 
   Check as CheckIcon, 
-  DoneAll as CheckCheckIcon 
+  DoneAll as CheckCheckIcon,
+  DeleteOutline as DeleteIcon
 } from "@mui/icons-material"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -125,9 +126,9 @@ export default function NotificationDropdown({ user, className }: NotificationDr
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          markAllAsRead: true, 
-          userRole: user?.role, 
-          userId: user?._id 
+          markAllAsRead: true,
+          userRole,
+          userId
         })
       })
 
@@ -182,6 +183,26 @@ export default function NotificationDropdown({ user, className }: NotificationDr
         new CustomEvent("ikoapp:notification-target", { detail: target })
       )
       setIsOpen(false)
+    }
+  }
+
+  const deleteNotification = async (notificationId: string) => {
+    try {
+      const response = await fetch('/api/notifications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notificationId })
+      })
+
+      if (response.ok) {
+        setNotifications(prev => {
+          const next = prev.filter(n => n._id !== notificationId)
+          setUnreadCount(next.filter((n) => !n.isRead).length || 0)
+          return next
+        })
+      }
+    } catch (error) {
+      console.error('Error deleting notification:', error)
     }
   }
 
@@ -362,7 +383,7 @@ export default function NotificationDropdown({ user, className }: NotificationDr
               {notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  className={`p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
+                  className={`group p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
                     !notification.isRead ? 'bg-blue-50/50' : ''
                   }`}
                   onClick={() => handleNotificationClick(notification)}
@@ -386,19 +407,34 @@ export default function NotificationDropdown({ user, className }: NotificationDr
                         {formatTimeAgo(notification.createdAt)}
                       </p>
                     </div>
-                    {!notification.isRead && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-auto p-1 opacity-0 group-hover:opacity-100"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          markAsRead(notification._id)
-                        }}
-                      >
-                        <CheckIcon sx={{ fontSize: 14 }} />
-                      </Button>
-                    )}
+                    <div className="flex flex-col items-end gap-1">
+                      {!notification.isRead && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-1 opacity-0 group-hover:opacity-100"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            markAsRead(notification._id)
+                          }}
+                        >
+                          <CheckIcon sx={{ fontSize: 14 }} />
+                        </Button>
+                      )}
+                      {notification.type === "report_submitted" && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-1 text-muted-foreground opacity-0 group-hover:opacity-100"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            deleteNotification(notification._id)
+                          }}
+                        >
+                          <DeleteIcon sx={{ fontSize: 14 }} />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
