@@ -142,6 +142,26 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
 
   // Get unique reporters for filter dropdown
   const uniqueReporters = [...new Set(allReports.map(r => r.reportedBy))].filter(Boolean)
+  const now = new Date()
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  const weeklyReportsCount = allReports.filter((report) => {
+    const reportDate = new Date(report.date || report.createdAt)
+    return reportDate >= weekAgo && reportDate <= now
+  }).length
+  const incidentsCount = allReports.reduce((sum, report) => {
+    const incidentReport = report.incidentReport
+    if (!incidentReport) return sum
+    if (Array.isArray(incidentReport.incidents) && incidentReport.incidents.length > 0) {
+      return sum + incidentReport.incidents.length
+    }
+    if (incidentReport.incidentType && incidentReport.incidentType !== "None") {
+      return sum + 1
+    }
+    if (incidentReport.hasIncident === "yes") {
+      return sum + 1
+    }
+    return sum
+  }, 0)
 
   const handleAddComment = (reportId: string, comment: string) => {
     const submit = async () => {
@@ -542,28 +562,26 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
         <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Total Reports
-              <TrendingUp size={16} className="text-primary" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-base sm:text-lg font-bold text-foreground">{allReports.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">+2 this week</p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
-          <CardHeader className="pb-2 sm:pb-3">
-            <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
-              Active Reporters
+              Attendance
               <PeopleIcon sx={{ fontSize: 16, color: "var(--accent)" }} />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-base sm:text-lg font-bold text-foreground">
-              {new Set(allReports.map((r) => r.reportedBy)).size}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">This month</p>
+            <div className="text-base sm:text-lg font-bold text-foreground">{weeklyReportsCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">This week</p>
+          </CardContent>
+        </Card>
+
+        <Card className="card-brand card-elevated" sx={{ p: { xs: 1, sm: 2.5 }, gap: { xs: 0.5, sm: 1.5 } }}>
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
+              Incidents
+              <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-base sm:text-lg font-bold text-foreground">{incidentsCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">All reports</p>
           </CardContent>
         </Card>
 
@@ -571,7 +589,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-xs sm:text-sm font-medium text-brand-contrast flex items-center justify-between">
               Total Reports
-              <WarningIcon sx={{ fontSize: 16, color: "#ef4444" }} />
+              <TrendingUp size={16} className="text-primary" />
             </CardTitle>
           </CardHeader>
           <CardContent>

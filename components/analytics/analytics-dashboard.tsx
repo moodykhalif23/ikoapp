@@ -176,30 +176,8 @@ export default function AnalyticsDashboard({
     return sum
   }, 0)
 
-  const hasTimeEntries = timeEntries.length > 0
-  const activeTitle = hasTimeEntries ? "Active Employees" : "Active Reporters"
-  const activeDescription = hasTimeEntries ? "Currently working" : "Reports in last 30 days"
-  const activeEmployees = hasTimeEntries
-    ? timeEntries.filter((entry: any) => entry.status === "active").length
-    : new Set(
-        reports
-          .filter((report) => inRange(getReportDate(report)))
-          .map((report: any) => report.reportedBy)
-          .filter(Boolean),
-      ).size
-  const activePrev = hasTimeEntries
-    ? new Set(
-        timeEntries
-          .filter((entry: any) => inPrevRange(entry.clockInTime))
-          .map((entry: any) => entry.employeeId || entry.employeeName)
-          .filter(Boolean),
-      ).size
-    : new Set(
-        reports
-          .filter((report) => inPrevRange(getReportDate(report)))
-          .map((report: any) => report.reportedBy)
-          .filter(Boolean),
-      ).size
+  const productionReports = reportsInRange
+  const productionPrev = reportsPrevRange
 
   const formatChange = (current: number, previous: number) => {
     if (!previous) return { label: "N/A", type: "neutral" as const }
@@ -209,7 +187,7 @@ export default function AnalyticsDashboard({
   }
 
   const reportChange = formatChange(reportsInRange, reportsPrevRange)
-  const activeChange = formatChange(activeEmployees, activePrev)
+  const activeChange = formatChange(productionReports, productionPrev)
   const incidentChange = formatChange(incidentsInRange, incidentsPrevRange)
 
   const timeEntriesInRange = timeEntries.filter((entry: any) => inRange(entry.clockInTime))
@@ -231,12 +209,12 @@ export default function AnalyticsDashboard({
       description: "This month"
     },
     {
-      title: activeTitle,
-      value: activeEmployees.toString(),
+      title: "Production Reports",
+      value: productionReports.toString(),
       change: activeChange.label,
       changeType: activeChange.type,
       icon: Users,
-      description: activeDescription
+      description: "Last 30 days"
     },
     {
       title: "Incidents",
