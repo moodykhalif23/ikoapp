@@ -376,7 +376,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
       )}
 
       {isSmall ? (
-        <Box className="space-y-2">
+        <Box className="space-y-1.5 sm:space-y-2">
           {loading ? (
             <Typography variant="body2" color="text.secondary">Loading attendance...</Typography>
           ) : employees.length === 0 ? (
@@ -389,14 +389,14 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
               const styleIndex = employees.indexOf(employee) % reportCardStyles.length
               const style = reportCardStyles[styleIndex]
               return (
-                <Card key={employee._id} className={`card-brand card-elevated p-2 space-y-2 relative overflow-hidden border ${style.card}`}>
+                <Card key={employee._id} className={`card-brand card-elevated p-1.5 sm:p-2 space-y-1.5 sm:space-y-2 relative overflow-hidden border ${style.card}`}>
                   <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
                   <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
                   <Box className="relative z-10">
-                    <Typography variant="body2" fontWeight="medium">{employee.name}</Typography>
-                    <Typography variant="caption" color="text.secondary">{employee.employeeId}</Typography>
+                    <Typography variant="body2" fontWeight="medium" className="text-sm">{employee.name}</Typography>
+                    <Typography variant="caption" color="text.secondary" className="text-xs">{employee.employeeId}</Typography>
                   </Box>
-                  <Box className="space-y-2 relative z-10">
+                  <Box className="space-y-1.5 sm:space-y-2 relative z-10">
                     <FormControl fullWidth size="small">
                       <InputLabel>Shift</InputLabel>
                       <Select
@@ -408,9 +408,9 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                         <MenuItem value="night">Night</MenuItem>
                       </Select>
                     </FormControl>
-                    <Box className="grid grid-cols-2 gap-2">
+                    <Box className="grid grid-cols-2 gap-1.5 sm:gap-2">
                       <Box>
-                        <Typography variant="caption" color="text.secondary">Sign In</Typography>
+                        <Typography variant="caption" color="text.secondary" className="text-xs">Sign In</Typography>
                         <TextField
                           type="time"
                           value={row.signInTime}
@@ -421,14 +421,14 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
-                                <Clock size={16} />
+                                <Clock size={14} />
                               </InputAdornment>
                             ),
                           }}
                         />
                       </Box>
                       <Box>
-                        <Typography variant="caption" color="text.secondary">Sign Out</Typography>
+                        <Typography variant="caption" color="text.secondary" className="text-xs">Sign Out</Typography>
                         <TextField
                           type="time"
                           value={row.signOutTime}
@@ -439,7 +439,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
-                                <Clock size={16} />
+                                <Clock size={14} />
                               </InputAdornment>
                             ),
                           }}
@@ -556,7 +556,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
         </div>
       )}
 
-      <Box display="flex" justifyContent="flex-end" mt={2} className="relative z-10">
+      <Box display="flex" justifyContent="flex-end" mt={1.5} className="relative z-10">
         <Button
           variant="default"
           onClick={handleSubmitAttendance}
@@ -730,14 +730,14 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
           {filteredAttendanceRecords.map((record, index) => {
             const style = reportCardStyles[index % reportCardStyles.length]
             return (
               <Card key={record._id} className={`card-brand hover:shadow-lg transition-all duration-300 hover-brand relative overflow-hidden border ${style.card}`}>
                 <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
                 <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
-                <CardHeader className="p-2 sm:p-3 pb-1 relative z-10">
+                <CardHeader className="p-2 sm:p-3 pb-1 sm:pb-2 relative z-10">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <CardTitle className="text-primary text-sm sm:text-base">{record.date}</CardTitle>
@@ -750,8 +750,8 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-2 sm:p-3 pt-1 relative z-10">
-                  <div className="space-y-1 text-xs sm:text-sm">
+                <CardContent className="p-2 sm:p-3 pt-1 sm:pt-1.5 relative z-10">
+                  <div className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm">
                     <p>
                       <span className="font-medium text-brand-contrast">Sign In:</span>{" "}
                       <span className="text-muted-foreground">

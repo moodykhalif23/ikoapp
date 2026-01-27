@@ -73,65 +73,61 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
 
       {/* Report Overview */}
       <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-primary">Report Overview</CardTitle>
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-primary text-base sm:text-lg">Report Overview</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-6 pt-0">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Report Date</p>
-            <p className="text-foreground">{report.date}</p>
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Report Date</p>
+            <p className="text-sm sm:text-base text-foreground">{report.date}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Submitted At</p>
-            <p className="text-foreground">{formatDate(report.submittedAt)}</p>
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Submitted At</p>
+            <p className="text-sm sm:text-base text-foreground">{formatDate(report.submittedAt)}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Reported By</p>
-            <p className="text-foreground">{report.reportedBy}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Email</p>
-            <p className="text-foreground">{report.reportedByEmail}</p>
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Reported By</p>
+            <p className="text-sm sm:text-base text-foreground">{report.reportedBy}</p>
           </div>
         </CardContent>
       </Card>
 
       {/* Power Interruptions */}
       <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-primary flex items-center gap-2">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-primary flex items-center gap-2 text-base sm:text-lg">
             Power Interruptions
             {report.powerInterruptions?.noInterruptions && (
               <div className="flex items-center gap-1">
                 <CheckCircle sx={{ fontSize: 16, color: "#16a34a" }} />
-                <Badge variant="secondary" className="rounded-none">No Issues</Badge>
+                <Badge variant="secondary" className="rounded-none text-xs">No Issues</Badge>
               </div>
             )}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-6 pt-0">
           {report.powerInterruptions?.noInterruptions ? (
-            <p className="text-muted-foreground">No power interruptions occurred on this day.</p>
+            <p className="text-sm text-muted-foreground">No power interruptions occurred on this day.</p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {report.powerInterruptions?.interruptions?.length > 0 ? (
                 report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
-                  <div key={interruption.id || index} className="p-4 bg-orange-50 border border-orange-200 rounded-none">
-                    <h4 className="font-medium text-orange-800 mb-3">Interruption #{index + 1}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 mb-2 sm:mb-4">
+                  <div key={interruption.id || index} className="p-2 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
+                    <h4 className="text-sm sm:text-base font-medium text-orange-800 mb-2 sm:mb-3">Interruption #{index + 1}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2">
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
-                        <p className="text-foreground">{formatTime(interruption.occurredAt)}</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Time of Interruption</p>
+                        <p className="text-sm sm:text-base text-foreground">{formatTime(interruption.occurredAt)}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Duration</p>
-                        <p className="text-foreground">{Math.floor(interruption.duration / 60)} min {interruption.duration % 60} sec</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Duration</p>
+                        <p className="text-sm sm:text-base text-foreground">{Math.floor(interruption.duration / 60)} min {interruption.duration % 60} sec</p>
                       </div>
                     </div>
                     {interruption.kplcReferenceNumber && (
-                      <div className="mb-4">
-                        <p className="text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
-                        <p className="text-foreground">{interruption.kplcReferenceNumber}</p>
+                      <div>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
+                        <p className="text-sm sm:text-base text-foreground">{interruption.kplcReferenceNumber}</p>
                       </div>
                     )}
                   </div>
@@ -139,26 +135,26 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
               ) : (
                 report.powerInterruptions?.occurredAt || report.powerInterruptions?.duration ? (
                   // Fallback for old single interruption format
-                  <div className="space-y-2 sm:space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Time of Interruption</p>
-                        <p className="text-foreground">{formatTime(report.powerInterruptions?.occurredAt)}</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Time of Interruption</p>
+                        <p className="text-sm sm:text-base text-foreground">{formatTime(report.powerInterruptions?.occurredAt)}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Duration</p>
-                        <p className="text-foreground">{Math.floor(report.powerInterruptions?.duration / 60)} min {report.powerInterruptions?.duration % 60} sec</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Duration</p>
+                        <p className="text-sm sm:text-base text-foreground">{Math.floor(report.powerInterruptions?.duration / 60)} min {report.powerInterruptions?.duration % 60} sec</p>
                       </div>
                     </div>
                     {report.powerInterruptions?.kplcReferenceNumber && (
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
-                        <p className="text-foreground">{report.powerInterruptions?.kplcReferenceNumber}</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
+                        <p className="text-sm sm:text-base text-foreground">{report.powerInterruptions?.kplcReferenceNumber}</p>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">No interruptions were recorded for this report.</p>
+                  <p className="text-sm text-muted-foreground">No interruptions were recorded for this report.</p>
                 )
               )}
             </div>
@@ -168,17 +164,17 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
 
       {/* Site Visuals */}
       <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-primary">Site Visuals</CardTitle>
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-primary text-base sm:text-lg">Site Visuals</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-6 pt-0">
           {report.siteVisuals?.media?.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-3">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3">
                   Media Files ({report.siteVisuals.media.length})
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                   {report.siteVisuals.media.map((file: any, index: number) => (
                     <div key={file.id || index} className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
                       {file.type === 'image' || file.type?.startsWith?.('image/') ? (
@@ -204,9 +200,9 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                           <span className="text-gray-400 text-sm">Unsupported file</span>
                         </div>
                       )}
-                      <div className="p-3 border-t border-gray-200 bg-white">
-                        <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                        <p className="text-xs text-gray-600">
+                      <div className="p-2 sm:p-3 border-t border-gray-200 bg-white">
+                        <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                        <p className="text-[10px] sm:text-xs text-gray-600">
                           {file.type === 'image' || file.type?.startsWith?.('image/') ? 'Image' : 
                            file.type === 'video' || file.type?.startsWith?.('video/') ? 'Video' : 'File'} • {file.size}
                         </p>
@@ -217,18 +213,18 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
               </div>
               {report.siteVisuals.notes && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Notes</p>
-                  <p className="text-foreground">{report.siteVisuals.notes}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Notes</p>
+                  <p className="text-sm sm:text-base text-foreground">{report.siteVisuals.notes}</p>
                 </div>
               )}
             </div>
           ) : report.siteVisuals?.photos?.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-3">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3">
                   Photos ({report.siteVisuals.photos.length})
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                   {report.siteVisuals.photos.map((url: string, index: number) => (
                     <div key={index} className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
                       <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -239,8 +235,8 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                           onClick={() => window.open(url, '_blank')}
                         />
                       </div>
-                      <div className="p-3 border-t border-gray-200 bg-white">
-                        <p className="text-sm font-medium text-gray-900">Photo {index + 1}</p>
+                      <div className="p-2 sm:p-3 border-t border-gray-200 bg-white">
+                        <p className="text-xs sm:text-sm font-medium text-gray-900">Photo {index + 1}</p>
                       </div>
                     </div>
                   ))}
@@ -248,51 +244,51 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
               </div>
               {report.siteVisuals.notes && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Notes</p>
-                  <p className="text-foreground">{report.siteVisuals.notes}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Notes</p>
+                  <p className="text-sm sm:text-base text-foreground">{report.siteVisuals.notes}</p>
                 </div>
               )}
             </div>
           ) : (
-            <p className="text-muted-foreground">No site visuals were uploaded for this report.</p>
+            <p className="text-sm text-muted-foreground">No site visuals were uploaded for this report.</p>
           )}
         </CardContent>
       </Card>
 
       {/* Daily Production */}
       <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-primary">Daily Production Data</CardTitle>
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-primary text-base sm:text-lg">Daily Production Data</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-6 pt-0">
           {report.dailyProduction?.products?.length > 0 ? (
-            <div className="space-y-2 sm:space-y-4">
-              <div className="p-4 border border-border rounded-none bg-muted/30">
-                <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
+              <div className="p-2 sm:p-4 border border-border rounded-none bg-muted/30">
+                <div className="space-y-2 sm:space-y-3">
                   {report.dailyProduction.products.map((product: any, index: number) => (
                     <div
                       key={index}
-                      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 ${
-                        index < report.dailyProduction.products.length - 1 ? "pb-3 border-b border-border" : ""
+                      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 ${
+                        index < report.dailyProduction.products.length - 1 ? "pb-2 sm:pb-3 border-b border-border" : ""
                       }`}
                     >
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Product Name</p>
-                        <p className="text-foreground font-medium">{product.productName}</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Product Name</p>
+                        <p className="text-sm sm:text-base text-foreground font-medium">{product.productName}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Quantity</p>
-                        <p className="text-foreground">{product.quantity} {product.unit}</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Quantity</p>
+                        <p className="text-sm sm:text-base text-foreground">{product.quantity} {product.unit}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Employees</p>
-                        <p className="text-foreground">{product.employees}</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Employees</p>
+                        <p className="text-sm sm:text-base text-foreground">{product.employees}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Machines Used</p>
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground">Machines Used</p>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {product.machinesUsed?.map((machine: string) => (
-                            <Badge key={machine} variant="outline">
+                            <Badge key={machine} variant="outline" className="text-xs">
                               {machine}
                             </Badge>
                           ))}
@@ -304,66 +300,66 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
               </div>
               {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined) && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">KPLC Meter</p>
-                  <p className="text-foreground">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Meter</p>
+                  <p className="text-sm sm:text-base text-foreground">
                     {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined)}
                   </p>
                 </div>
               )}
               {report.dailyProduction?.qualityIssues && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Quality Issues</p>
-                  <p className="text-foreground">{report.dailyProduction.qualityIssues}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Quality Issues</p>
+                  <p className="text-sm sm:text-base text-foreground">{report.dailyProduction.qualityIssues}</p>
                 </div>
               )}
             </div>
           ) : (
-            <p className="text-muted-foreground">No production data was recorded for this report.</p>
+            <p className="text-sm text-muted-foreground">No production data was recorded for this report.</p>
           )}
         </CardContent>
       </Card>
 
       {/* Incident Report */}
       <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-primary flex items-center gap-2">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-primary flex items-center gap-2 text-base sm:text-lg">
             Incident Report
             {report.incidentReport?.noIncidents && (
               <div className="flex items-center gap-1">
                 <CheckCircle sx={{ fontSize: 16, color: "#16a34a" }} />
-                <Badge variant="secondary" className="rounded-none">No Incidents</Badge>
+                <Badge variant="secondary" className="rounded-none text-xs">No Incidents</Badge>
               </div>
             )}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-6 pt-0">
           {report.incidentReport?.noIncidents ? (
-            <p className="text-muted-foreground">No incidents occurred on this day.</p>
+            <p className="text-sm text-muted-foreground">No incidents occurred on this day.</p>
           ) : (
-            <div className="space-y-2 sm:space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
+            <div className="space-y-2 sm:space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Incident Type</p>
-                  <p className="text-foreground">{formatIncidentType(report.incidentReport?.incidentType)}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Incident Type</p>
+                  <p className="text-sm sm:text-base text-foreground">{formatIncidentType(report.incidentReport?.incidentType)}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Severity</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Severity</p>
                   <Badge variant={report.incidentReport?.severity === 'High' ? 'destructive' : 
-                                 report.incidentReport?.severity === 'Medium' ? 'default' : 'secondary'}>
+                                 report.incidentReport?.severity === 'Medium' ? 'default' : 'secondary'} className="text-xs">
                     {report.incidentReport?.severity}
                   </Badge>
                 </div>
               </div>
               {report.incidentReport?.description && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Description</p>
-                  <p className="text-foreground">{report.incidentReport.description}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Description</p>
+                  <p className="text-sm sm:text-base text-foreground">{report.incidentReport.description}</p>
                 </div>
               )}
               {report.incidentReport?.actionsTaken && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Actions Taken</p>
-                  <p className="text-foreground">{report.incidentReport.actionsTaken}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Actions Taken</p>
+                  <p className="text-sm sm:text-base text-foreground">{report.incidentReport.actionsTaken}</p>
                 </div>
               )}
             </div>
