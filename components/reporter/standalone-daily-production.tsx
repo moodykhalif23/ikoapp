@@ -15,10 +15,13 @@ interface StandaloneDailyProductionProps {
 export default function StandaloneDailyProduction({ user, reportId, onBack, onSaved }: StandaloneDailyProductionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [initialData, setInitialData] = useState<any>({})
+  const [previousMeterEnd, setPreviousMeterEnd] = useState<string>("")
 
   useEffect(() => {
     if (!reportId) return
     let isMounted = true
+    
+    // Fetch current report
     fetch(`/api/reports/${reportId}`)
       .then(async (response) => {
         if (!response.ok) return null
@@ -29,10 +32,30 @@ export default function StandaloneDailyProduction({ user, reportId, onBack, onSa
         setInitialData(report.dailyProduction || {})
       })
       .catch(() => null)
+
+    // Fetch previous report to get last meter end reading
+    const today = new Date().toISOString().split('T')[0]
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+    
+    fetch(`/api/reports?reportedBy=${user?.email}&date=${yesterday}`)
+      .then(async (response) => {
+        if (!response.ok) return null
+        return response.json()
+      })
+      .then((reports) => {
+        if (!isMounted || !Array.isArray(reports) || reports.length === 0) return
+        // Get the first report from yesterday (most recent)
+        const yesterdayReport = reports[0]
+        if (yesterdayReport?.dailyProduction?.kplcMeterEnd) {
+          setPreviousMeterEnd(yesterdayReport.dailyProduction.kplcMeterEnd)
+        }
+      })
+      .catch(() => null)
+
     return () => {
       isMounted = false
     }
-  }, [reportId])
+  }, [reportId, user?.email])
 
   const handleSubmit = async (productionData: any) => {
     setIsSubmitting(true)
@@ -73,7 +96,7 @@ export default function StandaloneDailyProduction({ user, reportId, onBack, onSa
             Production Data Entry
           </h2>
         </div>
-        <DailyProductionForm data={initialData} onComplete={handleSubmit} />
+        <DailyProductionForm data={initialData} onComplete={handleSubmit} previousMeterEnd={previousMeterEnd} />
       </div>
 
       {/* Loading Overlay */}

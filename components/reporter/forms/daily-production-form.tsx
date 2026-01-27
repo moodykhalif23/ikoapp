@@ -9,6 +9,7 @@ import { IMachine } from "@/lib/models"
 interface DailyProductionFormProps {
   data: any
   onComplete: (data: any) => void
+  previousMeterEnd?: string
 }
 
 interface Product {
@@ -20,12 +21,12 @@ interface Product {
   employees: string
 }
 
-export default function DailyProductionForm({ data, onComplete }: DailyProductionFormProps) {
+export default function DailyProductionForm({ data, onComplete, previousMeterEnd = "" }: DailyProductionFormProps) {
   const [products, setProducts] = useState<Product[]>(
     data?.products || [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
   )
   const [qualityIssues, setQualityIssues] = useState(data?.qualityIssues || "")
-  const [kplcMeterStart, setKplcMeterStart] = useState(data?.kplcMeterStart || data?.kplcMeter || "")
+  const [kplcMeterStart, setKplcMeterStart] = useState(data?.kplcMeterStart || previousMeterEnd || data?.kplcMeter || "")
   const [kplcMeterEnd, setKplcMeterEnd] = useState(data?.kplcMeterEnd || "")
   const [machines, setMachines] = useState<IMachine[]>([])
   const [loading, setLoading] = useState(true)
@@ -59,9 +60,9 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         : [{ id: 1, productName: "", quantity: "", unit: "kgs", machinesUsed: [], employees: "" }],
     )
     setQualityIssues(data?.qualityIssues || "")
-    setKplcMeterStart(data?.kplcMeterStart || data?.kplcMeter || "")
+    setKplcMeterStart(data?.kplcMeterStart || previousMeterEnd || data?.kplcMeter || "")
     setKplcMeterEnd(data?.kplcMeterEnd || "")
-  }, [data])
+  }, [data, previousMeterEnd])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -133,9 +134,10 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
             <div key={product.id} className="p-4 sm:p-6 border-2 border-green-700 rounded-none space-y-4 bg-background/40 backdrop-blur-sm">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <label className="text-base sm:text-lg font-semibold text-foreground block mb-2">Product Name</label>
+                  <label htmlFor={`product-name-${product.id}`} className="text-base sm:text-lg font-semibold text-foreground block mb-2">Product Name</label>
                   <div className="rounded-md border border-border bg-white">
                     <select
+                      id={`product-name-${product.id}`}
                       value={product.productName}
                       onChange={(e) => updateProduct(product.id, "productName", e.target.value)}
                       className={`w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white ${
@@ -202,7 +204,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
               </div>
 
               <div className="space-y-3">
-                <label className="text-lg sm:text-xl font-semibold text-foreground">Machines Used</label>
+                <label htmlFor={`machines-${product.id}`} className="text-lg sm:text-xl font-semibold text-foreground">Machines Used</label>
                 {loading ? (
                   <div className="flex items-center justify-center p-4 bg-muted/20 rounded-lg backdrop-blur-sm">
                     <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -212,6 +214,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
                   <>
                     <div className="rounded-md border border-border bg-white">
                       <select
+                        id={`machines-${product.id}`}
                         value={product.machinesUsed[0] || ""}
                         onChange={(e) => updateProduct(product.id, "machinesUsed", e.target.value ? [e.target.value] : [])}
                         className="w-full h-12 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-white"
@@ -246,13 +249,17 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         </Button>
 
         <div className="space-y-2">
-          <label className="text-lg sm:text-xl font-semibold text-foreground">KPLC Meter Start</label>
-          <Input
+          <label className="text-lg sm:text-xl font-semibold text-foreground">
+            KPLC Meter Start 
+            {previousMeterEnd && <span className="text-xs font-normal text-green-600 ml-2">(Auto-filled from previous end reading)</span>}
+          </label>
+          <input
             type="text"
             placeholder="Enter start reading"
             value={kplcMeterStart}
             onChange={(e) => setKplcMeterStart(e.target.value)}
-            className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+            className="w-full px-3 py-2 bg-background/80 backdrop-blur-sm border-2 border-green-700 rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            readOnly={!!previousMeterEnd && kplcMeterStart === previousMeterEnd}
           />
         </div>
 
@@ -279,7 +286,7 @@ export default function DailyProductionForm({ data, onComplete }: DailyProductio
         </div>
 
         <div className="flex justify-end pt-4">
-        <Button onClick={handleSubmit} className="bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
+        <Button onClick={handleSubmit} className="bg-primary hover:bg-(--brand-green-dark) text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
             Save Draft <Save className="w-4 h-4" />
           </Button>
         </div>
