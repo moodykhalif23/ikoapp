@@ -838,8 +838,8 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
           {/* Report Detail View */}
           {selectedReport && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-              <div className="w-full max-w-6xl h-[calc(100vh-9rem)] sm:h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-0 sm:p-4 z-50">
+              <div className="w-full max-w-full sm:max-w-6xl h-[calc(100vh-9rem)] sm:h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
                 <ScrollableReportView 
                   report={selectedReport} 
                   onBack={handleBackToReports}
