@@ -99,7 +99,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
             id="no-interruptions"
             checked={noInterruptions}
             onCheckedChange={handleNoInterruptionsChange}
-            className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 flex-shrink-0 w-5 h-5"
+            className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 shrink-0 w-5 h-5"
           />
           <label htmlFor="no-interruptions" className="text-base sm:text-lg font-semibold cursor-pointer leading-relaxed">
             No power interruptions occurred today
@@ -156,7 +156,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
             </div>
 
             <div className="space-y-3">
-              <label className="form-label-large text-foreground">Affected Machines</label>
+              <label htmlFor="affected-machines" className="form-label-large text-foreground">Affected Machines</label>
               {loading ? (
                 <div className="flex items-center justify-center p-8 bg-muted/20 rounded-none backdrop-blur-sm">
                   <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -166,6 +166,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                 <>
                   <div className="rounded-md border border-border bg-white">
                     <select
+                      id="affected-machines"
                       value={affectedValue}
                       onChange={(e) => {
                         const value = e.target.value
@@ -197,7 +198,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
         )}
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground gap-2 px-8 py-4">
+          <Button onClick={handleSubmit} className="btn-large bg-primary hover:bg-(--brand-green-dark) text-primary-foreground gap-2 px-8 py-4">
             Continue <ChevronRightIcon sx={{ fontSize: 20 }} />
           </Button>
         </div>

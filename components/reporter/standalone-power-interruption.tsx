@@ -251,8 +251,8 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
     setIsSaving(true)
     try {
       const payload = {
-        noInterruptions: formData.noInterruptions,
-        interruptions: formData.interruptions.map((interruption) => ({
+        noInterruptions: formData.noInterruptions === true,
+        interruptions: formData.noInterruptions ? [] : formData.interruptions.map((interruption) => ({
           id: interruption.id,
           occurredAt: interruption.occurredAt,
           duration: interruption.duration,

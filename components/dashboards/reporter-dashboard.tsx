@@ -182,6 +182,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       powerData?.noInterruptions === "yes"
     const powerHasEntries = Array.isArray(powerData?.interruptions) && powerData.interruptions.length > 0
     const powerLegacy = !!(powerData?.occurredAt || powerData?.duration || (Array.isArray(powerData?.affectedMachines) && powerData.affectedMachines.length > 0))
+    // Power is complete if: no interruptions, has interruptions, legacy format, or has powerInterruptionId
     const powerComplete = powerNoIssues || powerHasEntries || powerLegacy || !!report.powerInterruptionId
 
     const productionData = report.dailyProduction || report.dailyProductionId
