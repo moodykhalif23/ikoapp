@@ -220,13 +220,12 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
   }, [tasks, filterStatus, filterAssignee, filterDate, searchQuery])
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-base sm:text-lg font-semibold text-foreground">Incident Tasks</h2>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
+    <div className="space-y-3">
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+          {error}
+        </Alert>
+      )}
 
         <Card className="card-brand card-elevated card-filter-tight mb-4">
           <CardHeader className="card-filter-header">
