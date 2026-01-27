@@ -58,7 +58,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="outline" onClick={onBack} className="gap-2 bg-transparent">
@@ -70,27 +70,6 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           <p className="text-muted-foreground">Report ID: {report.id}</p>
         </div>
       </div>
-
-      {/* Report Overview */}
-      <Card className="border-border/50">
-        <CardHeader className="p-3 sm:p-6">
-          <CardTitle className="text-primary text-base sm:text-lg">Report Overview</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-6 pt-0">
-          <div>
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Report Date</p>
-            <p className="text-sm sm:text-base text-foreground">{report.date}</p>
-          </div>
-          <div>
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Submitted At</p>
-            <p className="text-sm sm:text-base text-foreground">{formatDate(report.submittedAt)}</p>
-          </div>
-          <div>
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Reported By</p>
-            <p className="text-sm sm:text-base text-foreground">{report.reportedBy}</p>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Power Interruptions */}
       <Card className="border-border/50">
@@ -115,17 +94,17 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   <div key={interruption.id || index} className="p-2 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
                     <h4 className="text-sm sm:text-base font-medium text-orange-800 mb-2 sm:mb-3">Interruption #{index + 1}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2">
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Time of Interruption</p>
                         <p className="text-sm sm:text-base text-foreground">{formatTime(interruption.occurredAt)}</p>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Duration</p>
                         <p className="text-sm sm:text-base text-foreground">{Math.floor(interruption.duration / 60)} min {interruption.duration % 60} sec</p>
                       </div>
                     </div>
                     {interruption.kplcReferenceNumber && (
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
                         <p className="text-sm sm:text-base text-foreground">{interruption.kplcReferenceNumber}</p>
                       </div>
@@ -137,17 +116,17 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   // Fallback for old single interruption format
                   <div className="space-y-2 sm:space-y-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Time of Interruption</p>
                         <p className="text-sm sm:text-base text-foreground">{formatTime(report.powerInterruptions?.occurredAt)}</p>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Duration</p>
                         <p className="text-sm sm:text-base text-foreground">{Math.floor(report.powerInterruptions?.duration / 60)} min {report.powerInterruptions?.duration % 60} sec</p>
                       </div>
                     </div>
                     {report.powerInterruptions?.kplcReferenceNumber && (
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
                         <p className="text-sm sm:text-base text-foreground">{report.powerInterruptions?.kplcReferenceNumber}</p>
                       </div>
@@ -212,7 +191,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                 </div>
               </div>
               {report.siteVisuals.notes && (
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Notes</p>
                   <p className="text-sm sm:text-base text-foreground">{report.siteVisuals.notes}</p>
                 </div>
@@ -243,7 +222,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                 </div>
               </div>
               {report.siteVisuals.notes && (
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Notes</p>
                   <p className="text-sm sm:text-base text-foreground">{report.siteVisuals.notes}</p>
                 </div>
@@ -272,21 +251,21 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                         index < report.dailyProduction.products.length - 1 ? "pb-2 sm:pb-3 border-b border-border" : ""
                       }`}
                     >
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Product Name</p>
                         <p className="text-sm sm:text-base text-foreground font-medium">{product.productName}</p>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Quantity</p>
                         <p className="text-sm sm:text-base text-foreground">{product.quantity} {product.unit}</p>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Employees</p>
                         <p className="text-sm sm:text-base text-foreground">{product.employees}</p>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">Machines Used</p>
-                        <div className="flex flex-wrap gap-1 mt-1">
+                        <div className="flex flex-wrap gap-1 mt-0.5">
                           {product.machinesUsed?.map((machine: string) => (
                             <Badge key={machine} variant="outline" className="text-xs">
                               {machine}
@@ -299,7 +278,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                 </div>
               </div>
               {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined) && (
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Meter</p>
                   <p className="text-sm sm:text-base text-foreground">
                     {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined)}
@@ -307,7 +286,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                 </div>
               )}
               {report.dailyProduction?.qualityIssues && (
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Quality Issues</p>
                   <p className="text-sm sm:text-base text-foreground">{report.dailyProduction.qualityIssues}</p>
                 </div>
@@ -338,11 +317,11 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           ) : (
             <div className="space-y-2 sm:space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Incident Type</p>
                   <p className="text-sm sm:text-base text-foreground">{formatIncidentType(report.incidentReport?.incidentType)}</p>
                 </div>
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Severity</p>
                   <Badge variant={report.incidentReport?.severity === 'High' ? 'destructive' : 
                                  report.incidentReport?.severity === 'Medium' ? 'default' : 'secondary'} className="text-xs">
@@ -351,13 +330,13 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                 </div>
               </div>
               {report.incidentReport?.description && (
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Description</p>
                   <p className="text-sm sm:text-base text-foreground">{report.incidentReport.description}</p>
                 </div>
               )}
               {report.incidentReport?.actionsTaken && (
-                <div>
+                <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Actions Taken</p>
                   <p className="text-sm sm:text-base text-foreground">{report.incidentReport.actionsTaken}</p>
                 </div>
