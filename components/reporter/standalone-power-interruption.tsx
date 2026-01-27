@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import PowerIcon from "@mui/icons-material/Power"
-import { Plus, Trash2, Square } from "lucide-react"
+import StopIcon from "@mui/icons-material/Stop"
+import { Plus, Trash2 } from "lucide-react"
 
 interface StandalonePowerInterruptionProps {
   user: any
@@ -402,10 +403,10 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                                 type="button"
                                 size="sm"
                                 onClick={() => stopTimer(interruption.id)}
-                                className="gap-2 bg-red-600 hover:bg-red-700 text-white"
+                                className="bg-red-600 hover:bg-red-700 text-white p-2"
+                                aria-label="Stop interruption"
                               >
-                                <Square size={16} />
-                                Stop Interruption
+                                <StopIcon sx={{ fontSize: 18 }} />
                               </Button>
                             )}
                           </div>
