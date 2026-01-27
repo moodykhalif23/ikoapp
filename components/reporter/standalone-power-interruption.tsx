@@ -404,7 +404,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                                 size="sm"
                                 onClick={() => stopTimer(interruption.id)}
                                 className="bg-red-600 hover:bg-red-700 text-white p-2"
-                                aria-label="Stop interruption"
+                                aria-label="Stop"
                               >
                                 <StopIcon sx={{ fontSize: 18 }} />
                               </Button>
