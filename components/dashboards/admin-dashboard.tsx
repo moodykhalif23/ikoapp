@@ -671,14 +671,14 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
             return (
             <Card 
               key={report.id} 
-              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-[220px] flex flex-col relative overflow-hidden border ${style.card} ${
+              className={`card-brand card-elevated card-report-compact cursor-pointer transition-all hover:shadow-lg min-h-220px flex flex-col relative overflow-hidden border ${style.card} ${
                 selectedReport?.id === report.id ? 'ring-2 ring-primary' : ''
               }`}
               onClick={() => handleReportSelect(report)}
             >
               <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
               <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
-              <CardHeader className="p-3 sm:p-4 pb-1 flex-shrink-0 card-report-header relative z-10">
+              <CardHeader className="p-3 sm:p-4 pb-1 shrink-0 card-report-header relative z-10">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-sm sm:text-base font-semibold line-clamp-1">
@@ -689,7 +689,7 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
                     </CardDescription>
                   </div>
                   {report.status !== 'submitted' && (
-                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap flex-shrink-0 ${
+                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] font-medium whitespace-nowrap shrink-0 ${
                       report.status === 'approved' ? 'bg-green-100 text-green-800' :
                       report.status === 'reviewed' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-gray-100 text-gray-800'
