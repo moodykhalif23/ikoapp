@@ -403,7 +403,8 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                                 type="button"
                                 size="sm"
                                 onClick={() => stopTimer(interruption.id)}
-                                className="bg-red-600 hover:bg-red-700 text-white p-2"
+                                variant="destructive"
+                                className="p-2"
                                 aria-label="Stop"
                               >
                                 <StopIcon sx={{ fontSize: 18 }} />
