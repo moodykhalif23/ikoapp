@@ -30,23 +30,13 @@ export async function createIncidentTasksFromReport(report: any) {
     return []
   }
 
-  const assigneeId = incident.taskOwnerId || incident.taskAssigneeId || incident.assignedToId
-  const assigneeName = incident.taskOwnerName || incident.taskAssigneeName || incident.assignedToName
-  const dueDateRaw = incident.taskDueDate
-
-  if (!assigneeId || !dueDateRaw) {
+  // Get all admins to assign the incident to
+  const admins = await User.find({ roles: "admin" }).select("_id name email").lean()
+  
+  if (!admins || admins.length === 0) {
+    console.warn("No admins found to assign incident tasks")
     return []
   }
-
-  const dueDate = new Date(dueDateRaw)
-  if (Number.isNaN(dueDate.getTime())) {
-    return []
-  }
-
-  const assignee =
-    assigneeName
-      ? { name: assigneeName, email: incident.taskOwnerEmail }
-      : await User.findById(assigneeId).select("name email").lean()
 
   const incidents = hasLegacyIncidents
     ? incident.incidents.map((item: any, index: number) => ({
@@ -66,40 +56,48 @@ export async function createIncidentTasksFromReport(report: any) {
 
   const createdTasks: IIncidentTask[] = []
 
+  // Create task for each admin
   for (const [index, item] of incidents.entries()) {
     const incidentType = normalizeIncidentType(item.type)
-    const taskKey = `${report.id}:${item.key || index}`
+    
+    for (const admin of admins) {
+      const taskKey = `${report.id}:${item.key || index}:${admin._id}`
 
-    const existing = await IncidentTask.findOne({ taskKey }).lean()
-    if (existing) continue
+      const existing = await IncidentTask.findOne({ taskKey }).lean()
+      if (existing) continue
 
-    const task = new IncidentTask({
-      title: buildTaskTitle(incidentType, report.id),
-      description: item.description,
-      status: "open",
-      dueDate,
-      reportId: report.id,
-      reportDate: report.date,
-      incidentType,
-      incidentTime: item.time,
-      taskKey,
-      assignedToId: assigneeId,
-      assignedToName: assignee?.name || assigneeName,
-      assignedToEmail: assignee?.email || incident.taskOwnerEmail,
-      createdByName: report.reportedBy,
-      createdById: report.reportedByEmail
-    })
+      // Use today's date + 1 day as default due date
+      const dueDate = new Date()
+      dueDate.setDate(dueDate.getDate() + 1)
 
-    await task.save()
-    createdTasks.push(task)
+      const task = new IncidentTask({
+        title: buildTaskTitle(incidentType, report.id),
+        description: item.description,
+        status: "open",
+        dueDate,
+        reportId: report.id,
+        reportDate: report.date,
+        incidentType,
+        incidentTime: item.time,
+        taskKey,
+        assignedToId: admin._id.toString(),
+        assignedToName: admin.name,
+        assignedToEmail: admin.email,
+        createdByName: report.reportedBy,
+        createdById: report.reportedByEmail
+      })
 
-    await createIncidentTaskNotification({
-      assigneeId,
-      assigneeName: assignee?.name || assigneeName,
-      reportId: report.id,
-      taskTitle: task.title,
-      dueDate: dueDate.toLocaleDateString()
-    })
+      await task.save()
+      createdTasks.push(task)
+
+      await createIncidentTaskNotification({
+        assigneeId: admin._id.toString(),
+        assigneeName: admin.name,
+        reportId: report.id,
+        taskTitle: task.title,
+        dueDate: dueDate.toLocaleDateString()
+      })
+    }
   }
 
   return createdTasks
