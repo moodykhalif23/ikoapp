@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import PowerIcon from "@mui/icons-material/Power"
-import { Plus, Trash2 } from "lucide-react"
+import { Plus, Trash2, Play, Square } from "lucide-react"
 
 interface StandalonePowerInterruptionProps {
   user: any
@@ -14,8 +14,16 @@ interface StandalonePowerInterruptionProps {
   onSaved?: () => void
 }
 
+interface PowerInterruption {
+  id: string
+  occurredAt: string
+  duration: number
+  kplcReferenceNumber: string
+  timerActive: boolean
+  timerStartTime: number | null
+}
+
 export default function StandalonePowerInterruption({ user, reportId, onBack, onSaved }: StandalonePowerInterruptionProps) {
-  const [machines, setMachines] = useState<string[]>([])
   const [isSaving, setIsSaving] = useState(false)
   const [noInterruptions, setNoInterruptions] = useState(false)
   const [formData, setFormData] = useState({
@@ -24,43 +32,63 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
     reportedBy: user?.name,
     reportedByEmail: user?.email,
     noInterruptions: false,
-    interruptions: [] as Array<{
-      id: string
-      occurredAt: string
-      duration: string
-      kplcMeterStart: string
-      kplcMeterEnd: string
-      affectedMachines: string[]
-    }>,
+    interruptions: [] as PowerInterruption[],
     submittedAt: null as string | null,
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [timerDisplay, setTimerDisplay] = useState<Record<string, string>>({})
 
-  // Fetch machines from database
+  // Timer effect
   useEffect(() => {
-    const fetchMachines = async () => {
-      try {
-        const response = await fetch('/api/machines')
-        if (response.ok) {
-          const machinesData = await response.json()
-          const machineNames = machinesData.map((m: any) => m.name)
-          setMachines(machineNames)
-          setFormData((prev) => ({
-            ...prev,
-            interruptions: prev.interruptions.map((interruption) => ({
-              ...interruption,
-              affectedMachines: machineNames.length > 0 ? [...machineNames] : interruption.affectedMachines
+    const interval = setInterval(() => {
+      setFormData((prev) => {
+        const updated = { ...prev }
+        updated.interruptions = updated.interruptions.map((interruption) => {
+          if (interruption.timerActive && interruption.timerStartTime) {
+            const elapsed = Math.floor((Date.now() - interruption.timerStartTime) / 1000)
+            setTimerDisplay((prevDisplay) => ({
+              ...prevDisplay,
+              [interruption.id]: formatTime(elapsed)
             }))
-          }))
-        }
-      } catch (error) {
-        console.error('Error fetching machines:', error)
-      }
-    }
-
-    fetchMachines()
+            return { ...interruption, duration: elapsed }
+          }
+          return interruption
+        })
+        return updated
+      })
+    }, 1000)
+    return () => clearInterval(interval)
   }, [])
+
+  const formatTime = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = seconds % 60
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+  }
+
+  const startTimer = (interruptionId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      interruptions: prev.interruptions.map((int) =>
+        int.id === interruptionId
+          ? { ...int, timerActive: true, timerStartTime: Date.now() }
+          : int
+      )
+    }))
+  }
+
+  const stopTimer = (interruptionId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      interruptions: prev.interruptions.map((int) =>
+        int.id === interruptionId
+          ? { ...int, timerActive: false }
+          : int
+      )
+    }))
+  }
 
   useEffect(() => {
     if (!reportId) return
@@ -76,8 +104,9 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
         const interruptions = Array.isArray(powerData.interruptions)
           ? powerData.interruptions.map((item: any) => ({
               ...item,
-              kplcMeterStart: item.kplcMeterStart || item.kplcMeter || "",
-              kplcMeterEnd: item.kplcMeterEnd || "",
+              timerActive: false,
+              timerStartTime: null,
+              duration: item.duration || 0
             }))
           : []
         setNoInterruptions(!!powerData.noInterruptions)
@@ -106,10 +135,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       } else {
         formData.interruptions.forEach((interruption, index) => {
           if (!interruption.occurredAt) newErrors[`occurredAt_${index}`] = "Time is required"
-          if (!interruption.duration) newErrors[`duration_${index}`] = "Duration is required"
-          if (machines.length > 0 && interruption.affectedMachines.length === 0) {
-            newErrors[`affectedMachines_${index}`] = "Machines list missing"
-          }
+          if (interruption.duration === 0) newErrors[`duration_${index}`] = "Duration cannot be zero"
         })
       }
     }
@@ -119,13 +145,13 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
   }
 
   const addInterruption = () => {
-    const newInterruption = {
+    const newInterruption: PowerInterruption = {
       id: `INT-${Date.now()}-${Math.random()}`,
       occurredAt: "",
-      duration: "",
-      kplcMeterStart: "",
-      kplcMeterEnd: "",
-      affectedMachines: machines.length > 0 ? [...machines] : ([] as string[])
+      duration: 0,
+      kplcReferenceNumber: "",
+      timerActive: false,
+      timerStartTime: null
     }
     setFormData({
       ...formData,
@@ -170,8 +196,10 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       const payload = {
         noInterruptions: formData.noInterruptions,
         interruptions: formData.interruptions.map((interruption) => ({
-          ...interruption,
-          affectedMachines: machines.length > 0 ? [...machines] : interruption.affectedMachines
+          id: interruption.id,
+          occurredAt: interruption.occurredAt,
+          duration: interruption.duration,
+          kplcReferenceNumber: interruption.kplcReferenceNumber
         }))
       }
 
@@ -215,7 +243,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                 id="no-interruptions"
                 checked={noInterruptions}
                 onCheckedChange={handleNoInterruptionsChange}
-                className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 flex-shrink-0 w-5 h-5"
+                className="border-2 border-green-700 data-[state=checked]:bg-green-700 data-[state=checked]:border-green-700 mt-1 shrink-0 w-5 h-5"
               />
               <label htmlFor="no-interruptions" className="text-base sm:text-lg font-semibold cursor-pointer leading-relaxed">
                 No power interruptions to report at this time
@@ -276,7 +304,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                     </div>
                     
                     <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="text-base sm:text-lg font-semibold text-foreground">Time of Interruption *</label>
                           <Input
@@ -289,60 +317,50 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-base sm:text-lg font-semibold text-foreground">Duration (minutes) *</label>
-                          <Input
-                            type="number"
-                            placeholder="30"
-                            value={interruption.duration}
-                            onChange={(e) => updateInterruption(interruption.id, 'duration', e.target.value)}
-                            className={`bg-background/80 backdrop-blur-sm ${errors[`duration_${index}`] ? "border-red-500" : ""}`}
-                          />
-                          {errors[`duration_${index}`] && <p className="text-xs text-red-500">{errors[`duration_${index}`]}</p>}
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Meter Start</label>
+                          <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Reference Number</label>
                           <Input
                             type="text"
-                            placeholder="Enter start reading"
-                            value={interruption.kplcMeterStart}
-                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeterStart', e.target.value)}
-                            className="bg-background/80 backdrop-blur-sm"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-base sm:text-lg font-semibold text-foreground">KPLC Meter End</label>
-                          <Input
-                            type="text"
-                            placeholder="Enter end reading"
-                            value={interruption.kplcMeterEnd}
-                            onChange={(e) => updateInterruption(interruption.id, 'kplcMeterEnd', e.target.value)}
+                            placeholder="Enter KPLC reference number"
+                            value={interruption.kplcReferenceNumber}
+                            onChange={(e) => updateInterruption(interruption.id, 'kplcReferenceNumber', e.target.value)}
                             className="bg-background/80 backdrop-blur-sm"
                           />
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <label className="text-base sm:text-lg font-semibold text-foreground">Affected Machines *</label>
-                        <p className="text-xs text-muted-foreground">
-                          Power outages affect all machines. These are auto-selected.
-                        </p>
-                        <div className="flex flex-wrap gap-2 rounded-md border border-border bg-white p-3">
-                          {machines.length === 0 ? (
-                            <span className="text-xs text-muted-foreground">Loading machines...</span>
-                          ) : (
-                            machines.map((machine) => (
-                              <span
-                                key={machine}
-                                className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-[10px] sm:text-xs"
+                      {/* Timer Section */}
+                      <div className="space-y-3 p-4 border border-orange-300 bg-orange-50/50 rounded-none">
+                        <label className="text-base sm:text-lg font-semibold text-foreground">Duration Timer</label>
+                        
+                        <div className="flex items-center justify-between p-4 bg-white border border-orange-200 rounded-none">
+                          <div className="text-3xl font-mono font-bold text-orange-800">
+                            {timerDisplay[interruption.id] || "00:00:00"}
+                          </div>
+                          <div className="flex gap-2">
+                            {!interruption.timerActive ? (
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => startTimer(interruption.id)}
+                                className="gap-2 bg-green-600 hover:bg-green-700 text-white"
                               >
-                                {machine}
-                              </span>
-                            ))
-                          )}
+                                <Play size={16} />
+                                Start
+                              </Button>
+                            ) : (
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => stopTimer(interruption.id)}
+                                className="gap-2 bg-red-600 hover:bg-red-700 text-white"
+                              >
+                                <Square size={16} />
+                                Stop
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                        {errors[`affectedMachines_${index}`] && <p className="text-xs text-red-500">{errors[`affectedMachines_${index}`]}</p>}
+                        {errors[`duration_${index}`] && <p className="text-xs text-red-500">{errors[`duration_${index}`]}</p>}
                       </div>
                     </div>
                   </div>
@@ -356,7 +374,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
             <div className="flex justify-end pt-4 border-t border-border/50">
               <Button 
                 onClick={handleSubmit} 
-                className="bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground px-8 py-4 text-lg font-semibold"
+                className="bg-primary hover:bg-(--brand-green-dark) text-primary-foreground px-8 py-4 text-lg font-semibold"
               >
                 Save Draft
               </Button>
