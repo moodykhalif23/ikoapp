@@ -197,96 +197,119 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
           {errors.media && <p className="text-xs text-red-500">{errors.media}</p>}
 
-          {/* Media List */}
-          {mediaFiles.length > 0 && (
+          {/* Media List - Only show uploaded files with valid URLs */}
+          {mediaFiles.filter(f => f.url).length > 0 && (
             <div className="space-y-4">
-              <p className="text-lg sm:text-xl font-semibold text-foreground">Uploaded Files ({mediaFiles.length})</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {mediaFiles.map((file) => (
-                  <div key={file.id} className="relative border-2 border-green-700 rounded-lg bg-background/40 backdrop-blur-sm group overflow-hidden">
-                    {/* Preview Area - Full Card Coverage */}
-                    <div className="aspect-video bg-muted/30 relative overflow-hidden">
-                      {file.preview ? (
-                        <>
-                          {isImageType(file.type) ? (
-                            <img
-                              src={file.preview}
-                              alt={file.name}
-                              className="w-full h-full object-cover cursor-pointer"
-                              onClick={() => openPreview(file)}
-                            />
-                          ) : isVideoType(file.type) ? (
-                            <div className="relative w-full h-full">
-                              <video
-                                src={file.preview}
-                                className="w-full h-full object-cover"
-                                controls
-                                preload="metadata"
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex flex-col items-center justify-center text-muted-foreground w-full h-full">
-                              <ImageIcon className="w-8 h-8 mb-2" />
-                              <p className="text-xs">Unsupported file</p>
-                            </div>
-                          )}
-                          
+              <p className="text-lg sm:text-xl font-semibold text-foreground">Uploaded Files ({mediaFiles.filter(f => f.url).length})</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+                {mediaFiles.filter(f => f.url).map((file) => (
+                  <div key={file.id} className="border border-gray-200 rounded-none overflow-hidden bg-gray-50 hover:shadow-md transition-shadow group">
+                    {/* Images */}
+                    {isImageType(file.type) ? (
+                      <>
+                        <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={file.url}
+                            alt={file.name}
+                            className="w-full h-full object-cover cursor-pointer"
+                            onClick={() => openPreview(file)}
+                          />
                           {/* Preview Button for Images */}
-                          {isImageType(file.type) && (
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => openPreview(file)}
-                              className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 p-0"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                          )}
-                        </>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center text-muted-foreground w-full h-full">
-                          {isImageType(file.type) ? (
-                            <ImageIcon className="w-8 h-8 mb-2" />
-                          ) : (
-                            <Play className="w-8 h-8 mb-2" />
-                          )}
-                          <p className="text-xs">Loading preview...</p>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => openPreview(file)}
+                            className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 p-0"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
                         </div>
-                      )}
-                      
-                      {/* Remove Button */}
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => removeMedia(file.id)}
-                        aria-label="Remove media"
-                        className="absolute top-2 right-2 opacity-100 w-8 h-8 p-0 shadow-sm"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                      
-                      {/* File Info Overlay - Images only (keep video controls unobstructed) */}
-                      {isImageType(file.type) && (
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 transform transition-transform duration-200 translate-y-full group-hover:translate-y-0">
-                          <div className="flex items-center gap-2">
-                            <ImageIcon className="w-3 h-3 flex-shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-medium truncate" title={file.name}>{file.name}</p>
-                              <p className="text-xs opacity-75">{file.size}</p>
-                            </div>
+                        <div className="p-2 sm:p-3 border-t border-gray-200 bg-white flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600">Image</p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removeMedia(file.id)}
+                            aria-label="Remove media"
+                            className="w-6 h-6 p-0 ml-2"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </>
+                    ) : isVideoType(file.type) ? (
+                      <>
+                        <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
+                          <video
+                            src={file.url}
+                            className="w-full h-full object-cover"
+                            controls
+                            preload="metadata"
+                          />
+                          <div className="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1">
+                            <p className="text-[10px] sm:text-xs text-white/90 truncate">{file.name}</p>
                           </div>
                         </div>
-                      )}
-                    </div>
+                        <div className="p-2 sm:p-3 border-t border-gray-200 bg-white flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600">Video</p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removeMedia(file.id)}
+                            aria-label="Remove media"
+                            className="w-6 h-6 p-0 ml-2"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
+                          <ImageIcon className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <div className="p-2 sm:p-3 border-t border-gray-200 bg-white flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600">File</p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removeMedia(file.id)}
+                            aria-label="Remove media"
+                            className="w-6 h-6 p-0 ml-2"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Processing indicator for files being uploaded */}
+          {mediaFiles.filter(f => !f.url).length > 0 && (
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                <span>Uploading {mediaFiles.filter(f => !f.url).length} file(s)...</span>
               </div>
             </div>
           )}
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
+          <Button onClick={handleSubmit} className="bg-primary hover:bg-(--brand-green-dark text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
             Save Draft <Save className="w-4 h-4" />
           </Button>
         </div>
