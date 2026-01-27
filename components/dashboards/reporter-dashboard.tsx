@@ -175,20 +175,34 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
   const isDraftComplete = (report: any) => {
     if (!report) return false
-    const power = report.powerInterruptions
-    const powerComplete = !!power && (power.noInterruptions === true || (Array.isArray(power.interruptions) && power.interruptions.length > 0))
+    const powerData = report.powerInterruptions || report.powerInterruptionId || {}
+    const powerNoIssues =
+      powerData?.noInterruptions === true ||
+      powerData?.noInterruptions === "true" ||
+      powerData?.noInterruptions === "yes"
+    const powerHasEntries = Array.isArray(powerData?.interruptions) && powerData.interruptions.length > 0
+    const powerLegacy = !!(powerData?.occurredAt || powerData?.duration || (Array.isArray(powerData?.affectedMachines) && powerData.affectedMachines.length > 0))
+    const powerComplete = powerNoIssues || powerHasEntries || powerLegacy || !!report.powerInterruptionId
 
-    const production = report.dailyProduction
-    const productionComplete = !!production && Array.isArray(production.products) && production.products.length > 0
+    const productionData = report.dailyProduction || report.dailyProductionId
+    const productionComplete =
+      (Array.isArray(productionData?.products) && productionData.products.length > 0) ||
+      !!report.dailyProductionId
 
-    const incident = report.incidentReport
-    const incidentComplete = !!incident && (
-      incident.hasIncident === "no" ||
-      (incident.hasIncident === "yes" && incident.incidentType && incident.description)
+    const incidentData = report.incidentReport || report.incidentReportId
+    const incidentComplete = !!report.incidentReportId || (
+      !!incidentData && (
+        incidentData.hasIncident === "no" ||
+        incidentData.noIncidents === true ||
+        (incidentData.hasIncident === "yes" && incidentData.incidentType && incidentData.description)
+      )
     )
 
-    const visuals = report.siteVisuals
-    const visualsComplete = !!visuals && Array.isArray(visuals.media) && visuals.media.length > 0
+    const visualsData = report.siteVisuals || report.siteVisualId
+    const visualsComplete =
+      (Array.isArray(visualsData?.media) && visualsData.media.length > 0) ||
+      (Array.isArray(visualsData?.photos) && visualsData.photos.length > 0) ||
+      !!report.siteVisualId
 
     return powerComplete && productionComplete && incidentComplete && visualsComplete
   }

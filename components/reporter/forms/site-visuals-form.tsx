@@ -28,6 +28,8 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
   const [previewFile, setPreviewFile] = useState<MediaFile | null>(null)
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const isImageType = (type?: string) => !type || type === "image" || type?.startsWith("image/")
+  const isVideoType = (type?: string) => type === "video" || type?.startsWith("video/")
 
   useEffect(() => {
     const nextMedia = Array.isArray(data?.media) ? data.media : []
@@ -206,14 +208,14 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                     <div className="aspect-video bg-muted/30 relative overflow-hidden">
                       {file.preview ? (
                         <>
-                          {file.type === "image" ? (
+                          {isImageType(file.type) ? (
                             <img
                               src={file.preview}
                               alt={file.name}
                               className="w-full h-full object-cover cursor-pointer"
                               onClick={() => openPreview(file)}
                             />
-                          ) : (
+                          ) : isVideoType(file.type) ? (
                             <div className="relative w-full h-full">
                               <video
                                 src={file.preview}
@@ -222,10 +224,15 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                                 preload="metadata"
                               />
                             </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center text-muted-foreground w-full h-full">
+                              <ImageIcon className="w-8 h-8 mb-2" />
+                              <p className="text-xs">Unsupported file</p>
+                            </div>
                           )}
                           
                           {/* Preview Button for Images */}
-                          {file.type === "image" && (
+                          {isImageType(file.type) && (
                             <Button
                               size="sm"
                               variant="secondary"
@@ -238,7 +245,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                         </>
                       ) : (
                         <div className="flex flex-col items-center justify-center text-muted-foreground w-full h-full">
-                          {file.type === "image" ? (
+                          {isImageType(file.type) ? (
                             <ImageIcon className="w-8 h-8 mb-2" />
                           ) : (
                             <Play className="w-8 h-8 mb-2" />
@@ -259,7 +266,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                       </Button>
                       
                       {/* File Info Overlay - Images only (keep video controls unobstructed) */}
-                      {file.type === "image" && (
+                      {isImageType(file.type) && (
                         <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 transform transition-transform duration-200 translate-y-full group-hover:translate-y-0">
                           <div className="flex items-center gap-2">
                             <ImageIcon className="w-3 h-3 flex-shrink-0" />
@@ -290,10 +297,12 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
         <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-background/95 backdrop-blur-sm">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="flex items-center gap-2 text-foreground">
-              {previewFile?.type === "image" ? (
+              {isImageType(previewFile?.type) ? (
                 <ImageIcon className="w-5 h-5" />
-              ) : (
+              ) : isVideoType(previewFile?.type) ? (
                 <Play className="w-5 h-5" />
+              ) : (
+                <ImageIcon className="w-5 h-5" />
               )}
               {previewFile?.name}
             </DialogTitle>
@@ -301,19 +310,21 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
           <div className="p-6 pt-4">
             {previewFile?.preview && (
               <div className="flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden backdrop-blur-sm">
-                {previewFile.type === "image" ? (
+                {isImageType(previewFile.type) ? (
                   <img
                     src={previewFile.preview}
                     alt={previewFile.name}
                     className="max-w-full max-h-[70vh] object-contain"
                   />
-                ) : (
+                ) : isVideoType(previewFile.type) ? (
                   <video
                     src={previewFile.preview}
                     className="max-w-full max-h-[70vh] object-contain"
                     controls
                     autoPlay={false}
                   />
+                ) : (
+                  <div className="p-8 text-sm text-muted-foreground">Unsupported file</div>
                 )}
               </div>
             )}

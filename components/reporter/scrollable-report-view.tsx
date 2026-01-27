@@ -85,6 +85,17 @@ export default function ScrollableReportView({
     }
     return null
   }
+  const isImageMedia = (file: any) => {
+    const type = file?.type
+    if (!type) return true
+    if (typeof type === "string" && type.startsWith("image/")) return true
+    return type === "image"
+  }
+  const isVideoMedia = (file: any) => {
+    const type = file?.type
+    if (typeof type === "string" && type.startsWith("video/")) return true
+    return type === "video"
+  }
 
   const handleAddComment = () => {
     if (commentText.trim() && onAddComment) {
@@ -421,7 +432,7 @@ export default function ScrollableReportView({
                           key={idx}
                           className="border border-gray-200 rounded-none overflow-hidden bg-gray-50 hover:shadow-md transition-shadow"
                         >
-                          {file.type === "image" || !file.type ? (
+                          {isImageMedia(file) ? (
                             <>
                               <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
                                 <img
@@ -435,7 +446,7 @@ export default function ScrollableReportView({
                                 <p className="text-[10px] sm:text-xs text-gray-600">Image</p>
                               </div>
                             </>
-                          ) : (
+                          ) : isVideoMedia(file) ? (
                             <>
                               <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
                                 {file.preview || file.url ? (
@@ -456,6 +467,20 @@ export default function ScrollableReportView({
                                     {file.name || `Video ${idx + 1}`}
                                   </p>
                                 </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
+                                <img
+                                  src={file.preview || file.url || file || "/placeholder.svg"}
+                                  alt={file.name || `File ${idx + 1}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="p-2 sm:p-3 border-t border-gray-200 bg-white">
+                                <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name || `File ${idx + 1}`}</p>
+                                <p className="text-[10px] sm:text-xs text-gray-600">File</p>
                               </div>
                             </>
                           )}
