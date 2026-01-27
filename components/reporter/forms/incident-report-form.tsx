@@ -96,9 +96,12 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                 <label htmlFor="incident-type" className="text-lg sm:text-xl font-semibold text-foreground">Incident Type</label>
                 <select
                   id="incident-type"
-                  className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 pr-8 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-no-repeat bg-right bg-[length:16px_16px] bg-[position:right_8px_center]"
                   value={formData.incidentType}
                   onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`
+                  }}
                 >
                   <option value="">Select incident type</option>
                   <option value="equipment">Equipment Failure</option>
