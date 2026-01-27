@@ -449,41 +449,41 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
   const renderReportsContent = () => (
     <>
       {/* Quick Report Buttons */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-8">
         <Button
           onClick={handleShowPowerInterruption}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
+          className="h-24 sm:h-32 flex-col gap-2 sm:gap-3 bg-primary text-primary-foreground hover:bg-(--brand-green-dark) rounded-none"
         >
-          <Power sx={{ fontSize: 20 }} />
-          <span className="text-xs">Report Power Issues</span>
+          <Power sx={{ fontSize: 24 }} />
+          <span className="text-xs sm:text-base font-medium">Report Power Issues</span>
         </Button>
 
         <Button
           onClick={handleShowSiteVisuals}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
+          className="h-24 sm:h-32 flex-col gap-2 sm:gap-3 bg-primary text-primary-foreground hover:bg-(--brand-green-dark) rounded-none"
         >
-          <Visibility sx={{ fontSize: 20 }} />
-          <span className="text-xs">Report Visuals</span>
+          <Visibility sx={{ fontSize: 24 }} />
+          <span className="text-xs sm:text-base font-medium">Report Visuals</span>
         </Button>
 
         <Button
           onClick={handleShowDailyProduction}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
+          className="h-24 sm:h-32 flex-col gap-2 sm:gap-3 bg-primary text-primary-foreground hover:bg-(--brand-green-dark) rounded-none"
         >
-          <Add sx={{ fontSize: 20 }} />
-          <span className="text-xs">Report Production</span>
+          <Add sx={{ fontSize: 24 }} />
+          <span className="text-xs sm:text-base font-medium">Report Production</span>
         </Button>
 
         <Button
           onClick={handleShowIncidentReport}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
+          className="h-24 sm:h-32 flex-col gap-2 sm:gap-3 bg-primary text-primary-foreground hover:bg-(--brand-green-dark) rounded-none"
         >
-          <Warning sx={{ fontSize: 20 }} />
-          <span className="text-xs">Report Incident</span>
+          <Warning sx={{ fontSize: 24 }} />
+          <span className="text-xs sm:text-base font-medium">Report Incident</span>
         </Button>
 
       </div>
