@@ -175,29 +175,6 @@ export default function ScrollableReportView({
       <div className="flex-1 overflow-y-auto bg-white print-overflow-visible print-bg-white">
         <div className="p-2 sm:p-4 space-y-3 sm:space-y-4 pb-20 sm:pb-24 print-p-0 print-space-tight">
           
-          {/* Report Overview */}
-          <div className="border-b border-gray-200 pb-2 sm:pb-4">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Report Overview</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4">
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Status</p>
-                <span className="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded-none text-xs sm:text-sm mt-0.5 sm:mt-1">{report.status}</span>
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Submitted At</p>
-                <p className="text-gray-900 mt-0.5 sm:mt-1">{formatDate(report.submittedAt || report.createdAt)}</p>
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Reported By</p>
-                <p className="text-gray-900 mt-0.5 sm:mt-1">{report.reportedBy}</p>
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Email</p>
-                <p className="text-gray-900 mt-0.5 sm:mt-1">{report.reportedByEmail}</p>
-              </div>
-            </div>
-          </div>
-
           {/* Power Interruptions */}
           <div className="border-b border-gray-200 pb-3 sm:pb-4">
             <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
@@ -218,13 +195,13 @@ export default function ScrollableReportView({
                     <div key={interruption.id || index} className="p-2 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
                       <h4 className="font-medium text-orange-800 mb-2 sm:mb-3">Interruption #{index + 1}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3 mb-2 sm:mb-4">
-                        <div>
+                        <div className="space-y-0.5">
                           <p className="text-[11px] sm:text-xs font-medium text-gray-600">Time of Interruption</p>
-                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatTime(interruption.occurredAt)}</p>
+                          <p className="text-xs sm:text-sm text-gray-900">{formatTime(interruption.occurredAt)}</p>
                         </div>
-                        <div>
+                        <div className="space-y-0.5">
                           <p className="text-[11px] sm:text-xs font-medium text-gray-600">Duration</p>
-                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{Math.floor(interruption.duration / 60)} min {interruption.duration % 60} sec</p>
+                          <p className="text-xs sm:text-sm text-gray-900">{Math.floor(interruption.duration / 60)} min {interruption.duration % 60} sec</p>
                         </div>
                       </div>
                       {interruption.kplcReferenceNumber && (
@@ -278,21 +255,21 @@ export default function ScrollableReportView({
                             index < report.dailyProduction.products.length - 1 ? "pb-2.5 sm:pb-3 border-b border-gray-200" : ""
                           }`}
                         >
-                          <div>
+                          <div className="space-y-0.5">
                             <p className="text-[11px] sm:text-xs font-medium text-gray-600">Product Name</p>
-                            <p className="text-xs sm:text-sm text-gray-900 font-medium mt-0.5 sm:mt-1">{product.productName}</p>
+                            <p className="text-xs sm:text-sm text-gray-900 font-medium">{product.productName}</p>
                           </div>
-                          <div>
+                          <div className="space-y-0.5">
                             <p className="text-[11px] sm:text-xs font-medium text-gray-600">Quantity</p>
-                            <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{product.quantity} {product.unit}</p>
+                            <p className="text-xs sm:text-sm text-gray-900">{product.quantity} {product.unit}</p>
                           </div>
-                          <div>
+                          <div className="space-y-0.5">
                             <p className="text-[11px] sm:text-xs font-medium text-gray-600">Employees</p>
-                            <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{product.employees}</p>
+                            <p className="text-xs sm:text-sm text-gray-900">{product.employees}</p>
                           </div>
-                          <div>
+                          <div className="space-y-0.5">
                             <p className="text-[11px] sm:text-xs font-medium text-gray-600">Machines Used</p>
-                            <div className="flex flex-wrap gap-1 mt-0.5 sm:mt-1">
+                            <div className="flex flex-wrap gap-1">
                               {product.machinesUsed?.map((machine: string) => (
                                 <span key={machine} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-[10px] sm:text-xs">
                                 {machine}
@@ -342,13 +319,13 @@ export default function ScrollableReportView({
                 {hasLegacyIncidents ? (
                   <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Incident Type</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatIncidentType(report.incidentReport?.incidentType)}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{formatIncidentType(report.incidentReport?.incidentType)}</p>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Severity</p>
-                        <span className={`inline-block px-2 py-1 rounded text-xs sm:text-sm mt-0.5 sm:mt-1 ${
+                        <span className={`inline-block px-2 py-1 rounded text-xs sm:text-sm ${
                           report.incidentReport?.severity === 'High' ? 'bg-red-100 text-red-800' : 
                           report.incidentReport?.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
                         }`}>
@@ -357,40 +334,40 @@ export default function ScrollableReportView({
                       </div>
                     </div>
                     {report.incidentReport?.description && (
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Description</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport.description}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{report.incidentReport.description}</p>
                       </div>
                     )}
                     {report.incidentReport?.actionsTaken && (
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Actions Taken</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.incidentReport.actionsTaken}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{report.incidentReport.actionsTaken}</p>
                       </div>
                     )}
                   </>
                 ) : (
                   <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Incident Type</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatIncidentType(incidentData.incidentType)}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{formatIncidentType(incidentData.incidentType)}</p>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Time of Incident</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.incidentTime || "N/A"}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{incidentData.incidentTime || "N/A"}</p>
                       </div>
                     </div>
                     {incidentData.description && (
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Description</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.description}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{incidentData.description}</p>
                       </div>
                     )}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
-                      <div>
+                      <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Action Taken</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{incidentData.actionTaken || "N/A"}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{incidentData.actionTaken || "N/A"}</p>
                       </div>
                     </div>
                   </>
