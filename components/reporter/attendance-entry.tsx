@@ -550,7 +550,10 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
       )}
 
       {/* Current Day Attendance Entry */}
-      <Box className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 } }}>
+      <Card className="card-brand card-elevated card-filter-tight relative overflow-hidden">
+        <div className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-sky-100/70 dark:bg-sky-900/40" />
+        <div className="pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full bg-emerald-100/60 dark:bg-emerald-900/30" />
+        <CardContent className="relative z-10 p-2 sm:p-3">
         {savingAll && (
           <Box display="flex" justifyContent="flex-end" mb={2}>
             <Typography variant="caption" color="text.secondary">
@@ -582,13 +585,17 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
           ) : (
             employees.map((employee) => {
               const row = rowState[employee._id] || { shiftType: "day", signInTime: "", signOutTime: "" }
+              const styleIndex = employees.indexOf(employee) % reportCardStyles.length
+              const style = reportCardStyles[styleIndex]
               return (
-                <Box key={employee._id} className="card-brand card-elevated p-3 space-y-3">
-                  <Box>
+                <Card key={employee._id} className={`card-brand card-elevated p-3 space-y-3 relative overflow-hidden border ${style.card}`}>
+                  <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
+                  <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
+                  <Box className="relative z-10">
                     <Typography variant="body2" fontWeight="medium">{employee.name}</Typography>
                     <Typography variant="caption" color="text.secondary">{employee.employeeId}</Typography>
                   </Box>
-                  <Box className="space-y-2">
+                  <Box className="space-y-2 relative z-10">
                     <FormControl fullWidth size="small">
                       <InputLabel>Shift</InputLabel>
                       <Select
@@ -639,27 +646,30 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                       </Box>
                     </Box>
                   </Box>
-                  <Box display="flex" alignItems="center" justifyContent="space-between">
+                  <Box display="flex" alignItems="center" justifyContent="space-between" className="relative z-10">
                     {renderStatusChip(row)}
                   </Box>
-                </Box>
+                </Card>
               )
             })
           )}
         </Box>
       ) : (
-        <TableContainer component={Paper} elevation={2} sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 800 }}>
-            <TableHead>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell sx={{ minWidth: 180 }}><strong>Employee</strong></TableCell>
-                <TableCell sx={{ minWidth: 140 }}><strong>Shift</strong></TableCell>
-                <TableCell sx={{ minWidth: 120 }}><strong>Sign In</strong></TableCell>
-                <TableCell sx={{ minWidth: 120 }}><strong>Sign Out</strong></TableCell>
-                <TableCell sx={{ minWidth: 120 }}><strong>Status</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+        <div className="relative overflow-hidden rounded-lg border bg-gradient-to-br from-sky-50 via-white to-emerald-50 border-sky-100/70 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-950/40 dark:border-emerald-900/40">
+          <div className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-sky-100/70 dark:bg-sky-900/40" />
+          <div className="pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full bg-emerald-100/60 dark:bg-emerald-900/30" />
+          <TableContainer component="div" sx={{ overflowX: "auto", position: "relative", zIndex: 10 }}>
+            <Table sx={{ minWidth: 800 }}>
+              <TableHead>
+                <TableRow sx={{ bgcolor: "rgba(245, 245, 245, 0.8)" }}>
+                  <TableCell sx={{ minWidth: 180 }}><strong>Employee</strong></TableCell>
+                  <TableCell sx={{ minWidth: 140 }}><strong>Shift</strong></TableCell>
+                  <TableCell sx={{ minWidth: 120 }}><strong>Sign In</strong></TableCell>
+                  <TableCell sx={{ minWidth: 120 }}><strong>Sign Out</strong></TableCell>
+                  <TableCell sx={{ minWidth: 120 }}><strong>Status</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
@@ -742,9 +752,10 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
             </TableBody>
           </Table>
         </TableContainer>
+        </div>
       )}
 
-      <Box display="flex" justifyContent="flex-end" mt={2}>
+      <Box display="flex" justifyContent="flex-end" mt={2} className="relative z-10">
         <Button
           variant="default"
           onClick={handleSubmitAttendance}
@@ -754,7 +765,8 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
           {submittingReport ? "Submitting..." : "Submit Attendance"}
         </Button>
       </Box>
-    </Box>
+    </CardContent>
+    </Card>
     </div>
   )
 }
