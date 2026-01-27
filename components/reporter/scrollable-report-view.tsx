@@ -224,27 +224,13 @@ export default function ScrollableReportView({
                         </div>
                         <div>
                           <p className="text-[11px] sm:text-xs font-medium text-gray-600">Duration</p>
-                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{interruption.duration} minutes</p>
+                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{Math.floor(interruption.duration / 60)} min {interruption.duration % 60} sec</p>
                         </div>
                       </div>
-                      {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter) && (
+                      {interruption.kplcReferenceNumber && (
                         <div className="mb-2 sm:mb-4">
-                          <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter</p>
-                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">
-                            {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter)}
-                          </p>
-                        </div>
-                      )}
-                      {interruption.affectedMachines?.length > 0 && (
-                        <div>
-                          <p className="text-[11px] sm:text-xs font-medium text-gray-600 mb-1 sm:mb-2">Affected Machines</p>
-                          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                            {interruption.affectedMachines.map((machine: string) => (
-                              <span key={machine} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-[10px] sm:text-xs">
-                                {machine}
-                              </span>
-                            ))}
-                          </div>
+                          <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Reference Number</p>
+                          <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{interruption.kplcReferenceNumber}</p>
                         </div>
                       )}
                     </div>
@@ -259,14 +245,12 @@ export default function ScrollableReportView({
                     </div>
                     <div>
                       <p className="text-[11px] sm:text-xs font-medium text-gray-600">Duration</p>
-                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.duration} minutes</p>
+                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{Math.floor(report.powerInterruptions?.duration / 60)} min {report.powerInterruptions?.duration % 60} sec</p>
                     </div>
-                    {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined) && (
+                    {report.powerInterruptions?.kplcReferenceNumber && (
                       <div>
-                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">
-                          {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined)}
-                        </p>
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Reference Number</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.kplcReferenceNumber}</p>
                       </div>
                     )}
                   </div>

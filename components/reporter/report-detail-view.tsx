@@ -125,27 +125,13 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                       </div>
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Duration</p>
-                        <p className="text-foreground">{interruption.duration} minutes</p>
+                        <p className="text-foreground">{Math.floor(interruption.duration / 60)} min {interruption.duration % 60} sec</p>
                       </div>
                     </div>
-                    {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter) && (
+                    {interruption.kplcReferenceNumber && (
                       <div className="mb-4">
-                        <p className="text-sm font-medium text-muted-foreground">KPLC Meter</p>
-                        <p className="text-foreground">
-                          {formatMeterRange(interruption.kplcMeterStart, interruption.kplcMeterEnd, interruption.kplcMeter)}
-                        </p>
-                      </div>
-                    )}
-                    {interruption.affectedMachines?.length > 0 && (
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
-                        <div className="flex flex-wrap gap-2">
-                          {interruption.affectedMachines.map((machine: string) => (
-                            <Badge key={machine} variant="outline">
-                              {machine}
-                            </Badge>
-                          ))}
-                        </div>
+                        <p className="text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
+                        <p className="text-foreground">{interruption.kplcReferenceNumber}</p>
                       </div>
                     )}
                   </div>
@@ -161,27 +147,13 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                       </div>
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Duration</p>
-                        <p className="text-foreground">{report.powerInterruptions?.duration} minutes</p>
+                        <p className="text-foreground">{Math.floor(report.powerInterruptions?.duration / 60)} min {report.powerInterruptions?.duration % 60} sec</p>
                       </div>
-                      {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined) && (
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground">KPLC Meter</p>
-                          <p className="text-foreground">
-                            {formatMeterRange(report.powerInterruptions?.kplcMeterStart as string | undefined, report.powerInterruptions?.kplcMeterEnd as string | undefined, report.powerInterruptions?.kplcMeter as string | undefined)}
-                          </p>
-                        </div>
-                      )}
                     </div>
-                    {report.powerInterruptions?.affectedMachines?.length > 0 && (
+                    {report.powerInterruptions?.kplcReferenceNumber && (
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-2">Affected Machines</p>
-                        <div className="flex flex-wrap gap-2">
-                          {report.powerInterruptions.affectedMachines.map((machine: string) => (
-                            <Badge key={machine} variant="outline">
-                              {machine}
-                            </Badge>
-                          ))}
-                        </div>
+                        <p className="text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
+                        <p className="text-foreground">{report.powerInterruptions?.kplcReferenceNumber}</p>
                       </div>
                     )}
                   </div>
