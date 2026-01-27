@@ -100,7 +100,7 @@ const IncidentTaskSchema = new Schema<IIncidentTask>(
         text: { type: String, required: true },
         timestamp: { type: String, required: true }
       }
-    }
+    ]
   },
   {
     timestamps: true
