@@ -23,6 +23,12 @@ interface PowerInterruption {
   timerStartTime: number | null
 }
 
+interface ActiveTimer {
+  interruptionId: string
+  startTime: number
+  reportId: string
+}
+
 export default function StandalonePowerInterruption({ user, reportId, onBack, onSaved }: StandalonePowerInterruptionProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [noInterruptions, setNoInterruptions] = useState(false)
@@ -39,7 +45,43 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [timerDisplay, setTimerDisplay] = useState<Record<string, string>>({})
 
-  // Timer effect
+  // Get active timer from localStorage
+  const getActiveTimerFromStorage = (): ActiveTimer | null => {
+    if (typeof window === 'undefined') return null
+    try {
+      const stored = localStorage.getItem(`pwr-timer-${reportId}`)
+      return stored ? JSON.parse(stored) : null
+    } catch {
+      return null
+    }
+  }
+
+  // Save active timer to localStorage
+  const saveActiveTimerToStorage = (interruptionId: string, startTime: number) => {
+    if (typeof window === 'undefined') return
+    try {
+      const timer: ActiveTimer = {
+        interruptionId,
+        startTime,
+        reportId
+      }
+      localStorage.setItem(`pwr-timer-${reportId}`, JSON.stringify(timer))
+    } catch {
+      // Silent fail for localStorage errors
+    }
+  }
+
+  // Clear active timer from localStorage
+  const clearActiveTimerFromStorage = () => {
+    if (typeof window === 'undefined') return
+    try {
+      localStorage.removeItem(`pwr-timer-${reportId}`)
+    } catch {
+      // Silent fail for localStorage errors
+    }
+  }
+
+  // Timer effect - runs every second and uses localStorage for persistence
   useEffect(() => {
     const interval = setInterval(() => {
       setFormData((prev) => {
@@ -77,6 +119,8 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
           : int
       )
     }))
+    // Clear timer from localStorage when stopped
+    clearActiveTimerFromStorage()
   }
 
   useEffect(() => {
@@ -90,13 +134,25 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       .then((report) => {
         if (!isMounted || !report) return
         const powerData = report.powerInterruptions || {}
+        const activeTimer = getActiveTimerFromStorage()
         const interruptions = Array.isArray(powerData.interruptions)
-          ? powerData.interruptions.map((item: any) => ({
-              ...item,
-              timerActive: false,
-              timerStartTime: null,
-              duration: item.duration || 0
-            }))
+          ? powerData.interruptions.map((item: any) => {
+              const baseInterruption = {
+                ...item,
+                timerActive: false,
+                timerStartTime: null,
+                duration: item.duration || 0
+              }
+              // Restore active timer if it matches this interruption
+              if (activeTimer && activeTimer.interruptionId === item.id && activeTimer.reportId === reportId) {
+                return {
+                  ...baseInterruption,
+                  timerActive: true,
+                  timerStartTime: activeTimer.startTime
+                }
+              }
+              return baseInterruption
+            })
           : []
         setNoInterruptions(!!powerData.noInterruptions)
         setFormData((prev) => ({
@@ -163,8 +219,11 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
           const updated = { ...int, [field]: value }
           // Auto-start timer when time of interruption is entered
           if (field === 'occurredAt' && value && !int.timerActive) {
+            const now = Date.now()
             updated.timerActive = true
-            updated.timerStartTime = Date.now()
+            updated.timerStartTime = now
+            // Save timer to localStorage for persistence across navigation
+            saveActiveTimerToStorage(interruptionId, now)
           }
           return updated
         }
@@ -211,6 +270,9 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
         const error = await response.json()
         throw new Error(error.error || "Failed to save draft")
       }
+
+      // Clear timer from localStorage after successful save
+      clearActiveTimerFromStorage()
 
       if (onSaved) onSaved()
       onBack()
