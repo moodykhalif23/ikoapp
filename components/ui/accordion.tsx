@@ -8,7 +8,7 @@ import {
   AccordionProps as MuiAccordionProps
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { ChevronDown } from 'lucide-react'
+import { ExpandMore } from '@mui/icons-material'
 
 interface AccordionProps extends Omit<MuiAccordionProps, 'children'> {
   type?: 'single' | 'multiple'
@@ -140,7 +140,7 @@ function AccordionItem({ value, children, className }: AccordionItemProps) {
 function AccordionTrigger({ children, className }: AccordionTriggerProps) {
   return (
     <AccordionSummary
-      expandIcon={<ChevronDown size={16} />}
+      expandIcon={<ExpandMore sx={{ fontSize: 16 }} />}
       className={className}
       sx={{
         '& .MuiAccordionSummary-expandIconWrapper': {

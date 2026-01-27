@@ -11,7 +11,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import SendIcon from "@mui/icons-material/Send"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ExpandMore, ExpandLess } from "@mui/icons-material"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import AttendanceReportsView from "@/components/attendance/attendance-reports-view"
@@ -346,12 +346,12 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
                 >
                   {filtersExpanded ? (
                     <>
-                      <ChevronUp size={16} />
+                      <ExpandLess sx={{ fontSize: 16 }} />
                       <span className="hidden sm:inline">Collapse</span>
                     </>
                   ) : (
                     <>
-                      <ChevronDown size={16} />
+                      <ExpandMore sx={{ fontSize: 16 }} />
                       <span className="hidden sm:inline">Expand</span>
                     </>
                   )}

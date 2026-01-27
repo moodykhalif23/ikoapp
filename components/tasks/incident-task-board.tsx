@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ExpandMore, ExpandLess } from "@mui/icons-material"
 
 interface IncidentTask {
   _id: string
@@ -242,12 +242,12 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
               >
                 {filtersExpanded ? (
                   <>
-                    <ChevronUp size={16} />
+                    <ExpandLess sx={{ fontSize: 16 }} />
                     <span className="hidden sm:inline">Collapse</span>
                   </>
                 ) : (
                   <>
-                    <ChevronDown size={16} />
+                    <ExpandMore sx={{ fontSize: 16 }} />
                     <span className="hidden sm:inline">Expand</span>
                   </>
                 )}

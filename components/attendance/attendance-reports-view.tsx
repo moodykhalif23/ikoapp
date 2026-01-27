@@ -17,7 +17,7 @@ import {
 } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ExpandMore, ExpandLess } from "@mui/icons-material"
 import { useTheme } from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery"
 
@@ -165,12 +165,12 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
             >
               {filtersExpanded ? (
                 <>
-                  <ChevronUp size={16} />
+                  <ExpandLess sx={{ fontSize: 16 }} />
                   <span className="hidden sm:inline">Collapse</span>
                 </>
               ) : (
                 <>
-                  <ChevronDown size={16} />
+                  <ExpandMore sx={{ fontSize: 16 }} />
                   <span className="hidden sm:inline">Expand</span>
                 </>
               )}

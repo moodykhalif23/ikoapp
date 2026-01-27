@@ -9,7 +9,7 @@ import PeopleIcon from "@mui/icons-material/People"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import SearchIcon from "@mui/icons-material/Search"
 import FilterListIcon from "@mui/icons-material/FilterList"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ExpandMore, ExpandLess } from "@mui/icons-material"
 import EquipmentDashboard from "@/components/equipment/equipment-dashboard"
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
 import EnterpriseLayout from "@/components/layouts/enterprise-layout"
@@ -513,12 +513,12 @@ export default function AdminDashboard({ user, onLogout, onGoHome }: AdminDashbo
             >
               {filtersExpanded ? (
                 <>
-                  <ChevronUp size={16} />
+                  <ExpandLess sx={{ fontSize: 16 }} />
                   <span className="hidden sm:inline">Collapse</span>
                 </>
               ) : (
                 <>
-                  <ChevronDown size={16} />
+                  <ExpandMore sx={{ fontSize: 16 }} />
                   <span className="hidden sm:inline">Expand</span>
                 </>
               )}

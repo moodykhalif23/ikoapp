@@ -22,7 +22,8 @@ import {
 } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery"
-import { ChevronDown, ChevronUp, Clock } from "lucide-react"
+import { Clock } from "lucide-react"
+import { ExpandMore, ExpandLess } from "@mui/icons-material"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
@@ -364,12 +365,12 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
             >
               {filtersExpanded ? (
                 <>
-                  <ChevronUp size={16} />
+                  <ExpandLess sx={{ fontSize: 16 }} />
                   <span className="hidden sm:inline">Collapse</span>
                 </>
               ) : (
                 <>
-                  <ChevronDown size={16} />
+                  <ExpandMore sx={{ fontSize: 16 }} />
                   <span className="hidden sm:inline">Expand</span>
                 </>
               )}
@@ -402,11 +403,14 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                     id="attendance-date-filter"
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    className={`w-full h-10 px-3 pr-8 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent appearance-none bg-no-repeat bg-right bg-[length:16px_16px] bg-[position:right_8px_center] ${
                       dateFilter !== "all" 
                         ? "bg-green-50 text-green-800" 
                         : "bg-background"
                     }`}
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`
+                    }}
                   >
                     <option value="all">All Time</option>
                     <option value="today">Today</option>
@@ -422,11 +426,14 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                     id="attendance-shift-filter"
                     value={shiftFilter}
                     onChange={(e) => setShiftFilter(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    className={`w-full h-10 px-3 pr-8 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent appearance-none bg-no-repeat bg-right bg-[length:16px_16px] bg-[position:right_8px_center] ${
                       shiftFilter !== "all" 
                         ? "bg-green-50 text-green-800" 
                         : "bg-background"
                     }`}
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`
+                    }}
                   >
                     <option value="all">All Shifts</option>
                     <option value="day">Day</option>
@@ -440,11 +447,14 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                     id="attendance-sort-filter"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                    className={`w-full h-10 px-3 pr-8 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent appearance-none bg-no-repeat bg-right bg-[length:16px_16px] bg-[position:right_8px_center] ${
                       sortBy !== "newest" 
                         ? "bg-green-50 text-green-800" 
                         : "bg-background"
                     }`}
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`
+                    }}
                   >
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>

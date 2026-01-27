@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Add, Visibility, Power, Warning, People } from "@mui/icons-material"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { Add, Visibility, Power, Warning, People, ExpandMore, ExpandLess } from "@mui/icons-material"
 import { toast } from "sonner"
 
 import ScrollableReportView from "@/components/reporter/scrollable-report-view"
@@ -660,12 +659,12 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
                 >
                   {filtersExpanded ? (
                     <>
-                      <ChevronUp size={16} />
+                      <ExpandLess sx={{ fontSize: 16 }} />
                       <span className="hidden sm:inline">Collapse</span>
                     </>
                   ) : (
                     <>
-                      <ChevronDown size={16} />
+                      <ExpandMore sx={{ fontSize: 16 }} />
                       <span className="hidden sm:inline">Expand</span>
                     </>
                   )}
