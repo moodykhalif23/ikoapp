@@ -33,6 +33,8 @@ export async function PUT(
     const resolvedParams = await params
     const body = await request.json()
     const updates = { ...body }
+    const comment = body?.comment
+    delete updates.comment
 
     if (updates.assignedToId && !updates.assignedToName) {
       const assignee = await User.findById(updates.assignedToId).select("name email").lean()
@@ -42,7 +44,22 @@ export async function PUT(
       }
     }
 
-    const task = await IncidentTask.findByIdAndUpdate(resolvedParams.id, updates, {
+    const updateOps: Record<string, any> = {}
+    if (Object.keys(updates).length > 0) {
+      updateOps.$set = updates
+    }
+    if (comment) {
+      const normalized = {
+        id: comment.id || `CMT-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        author: comment.author || "Unknown",
+        role: comment.role || "user",
+        text: comment.text || "",
+        timestamp: comment.timestamp || new Date().toISOString()
+      }
+      updateOps.$push = { comments: normalized }
+    }
+
+    const task = await IncidentTask.findByIdAndUpdate(resolvedParams.id, updateOps, {
       new: true
     }).lean()
 

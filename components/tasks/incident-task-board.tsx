@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   Box,
   Chip,
@@ -38,6 +38,13 @@ interface IncidentTask {
   assignedToId: string
   assignedToName?: string
   createdByName?: string
+  comments?: Array<{
+    id: string
+    author: string
+    role: string
+    text: string
+    timestamp: string
+  }>
 }
 
 interface IncidentTaskBoardProps {
@@ -50,6 +57,7 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"))
   const userId = user?._id || user?.id
   const restrictToAssignee = scope === "assigned" && userId
+  const canComment = Array.isArray(user?.roles) && user.roles.some((role: string) => role === "admin" || role === "viewer")
   const [tasks, setTasks] = useState<IncidentTask[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -58,10 +66,13 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
   const [filterDate, setFilterDate] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState<string>("")
   const [filtersExpanded, setFiltersExpanded] = useState(false)
+  const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({})
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async (silent = false) => {
     try {
-      setLoading(true)
+      if (!silent) {
+        setLoading(true)
+      }
       setError(null)
       const params = new URLSearchParams({
         status: "all",
@@ -79,13 +90,23 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch tasks")
     } finally {
-      setLoading(false)
+      if (!silent) {
+        setLoading(false)
+      }
     }
-  }
+  }, [restrictToAssignee, userId])
 
   useEffect(() => {
     fetchTasks()
-  }, [restrictToAssignee, userId])
+    const interval = setInterval(() => fetchTasks(true), 5000)
+    return () => clearInterval(interval)
+  }, [fetchTasks])
+
+  const formatTimestamp = (timestamp?: string) => {
+    if (!timestamp) return ""
+    const date = new Date(timestamp)
+    return Number.isNaN(date.getTime()) ? timestamp : date.toLocaleString()
+  }
 
   const updateTaskStatus = async (taskId: string, status: IncidentTask["status"]) => {
     try {
@@ -101,6 +122,34 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
       setTasks((prev) => prev.map((task) => (task._id === taskId ? updated : task)))
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update task")
+    }
+  }
+
+  const addComment = async (taskId: string) => {
+    const text = (commentDrafts[taskId] || "").trim()
+    if (!text) return
+    try {
+      const response = await fetch(`/api/tasks/${taskId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          comment: {
+            id: `CMT-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            author: user?.name || "User",
+            role: Array.isArray(user?.roles) ? user.roles[0] || "user" : "user",
+            text,
+            timestamp: new Date().toISOString()
+          }
+        })
+      })
+      if (!response.ok) {
+        throw new Error("Failed to add comment")
+      }
+      const updated = await response.json()
+      setTasks((prev) => prev.map((task) => (task._id === taskId ? updated : task)))
+      setCommentDrafts((prev) => ({ ...prev, [taskId]: "" }))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add comment")
     }
   }
 
@@ -368,6 +417,37 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
                         </FormControl>
                       </div>
                     </div>
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground">Comments</p>
+                      {task.comments?.length ? (
+                        <div className="max-h-28 overflow-y-auto border border-border/60 rounded-md bg-muted/20 p-2 space-y-2">
+                          {task.comments.map((comment) => (
+                            <div key={comment.id} className="space-y-1">
+                              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                                <span className="font-medium text-foreground">{comment.author}</span>
+                                <span>{formatTimestamp(comment.timestamp)}</span>
+                              </div>
+                              <p className="text-xs text-foreground">{comment.text}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">No comments yet.</p>
+                      )}
+                      {canComment && (
+                        <div className="flex gap-2">
+                          <Input
+                            value={commentDrafts[task._id] || ""}
+                            onChange={(e) => setCommentDrafts((prev) => ({ ...prev, [task._id]: e.target.value }))}
+                            placeholder="Add a comment..."
+                            className="text-xs"
+                          />
+                          <Button size="sm" onClick={() => addComment(task._id)}>
+                            Add
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))
               )}
@@ -413,6 +493,37 @@ export default function IncidentTaskBoard({ user, scope = "all" }: IncidentTaskB
                               {task.description}
                             </Typography>
                           )}
+                          <div className="mt-2 space-y-2">
+                            <p className="text-xs font-medium text-muted-foreground">Comments</p>
+                            {task.comments?.length ? (
+                              <div className="max-h-28 overflow-y-auto border border-border/60 rounded-md bg-muted/20 p-2 space-y-2">
+                                {task.comments.map((comment) => (
+                                  <div key={comment.id} className="space-y-1">
+                                    <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                                      <span className="font-medium text-foreground">{comment.author}</span>
+                                      <span>{formatTimestamp(comment.timestamp)}</span>
+                                    </div>
+                                    <p className="text-xs text-foreground">{comment.text}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-muted-foreground">No comments yet.</p>
+                            )}
+                            {canComment && (
+                              <div className="flex gap-2">
+                                <Input
+                                  value={commentDrafts[task._id] || ""}
+                                  onChange={(e) => setCommentDrafts((prev) => ({ ...prev, [task._id]: e.target.value }))}
+                                  placeholder="Add a comment..."
+                                  className="text-xs"
+                                />
+                                <Button size="sm" onClick={() => addComment(task._id)}>
+                                  Add
+                                </Button>
+                              </div>
+                            )}
+                          </div>
                         </Box>
                       </TableCell>
                       <TableCell>

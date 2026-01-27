@@ -15,6 +15,13 @@ export interface IIncidentTask extends Document {
   assignedToEmail?: string
   createdById?: string
   createdByName?: string
+  comments?: Array<{
+    id: string
+    author: string
+    role: string
+    text: string
+    timestamp: string
+  }>
   createdAt: Date
   updatedAt: Date
 }
@@ -84,6 +91,15 @@ const IncidentTaskSchema = new Schema<IIncidentTask>(
     createdByName: {
       type: String,
       trim: true
+    },
+    comments: [
+      {
+        id: { type: String, required: true },
+        author: { type: String, required: true },
+        role: { type: String, required: true },
+        text: { type: String, required: true },
+        timestamp: { type: String, required: true }
+      }
     }
   },
   {
