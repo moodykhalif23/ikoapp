@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import PowerIcon from "@mui/icons-material/Power"
-import { Plus, Trash2, Play, Square } from "lucide-react"
+import { Plus, Trash2, Square } from "lucide-react"
 
 interface StandalonePowerInterruptionProps {
   user: any
@@ -66,17 +66,6 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
     const minutes = Math.floor((seconds % 3600) / 60)
     const secs = seconds % 60
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }
-
-  const startTimer = (interruptionId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      interruptions: prev.interruptions.map((int) =>
-        int.id === interruptionId
-          ? { ...int, timerActive: true, timerStartTime: Date.now() }
-          : int
-      )
-    }))
   }
 
   const stopTimer = (interruptionId: string) => {
@@ -169,9 +158,18 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
   const updateInterruption = (interruptionId: string, field: string, value: any) => {
     setFormData({
       ...formData,
-      interruptions: formData.interruptions.map(int => 
-        int.id === interruptionId ? { ...int, [field]: value } : int
-      )
+      interruptions: formData.interruptions.map(int => {
+        if (int.id === interruptionId) {
+          const updated = { ...int, [field]: value }
+          // Auto-start timer when time of interruption is entered
+          if (field === 'occurredAt' && value && !int.timerActive) {
+            updated.timerActive = true
+            updated.timerStartTime = Date.now()
+          }
+          return updated
+        }
+        return int
+      })
     })
   }
 
@@ -337,17 +335,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                             {timerDisplay[interruption.id] || "00:00:00"}
                           </div>
                           <div className="flex gap-2">
-                            {!interruption.timerActive ? (
-                              <Button
-                                type="button"
-                                size="sm"
-                                onClick={() => startTimer(interruption.id)}
-                                className="gap-2 bg-green-600 hover:bg-green-700 text-white"
-                              >
-                                <Play size={16} />
-                                Start
-                              </Button>
-                            ) : (
+                            {interruption.timerActive && (
                               <Button
                                 type="button"
                                 size="sm"
@@ -355,7 +343,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                                 className="gap-2 bg-red-600 hover:bg-red-700 text-white"
                               >
                                 <Square size={16} />
-                                Stop
+                                Stop Interruption
                               </Button>
                             )}
                           </div>
