@@ -17,11 +17,12 @@ import {
   TextField,
   Typography,
   Alert,
-  Chip
+  Chip,
+  InputAdornment
 } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp, Clock } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
@@ -381,7 +382,20 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
           {filtersExpanded && (
             <div className="space-y-4">
               {/* Date Filter */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="space-y-1">
+                  <label htmlFor="selected-date" className="text-xs font-medium text-muted-foreground">Selected Date</label>
+                  <TextField
+                    id="selected-date"
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ width: "100%" }}
+                  />
+                </div>
+                
                 <div className="space-y-1">
                   <label htmlFor="attendance-date-filter" className="text-xs font-medium text-muted-foreground">Date Range</label>
                   <select
@@ -447,6 +461,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                       setDateFilter("all")
                       setShiftFilter("all")
                       setSortBy("newest")
+                      setSelectedDate(new Date().toISOString().split("T")[0])
                     }}
                     className="text-sm w-full h-10"
                   >
@@ -536,26 +551,13 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
 
       {/* Current Day Attendance Entry */}
       <Box className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 } }}>
-        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} gap={2} mb={2}>
-          <Typography variant="h5" component="h1" sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
-            Today's Attendance Entry
-          </Typography>
-          <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} gap={1} alignItems={{ xs: "stretch", sm: "center" }}>
-            <TextField
-              label="Date"
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              size="small"
-              InputLabelProps={{ shrink: true }}
-            />
-            {savingAll && (
-              <Typography variant="caption" color="text.secondary" sx={{ alignSelf: { xs: "flex-start", sm: "center" }, px: 1 }}>
-                Saving...
-              </Typography>
-            )}
+        {savingAll && (
+          <Box display="flex" justifyContent="flex-end" mb={2}>
+            <Typography variant="caption" color="text.secondary">
+              Saving...
+            </Typography>
           </Box>
-        </Box>
+        )}
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
@@ -608,6 +610,13 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                           size="small"
                           fullWidth
                           InputLabelProps={{ shrink: true }}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Clock size={16} />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       </Box>
                       <Box>
@@ -619,6 +628,13 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                           size="small"
                           fullWidth
                           InputLabelProps={{ shrink: true }}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Clock size={16} />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       </Box>
                     </Box>
@@ -690,6 +706,13 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                           size="small"
                           fullWidth
                           InputLabelProps={{ shrink: true }}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Clock size={16} />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       </TableCell>
                       <TableCell>
@@ -700,6 +723,13 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                           size="small"
                           fullWidth
                           InputLabelProps={{ shrink: true }}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Clock size={16} />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       </TableCell>
                       <TableCell>
