@@ -98,7 +98,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   id="incident-type"
                   className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.incidentType}
-                  onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}}
+                  onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
                 >
                   <option value="">Select incident type</option>
                   <option value="equipment">Equipment Failure</option>
