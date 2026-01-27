@@ -124,10 +124,6 @@ export default function DailyProductionForm({ data, onComplete, previousMeterEnd
 
   return (
     <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Daily Production Data</h2>
-      </div>
-      
       <div className="space-y-6">
         <div className="space-y-4">
           {products.map((product: Product, index: number) => (

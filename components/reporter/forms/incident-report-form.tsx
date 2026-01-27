@@ -86,10 +86,6 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
 
   return (
     <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Incident Report</h2>
-      </div>
-      
       <div className="space-y-6">
         <div className="space-y-3">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Were there any incidents today?</label>
@@ -125,7 +121,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                     }
                     setFormData({ ...formData, hasIncident: nextValue })
                   }}
-                  className="w-5 h-5 cursor-pointer accent-green-700 border-2 border-green-700 mt-1 flex-shrink-0"
+                  className="w-5 h-5 cursor-pointer accent-green-700 border-2 border-green-700 mt-1 shrink-0"
                 />
                 <label htmlFor={`incident-${option}`} className="text-sm cursor-pointer font-medium capitalize leading-relaxed">
                   {option}
@@ -139,11 +135,12 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-lg sm:text-xl font-semibold text-foreground">Incident Type</label>
+                <label htmlFor="incident-type" className="text-lg sm:text-xl font-semibold text-foreground">Incident Type</label>
                 <select
+                  id="incident-type"
                   className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.incidentType}
-                  onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}}
                 >
                   <option value="">Select incident type</option>
                   <option value="equipment">Equipment Failure</option>
@@ -190,8 +187,9 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-lg sm:text-xl font-semibold text-foreground">Assign Owner</label>
+                <label htmlFor="assign-owner" className="text-lg sm:text-xl font-semibold text-foreground">Assign Owner</label>
                 <select
+                  id="assign-owner"
                   className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.taskOwnerId}
                   onChange={(e) => {
@@ -230,7 +228,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
         )}
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-[var(--brand-green-dark)] text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
+          <Button onClick={handleSubmit} className="bg-primary hover:bg-(--brand-green-dark) text-primary-foreground gap-2 px-8 py-4 text-lg font-semibold">
             Save Draft <Save className="w-4 h-4" />
           </Button>
         </div>

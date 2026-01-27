@@ -170,10 +170,6 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
   return (
     <div className="bg-transparent animate-in fade-in duration-300 space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Site Visuals & Documentation</h2>
-      </div>
-      
       <div className="space-y-6">
         <div className="space-y-3">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Media Files (Images & Videos)</label>
