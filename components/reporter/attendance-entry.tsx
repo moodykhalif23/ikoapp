@@ -23,6 +23,8 @@ import {
 import { useTheme } from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 interface AttendanceEntryProps {
   user: any
@@ -77,7 +79,6 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
   const [sortBy, setSortBy] = useState<string>("newest")
   const [filtersExpanded, setFiltersExpanded] = useState(false)
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([])
-  const [showAttendanceHistory, setShowAttendanceHistory] = useState(false)
 
   useEffect(() => {
     fetchEmployees()
@@ -345,27 +346,215 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
   ]
 
   return (
-    <Box className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 } }}>
-      <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} gap={2} mb={2}>
-        <Typography variant="h5" component="h1" sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
-          Attendance Entry
-        </Typography>
-        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} gap={1} alignItems={{ xs: "stretch", sm: "center" }}>
-          <TextField
-            label="Date"
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            size="small"
-            InputLabelProps={{ shrink: true }}
-          />
-          {savingAll && (
-            <Typography variant="caption" color="text.secondary" sx={{ alignSelf: { xs: "flex-start", sm: "center" }, px: 1 }}>
-              Saving...
-            </Typography>
+    <div className="space-y-6">
+      {/* Filters Section - moved to top */}
+      <Card className="card-brand card-elevated card-filter-tight">
+        <CardHeader className="card-filter-header">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base sm:text-lg">
+              Filter Attendance Records
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFiltersExpanded(!filtersExpanded)}
+              className="gap-2"
+            >
+              {filtersExpanded ? (
+                <>
+                  <ChevronUp size={16} />
+                  <span className="hidden sm:inline">Collapse</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  <span className="hidden sm:inline">Expand</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="pt-0">
+          {/* Collapsible filter section */}
+          {filtersExpanded && (
+            <div className="space-y-4">
+              {/* Date Filter */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-1">
+                  <label htmlFor="attendance-date-filter" className="text-xs font-medium text-muted-foreground">Date Range</label>
+                  <select
+                    id="attendance-date-filter"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      dateFilter !== "all" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="quarter">This Quarter</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="attendance-shift-filter" className="text-xs font-medium text-muted-foreground">Shift</label>
+                  <select
+                    id="attendance-shift-filter"
+                    value={shiftFilter}
+                    onChange={(e) => setShiftFilter(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      shiftFilter !== "all" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="all">All Shifts</option>
+                    <option value="day">Day</option>
+                    <option value="night">Night</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="attendance-sort-filter" className="text-xs font-medium text-muted-foreground">Sort By</label>
+                  <select
+                    id="attendance-sort-filter"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className={`w-full h-10 px-3 text-sm border-2 border-green-700 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ${
+                      sortBy !== "newest" 
+                        ? "bg-green-50 text-green-800" 
+                        : "bg-background"
+                    }`}
+                  >
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="date">Attendance Date</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground invisible">Actions</label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setDateFilter("all")
+                      setShiftFilter("all")
+                      setSortBy("newest")
+                    }}
+                    className="text-sm w-full h-10"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Results Count */}
+              <div className="pt-4 border-t text-sm text-muted-foreground">
+                Showing {filteredAttendanceRecords.length} of {attendanceRecords.length} attendance records
+              </div>
+            </div>
           )}
+          
+          {/* Compact results count when collapsed */}
+          {!filtersExpanded && (
+            <div className="text-sm text-muted-foreground">
+              {filteredAttendanceRecords.length} of {attendanceRecords.length} attendance records
+              {(dateFilter !== "all" || shiftFilter !== "all" || sortBy !== "newest") && (
+                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-none">
+                  Filtered
+                </span>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Attendance History Grid */}
+      {filteredAttendanceRecords.length === 0 ? (
+        <Card className="card-brand card-elevated">
+          <CardContent className="text-center py-8">
+            <Typography variant="body2" color="text.secondary">
+              No attendance records found.
+            </Typography>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {filteredAttendanceRecords.map((record, index) => {
+            const style = reportCardStyles[index % reportCardStyles.length]
+            return (
+              <Card key={record._id} className={`card-brand hover:shadow-lg transition-all duration-300 hover-brand relative overflow-hidden border ${style.card}`}>
+                <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
+                <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
+                <CardHeader className="p-3 sm:p-4 pb-2 relative z-10">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-primary text-base sm:text-lg">{record.date}</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">{record.employeeName}</CardDescription>
+                    </div>
+                    <div className={`px-1.5 py-0.5 rounded-none text-[10px] sm:text-xs font-medium whitespace-nowrap shrink-0 ${
+                      record.shiftType === 'day' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                    }`}>
+                      {record.shiftType}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-3 sm:p-4 pt-2 relative z-10">
+                  <div className="space-y-1.5 text-xs sm:text-sm mb-3">
+                    <p>
+                      <span className="font-medium text-brand-contrast">Sign In:</span>{" "}
+                      <span className="text-muted-foreground">
+                        {record.signInTime || "N/A"}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="font-medium text-brand-contrast">Sign Out:</span>{" "}
+                      <span className="text-muted-foreground">
+                        {record.signOutTime || "N/A"}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="font-medium text-brand-contrast">Recorded:</span>{" "}
+                      <span className="text-muted-foreground">
+                        {new Date(record.createdAt).toLocaleDateString()}
+                      </span>
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Current Day Attendance Entry */}
+      <Box className="card-brand card-elevated" sx={{ p: { xs: 2, sm: 3 } }}>
+        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} gap={2} mb={2}>
+          <Typography variant="h5" component="h1" sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
+            Today's Attendance Entry
+          </Typography>
+          <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} gap={1} alignItems={{ xs: "stretch", sm: "center" }}>
+            <TextField
+              label="Date"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+            />
+            {savingAll && (
+              <Typography variant="caption" color="text.secondary" sx={{ alignSelf: { xs: "flex-start", sm: "center" }, px: 1 }}>
+                Saving...
+              </Typography>
+            )}
+          </Box>
         </Box>
-      </Box>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
@@ -538,227 +727,8 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
           {submittingReport ? "Submitting..." : "Submit Attendance"}
         </Button>
       </Box>
-
-      {/* Attendance History Section */}
-      <Box className="card-brand card-elevated mt-6" sx={{ p: { xs: 2, sm: 3 } }}>
-        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} gap={2} mb={2}>
-          <Typography variant="h6" component="h2" sx={{ fontSize: { xs: "1.125rem", sm: "1.25rem" } }}>
-            Attendance History
-          </Typography>
-          <Button
-            variant="outlined"
-            onClick={() => setShowAttendanceHistory(!showAttendanceHistory)}
-            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-          >
-            {showAttendanceHistory ? "Hide History" : "Show History"}
-          </Button>
-        </Box>
-
-        {showAttendanceHistory && (
-          <>
-            {/* Filters Section */}
-            <Box className="card-brand card-elevated card-filter-tight mb-4" sx={{ p: 2 }}>
-              <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-                <Typography variant="subtitle1" sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}>
-                  Filter Attendance Records
-                </Typography>
-                <Button
-                  variant="text"
-                  size="small"
-                  onClick={() => setFiltersExpanded(!filtersExpanded)}
-                  sx={{ gap: 1 }}
-                >
-                  {filtersExpanded ? (
-                    <>
-                      <ChevronUp size={16} />
-                      <span className="hidden sm:inline">Collapse</span>
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown size={16} />
-                      <span className="hidden sm:inline">Expand</span>
-                    </>
-                  )}
-                </Button>
-              </Box>
-              
-              {/* Collapsible filter section */}
-              {filtersExpanded && (
-                <Box sx={{ mt: 2 }}>
-                  {/* Date Filter */}
-                  <Box display="grid" gridTemplateColumns={{ xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" }} gap={2}>
-                    <Box>
-                      <Typography variant="caption" sx={{ fontSize: "0.75rem", fontWeight: 500, color: "text.secondary" }}>Date Range</Typography>
-                      <FormControl fullWidth size="small">
-                        <Select
-                          value={dateFilter}
-                          onChange={(e) => setDateFilter(e.target.value)}
-                          sx={{
-                            border: "2px solid #15803d",
-                            backgroundColor: dateFilter !== "all" ? "#f0fdf4" : "background.paper",
-                            color: dateFilter !== "all" ? "#166534" : "text.primary",
-                            "& .MuiOutlinedInput-notchedOutline": { border: "none" }
-                          }}
-                        >
-                          <MenuItem value="all">All Time</MenuItem>
-                          <MenuItem value="today">Today</MenuItem>
-                          <MenuItem value="week">This Week</MenuItem>
-                          <MenuItem value="month">This Month</MenuItem>
-                          <MenuItem value="quarter">This Quarter</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
-
-                    <Box>
-                      <Typography variant="caption" sx={{ fontSize: "0.75rem", fontWeight: 500, color: "text.secondary" }}>Shift</Typography>
-                      <FormControl fullWidth size="small">
-                        <Select
-                          value={shiftFilter}
-                          onChange={(e) => setShiftFilter(e.target.value)}
-                          sx={{
-                            border: "2px solid #15803d",
-                            backgroundColor: shiftFilter !== "all" ? "#f0fdf4" : "background.paper",
-                            color: shiftFilter !== "all" ? "#166534" : "text.primary",
-                            "& .MuiOutlinedInput-notchedOutline": { border: "none" }
-                          }}
-                        >
-                          <MenuItem value="all">All Shifts</MenuItem>
-                          <MenuItem value="day">Day</MenuItem>
-                          <MenuItem value="night">Night</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
-
-                    <Box>
-                      <Typography variant="caption" sx={{ fontSize: "0.75rem", fontWeight: 500, color: "text.secondary" }}>Sort By</Typography>
-                      <FormControl fullWidth size="small">
-                        <Select
-                          value={sortBy}
-                          onChange={(e) => setSortBy(e.target.value)}
-                          sx={{
-                            border: "2px solid #15803d",
-                            backgroundColor: sortBy !== "newest" ? "#f0fdf4" : "background.paper",
-                            color: sortBy !== "newest" ? "#166534" : "text.primary",
-                            "& .MuiOutlinedInput-notchedOutline": { border: "none" }
-                          }}
-                        >
-                          <MenuItem value="newest">Newest First</MenuItem>
-                          <MenuItem value="oldest">Oldest First</MenuItem>
-                          <MenuItem value="date">Attendance Date</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
-
-                    <Box>
-                      <Typography variant="caption" sx={{ fontSize: "0.75rem", fontWeight: 500, color: "text.secondary" }}>Actions</Typography>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => {
-                          setDateFilter("all")
-                          setShiftFilter("all")
-                          setSortBy("newest")
-                        }}
-                        sx={{ width: "100%", height: "40px", fontSize: "0.875rem" }}
-                      >
-                        Clear Filters
-                      </Button>
-                    </Box>
-                  </Box>
-                  
-                  {/* Results Count */}
-                  <Box sx={{ pt: 2, mt: 2, borderTop: "1px solid", borderColor: "divider" }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.875rem" }}>
-                      Showing {filteredAttendanceRecords.length} of {attendanceRecords.length} attendance records
-                    </Typography>
-                  </Box>
-                </Box>
-              )}
-              
-              {/* Compact results count when collapsed */}
-              {!filtersExpanded && (
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.875rem" }}>
-                  {filteredAttendanceRecords.length} of {attendanceRecords.length} attendance records
-                  {(dateFilter !== "all" || shiftFilter !== "all" || sortBy !== "newest") && (
-                    <Chip 
-                      label="Filtered" 
-                      size="small" 
-                      sx={{ 
-                        ml: 1, 
-                        fontSize: "0.75rem", 
-                        backgroundColor: "#f0fdf4", 
-                        color: "#166534",
-                        height: "20px"
-                      }} 
-                    />
-                  )}
-                </Typography>
-              )}
-            </Box>
-
-            {/* Attendance Records Grid */}
-            {filteredAttendanceRecords.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", py: 4 }}>
-                No attendance records found.
-              </Typography>
-            ) : (
-              <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} gap={2}>
-                {filteredAttendanceRecords.map((record, index) => {
-                  const style = reportCardStyles[index % reportCardStyles.length]
-                  return (
-                    <Box key={record._id} className={`card-brand hover:shadow-lg transition-all duration-300 hover-brand relative overflow-hidden border ${style.card}`} sx={{ p: 2 }}>
-                      <div className={`pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full ${style.bubble}`} />
-                      <div className={`pointer-events-none absolute -left-12 bottom-0 h-20 w-20 rounded-full ${style.bubble2}`} />
-                      <Box sx={{ position: "relative", zIndex: 10 }}>
-                        <Box display="flex" alignItems="start" justifyContent="space-between" gap={1} mb={1}>
-                          <Box sx={{ minWidth: 0, flex: 1 }}>
-                            <Typography variant="subtitle2" sx={{ fontSize: "0.875rem", fontWeight: 600, color: "primary.main" }}>
-                              {record.date}
-                            </Typography>
-                            <Typography variant="caption" sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
-                              {record.employeeName}
-                            </Typography>
-                          </Box>
-                          <Chip 
-                            label={record.shiftType} 
-                            size="small" 
-                            sx={{ 
-                              fontSize: "0.625rem", 
-                              height: "20px",
-                              backgroundColor: record.shiftType === 'day' ? "#dbeafe" : "#f3e8ff",
-                              color: record.shiftType === 'day' ? "#1e40af" : "#7c3aed"
-                            }} 
-                          />
-                        </Box>
-                        <Box sx={{ mb: 2 }}>
-                          <Typography variant="body2" sx={{ fontSize: "0.75rem", mb: 0.5 }}>
-                            <span style={{ fontWeight: 500, color: "var(--brand-contrast)" }}>Sign In:</span>{" "}
-                            <span style={{ color: "var(--muted-foreground)" }}>
-                              {record.signInTime || "N/A"}
-                            </span>
-                          </Typography>
-                          <Typography variant="body2" sx={{ fontSize: "0.75rem", mb: 0.5 }}>
-                            <span style={{ fontWeight: 500, color: "var(--brand-contrast)" }}>Sign Out:</span>{" "}
-                            <span style={{ color: "var(--muted-foreground)" }}>
-                              {record.signOutTime || "N/A"}
-                            </span>
-                          </Typography>
-                          <Typography variant="body2" sx={{ fontSize: "0.75rem" }}>
-                            <span style={{ fontWeight: 500, color: "var(--brand-contrast)" }}>Recorded:</span>{" "}
-                            <span style={{ color: "var(--muted-foreground)" }}>
-                              {new Date(record.createdAt).toLocaleDateString()}
-                            </span>
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                  )
-                })}
-              </Box>
-            )}
-          </>
-        )}
-      </Box>
     </Box>
+    </div>
+  )
   )
 }
