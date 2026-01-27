@@ -453,37 +453,37 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
         <Button
           onClick={handleShowPowerInterruption}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
         >
           <Power sx={{ fontSize: 20 }} />
-          <span className="text-xs">Power Issue</span>
+          <span className="text-xs">Report Power Issues</span>
         </Button>
 
         <Button
           onClick={handleShowSiteVisuals}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
         >
           <Visibility sx={{ fontSize: 20 }} />
-          <span className="text-xs">Visuals</span>
+          <span className="text-xs">Report Visuals</span>
         </Button>
 
         <Button
           onClick={handleShowDailyProduction}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
         >
           <Add sx={{ fontSize: 20 }} />
-          <span className="text-xs">Production</span>
+          <span className="text-xs">Report Production</span>
         </Button>
 
         <Button
           onClick={handleShowIncidentReport}
           variant="default"
-          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-[var(--brand-green-dark)]"
+          className="h-20 flex-col gap-2 bg-primary text-primary-foreground hover:bg-(--brand-green-dark)"
         >
           <Warning sx={{ fontSize: 20 }} />
-          <span className="text-xs">Incident</span>
+          <span className="text-xs">Report Incident</span>
         </Button>
 
       </div>
