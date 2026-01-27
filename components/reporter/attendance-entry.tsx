@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react"
 import {
   Box,
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -46,6 +45,8 @@ interface AttendanceRecord {
   shiftType: ShiftType
   signInTime: string
   signOutTime?: string
+  createdBy?: string
+  createdAt?: string
 }
 
 interface RowState {
@@ -286,7 +287,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
     
     // Date filter
     if (dateFilter !== "all") {
-      const recordDate = new Date(record.date || record.createdAt)
+      const recordDate = new Date(record.date || record.createdAt || new Date())
       const now = new Date()
       
       switch (dateFilter) {
@@ -313,12 +314,12 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
     // Sort records based on sortBy selection
     switch (sortBy) {
       case "oldest":
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        return new Date(a.createdAt || new Date()).getTime() - new Date(b.createdAt || new Date()).getTime()
       case "date":
-        return new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime()
+        return new Date(a.date || a.createdAt || new Date()).getTime() - new Date(b.date || b.createdAt || new Date()).getTime()
       case "newest":
       default:
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        return new Date(b.createdAt || new Date()).getTime() - new Date(a.createdAt || new Date()).getTime()
     }
   })
 
@@ -522,7 +523,7 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
                     <p>
                       <span className="font-medium text-brand-contrast">Recorded:</span>{" "}
                       <span className="text-muted-foreground">
-                        {new Date(record.createdAt).toLocaleDateString()}
+                        {new Date(record.createdAt || new Date()).toLocaleDateString()}
                       </span>
                     </p>
                   </div>
@@ -715,20 +716,15 @@ export default function AttendanceEntry({ user }: AttendanceEntryProps) {
 
       <Box display="flex" justifyContent="flex-end" mt={2}>
         <Button
-          variant="contained"
+          variant="default"
           onClick={handleSubmitAttendance}
           disabled={submittingReport}
-          sx={{
-            bgcolor: "var(--primary)",
-            color: "var(--primary-foreground)",
-            "&:hover": { bgcolor: "var(--brand-green-dark)" }
-          }}
+          className="bg-primary hover:bg-brand-green-dark text-primary-foreground"
         >
           {submittingReport ? "Submitting..." : "Submit Attendance"}
         </Button>
       </Box>
     </Box>
     </div>
-  )
   )
 }
