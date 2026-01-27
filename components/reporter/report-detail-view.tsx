@@ -172,11 +172,79 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           <CardTitle className="text-primary">Site Visuals</CardTitle>
         </CardHeader>
         <CardContent>
-          {report.siteVisuals?.photos?.length > 0 ? (
-            <div className="space-y-2 sm:space-y-4">
+          {report.siteVisuals?.media?.length > 0 ? (
+            <div className="space-y-4">
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Photos Uploaded</p>
-                <p className="text-foreground">{report.siteVisuals.photos.length} photo(s)</p>
+                <p className="text-sm font-medium text-muted-foreground mb-3">
+                  Media Files ({report.siteVisuals.media.length})
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {report.siteVisuals.media.map((file: any, index: number) => (
+                    <div key={file.id || index} className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
+                      {file.type === 'image' || file.type?.startsWith?.('image/') ? (
+                        <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={file.url}
+                            alt={file.name}
+                            className="w-full h-full object-cover cursor-pointer"
+                            onClick={() => window.open(file.url, '_blank')}
+                          />
+                        </div>
+                      ) : file.type === 'video' || file.type?.startsWith?.('video/') ? (
+                        <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
+                          <video
+                            src={file.url}
+                            className="w-full h-full object-contain"
+                            controls
+                            preload="metadata"
+                          />
+                        </div>
+                      ) : (
+                        <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
+                          <span className="text-gray-400 text-sm">Unsupported file</span>
+                        </div>
+                      )}
+                      <div className="p-3 border-t border-gray-200 bg-white">
+                        <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                        <p className="text-xs text-gray-600">
+                          {file.type === 'image' || file.type?.startsWith?.('image/') ? 'Image' : 
+                           file.type === 'video' || file.type?.startsWith?.('video/') ? 'Video' : 'File'} • {file.size}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {report.siteVisuals.notes && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Notes</p>
+                  <p className="text-foreground">{report.siteVisuals.notes}</p>
+                </div>
+              )}
+            </div>
+          ) : report.siteVisuals?.photos?.length > 0 ? (
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-3">
+                  Photos ({report.siteVisuals.photos.length})
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {report.siteVisuals.photos.map((url: string, index: number) => (
+                    <div key={index} className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
+                      <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={url}
+                          alt={`Photo ${index + 1}`}
+                          className="w-full h-full object-cover cursor-pointer"
+                          onClick={() => window.open(url, '_blank')}
+                        />
+                      </div>
+                      <div className="p-3 border-t border-gray-200 bg-white">
+                        <p className="text-sm font-medium text-gray-900">Photo {index + 1}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
               {report.siteVisuals.notes && (
                 <div>

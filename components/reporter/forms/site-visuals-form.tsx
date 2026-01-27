@@ -154,14 +154,15 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
   const handleSubmit = () => {
     if (validateForm()) {
-      const sanitizedMedia = mediaFiles.map(({ id, name, type, size, url, preview }) => ({
-        id,
-        name,
-        type,
-        size,
-        url,
-        preview: url ? undefined : preview
-      }))
+      const sanitizedMedia = mediaFiles
+        .filter(file => file.url) // Only include files with URLs
+        .map(({ id, name, type, size, url }) => ({
+          id,
+          name,
+          type,
+          size,
+          url
+        }))
       onComplete({
         media: sanitizedMedia,
       })
@@ -176,7 +177,14 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
           {/* Upload Area */}
           <label className={`border-2 border-green-700 rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:bg-muted/30 transition-colors block backdrop-blur-sm bg-background/40 ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}>
-            <input type="file" multiple accept="image/*,video/*" onChange={handleFileSelect} className="hidden" disabled={isProcessing} />
+            <input 
+              type="file" 
+              multiple 
+              accept="image/*,image/jpeg,image/jpg,image/png,image/gif,image/webp,image/bmp,image/svg+xml,video/*,video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo,video/x-matroska" 
+              onChange={handleFileSelect} 
+              className="hidden" 
+              disabled={isProcessing} 
+            />
             {isProcessing ? (
               <>
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
@@ -205,7 +213,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                       <>
                         <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
                           <img
-                            src={file.url}
+                            src={file.url || file.preview}
                             alt={file.name}
                             className="w-full h-full object-cover cursor-pointer"
                             onClick={() => openPreview(file)}
@@ -240,19 +248,16 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                       <>
                         <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
                           <video
-                            src={file.url}
-                            className="w-full h-full object-cover"
+                            src={file.url || file.preview}
+                            className="w-full h-full object-contain"
                             controls
                             preload="metadata"
                           />
-                          <div className="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1">
-                            <p className="text-[10px] sm:text-xs text-white/90 truncate">{file.name}</p>
-                          </div>
                         </div>
                         <div className="p-2 sm:p-3 border-t border-gray-200 bg-white flex items-center justify-between">
                           <div className="min-w-0 flex-1">
                             <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                            <p className="text-[10px] sm:text-xs text-gray-600">Video</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600">Video • {file.size}</p>
                           </div>
                           <Button
                             size="sm"
@@ -327,17 +332,17 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
             </DialogTitle>
           </DialogHeader>
           <div className="p-6 pt-4">
-            {previewFile?.preview && (
+            {(previewFile?.url || previewFile?.preview) && (
               <div className="flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden backdrop-blur-sm">
                 {isImageType(previewFile.type) ? (
                   <img
-                    src={previewFile.preview}
+                    src={previewFile.url || previewFile.preview}
                     alt={previewFile.name}
                     className="max-w-full max-h-[70vh] object-contain"
                   />
                 ) : isVideoType(previewFile.type) ? (
                   <video
-                    src={previewFile.preview}
+                    src={previewFile.url || previewFile.preview}
                     className="max-w-full max-h-[70vh] object-contain"
                     controls
                     autoPlay={false}

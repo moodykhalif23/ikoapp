@@ -420,23 +420,24 @@ export default function ScrollableReportView({
                             <>
                               <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
                                 <img
-                                  src={file.preview || file.url || file || "/placeholder.svg"}
+                                  src={file.url || file.preview || file || "/placeholder.svg"}
                                   alt={file.name || `Photo ${idx + 1}`}
-                                  className="w-full h-full object-cover"
+                                  className="w-full h-full object-cover cursor-pointer"
+                                  onClick={() => window.open(file.url || file.preview || file, '_blank')}
                                 />
                               </div>
                               <div className="p-2 sm:p-3 border-t border-gray-200 bg-white">
                                 <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name || `Photo ${idx + 1}`}</p>
-                                <p className="text-[10px] sm:text-xs text-gray-600">Image</p>
+                                <p className="text-[10px] sm:text-xs text-gray-600">Image{file.size ? ` • ${file.size}` : ''}</p>
                               </div>
                             </>
                           ) : isVideoMedia(file) ? (
                             <>
                               <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
-                                {file.preview || file.url ? (
+                                {file.url || file.preview ? (
                                   <video
-                                    src={file.preview || file.url}
-                                    className="w-full h-full object-cover"
+                                    src={file.url || file.preview}
+                                    className="w-full h-full object-contain"
                                     controls
                                     preload="metadata"
                                   />
@@ -446,18 +447,17 @@ export default function ScrollableReportView({
                                     <div className="text-xs">Video</div>
                                   </div>
                                 )}
-                                <div className="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1">
-                                  <p className="text-[10px] sm:text-xs text-white/90 truncate">
-                                    {file.name || `Video ${idx + 1}`}
-                                  </p>
-                                </div>
+                              </div>
+                              <div className="p-2 sm:p-3 border-t border-gray-200 bg-white">
+                                <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name || `Video ${idx + 1}`}</p>
+                                <p className="text-[10px] sm:text-xs text-gray-600">Video{file.size ? ` • ${file.size}` : ''}</p>
                               </div>
                             </>
                           ) : (
                             <>
                               <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
                                 <img
-                                  src={file.preview || file.url || file || "/placeholder.svg"}
+                                  src={file.url || file.preview || file || "/placeholder.svg"}
                                   alt={file.name || `File ${idx + 1}`}
                                   className="w-full h-full object-cover"
                                 />

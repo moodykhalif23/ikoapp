@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
             ? "video"
             : "file",
         size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+        mimeType: file.type
       })
     }
 
