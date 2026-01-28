@@ -110,6 +110,8 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
       const response = await fetch('/api/machines?all=true')
       if (response.ok) {
         const data = await response.json()
+        console.log('Fetched machines data:', data);
+        console.log('First machine structure:', data[0]);
         setMachineList(data)
       } else {
         setMachineError("Failed to fetch machines")
@@ -154,10 +156,20 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
       setMachineSubmitting(true)
       setMachineError(null)
 
+      console.log('Editing machine:', editingMachine);
+      console.log('Machine ID being used:', editingMachine?._id);
+
       const url = editingMachine
         ? `/api/machines/${editingMachine._id}`
         : '/api/machines'
       const method = editingMachine ? 'PUT' : 'POST'
+
+      console.log('API call:', method, url);
+      console.log('Request body:', {
+        name: machineForm.name.trim(),
+        type: machineForm.type.trim(),
+        status: machineForm.status
+      });
 
       const response = await fetch(url, {
         method,
@@ -170,6 +182,8 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
       })
 
       const data = await response.json()
+      console.log('API response:', response.status, data);
+      
       if (!response.ok) {
         throw new Error(data.error || 'Failed to save machine')
       }
@@ -178,6 +192,7 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
       handleCloseMachineDialog()
       fetchMachines()
     } catch (error) {
+      console.error('Save machine error:', error);
       setMachineError(error instanceof Error ? error.message : "Failed to save machine")
     } finally {
       setMachineSubmitting(false)
@@ -185,19 +200,29 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
   }
 
   const handleDeleteMachine = async (machine: any) => {
+    console.log('Deleting machine:', machine);
+    console.log('Machine ID:', machine._id);
+
     if (!confirm(`Delete machine "${machine.name}"?`)) {
       return
     }
 
     try {
-      const response = await fetch(`/api/machines/${machine._id}`, { method: 'DELETE' })
+      const url = `/api/machines/${machine._id}`;
+      console.log('Delete API call:', url);
+      
+      const response = await fetch(url, { method: 'DELETE' })
       const data = await response.json()
+      
+      console.log('Delete response:', response.status, data);
+      
       if (!response.ok) {
         throw new Error(data.error || 'Failed to delete machine')
       }
       toast.success("Machine deleted")
       fetchMachines()
     } catch (error) {
+      console.error('Delete machine error:', error);
       toast.error(error instanceof Error ? error.message : "Failed to delete machine")
     }
   }

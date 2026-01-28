@@ -11,6 +11,9 @@ export async function GET(request: NextRequest) {
     const query = all ? {} : { status: 'active' }
     const machines = await Machine.find(query).sort({ name: 1 })
 
+    console.log('GET /api/machines - Found machines:', machines.length);
+    console.log('GET /api/machines - First machine:', machines[0]);
+
     return NextResponse.json(machines)
   } catch (error) {
     console.error('Error fetching machines:', error)
