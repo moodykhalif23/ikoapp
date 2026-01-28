@@ -79,7 +79,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                     }
                     setFormData({ ...formData, hasIncident: nextValue })
                   }}
-                  className="w-5 h-5 cursor-pointer accent-green-700 border-2 border-green-700 mt-1 shrink-0"
+                  className="w-5 h-5 cursor-pointer mt-1 shrink-0"
                 />
                 <label htmlFor={`incident-${option}`} className="text-sm cursor-pointer font-medium capitalize leading-relaxed">
                   {option}
