@@ -115,7 +115,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   type="time"
                   value={formData.occurredAt}
                   onChange={(e) => setFormData({ ...formData, occurredAt: e.target.value })}
-                  className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors.occurredAt ? "border-red-500" : ""}`}
+                  className={`bg-background/80 backdrop-blur-sm border-primary/20 ${errors.occurredAt ? "border-red-500" : ""}`}
                 />
                 {errors.occurredAt && <p className="text-xs text-red-500">{errors.occurredAt}</p>}
               </div>
@@ -127,7 +127,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   placeholder="30"
                   value={formData.duration}
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                  className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors.duration ? "border-red-500" : ""}`}
+                  className={`bg-background/80 backdrop-blur-sm border-primary/20 ${errors.duration ? "border-red-500" : ""}`}
                 />
                 {errors.duration && <p className="text-xs text-red-500">{errors.duration}</p>}
               </div>
@@ -139,7 +139,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   placeholder="Enter start reading"
                   value={formData.kplcMeterStart}
                   onChange={(e) => setFormData({ ...formData, kplcMeterStart: e.target.value })}
-                  className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+                  className="bg-background/80 backdrop-blur-sm border-primary/20"
                 />
               </div>
 
@@ -150,7 +150,7 @@ export default function PowerInterruptionForm({ data, onComplete }: PowerInterru
                   placeholder="Enter end reading"
                   value={formData.kplcMeterEnd}
                   onChange={(e) => setFormData({ ...formData, kplcMeterEnd: e.target.value })}
-                  className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+                  className="bg-background/80 backdrop-blur-sm border-primary/20"
                 />
               </div>
             </div>

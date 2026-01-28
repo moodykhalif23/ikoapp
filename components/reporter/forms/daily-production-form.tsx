@@ -260,7 +260,7 @@ export default function DailyProductionForm({ data, onComplete, previousMeterEnd
             placeholder="Enter start reading"
             value={kplcMeterStart}
             onChange={(e) => setKplcMeterStart(e.target.value)}
-            className="w-full px-3 py-2 bg-background/80 backdrop-blur-sm border-2 border-green-700 rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 bg-background/80 backdrop-blur-sm border border-primary/20 rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             readOnly={!!previousMeterEnd && kplcMeterStart === previousMeterEnd}
           />
         </div>
@@ -272,14 +272,14 @@ export default function DailyProductionForm({ data, onComplete, previousMeterEnd
             placeholder="Enter end reading"
             value={kplcMeterEnd}
             onChange={(e) => setKplcMeterEnd(e.target.value)}
-            className="bg-background/80 backdrop-blur-sm border-2 border-green-700"
+            className="bg-background/80 backdrop-blur-sm border-primary/20"
           />
         </div>
 
         <div className="space-y-2">
           <label className="text-lg sm:text-xl font-semibold text-foreground">Quality Issues (optional)</label>
           <textarea
-            className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            className="w-full px-3 py-2 border border-primary/20 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             placeholder="Any quality concerns or defects..."
             value={qualityIssues}
             onChange={(e) => setQualityIssues(e.target.value)}
