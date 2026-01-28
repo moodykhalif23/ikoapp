@@ -96,7 +96,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                 <label htmlFor="incident-type" className="text-lg sm:text-xl font-semibold text-foreground">Incident Type</label>
                 <select
                   id="incident-type"
-                  className="w-full px-3 pr-8 py-2 border border-input rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-no-repeat bg-right bg-[length:16px_16px] bg-[position:right_8px_center]"
+                  className="w-full px-3 pr-8 py-2 border border-primary/20 rounded-md bg-background/80 backdrop-blur-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-no-repeat bg-right bg-[length:16px_16px] bg-[position:right_8px_center]"
                   value={formData.incidentType}
                   onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
                   style={{
@@ -118,7 +118,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   type="time"
                   value={formData.incidentTime}
                   onChange={(e) => setFormData({ ...formData, incidentTime: e.target.value })}
-                  className="bg-background/80 backdrop-blur-sm"
+                  className="bg-background/80 backdrop-blur-sm border-primary/20"
                 />
               </div>
             </div>
@@ -126,7 +126,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             <div className="space-y-2">
               <label className="text-lg sm:text-xl font-semibold text-foreground">Description</label>
               <textarea
-                className="w-full px-3 py-2 border border-input rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full px-3 py-2 border border-primary/20 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 placeholder="Describe what happened..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -138,7 +138,7 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
             <div className="space-y-2">
               <label className="text-lg sm:text-xl font-semibold text-foreground">Action Taken</label>
               <textarea
-                className="w-full px-3 py-2 border border-input rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full px-3 py-2 border border-primary/20 rounded-md bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 placeholder="What action was taken in response..."
                 value={formData.actionTaken}
                 onChange={(e) => setFormData({ ...formData, actionTaken: e.target.value })}
