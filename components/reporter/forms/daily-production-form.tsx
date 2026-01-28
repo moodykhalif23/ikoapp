@@ -173,7 +173,7 @@ export default function DailyProductionForm({ data, onComplete, previousMeterEnd
                     placeholder="0"
                     value={product.quantity}
                     onChange={(e) => updateProduct(product.id, "quantity", e.target.value)}
-                    className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors[`product-${index}-quantity`] ? "border-red-500" : ""}`}
+                    className={`bg-background/80 backdrop-blur-sm border-primary/20 ${errors[`product-${index}-quantity`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-quantity`] && (
                     <p className="text-xs text-red-500">{errors[`product-${index}-quantity`]}</p>
@@ -182,7 +182,7 @@ export default function DailyProductionForm({ data, onComplete, previousMeterEnd
 
                 <div className="space-y-2">
                   <label className="text-base sm:text-lg font-semibold text-foreground">Unit</label>
-                  <div className="w-full px-3 py-2 border-2 border-green-700 rounded-md bg-background/80 backdrop-blur-sm text-foreground">
+                  <div className="w-full px-3 py-2 border border-primary/20 rounded-md bg-background/80 backdrop-blur-sm text-foreground">
                     kgs
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function DailyProductionForm({ data, onComplete, previousMeterEnd
                     placeholder="0"
                     value={product.employees}
                     onChange={(e) => updateProduct(product.id, "employees", e.target.value)}
-                    className={`bg-background/80 backdrop-blur-sm border-2 border-green-700 ${errors[`product-${index}-employees`] ? "border-red-500" : ""}`}
+                    className={`bg-background/80 backdrop-blur-sm border-primary/20 ${errors[`product-${index}-employees`] ? "border-red-500" : ""}`}
                   />
                   {errors[`product-${index}-employees`] && (
                     <p className="text-xs text-red-500">{errors[`product-${index}-employees`]}</p>
