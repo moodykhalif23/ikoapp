@@ -25,7 +25,10 @@ const collectionsToClear = [
   'employees',
   'equipmentmaintenances',
   'equipment_maintenances',
-  'notifications'
+  'notifications',
+  'incidenttasks',
+  'pushsubscriptions',
+  'attendances'
 ]
 
 async function resetDb() {
