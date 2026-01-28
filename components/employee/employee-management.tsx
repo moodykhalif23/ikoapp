@@ -158,23 +158,33 @@ export default function EmployeeManagement() {
       setError(null)
       setSuccess(null)
 
+      console.log('Starting CSV import for file:', file.name, file.size, 'bytes');
+
       const formData = new FormData()
       formData.append('file', file)
+
+      console.log('Sending request to /api/employees/import');
 
       const response = await fetch('/api/employees/import', {
         method: 'POST',
         body: formData
       })
 
+      console.log('Response status:', response.status);
       const data = await response.json()
+      console.log('Response data:', data);
 
       if (response.ok && data.success) {
         setSuccess(data.message || 'Employees imported successfully')
         await fetchEmployees()
       } else {
         setError(data.error || 'Failed to import employees')
+        if (data.details) {
+          console.log('Import errors:', data.details);
+        }
       }
     } catch (error) {
+      console.error('CSV import error:', error);
       setError('Error importing employees')
     } finally {
       setImporting(false)
@@ -265,9 +275,9 @@ export default function EmployeeManagement() {
             startIcon={<AddIcon />}
             onClick={() => handleOpenDialog()}
             sx={{ 
-              bgcolor: 'var(--primary)', 
-              color: 'var(--primary-foreground)',
-              '&:hover': { bgcolor: 'var(--brand-green-dark)' },
+              bgcolor: 'primary.main', 
+              color: 'primary.contrastText',
+              '&:hover': { bgcolor: 'primary.dark' },
               px: { xs: 2, sm: 2.5 },
               py: { xs: 0.75, sm: 0.85 }
             }}
@@ -282,10 +292,11 @@ export default function EmployeeManagement() {
             id="employee-csv-upload"
             type="file"
             accept=".csv"
-            className="hidden"
+            style={{ display: 'none' }}
             onChange={(e) => {
               const file = e.target.files?.[0]
               if (file) {
+                console.log('File selected:', file.name, file.type);
                 handleImportCsv(file)
               }
               e.currentTarget.value = ''
@@ -296,9 +307,9 @@ export default function EmployeeManagement() {
             startIcon={<DownloadIcon />}
             onClick={handleDownloadTemplate}
             sx={{ 
-              bgcolor: 'var(--primary)', 
-              color: 'var(--primary-foreground)',
-              '&:hover': { bgcolor: 'var(--brand-green-dark)' },
+              bgcolor: 'primary.main', 
+              color: 'primary.contrastText',
+              '&:hover': { bgcolor: 'primary.dark' },
               px: { xs: 2, sm: 2.5 },
               py: { xs: 0.75, sm: 0.85 }
             }}
@@ -317,9 +328,9 @@ export default function EmployeeManagement() {
               input?.click()
             }}
             sx={{ 
-              bgcolor: 'var(--primary)', 
-              color: 'var(--primary-foreground)',
-              '&:hover': { bgcolor: 'var(--brand-green-dark)' },
+              bgcolor: 'primary.main', 
+              color: 'primary.contrastText',
+              '&:hover': { bgcolor: 'primary.dark' },
               px: { xs: 2, sm: 2.5 },
               py: { xs: 0.75, sm: 0.85 }
             }}
@@ -412,10 +423,10 @@ export default function EmployeeManagement() {
                           size="small"
                           onClick={() => handleOpenDialog(employee)}
                           sx={{
-                            color: "var(--primary)",
+                            color: "primary.main",
                             "&:hover": {
-                              bgcolor: "var(--brand-green-dark)",
-                              color: "var(--primary-foreground)"
+                              bgcolor: "primary.dark",
+                              color: "primary.contrastText"
                             }
                           }}
                         >

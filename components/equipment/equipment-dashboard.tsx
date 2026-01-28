@@ -123,6 +123,11 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
     }
   }
 
+  // Helper function to get machine ID
+  const getMachineId = (machine: any) => {
+    return machine._id || machine.id || machine._id?.toString();
+  }
+
   const handleOpenMachineDialog = (machine?: any) => {
     if (machine) {
       setEditingMachine(machine)
@@ -157,10 +162,11 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
       setMachineError(null)
 
       console.log('Editing machine:', editingMachine);
-      console.log('Machine ID being used:', editingMachine?._id);
+      const machineId = getMachineId(editingMachine);
+      console.log('Machine ID being used:', machineId);
 
       const url = editingMachine
-        ? `/api/machines/${editingMachine._id}`
+        ? `/api/machines/${machineId}`
         : '/api/machines'
       const method = editingMachine ? 'PUT' : 'POST'
 
@@ -201,14 +207,20 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
 
   const handleDeleteMachine = async (machine: any) => {
     console.log('Deleting machine:', machine);
-    console.log('Machine ID:', machine._id);
+    const machineId = getMachineId(machine);
+    console.log('Machine ID:', machineId);
+
+    if (!machineId) {
+      toast.error("Invalid machine ID");
+      return;
+    }
 
     if (!confirm(`Delete machine "${machine.name}"?`)) {
       return
     }
 
     try {
-      const url = `/api/machines/${machine._id}`;
+      const url = `/api/machines/${machineId}`;
       console.log('Delete API call:', url);
       
       const response = await fetch(url, { method: 'DELETE' })

@@ -1,25 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
-import { User } from '@/lib/models'
-import crypto from 'crypto'
+import { Employee } from '@/lib/models'
 
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase()
 
+    console.log('Employee import API called');
+
     const formData = await request.formData()
     const file = formData.get('file') as File
 
     if (!file) {
+      console.log('No file uploaded');
       return NextResponse.json(
         { error: 'No file uploaded' },
         { status: 400 }
       )
     }
 
+    console.log('File received:', file.name, file.size, 'bytes');
+
     // Read CSV content
     const csvText = await file.text()
+    console.log('CSV content length:', csvText.length);
+    
     const lines = csvText.split('\n').filter(line => line.trim())
+    console.log('CSV lines:', lines.length);
 
     if (lines.length < 2) {
       return NextResponse.json(
@@ -31,7 +38,8 @@ export async function POST(request: NextRequest) {
     const normalizeHeader = (header: string) => header.trim().toLowerCase().replace(/\s+/g, '')
     const rawHeaders = lines[0].split(',').map(h => h.trim())
     const headers = rawHeaders.map(normalizeHeader)
-    const expectedHeaders = ['name', 'employeeid', 'phone']
+    
+    console.log('Headers found:', headers);
 
     // Validate headers (name, employee id, phone required)
     if (!headers.includes('name') || !headers.includes('employeeid') || !headers.includes('phone')) {
@@ -43,11 +51,11 @@ export async function POST(request: NextRequest) {
 
     const employees = []
     const errors = []
-    const existingEmails = new Set()
+    const existingEmployeeIds = new Set()
 
-    // Check for existing emails
-    const existingUsers = await User.find({}, 'email').lean()
-    existingUsers.forEach(user => existingEmails.add(user.email.toLowerCase()))
+    // Check for existing employee IDs
+    const existingEmployees = await Employee.find({}, 'employeeId').lean()
+    existingEmployees.forEach(emp => existingEmployeeIds.add(emp.employeeId))
 
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(',').map(v => v.trim())
@@ -66,35 +74,11 @@ export async function POST(request: NextRequest) {
             case 'name':
               employeeData.name = value
               break
-            case 'email':
-              employeeData.email = value.toLowerCase()
-              break
-            case 'role':
-              employeeData.role = ['admin', 'reporter', 'viewer'].includes(value.toLowerCase())
-                ? value.toLowerCase()
-                : 'viewer'
-              break
-            case 'employeetype':
-              employeeData.employeeType = ['permanent', 'casual'].includes(value.toLowerCase())
-                ? value.toLowerCase()
-                : 'permanent'
-              break
             case 'employeeid':
               employeeData.employeeId = value
               break
-            case 'department':
-              employeeData.department = value
-              break
             case 'phone':
               employeeData.phone = value
-              break
-            case 'hiredate':
-              if (value) {
-                const date = new Date(value)
-                if (!isNaN(date.getTime())) {
-                  employeeData.hireDate = date
-                }
-              }
               break
           }
         }
@@ -106,32 +90,21 @@ export async function POST(request: NextRequest) {
         continue
       }
 
-      if (!employeeData.email) {
-        const base = String(employeeData.employeeId).trim().toLowerCase().replace(/\s+/g, '')
-        let generated = `${base}@iko.local`
-        let suffix = 1
-        while (existingEmails.has(generated)) {
-          generated = `${base}-${suffix}@iko.local`
-          suffix += 1
-        }
-        employeeData.email = generated
-      }
-
-      // Check for duplicate emails
-      if (existingEmails.has(employeeData.email)) {
-        errors.push(`Row ${i + 1}: Email "${employeeData.email}" already exists`)
+      // Check for duplicate employee IDs
+      if (existingEmployeeIds.has(employeeData.employeeId)) {
+        errors.push(`Row ${i + 1}: Employee ID "${employeeData.employeeId}" already exists`)
         continue
       }
 
       // Set defaults
-      employeeData.employeeType = employeeData.employeeType || 'permanent'
-      employeeData.role = employeeData.role || 'viewer'
       employeeData.status = 'active'
-      employeeData.password = crypto.randomBytes(12).toString('hex')
 
       employees.push(employeeData)
-      existingEmails.add(employeeData.email)
+      existingEmployeeIds.add(employeeData.employeeId)
     }
+
+    console.log('Employees to import:', employees.length);
+    console.log('Errors found:', errors.length);
 
     if (employees.length === 0) {
       return NextResponse.json(
@@ -144,7 +117,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert employees
-    const insertedEmployees = await User.insertMany(employees)
+    const insertedEmployees = await Employee.insertMany(employees)
+    console.log('Employees inserted:', insertedEmployees.length);
 
     return NextResponse.json({
       success: true,
