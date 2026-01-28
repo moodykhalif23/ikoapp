@@ -384,7 +384,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
                             placeholder="Enter KPLC reference number"
                             value={interruption.kplcReferenceNumber}
                             onChange={(e) => updateInterruption(interruption.id, 'kplcReferenceNumber', e.target.value)}
-                            className="bg-background/80 backdrop-blur-sm"
+                            className="bg-background/80 backdrop-blur-sm border-primary/20"
                           />
                         </div>
                       </div>
