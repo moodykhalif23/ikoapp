@@ -319,7 +319,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
             }
           }}
         >
-          <div className="w-full max-w-5xl h-[90vh] bg-white rounded-none shadow-xl overflow-hidden">
+          <div className="w-full max-w-5xl h-[85vh] bg-white rounded-none shadow-xl overflow-hidden mb-16">
             <div className="flex items-center justify-between border-b px-4 py-3">
               <div>
                 <p className="text-xs text-muted-foreground">Attendance Report</p>
@@ -330,7 +330,7 @@ export default function AttendanceReportsView({ initialDate }: AttendanceReports
               </Button>
             </div>
 
-            <div className="h-[calc(90vh-72px)] overflow-y-auto p-4 sm:p-6">
+            <div className="h-[calc(85vh-72px)] overflow-y-auto p-4 sm:p-6 pb-8">
               {isSmall ? (
                 <div className="space-y-3">
                   {loading ? (
