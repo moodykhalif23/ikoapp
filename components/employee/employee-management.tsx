@@ -178,7 +178,9 @@ export default function EmployeeManagement() {
         setSuccess(data.message || 'Employees imported successfully')
         await fetchEmployees()
       } else {
-        setError(data.error || 'Failed to import employees')
+        const errorMessage = data.error || 'Failed to import employees'
+        const detailsMessage = data.details ? `\n${data.details}` : ''
+        setError(errorMessage + detailsMessage)
         if (data.details) {
           console.log('Import errors:', data.details);
         }
@@ -194,7 +196,8 @@ export default function EmployeeManagement() {
   const handleDownloadTemplate = () => {
     const csvContent = [
       'Name,Employee ID,Phone',
-      'John Doe,EMP001,0712345678'
+      'John Doe,EMP001,0712345678',
+      'Jane Smith,EMP002,0723456789'
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
