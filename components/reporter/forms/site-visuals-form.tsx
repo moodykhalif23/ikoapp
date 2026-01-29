@@ -201,37 +201,60 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
           {errors.media && <p className="text-xs text-red-500">{errors.media}</p>}
 
-          {/* Media List - Only show uploaded files with valid URLs */}
-          {mediaFiles.filter(f => f.url).length > 0 && (
+          {/* Media List - Show all files (with preview or URL) */}
+          {mediaFiles.length > 0 && (
             <div className="space-y-4">
-              <p className="text-lg sm:text-xl font-semibold text-foreground">Uploaded Files ({mediaFiles.filter(f => f.url).length})</p>
+              <p className="text-lg sm:text-xl font-semibold text-foreground">
+                {mediaFiles.filter(f => f.url).length > 0 
+                  ? `Uploaded Files (${mediaFiles.filter(f => f.url).length})` 
+                  : 'Preparing Files...'}
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-                {mediaFiles.filter(f => f.url).map((file) => (
+                {mediaFiles.map((file) => (
                   <div key={file.id} className="border border-gray-200 rounded-none overflow-hidden bg-gray-50 hover:shadow-md transition-shadow group">
                     {/* Images */}
                     {isImageType(file.type) ? (
                       <>
                         <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
-                          <img
-                            src={file.url || file.preview}
-                            alt={file.name}
-                            className="w-full h-full object-cover cursor-pointer"
-                            onClick={() => openPreview(file)}
-                          />
-                          {/* Preview Button for Images */}
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => openPreview(file)}
-                            className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 p-0"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
+                          {file.url || file.preview ? (
+                            <>
+                              <img
+                                src={file.url || file.preview}
+                                alt={file.name}
+                                className="w-full h-full object-cover cursor-pointer"
+                                onClick={() => file.url && openPreview(file)}
+                              />
+                              {/* Upload indicator overlay */}
+                              {!file.url && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                  <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                              )}
+                              {/* Preview Button for Images - only show when uploaded */}
+                              {file.url && (
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  onClick={() => openPreview(file)}
+                                  className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 p-0"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                              )}
+                            </>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center gap-2">
+                              <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                              <span className="text-xs text-gray-500">Loading...</span>
+                            </div>
+                          )}
                         </div>
                         <div className="p-2 sm:p-3 border-t border-gray-200 bg-white flex items-center justify-between">
                           <div className="min-w-0 flex-1">
                             <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                            <p className="text-[10px] sm:text-xs text-gray-600">Image</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600">
+                              {file.url ? 'Image' : 'Uploading...'}
+                            </p>
                           </div>
                           <Button
                             size="sm"
@@ -239,6 +262,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                             onClick={() => removeMedia(file.id)}
                             aria-label="Remove media"
                             className="w-6 h-6 p-0 ml-2"
+                            disabled={!file.url}
                           >
                             <X className="w-3 h-3" />
                           </Button>
@@ -247,17 +271,34 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                     ) : isVideoType(file.type) ? (
                       <>
                         <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
-                          <video
-                            src={file.url || file.preview}
-                            className="w-full h-full object-contain"
-                            controls
-                            preload="metadata"
-                          />
+                          {file.url || file.preview ? (
+                            <>
+                              <video
+                                src={file.url || file.preview}
+                                className="w-full h-full object-contain"
+                                controls={!!file.url}
+                                preload="metadata"
+                              />
+                              {/* Upload indicator overlay */}
+                              {!file.url && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                  <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center gap-2">
+                              <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              <span className="text-xs text-white/80">Loading...</span>
+                            </div>
+                          )}
                         </div>
                         <div className="p-2 sm:p-3 border-t border-gray-200 bg-white flex items-center justify-between">
                           <div className="min-w-0 flex-1">
                             <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                            <p className="text-[10px] sm:text-xs text-gray-600">Video • {file.size}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600">
+                              {file.url ? `Video • ${file.size}` : 'Uploading...'}
+                            </p>
                           </div>
                           <Button
                             size="sm"
@@ -265,6 +306,7 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                             onClick={() => removeMedia(file.id)}
                             aria-label="Remove media"
                             className="w-6 h-6 p-0 ml-2"
+                            disabled={!file.url}
                           >
                             <X className="w-3 h-3" />
                           </Button>
@@ -298,12 +340,12 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
             </div>
           )}
 
-          {/* Processing indicator for files being uploaded */}
-          {mediaFiles.filter(f => !f.url).length > 0 && (
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+          {/* Processing indicator for files being uploaded - shown at bottom */}
+          {mediaFiles.filter(f => !f.url).length > 0 && mediaFiles.filter(f => f.url).length === 0 && (
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-                <span>Uploading {mediaFiles.filter(f => !f.url).length} file(s)...</span>
+                <span>Uploading {mediaFiles.filter(f => !f.url).length} file(s)... Please wait.</span>
               </div>
             </div>
           )}

@@ -29,7 +29,8 @@ export default function StandaloneDailyProduction({ user, reportId, onBack, onSa
       })
       .then((report) => {
         if (!isMounted || !report) return
-        setInitialData(report.dailyProduction || {})
+        const productionData = report.dailyProductionId || report.dailyProduction || {}
+        setInitialData(productionData)
       })
       .catch(() => null)
 
@@ -46,8 +47,9 @@ export default function StandaloneDailyProduction({ user, reportId, onBack, onSa
         if (!isMounted || !Array.isArray(reports) || reports.length === 0) return
         // Get the first report from yesterday (most recent)
         const yesterdayReport = reports[0]
-        if (yesterdayReport?.dailyProduction?.kplcMeterEnd) {
-          setPreviousMeterEnd(yesterdayReport.dailyProduction.kplcMeterEnd)
+        const productionData = yesterdayReport?.dailyProductionId || yesterdayReport?.dailyProduction
+        if (productionData?.kplcMeterEnd) {
+          setPreviousMeterEnd(productionData.kplcMeterEnd)
         }
       })
       .catch(() => null)

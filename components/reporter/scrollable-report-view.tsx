@@ -104,7 +104,12 @@ export default function ScrollableReportView({
     }
   }
 
-  const incidentData = report?.incidentReport || {}
+  // Handle both embedded data and populated references
+  const powerData = report?.powerInterruptionId || report?.powerInterruptions || {}
+  const productionData = report?.dailyProductionId || report?.dailyProduction || {}
+  const incidentData = report?.incidentReportId || report?.incidentReport || {}
+  const visualsData = report?.siteVisualId || report?.siteVisuals || {}
+  
   const hasFormIncident = incidentData?.hasIncident === "yes"
   const hasLegacyIncidents = Array.isArray(incidentData?.incidents)
   const noLegacyIncidents = incidentData?.noIncidents === true
@@ -179,19 +184,19 @@ export default function ScrollableReportView({
           <div className="border-b border-gray-200 pb-3 sm:pb-4">
             <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900">Power Interruptions</h2>
-              {report.powerInterruptions?.noInterruptions && (
+              {powerData?.noInterruptions && (
                 <div className="flex items-center gap-2">
                   <CheckCircle sx={{ fontSize: 18, color: "#16a34a" }} />
                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded-none text-xs sm:text-sm">No Issues</span>
                 </div>
               )}
             </div>
-            {report.powerInterruptions?.noInterruptions ? (
+            {powerData?.noInterruptions ? (
               <p className="text-gray-600">No power interruptions occurred on this day.</p>
             ) : (
               <div className="space-y-2 sm:space-y-4">
-                {report.powerInterruptions?.interruptions?.length > 0 ? (
-                  report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
+                {powerData?.interruptions?.length > 0 ? (
+                  powerData.interruptions.map((interruption: any, index: number) => (
                     <div key={interruption.id || index} className="p-2 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
                       <h4 className="font-medium text-orange-800 mb-2 sm:mb-3">Interruption #{index + 1}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3 mb-2 sm:mb-4">
@@ -213,21 +218,21 @@ export default function ScrollableReportView({
                     </div>
                   ))
                 ) : (
-                  report.powerInterruptions?.occurredAt || report.powerInterruptions?.duration ? (
+                  powerData?.occurredAt || powerData?.duration ? (
                     // Fallback for old single interruption format
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                     <div>
                       <p className="text-[11px] sm:text-xs font-medium text-gray-600">Time of Interruption</p>
-                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatTime(report.powerInterruptions?.occurredAt)}</p>
+                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{formatTime(powerData?.occurredAt)}</p>
                     </div>
                     <div>
                       <p className="text-[11px] sm:text-xs font-medium text-gray-600">Duration</p>
-                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{Math.floor(report.powerInterruptions?.duration / 60)} min {report.powerInterruptions?.duration % 60} sec</p>
+                      <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{Math.floor(powerData?.duration / 60)} min {powerData?.duration % 60} sec</p>
                     </div>
-                    {report.powerInterruptions?.kplcReferenceNumber && (
+                    {powerData?.kplcReferenceNumber && (
                       <div>
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Reference Number</p>
-                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.powerInterruptions?.kplcReferenceNumber}</p>
+                        <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{powerData?.kplcReferenceNumber}</p>
                       </div>
                     )}
                   </div>
@@ -244,15 +249,15 @@ export default function ScrollableReportView({
             <div className="mb-1.5 sm:mb-3">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900">Daily Production Data</h2>
             </div>
-            {report.dailyProduction?.products?.length > 0 ? (
+            {productionData?.products?.length > 0 ? (
               <div className="space-y-2 sm:space-y-4">
                 <div className="p-2 sm:p-4 bg-gray-50 rounded-none border border-gray-200">
                     <div className="space-y-1.5 sm:space-y-3">
-                      {report.dailyProduction.products.map((product: any, index: number) => (
+                      {productionData.products.map((product: any, index: number) => (
                         <div
                           key={index}
                           className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-3 ${
-                            index < report.dailyProduction.products.length - 1 ? "pb-2.5 sm:pb-3 border-b border-gray-200" : ""
+                            index < productionData.products.length - 1 ? "pb-2.5 sm:pb-3 border-b border-gray-200" : ""
                           }`}
                         >
                           <div className="space-y-0.5">
@@ -281,18 +286,18 @@ export default function ScrollableReportView({
                     ))}
                   </div>
                 </div>
-                {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined) && (
+                {formatMeterRange(productionData?.kplcMeterStart as string | undefined, productionData?.kplcMeterEnd as string | undefined, productionData?.kplcMeter as string | undefined) && (
                 <div className="mt-2 sm:mt-4">
                   <p className="text-[11px] sm:text-xs font-medium text-gray-600">KPLC Meter</p>
                   <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">
-                    {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined)}
+                    {formatMeterRange(productionData?.kplcMeterStart as string | undefined, productionData?.kplcMeterEnd as string | undefined, productionData?.kplcMeter as string | undefined)}
                   </p>
                 </div>
               )}
-              {report.dailyProduction?.qualityIssues && (
+              {productionData?.qualityIssues && (
                 <div className="mt-2 sm:mt-4">
                   <p className="text-[11px] sm:text-xs font-medium text-gray-600">Quality Issues</p>
-                  <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{report.dailyProduction.qualityIssues}</p>
+                  <p className="text-xs sm:text-sm text-gray-900 mt-0.5 sm:mt-1">{productionData.qualityIssues}</p>
                 </div>
               )}
             </div>
@@ -321,28 +326,28 @@ export default function ScrollableReportView({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                       <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Incident Type</p>
-                        <p className="text-xs sm:text-sm text-gray-900">{formatIncidentType(report.incidentReport?.incidentType)}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{formatIncidentType(incidentData?.incidentType)}</p>
                       </div>
                       <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Severity</p>
                         <span className={`inline-block px-2 py-1 rounded text-xs sm:text-sm ${
-                          report.incidentReport?.severity === 'High' ? 'bg-red-100 text-red-800' : 
-                          report.incidentReport?.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                          incidentData?.severity === 'High' ? 'bg-red-100 text-red-800' : 
+                          incidentData?.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
                         }`}>
-                          {report.incidentReport?.severity}
+                          {incidentData?.severity}
                         </span>
                       </div>
                     </div>
-                    {report.incidentReport?.description && (
+                    {incidentData?.description && (
                       <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Description</p>
-                        <p className="text-xs sm:text-sm text-gray-900">{report.incidentReport.description}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{incidentData.description}</p>
                       </div>
                     )}
-                    {report.incidentReport?.actionsTaken && (
+                    {incidentData?.actionsTaken && (
                       <div className="space-y-0.5">
                         <p className="text-[11px] sm:text-xs font-medium text-gray-600">Actions Taken</p>
-                        <p className="text-xs sm:text-sm text-gray-900">{report.incidentReport.actionsTaken}</p>
+                        <p className="text-xs sm:text-sm text-gray-900">{incidentData.actionsTaken}</p>
                       </div>
                     )}
                   </>
@@ -379,16 +384,16 @@ export default function ScrollableReportView({
           {/* Site Visuals */}
           <div className="border-b border-gray-200 pb-3 sm:pb-4 print-hidden">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Site Visuals</h2>
-            {report.siteVisuals?.photos?.length > 0 || report.siteVisuals?.media?.length > 0 ? (
+            {visualsData?.photos?.length > 0 || visualsData?.media?.length > 0 ? (
               <div className="space-y-2 sm:space-y-4">
                 {/* Handle both photos and media arrays */}
-                {(report.siteVisuals?.media || report.siteVisuals?.photos)?.length > 0 && (
+                {(visualsData?.media || visualsData?.photos)?.length > 0 && (
                   <div>
                     <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 sm:mb-3">
-                      {report.siteVisuals?.media ? 'Media Files' : 'Photos'} Uploaded
+                      {visualsData?.media ? 'Media Files' : 'Photos'} Uploaded
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-                      {(report.siteVisuals?.media || report.siteVisuals?.photos || []).map((file: any, idx: number) => (
+                      {(visualsData?.media || visualsData?.photos || []).map((file: any, idx: number) => (
                         <div
                           key={idx}
                           className="border border-gray-200 rounded-none overflow-hidden bg-gray-50 hover:shadow-md transition-shadow"
@@ -450,10 +455,10 @@ export default function ScrollableReportView({
                     </div>
                   </div>
                 )}
-                {report.siteVisuals?.notes && (
+                {visualsData?.notes && (
                   <div>
                     <p className="text-xs sm:text-sm font-medium text-gray-600">Notes</p>
-                    <p className="text-gray-900 mt-0.5 sm:mt-1">{report.siteVisuals.notes}</p>
+                    <p className="text-gray-900 mt-0.5 sm:mt-1">{visualsData.notes}</p>
                   </div>
                 )}
               </div>

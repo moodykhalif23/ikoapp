@@ -174,7 +174,9 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
 
   const isDraftComplete = (report: any) => {
     if (!report) return false
-    const powerData = report.powerInterruptions || report.powerInterruptionId || {}
+    
+    // Check both embedded data and populated references
+    const powerData = report.powerInterruptionId || report.powerInterruptions || {}
     const powerNoIssues =
       powerData?.noInterruptions === true ||
       powerData?.noInterruptions === "true" ||
@@ -184,12 +186,12 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
     // Power is complete if: no interruptions, has interruptions, legacy format, or has powerInterruptionId
     const powerComplete = powerNoIssues || powerHasEntries || powerLegacy || !!report.powerInterruptionId
 
-    const productionData = report.dailyProduction || report.dailyProductionId
+    const productionData = report.dailyProductionId || report.dailyProduction
     const productionComplete =
       (Array.isArray(productionData?.products) && productionData.products.length > 0) ||
       !!report.dailyProductionId
 
-    const incidentData = report.incidentReport || report.incidentReportId
+    const incidentData = report.incidentReportId || report.incidentReport
     const incidentComplete = !!report.incidentReportId || (
       !!incidentData && (
         incidentData.hasIncident === "no" ||
@@ -198,7 +200,7 @@ export default function ReporterDashboard({ user, onLogout, onGoHome }: Reporter
       )
     )
 
-    const visualsData = report.siteVisuals || report.siteVisualId
+    const visualsData = report.siteVisualId || report.siteVisuals
     const visualsComplete =
       (Array.isArray(visualsData?.media) && visualsData.media.length > 0) ||
       (Array.isArray(visualsData?.photos) && visualsData.photos.length > 0) ||

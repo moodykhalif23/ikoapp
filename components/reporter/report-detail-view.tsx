@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowBack, CheckCircle, Close } from "@mui/icons-material"
 import { Badge } from "@/components/ui/badge"
+import { ImageOff } from "lucide-react"
 
 interface ReportDetailViewProps {
   report: any
@@ -11,6 +13,14 @@ interface ReportDetailViewProps {
 }
 
 export default function ReportDetailView({ report, onBack }: ReportDetailViewProps) {
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
+  
+  // Handle both embedded data and populated references
+  const powerData = report?.powerInterruptionId || report?.powerInterruptions || {}
+  const productionData = report?.dailyProductionId || report?.dailyProduction || {}
+  const incidentData = report?.incidentReportId || report?.incidentReport || {}
+  const visualsData = report?.siteVisualId || report?.siteVisuals || {}
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -76,7 +86,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         <CardHeader className="p-3 sm:p-6">
           <CardTitle className="text-primary flex items-center gap-2 text-base sm:text-lg">
             Power Interruptions
-            {report.powerInterruptions?.noInterruptions && (
+            {powerData?.noInterruptions && (
               <div className="flex items-center gap-1">
                 <CheckCircle sx={{ fontSize: 16, color: "#16a34a" }} />
                 <Badge variant="secondary" className="rounded-none text-xs">No Issues</Badge>
@@ -85,12 +95,12 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-6 pt-0">
-          {report.powerInterruptions?.noInterruptions ? (
+          {powerData?.noInterruptions ? (
             <p className="text-sm text-muted-foreground">No power interruptions occurred on this day.</p>
           ) : (
             <div className="space-y-3 sm:space-y-4">
-              {report.powerInterruptions?.interruptions?.length > 0 ? (
-                report.powerInterruptions.interruptions.map((interruption: any, index: number) => (
+              {powerData?.interruptions?.length > 0 ? (
+                powerData.interruptions.map((interruption: any, index: number) => (
                   <div key={interruption.id || index} className="p-2 sm:p-4 bg-orange-50 border border-orange-200 rounded-none">
                     <h4 className="text-sm sm:text-base font-medium text-orange-800 mb-2 sm:mb-3">Interruption #{index + 1}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2">
@@ -128,7 +138,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                     {report.powerInterruptions?.kplcReferenceNumber && (
                       <div className="space-y-0.5">
                         <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Reference Number</p>
-                        <p className="text-sm sm:text-base text-foreground">{report.powerInterruptions?.kplcReferenceNumber}</p>
+                        <p className="text-sm sm:text-base text-foreground">{powerData?.kplcReferenceNumber}</p>
                       </div>
                     )}
                   </div>
@@ -147,14 +157,14 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           <CardTitle className="text-primary text-base sm:text-lg">Site Visuals</CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-6 pt-0">
-          {report.siteVisuals?.media?.length > 0 ? (
+          {visualsData?.media?.length > 0 ? (
             <div className="space-y-3 sm:space-y-4">
               <div>
                 <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3">
-                  Media Files ({report.siteVisuals.media.length})
+                  Media Files ({visualsData.media.length})
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-                  {report.siteVisuals.media.map((file: any, index: number) => (
+                  {visualsData.media.map((file: any, index: number) => (
                     <div key={file.id || index} className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
                       {file.type === 'image' || file.type?.startsWith?.('image/') ? (
                         <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -190,21 +200,21 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   ))}
                 </div>
               </div>
-              {report.siteVisuals.notes && (
+              {visualsData.notes && (
                 <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Notes</p>
-                  <p className="text-sm sm:text-base text-foreground">{report.siteVisuals.notes}</p>
+                  <p className="text-sm sm:text-base text-foreground">{visualsData.notes}</p>
                 </div>
               )}
             </div>
-          ) : report.siteVisuals?.photos?.length > 0 ? (
+          ) : visualsData?.photos?.length > 0 ? (
             <div className="space-y-3 sm:space-y-4">
               <div>
                 <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3">
-                  Photos ({report.siteVisuals.photos.length})
+                  Photos ({visualsData.photos.length})
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-                  {report.siteVisuals.photos.map((url: string, index: number) => (
+                  {visualsData.photos.map((url: string, index: number) => (
                     <div key={index} className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
                       <div className="relative w-full aspect-video bg-gray-100 flex items-center justify-center overflow-hidden">
                         <img
@@ -221,10 +231,10 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   ))}
                 </div>
               </div>
-              {report.siteVisuals.notes && (
+              {visualsData.notes && (
                 <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Notes</p>
-                  <p className="text-sm sm:text-base text-foreground">{report.siteVisuals.notes}</p>
+                  <p className="text-sm sm:text-base text-foreground">{visualsData.notes}</p>
                 </div>
               )}
             </div>
@@ -240,15 +250,15 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           <CardTitle className="text-primary text-base sm:text-lg">Daily Production Data</CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-6 pt-0">
-          {report.dailyProduction?.products?.length > 0 ? (
+          {productionData?.products?.length > 0 ? (
             <div className="space-y-2 sm:space-y-3">
               <div className="p-2 sm:p-4 border border-border rounded-none bg-muted/30">
                 <div className="space-y-2 sm:space-y-3">
-                  {report.dailyProduction.products.map((product: any, index: number) => (
+                  {productionData.products.map((product: any, index: number) => (
                     <div
                       key={index}
                       className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 ${
-                        index < report.dailyProduction.products.length - 1 ? "pb-2 sm:pb-3 border-b border-border" : ""
+                        index < productionData.products.length - 1 ? "pb-2 sm:pb-3 border-b border-border" : ""
                       }`}
                     >
                       <div className="space-y-0.5">
@@ -277,18 +287,18 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
                   ))}
                 </div>
               </div>
-              {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined) && (
+              {formatMeterRange(productionData?.kplcMeterStart as string | undefined, productionData?.kplcMeterEnd as string | undefined, productionData?.kplcMeter as string | undefined) && (
                 <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">KPLC Meter</p>
                   <p className="text-sm sm:text-base text-foreground">
-                    {formatMeterRange(report.dailyProduction?.kplcMeterStart as string | undefined, report.dailyProduction?.kplcMeterEnd as string | undefined, report.dailyProduction?.kplcMeter as string | undefined)}
+                    {formatMeterRange(productionData?.kplcMeterStart as string | undefined, productionData?.kplcMeterEnd as string | undefined, productionData?.kplcMeter as string | undefined)}
                   </p>
                 </div>
               )}
-              {report.dailyProduction?.qualityIssues && (
+              {productionData?.qualityIssues && (
                 <div className="space-y-0.5">
                   <p className="text-xs sm:text-sm font-medium text-muted-foreground">Quality Issues</p>
-                  <p className="text-sm sm:text-base text-foreground">{report.dailyProduction.qualityIssues}</p>
+                  <p className="text-sm sm:text-base text-foreground">{productionData.qualityIssues}</p>
                 </div>
               )}
             </div>
@@ -303,7 +313,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
         <CardHeader className="p-3 sm:p-6">
           <CardTitle className="text-primary flex items-center gap-2 text-base sm:text-lg">
             Incident Report
-            {report.incidentReport?.noIncidents && (
+            {incidentData?.noIncidents && (
               <div className="flex items-center gap-1">
                 <CheckCircle sx={{ fontSize: 16, color: "#16a34a" }} />
                 <Badge variant="secondary" className="rounded-none text-xs">No Incidents</Badge>
@@ -312,7 +322,7 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-6 pt-0">
-          {report.incidentReport?.noIncidents ? (
+          {incidentData?.noIncidents ? (
             <p className="text-sm text-muted-foreground">No incidents occurred on this day.</p>
           ) : (
             <div className="space-y-2 sm:space-y-3">

@@ -26,7 +26,8 @@ export default function StandaloneSiteVisuals({ user, reportId, onBack, onSaved 
       })
       .then((report) => {
         if (!isMounted || !report) return
-        setInitialData(report.siteVisuals || {})
+        const visualsData = report.siteVisualId || report.siteVisuals || {}
+        setInitialData(visualsData)
       })
       .catch(() => null)
     return () => {

@@ -134,7 +134,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
       })
       .then((report) => {
         if (!isMounted || !report) return
-        const powerData = report.powerInterruptions || {}
+        const powerData = report.powerInterruptionId || report.powerInterruptions || {}
         const activeTimer = getActiveTimerFromStorage()
         const interruptions = Array.isArray(powerData.interruptions)
           ? powerData.interruptions.map((item: any) => {

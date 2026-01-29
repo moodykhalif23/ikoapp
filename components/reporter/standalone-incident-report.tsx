@@ -26,7 +26,8 @@ export default function StandaloneIncidentReport({ user, reportId, onBack, onSav
       })
       .then((report) => {
         if (!isMounted || !report) return
-        setInitialData(report.incidentReport || {})
+        const incidentData = report.incidentReportId || report.incidentReport || {}
+        setInitialData(incidentData)
       })
       .catch(() => null)
     return () => {
