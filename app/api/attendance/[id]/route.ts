@@ -2,15 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectToDatabase from '@/lib/mongodb'
 import { Attendance } from '@/lib/models'
 
-interface Params {
-  params: { id: string }
-}
-
 // PUT /api/attendance/[id] - Update attendance record
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     await connectToDatabase()
-    const { id } = params
+    const { id } = await context.params
     const body = await request.json()
 
     const updates: any = {

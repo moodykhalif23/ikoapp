@@ -3,15 +3,11 @@ import connectToDatabase from '@/lib/mongodb'
 import { Machine } from '@/lib/models'
 import mongoose from 'mongoose'
 
-interface Params {
-  params: { id: string }
-}
-
 // PUT /api/machines/[id] - Update machine
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     await connectToDatabase()
-    const { id } = params
+    const { id } = await context.params
     const { name, type, status } = await request.json()
 
     console.log('PUT /api/machines/[id] - Received ID:', id);
@@ -66,10 +62,10 @@ export async function PUT(request: NextRequest, { params }: Params) {
 }
 
 // DELETE /api/machines/[id] - Delete machine
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     await connectToDatabase()
-    const { id } = params
+    const { id } = await context.params
 
     console.log('DELETE /api/machines/[id] - Received ID:', id);
 
