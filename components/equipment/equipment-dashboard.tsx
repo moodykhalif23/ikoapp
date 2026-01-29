@@ -125,11 +125,20 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
 
   // Helper function to get machine ID
   const getMachineId = (machine: any) => {
-    return machine._id || machine.id || machine._id?.toString();
+    // Convert ObjectId to string if needed
+    if (machine._id) {
+      return typeof machine._id === 'string' ? machine._id : machine._id.toString();
+    }
+    if (machine.id) {
+      return typeof machine.id === 'string' ? machine.id : machine.id.toString();
+    }
+    return undefined;
   }
 
   const handleOpenMachineDialog = (machine?: any) => {
+    console.log('handleOpenMachineDialog called with:', machine);
     if (machine) {
+      console.log('Machine ID:', getMachineId(machine));
       setEditingMachine(machine)
       setMachineForm({
         name: machine.name || "",
@@ -206,11 +215,13 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
   }
 
   const handleDeleteMachine = async (machine: any) => {
+    console.log('handleDeleteMachine called with:', machine);
     console.log('Deleting machine:', machine);
     const machineId = getMachineId(machine);
     console.log('Machine ID:', machineId);
 
     if (!machineId) {
+      console.error('No machine ID found!');
       toast.error("Invalid machine ID");
       return;
     }
@@ -435,10 +446,14 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                     </TableCell>
                     <TableCell>
                       <Box display="flex" gap={0.5}>
-                        <Tooltip title="Edit">
+                        <Tooltip title="Edit" arrow>
                           <IconButton
                             size="small"
-                            onClick={() => handleOpenMachineDialog(machine)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log('Edit button clicked for machine:', machine);
+                              handleOpenMachineDialog(machine);
+                            }}
                             sx={{
                               color: "var(--primary)",
                               "&:hover": {
@@ -450,10 +465,14 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
                             <EditIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        <Tooltip title="Delete" arrow>
                           <IconButton
                             size="small"
-                            onClick={() => handleDeleteMachine(machine)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log('Delete button clicked for machine:', machine);
+                              handleDeleteMachine(machine);
+                            }}
                             color="error"
                           >
                             <DeleteIcon fontSize="small" />
