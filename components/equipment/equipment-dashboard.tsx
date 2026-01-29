@@ -171,13 +171,16 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
       setMachineError(null)
 
       console.log('Editing machine:', editingMachine);
-      const machineId = getMachineId(editingMachine);
-      console.log('Machine ID being used:', machineId);
 
-      const url = editingMachine
-        ? `/api/machines/${machineId}`
-        : '/api/machines'
-      const method = editingMachine ? 'PUT' : 'POST'
+      let url = '/api/machines'
+      let method = 'POST'
+
+      if (editingMachine) {
+        const machineId = getMachineId(editingMachine);
+        console.log('Machine ID being used:', machineId);
+        url = `/api/machines/${machineId}`
+        method = 'PUT'
+      }
 
       console.log('API call:', method, url);
       console.log('Request body:', {
