@@ -302,19 +302,25 @@ export default function EquipmentDashboard({ machines: initialMachines = [], use
         updates.completedDate = new Date().toISOString()
       }
 
+      console.log('Updating maintenance status:', id, updates);
+
       const response = await fetch(`/api/equipment-maintenance/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
       })
 
+      const data = await response.json()
+      console.log('Update response:', response.status, data);
+
       if (response.ok) {
         toast.success("Maintenance record updated successfully")
         fetchMaintenanceRecords()
       } else {
-        toast.error("Failed to update maintenance record")
+        toast.error(data.error || "Failed to update maintenance record")
       }
     } catch (error) {
+      console.error('Update maintenance error:', error);
       toast.error("Network error. Please try again.")
     }
   }

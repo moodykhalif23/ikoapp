@@ -11,6 +11,8 @@ export async function PUT(
     await connectToDatabase()
 
     const body = await request.json()
+    console.log('PUT /api/equipment-maintenance/[id] - Request body:', body);
+    
     const updates = { ...body }
 
     // Convert date strings to Date objects
@@ -22,6 +24,9 @@ export async function PUT(
     }
 
     const resolvedParams = await params
+    console.log('PUT /api/equipment-maintenance/[id] - ID:', resolvedParams.id);
+    console.log('PUT /api/equipment-maintenance/[id] - Updates:', updates);
+
     const maintenanceRecord = await EquipmentMaintenance.findByIdAndUpdate(
       resolvedParams.id,
       updates,
@@ -29,14 +34,17 @@ export async function PUT(
         new: true,
         runValidators: true
       }
-    ).populate('equipmentId')
+    )
 
     if (!maintenanceRecord) {
+      console.log('PUT /api/equipment-maintenance/[id] - Record not found');
       return NextResponse.json(
         { error: 'Maintenance record not found' },
         { status: 404 }
       )
     }
+
+    console.log('PUT /api/equipment-maintenance/[id] - Updated successfully');
 
     return NextResponse.json({
       success: true,
@@ -44,10 +52,11 @@ export async function PUT(
       data: maintenanceRecord
     })
 
-  } catch (error) {
-    console.error('Error updating maintenance record:', error)
+  } catch (error: any) {
+    console.error('Error updating maintenance record:', error);
+    console.error('Error details:', error.message, error.stack);
     return NextResponse.json(
-      { error: 'Failed to update maintenance record' },
+      { error: error.message || 'Failed to update maintenance record' },
       { status: 500 }
     )
   }
