@@ -106,7 +106,6 @@ export default function IncidentReportForm({ data, onComplete }: IncidentReportF
                   <option value="">Select incident type</option>
                   <option value="equipment">Equipment Failure</option>
                   <option value="injury">Injury</option>
-                  <option value="environmental">Environmental</option>
                   <option value="other">Other</option>
                 </select>
                 {errors.incidentType && <p className="text-xs text-red-500">{errors.incidentType}</p>}

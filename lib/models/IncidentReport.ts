@@ -4,7 +4,7 @@ export interface IIncidentReport extends Document {
   reportId: mongoose.Types.ObjectId
   noIncidents: boolean
   incidents?: Array<{
-    type: 'safety' | 'equipment' | 'environmental' | 'security' | 'other'
+    type: 'safety' | 'equipment' | 'security' | 'other'
     severity: 'low' | 'medium' | 'high' | 'critical'
     description: string
     occurredAt: string
@@ -21,7 +21,7 @@ export interface IIncidentReport extends Document {
 const IncidentSchema = new Schema({
   type: {
     type: String,
-    enum: ['safety', 'equipment', 'environmental', 'security', 'other'],
+    enum: ['safety', 'equipment', 'security', 'other'],
     required: [true, 'Incident type is required']
   },
   severity: {

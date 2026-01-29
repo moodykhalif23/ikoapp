@@ -55,7 +55,6 @@ export default function ReportDetailView({ report, onBack }: ReportDetailViewPro
       equipment: "Equipment Failure",
       injury: "Injury",
       "near-miss": "Near Miss",
-      environmental: "Environmental",
       security: "Security",
       other: "Other",
       safety: "Safety",
