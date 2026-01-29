@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { mkdir, writeFile } from "fs/promises"
+import { mkdir, writeFile, chmod } from "fs/promises"
 import path from "path"
 import crypto from "crypto"
 
@@ -27,7 +27,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    await mkdir(UPLOAD_DIR, { recursive: true })
+    // Ensure upload directory exists with proper permissions
+    try {
+      await mkdir(UPLOAD_DIR, { recursive: true })
+      await chmod(UPLOAD_DIR, 0o755)
+    } catch (error) {
+      console.error("Error creating upload directory:", error)
+    }
 
     const uploaded = []
     for (const file of files) {
@@ -38,6 +44,13 @@ export async function POST(request: NextRequest) {
       const filePath = path.join(UPLOAD_DIR, filename)
 
       await writeFile(filePath, buffer)
+      
+      // Set proper file permissions
+      try {
+        await chmod(filePath, 0o644)
+      } catch (error) {
+        console.error("Error setting file permissions:", error)
+      }
 
       uploaded.push({
         name: file.name,

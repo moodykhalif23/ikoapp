@@ -11,7 +11,8 @@
     "db:reset": "node scripts/reset-db.js",
     "db:create-admin": "node scripts/create-admin.js",
     "db:start": "docker-compose up -d",
-    "db:stop": "docker-compose down"
+    "db:stop": "docker-compose down",
+    "fix-uploads": "node scripts/fix-uploads.js"
   },
   "dependencies": {
     "web-push": "^3.6.7",

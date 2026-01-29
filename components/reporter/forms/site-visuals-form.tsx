@@ -78,62 +78,77 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files
-    if (files) {
-      setIsProcessing(true)
-      const fileArray = Array.from(files)
-      const nextMedia: MediaFile[] = []
+    if (!files || files.length === 0) {
+      // Clear the input value safely
+      if (e.currentTarget) {
+        e.currentTarget.value = ""
+      }
+      return
+    }
 
-      fileArray.forEach((file) => {
-        const isImage = file.type.startsWith("image/")
-        const isVideo = file.type.startsWith("video/")
+    setIsProcessing(true)
+    setErrors(prev => ({ ...prev, media: "" })) // Clear previous errors
+    
+    const fileArray = Array.from(files)
+    const nextMedia: MediaFile[] = []
 
-        if (isImage || isVideo) {
-          const newFile: MediaFile = {
-            id: `${Date.now()}-${Math.random()}`,
-            name: file.name,
-            type: isImage ? "image" : "video",
-            size: (file.size / 1024 / 1024).toFixed(2) + " MB",
-            file,
-          }
+    fileArray.forEach((file) => {
+      const isImage = file.type.startsWith("image/")
+      const isVideo = file.type.startsWith("video/")
 
-          nextMedia.push(newFile)
+      if (isImage || isVideo) {
+        const newFile: MediaFile = {
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          name: file.name,
+          type: isImage ? "image" : "video",
+          size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+          file,
+        }
 
-          const reader = new FileReader()
-          reader.onload = (event) => {
+        nextMedia.push(newFile)
+
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          if (event.target?.result) {
             setMediaFiles((prev) =>
               prev.map((f) => (f.id === newFile.id ? { ...f, preview: event.target?.result as string } : f)),
             )
           }
-          reader.readAsDataURL(file)
         }
-      })
-
-      if (nextMedia.length) {
-        setMediaFiles((prev) => [...prev, ...nextMedia])
+        reader.onerror = () => {
+          console.error("Error reading file:", file.name)
+        }
+        reader.readAsDataURL(file)
       }
+    })
+
+    if (nextMedia.length) {
+      setMediaFiles((prev) => [...prev, ...nextMedia])
 
       try {
-        if (nextMedia.length) {
-          const uploaded = await uploadMediaFiles(nextMedia)
-          setMediaFiles((prev) =>
-            prev.map((item) => {
-              const index = nextMedia.findIndex((media) => media.id === item.id)
-              if (index === -1) return item
-              const uploadedFile = uploaded[index]
-              return uploadedFile ? { ...item, url: uploadedFile.url } : item
-            }),
-          )
-        }
+        const uploaded = await uploadMediaFiles(nextMedia)
+        setMediaFiles((prev) =>
+          prev.map((item) => {
+            const index = nextMedia.findIndex((media) => media.id === item.id)
+            if (index === -1) return item
+            const uploadedFile = uploaded[index]
+            return uploadedFile ? { ...item, url: uploadedFile.url } : item
+          }),
+        )
       } catch (error) {
+        console.error("Upload error:", error)
         setErrors((prev) => ({
           ...prev,
           media: error instanceof Error ? error.message : "Failed to upload files"
         }))
-      } finally {
-        setIsProcessing(false)
-        e.currentTarget.value = ""
+        // Remove failed uploads from the list
+        setMediaFiles((prev) => prev.filter(item => !nextMedia.some(media => media.id === item.id)))
       }
-    } else {
+    }
+
+    setIsProcessing(false)
+    // Clear the input value safely
+    if (e.currentTarget) {
       e.currentTarget.value = ""
     }
   }
