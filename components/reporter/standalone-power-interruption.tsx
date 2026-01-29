@@ -299,7 +299,7 @@ export default function StandalonePowerInterruption({ user, reportId, onBack, on
           </div>
           
           <div className="space-y-6">
-            <div className="flex items-center space-x-3 p-4 sm:p-6 rounded-none border-2 border-green-700 backdrop-blur-sm">
+            <div className="flex items-center space-x-4 p-4 sm:p-6 rounded-none border-2 border-green-700 backdrop-blur-sm">
               <Checkbox
                 id="no-interruptions"
                 checked={noInterruptions}
