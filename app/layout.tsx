@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   description: "Professional production reporting and management system",
   generator: "v0.app",
   manifest: "/manifest.webmanifest",
-  themeColor: "#0C2235",
   icons: {
     icon: [
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -32,6 +31,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1.0,
   viewportFit: "cover",
+  themeColor: "#0C2235",
 }
 
 export default function RootLayout({
