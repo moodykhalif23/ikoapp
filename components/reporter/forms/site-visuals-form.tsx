@@ -77,79 +77,96 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
   }
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.currentTarget.files
-    if (!files || files.length === 0) {
-      // Clear the input value safely
-      if (e.currentTarget) {
-        e.currentTarget.value = ""
-      }
-      return
-    }
-
-    setIsProcessing(true)
-    setErrors(prev => ({ ...prev, media: "" })) // Clear previous errors
-    
-    const fileArray = Array.from(files)
-    const nextMedia: MediaFile[] = []
-
-    fileArray.forEach((file) => {
-      const isImage = file.type.startsWith("image/")
-      const isVideo = file.type.startsWith("video/")
-
-      if (isImage || isVideo) {
-        const newFile: MediaFile = {
-          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          name: file.name,
-          type: isImage ? "image" : "video",
-          size: (file.size / 1024 / 1024).toFixed(2) + " MB",
-          file,
+    try {
+      const files = e.currentTarget.files
+      if (!files || files.length === 0) {
+        // Clear the input value safely
+        if (e.currentTarget) {
+          e.currentTarget.value = ""
         }
+        return
+      }
 
-        nextMedia.push(newFile)
+      setIsProcessing(true)
+      setErrors(prev => ({ ...prev, media: "" })) // Clear previous errors
+      
+      const fileArray = Array.from(files)
+      const nextMedia: MediaFile[] = []
 
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          if (event.target?.result) {
-            setMediaFiles((prev) =>
-              prev.map((f) => (f.id === newFile.id ? { ...f, preview: event.target?.result as string } : f)),
-            )
+      fileArray.forEach((file) => {
+        const isImage = file.type.startsWith("image/")
+        const isVideo = file.type.startsWith("video/")
+
+        if (isImage || isVideo) {
+          const newFile: MediaFile = {
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            name: file.name,
+            type: isImage ? "image" : "video",
+            size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+            file,
           }
+
+          nextMedia.push(newFile)
+
+          const reader = new FileReader()
+          reader.onload = (event) => {
+            try {
+              if (event.target?.result) {
+                setMediaFiles((prev) =>
+                  prev.map((f) => (f.id === newFile.id ? { ...f, preview: event.target?.result as string } : f)),
+                )
+              }
+            } catch (error) {
+              console.error("Error setting preview:", error)
+            }
+          }
+          reader.onerror = (error) => {
+            console.error("Error reading file:", file.name, error)
+          }
+          reader.readAsDataURL(file)
         }
-        reader.onerror = () => {
-          console.error("Error reading file:", file.name)
+      })
+
+      if (nextMedia.length) {
+        setMediaFiles((prev) => [...prev, ...nextMedia])
+
+        try {
+          const uploaded = await uploadMediaFiles(nextMedia)
+          setMediaFiles((prev) =>
+            prev.map((item) => {
+              const index = nextMedia.findIndex((media) => media.id === item.id)
+              if (index === -1) return item
+              const uploadedFile = uploaded[index]
+              return uploadedFile ? { ...item, url: uploadedFile.url } : item
+            }),
+          )
+        } catch (error) {
+          console.error("Upload error:", error)
+          setErrors((prev) => ({
+            ...prev,
+            media: error instanceof Error ? error.message : "Failed to upload files"
+          }))
+          // Remove failed uploads from the list
+          setMediaFiles((prev) => prev.filter(item => !nextMedia.some(media => media.id === item.id)))
         }
-        reader.readAsDataURL(file)
       }
-    })
 
-    if (nextMedia.length) {
-      setMediaFiles((prev) => [...prev, ...nextMedia])
-
+    } catch (error) {
+      console.error("File select error:", error)
+      setErrors((prev) => ({
+        ...prev,
+        media: "Error processing files"
+      }))
+    } finally {
+      setIsProcessing(false)
+      // Clear the input value safely
       try {
-        const uploaded = await uploadMediaFiles(nextMedia)
-        setMediaFiles((prev) =>
-          prev.map((item) => {
-            const index = nextMedia.findIndex((media) => media.id === item.id)
-            if (index === -1) return item
-            const uploadedFile = uploaded[index]
-            return uploadedFile ? { ...item, url: uploadedFile.url } : item
-          }),
-        )
+        if (e.currentTarget) {
+          e.currentTarget.value = ""
+        }
       } catch (error) {
-        console.error("Upload error:", error)
-        setErrors((prev) => ({
-          ...prev,
-          media: error instanceof Error ? error.message : "Failed to upload files"
-        }))
-        // Remove failed uploads from the list
-        setMediaFiles((prev) => prev.filter(item => !nextMedia.some(media => media.id === item.id)))
+        console.error("Error clearing input:", error)
       }
-    }
-
-    setIsProcessing(false)
-    // Clear the input value safely
-    if (e.currentTarget) {
-      e.currentTarget.value = ""
     }
   }
 
@@ -238,6 +255,14 @@ export default function SiteVisualsForm({ data, onComplete }: SiteVisualsFormPro
                                 alt={file.name}
                                 className="w-full h-full object-cover cursor-pointer"
                                 onClick={() => file.url && openPreview(file)}
+                                onError={(e) => {
+                                  console.error("Image load error:", file.url || file.preview)
+                                  // Fallback to a placeholder or hide the image
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                                onLoad={() => {
+                                  console.log("Image loaded successfully:", file.url || file.preview)
+                                }}
                               />
                               {/* Upload indicator overlay */}
                               {!file.url && (
