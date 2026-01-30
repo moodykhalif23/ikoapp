@@ -15,17 +15,87 @@ export async function PUT(
     
     const updates = { ...body }
 
-    // Convert date strings to Date objects
+    // Convert date strings to Date objects and validate
     if (updates.scheduledDate) {
-      updates.scheduledDate = new Date(updates.scheduledDate)
+      const scheduledDate = new Date(updates.scheduledDate)
+      if (isNaN(scheduledDate.getTime())) {
+        return NextResponse.json(
+          { error: 'Invalid scheduled date format' },
+          { status: 400 }
+        )
+      }
+      updates.scheduledDate = scheduledDate
     }
     if (updates.completedDate) {
-      updates.completedDate = new Date(updates.completedDate)
+      const completedDate = new Date(updates.completedDate)
+      if (isNaN(completedDate.getTime())) {
+        return NextResponse.json(
+          { error: 'Invalid completed date format' },
+          { status: 400 }
+        )
+      }
+      updates.completedDate = completedDate
+    }
+
+    // Validate enum values
+    const validStatuses = ['scheduled', 'in-progress', 'completed', 'cancelled']
+    const validPriorities = ['low', 'medium', 'high', 'critical']
+    const validMaintenanceTypes = ['preventive', 'corrective', 'predictive', 'emergency']
+
+    if (updates.status && !validStatuses.includes(updates.status)) {
+      return NextResponse.json(
+        { error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` },
+        { status: 400 }
+      )
+    }
+
+    if (updates.priority && !validPriorities.includes(updates.priority)) {
+      return NextResponse.json(
+        { error: `Invalid priority. Must be one of: ${validPriorities.join(', ')}` },
+        { status: 400 }
+      )
+    }
+
+    if (updates.maintenanceType && !validMaintenanceTypes.includes(updates.maintenanceType)) {
+      return NextResponse.json(
+        { error: `Invalid maintenance type. Must be one of: ${validMaintenanceTypes.join(', ')}` },
+        { status: 400 }
+      )
+    }
+
+    // Validate numeric fields
+    if (updates.estimatedHours !== undefined && (isNaN(updates.estimatedHours) || updates.estimatedHours < 0)) {
+      return NextResponse.json(
+        { error: 'Estimated hours must be a non-negative number' },
+        { status: 400 }
+      )
+    }
+
+    if (updates.actualHours !== undefined && (isNaN(updates.actualHours) || updates.actualHours < 0)) {
+      return NextResponse.json(
+        { error: 'Actual hours must be a non-negative number' },
+        { status: 400 }
+      )
+    }
+
+    if (updates.cost !== undefined && (isNaN(updates.cost) || updates.cost < 0)) {
+      return NextResponse.json(
+        { error: 'Cost must be a non-negative number' },
+        { status: 400 }
+      )
     }
 
     const resolvedParams = await params
     console.log('PUT /api/equipment-maintenance/[id] - ID:', resolvedParams.id);
     console.log('PUT /api/equipment-maintenance/[id] - Updates:', updates);
+
+    // Validate ObjectId format
+    if (!resolvedParams.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return NextResponse.json(
+        { error: 'Invalid maintenance record ID format' },
+        { status: 400 }
+      )
+    }
 
     const maintenanceRecord = await EquipmentMaintenance.findByIdAndUpdate(
       resolvedParams.id,

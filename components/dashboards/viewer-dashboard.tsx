@@ -43,6 +43,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
   const [activeTab, setActiveTab] = useState("reports")
   const [reportsView, setReportsView] = useState<"production" | "attendance">("production")
   const [attendanceFocusDate, setAttendanceFocusDate] = useState<string | null>(null)
+  const [attendanceStats, setAttendanceStats] = useState({ weeklyCount: 0, totalCount: 0 })
   
   // Filter states
   const [filterStatus, setFilterStatus] = useState<string>("all")
@@ -102,6 +103,56 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
     }
 
     fetchReports()
+  }, [])
+
+  // Fetch attendance stats
+  useEffect(() => {
+    const fetchAttendanceStats = async () => {
+      try {
+        const now = new Date()
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        
+        // Get weekly attendance count
+        const weeklyResponse = await fetch(`/api/attendance?date=${weekAgo.toISOString().split('T')[0]}`)
+        let weeklyCount = 0
+        if (weeklyResponse.ok) {
+          const weeklyData = await weeklyResponse.json()
+          if (weeklyData.success && weeklyData.data) {
+            // Count unique employees in the past week
+            const uniqueEmployees = new Set()
+            for (let i = 0; i < 7; i++) {
+              const checkDate = new Date(weekAgo.getTime() + i * 24 * 60 * 60 * 1000)
+              const dateResponse = await fetch(`/api/attendance?date=${checkDate.toISOString().split('T')[0]}`)
+              if (dateResponse.ok) {
+                const dateData = await dateResponse.json()
+                if (dateData.success && dateData.data) {
+                  dateData.data.forEach((record: any) => uniqueEmployees.add(record.employeeId))
+                }
+              }
+            }
+            weeklyCount = uniqueEmployees.size
+          }
+        }
+
+        // Get total attendance count (all time)
+        const totalResponse = await fetch('/api/attendance')
+        let totalCount = 0
+        if (totalResponse.ok) {
+          const totalData = await totalResponse.json()
+          if (totalData.success && totalData.data) {
+            const uniqueEmployees = new Set(totalData.data.map((record: any) => record.employeeId))
+            totalCount = uniqueEmployees.size
+          }
+        }
+
+        setAttendanceStats({ weeklyCount, totalCount })
+      } catch (error) {
+        console.error('Error fetching attendance stats:', error)
+        setAttendanceStats({ weeklyCount: 0, totalCount: 0 })
+      }
+    }
+
+    fetchAttendanceStats()
   }, [])
 
   // Use reports from database, or empty array if loading
@@ -588,7 +639,7 @@ export default function ViewerDashboard({ user, onLogout, reports: propReports =
             </CardTitle>
           </CardHeader>
           <CardContent className="relative z-10">
-            <div className="text-base sm:text-lg font-bold text-foreground">{weeklyReportsCount}</div>
+            <div className="text-base sm:text-lg font-bold text-foreground">{attendanceStats.weeklyCount}</div>
             <p className="text-xs text-muted-foreground mt-1">This week</p>
           </CardContent>
         </Card>
