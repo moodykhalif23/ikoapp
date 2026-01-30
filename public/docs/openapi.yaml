@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: IKO App API
+  description: |
+    Comprehensive API for the IKO industrial reporting and management application.
+    
+    ## Features
+    - Employee and attendance management
+    - Daily reporting with multiple sections
+    - Equipment maintenance tracking
+    - Task management for incidents
+    - Real-time notifications
+    - File upload capabilities
+    
+    ## Authentication
+    **Note**: Currently all endpoints are public. Authentication implementation is recommended.
+    
+    ## Base URL
+    All API endpoints are relative to `/api/`
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: /api
+    description: Development server
+
+# Copy the rest of the OpenAPI spec from the docs/openapi.yaml file
+# This is a public version that can be served directly
